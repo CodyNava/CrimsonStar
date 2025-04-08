@@ -5,6 +5,5 @@ namespace _01_Scripts.Ship.ModuleControllers
 {
     public class TurretController : BaseModuleController
     {
-        [SerializeField] private TurretModuleObject _turretModuleObject;
     }
 }
