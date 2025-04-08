@@ -21,6 +21,8 @@ namespace _01_Scripts.GameState
                 Instance = this;
                 DontDestroyOnLoad(this);
             }
+            
+            ChangeState(new ShipEditor_GameState());
         }
 
 
