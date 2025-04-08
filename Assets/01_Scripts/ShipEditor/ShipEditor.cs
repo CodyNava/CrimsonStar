@@ -1,3 +1,5 @@
+using _01_Scripts.GameState;
+using _01_Scripts.GameState.States;
 using UnityEngine;
 
 public class ShipEditor : MonoBehaviour
@@ -14,6 +16,7 @@ public class ShipEditor : MonoBehaviour
         //ship.SetActive(false);
 
         shipEditor.SetActive(true);
+        GameStateController.Instance.ChangeState(new ShipEditor_GameState());
     }
 
     public void CloseShipEditor()
@@ -23,6 +26,7 @@ public class ShipEditor : MonoBehaviour
         //ship.SetActive(true);
 
         shipEditor.SetActive(false);
+        GameStateController.Instance.ChangeState(new Combat_GameState());
     }
 
 }
