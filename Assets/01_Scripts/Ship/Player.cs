@@ -6,13 +6,17 @@ public class Player : MonoBehaviour
 {
 
     
-    public float moveSpeed = 0.1f;
+    public float moveSpeed = 0.04f;
+    public float maxSpeed = 8f;
+    public float maxAngularVelocity = 180f;
+    public float movementDamping = 5f;
+    public float rotationDamping = 5f;
+    public float rotationSpeed = 1f;
+    public float controlerDeadZone = 0.1f;
+    
     private Vector2 input;
     private Vector3 velocity;
-    public float weight = 100f;
-    public float maxSpeed = 20;
-    public float rotationSpeed = 180f;
-
+    private float angularVelocity;
     public void OnMove(InputAction.CallbackContext context)
     {
         input = context.ReadValue<Vector2>();
@@ -25,15 +29,35 @@ public class Player : MonoBehaviour
 
     public void movePlayer()
     {
-        Vector3 movement = (transform.up * input.y).normalized;
-
-        velocity += moveSpeed * movement;
-        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
-
-        if (input.magnitude <= 0.0001f)
+        if (input.magnitude < controlerDeadZone)
+            input = Vector2.zero;
+        
+        
+        if (Mathf.Abs(input.x) > 0.01f)
         {
-            velocity *= 1f - (weight / 1000f);
+            angularVelocity += -input.x * rotationSpeed;
         }
+        else
+        {
+            angularVelocity *= 1f - (rotationDamping / 1000f);
+        }
+        
+        angularVelocity = Mathf.Clamp(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
+        
+        transform.Rotate(0f, 0f, angularVelocity * Time.deltaTime);
+        
+        
+        if (Mathf.Abs(input.y) > 0.01f)
+        {
+            Vector3 movement = transform.up * input.y;
+            velocity += moveSpeed * movement.normalized;
+        }
+        else
+        {
+            velocity *= 1f - (movementDamping / 1000f);
+        }
+
+        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
 
         if (velocity.magnitude <= 0.0001f)
         {
@@ -41,11 +65,5 @@ public class Player : MonoBehaviour
         }
 
         transform.Translate(velocity * Time.deltaTime, Space.World);
-        
-        
-        
-        transform.Rotate(0f, 0f, -input.x * rotationSpeed * Time.deltaTime);
-        
-        
     }
 }
