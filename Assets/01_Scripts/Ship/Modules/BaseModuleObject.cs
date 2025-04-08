@@ -4,7 +4,8 @@ namespace _01_Scripts.Ship.Modules
 {
     public abstract class BaseModuleObject : ScriptableObject
     {
-        [SerializeField] private float health;
-        [SerializeField] private float weight;
+        [SerializeField] private int _cost;
+        [SerializeField] private float _health;
+        [SerializeField] private float _weight;
     }
 }
