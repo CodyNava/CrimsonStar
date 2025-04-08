@@ -11,7 +11,7 @@ public class ShipEditor : MonoBehaviour
     public void OpenShipEditor()
     {
         editCamera.fieldOfView = CameraOffSet;
-        ship.SetActive(false);
+        //ship.SetActive(false);
 
         shipEditor.SetActive(true);
     }
@@ -20,7 +20,7 @@ public class ShipEditor : MonoBehaviour
     {
 
         editCamera.fieldOfView = CameraOffSetOriginal;
-        ship.SetActive(true);
+        //ship.SetActive(true);
 
         shipEditor.SetActive(false);
     }

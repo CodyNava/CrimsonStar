@@ -7,7 +7,7 @@ public class Snap : MonoBehaviour
     public List<Drag> _dragscripts;
     public float _snapRadius = 0.2f;
 
-    void Start()
+    void Update()
     {
         foreach (Drag script in _dragscripts)
         {
