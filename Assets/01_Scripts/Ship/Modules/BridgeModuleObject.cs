@@ -1,6 +1,9 @@
-﻿namespace _01_Scripts.Ship.Modules
+﻿using UnityEngine;
+
+namespace _01_Scripts.Ship.Modules
 {
-    public class BridgeModuleObject
+    [CreateAssetMenu(fileName = "BridgeObject", menuName = "ShipModules/BridgeObject")]
+    public class BridgeModuleObject : BaseModuleObject
     {
         
     }
