@@ -9,7 +9,6 @@ public class Settings : MonoBehaviour
     public Dropdown resolutionDropdown;
     Resolution[] resolutions;
 
-
     private void Start()
     {
         resolutions = Screen.resolutions;
