@@ -2,7 +2,7 @@
 
 namespace _01_Scripts.Ship.Modules
 {
-    public abstract class BaseShipModule : ScriptableObject
+    public abstract class BaseModule : ScriptableObject
     {
         
         public float health;
