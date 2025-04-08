@@ -19,6 +19,12 @@ public class Player : MonoBehaviour
     private Vector2 input;
     private Vector3 velocity;
     private float angularVelocity;
+
+    public void Awake()
+    {
+        _bridgeController = GetComponent<BridgeController>();
+    }
+
     public void OnMove(InputAction.CallbackContext context)
     {
         input = context.ReadValue<Vector2>();
@@ -42,8 +48,7 @@ public class Player : MonoBehaviour
     {
         if (input.magnitude < controllerDeadZone)
             input = Vector2.zero;
-        
-        
+
         if (Mathf.Abs(input.x) > 0.01f)
         {
             angularVelocity += -input.x * rotationSpeed;
