@@ -15,6 +15,7 @@ namespace _01_Scripts.Ship.ModuleControllers
 
         public void Awake()
         {
+            _isCombatActive = false;
             Combat_GameState.onEnterState += OnEnterCombatState;
             Combat_GameState.onExitState += OnExitCombatState;
         }
@@ -28,12 +29,13 @@ namespace _01_Scripts.Ship.ModuleControllers
         protected virtual void OnExitCombatState()
         {
             _isCombatActive = false;
-            
+            Debug.Log("Set IsCombatActive: False");
         }
         
         protected virtual void OnEnterCombatState(GameStateController obj)
         {
             _isCombatActive = true;
+            Debug.Log("Set IsCombatActive: True");
         }
     }
 }
