@@ -25,7 +25,19 @@ public class Drag : MonoBehaviour
             {
                 Destroy(gameObject);
             }
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                RotateParts(60);
+            }
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                RotateParts(-60);
+            }
         }
+    }
+    public void RotateParts(int x)
+    {
+        gameObject.transform.Rotate(0, 0, x);
     }
     void OnMouseDown()
     {
