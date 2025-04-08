@@ -20,7 +20,8 @@ public class Settings : MonoBehaviour
         int currentResolutionIndex = 0;
         for (int i = 0; i < resolutions.Length; i++)
         {
-            string resolutionoption = resolutions[i].width + " x " + resolutions[i].height;
+            //string resolutionoption = resolutions[i].width + " x " + resolutions[i].height;
+            string resolutionoption = $"{resolutions[i].width} x {resolutions[i].height}";
             resolutionoptions.Add(resolutionoption);
 
             if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
