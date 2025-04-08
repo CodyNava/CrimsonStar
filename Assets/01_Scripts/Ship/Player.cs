@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    private BridgeController _bridgeController;
     
     [SerializeField] private float moveSpeed = 0.04f;
     [SerializeField] private float maxSpeed = 8f;
@@ -25,7 +26,16 @@ public class Player : MonoBehaviour
     
     private void Update()
     {
-        movePlayer();
+        if (_bridgeController != null)
+        {
+            if(_bridgeController.IsCombatActive)
+                movePlayer();
+        }
+        else
+        {
+            movePlayer();
+        }
+        
     }
 
     public void movePlayer()
