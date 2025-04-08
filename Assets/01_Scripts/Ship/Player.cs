@@ -1,18 +1,19 @@
 using System;
+using _01_Scripts.Ship.ModuleControllers;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-
     
-    public float moveSpeed = 0.04f;
-    public float maxSpeed = 8f;
-    public float maxAngularVelocity = 180f;
-    public float movementDamping = 5f;
-    public float rotationDamping = 5f;
-    public float rotationSpeed = 1f;
-    public float controlerDeadZone = 0.1f;
+    [SerializeField] private float moveSpeed = 0.04f;
+    [SerializeField] private float maxSpeed = 8f;
+    [SerializeField] private float maxAngularVelocity = 180f;
+    [SerializeField] private float movementDamping = 5f;
+    [SerializeField] private float rotationDamping = 5f;
+    [SerializeField] private float rotationSpeed = 1f;
+    [SerializeField] private float controllerDeadZone = 0.1f;
     
     private Vector2 input;
     private Vector3 velocity;
