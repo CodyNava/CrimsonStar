@@ -6,7 +6,7 @@ namespace _01_Scripts.Ship.Modules
     [CreateAssetMenu(fileName = "TurretModuleObject", menuName = "ShipModules/TurretObject")]
     public class TurretModuleObject : BaseModuleObject
     {
-        [SerializeField] private float reloadTime;
-        [SerializeField] private Object projectile;
+        [SerializeField] private float _reloadTime;
+        [SerializeField] private Object _projectile;
     }
 }
