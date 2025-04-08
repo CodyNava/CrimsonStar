@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
 
     public void movePlayer()
     {
-        if (input.magnitude < controlerDeadZone)
+        if (input.magnitude < controllerDeadZone)
             input = Vector2.zero;
         
         
