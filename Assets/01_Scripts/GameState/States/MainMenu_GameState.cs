@@ -6,17 +6,17 @@ namespace _01_Scripts.GameState.States
     {
         protected override void OnStateEnter()
         {
-            Debug.Log("Entered MainMenu GameState");
+            throw new System.NotImplementedException();
         }
 
         protected override void OnStateUpdate()
         {
-            Debug.Log("Updated MainMenu GameState");
+            throw new System.NotImplementedException();
         }
 
         protected override void OnStateExit()
         {
-            Debug.Log("Exited MainMenu GameState");
+            throw new System.NotImplementedException();
         }
     }
 }
