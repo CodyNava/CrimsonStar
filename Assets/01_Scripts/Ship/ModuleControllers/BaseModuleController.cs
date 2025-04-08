@@ -1,4 +1,5 @@
-﻿using _01_Scripts.GameState;
+﻿using System;
+using _01_Scripts.GameState;
 using _01_Scripts.GameState.States;
 using _01_Scripts.Ship.Modules;
 using UnityEngine;
@@ -10,7 +11,8 @@ namespace _01_Scripts.Ship.ModuleControllers
         [SerializeField] private BaseModuleObject _moduleObject;
         public BaseModuleObject ModuleObject => _moduleObject;
         private bool _isCombatActive;
-        
+        public bool IsCombatActive => _isCombatActive;
+
         public void Awake()
         {
             Combat_GameState.onEnterState += OnEnterCombatState;
@@ -23,12 +25,13 @@ namespace _01_Scripts.Ship.ModuleControllers
             Combat_GameState.onExitState -= OnExitCombatState;
         }
 
-        private void OnExitCombatState()
+        protected virtual void OnExitCombatState()
         {
             _isCombatActive = false;
+            
         }
         
-        private void OnEnterCombatState(GameStateController obj)
+        protected virtual void OnEnterCombatState(GameStateController obj)
         {
             _isCombatActive = true;
         }
