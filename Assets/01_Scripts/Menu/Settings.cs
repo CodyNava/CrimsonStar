@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class Settings : MonoBehaviour
 {
-    public Dropdown resolutionDropdown;
+    [SerializeField] Dropdown resolutionDropdown;
     Resolution[] resolutions;
+    [SerializeField] Slider volumeSlider;
+    
 
     private void Start()
     {
@@ -30,11 +32,38 @@ public class Settings : MonoBehaviour
         resolutionDropdown.AddOptions(resolutionoptions);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
+
+        if (!PlayerPrefs.HasKey("MasterVolume"))
+        {
+            PlayerPrefs.SetFloat("MasterVolume", 0.5f);
+            Load();
+        }
+
+        else
+        {
+            Load();
+        }
     }
 
     public void SetResolution (int resolutionIndex)
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+    }
+
+    public void ChangeVolume()
+    {
+        AudioListener.volume = volumeSlider.value;
+        Save();
+    }
+
+    private void Save()
+    {
+        PlayerPrefs.SetFloat("MasterVolume", volumeSlider.value);
+    }
+
+    private void Load()
+    {
+        volumeSlider.value = PlayerPrefs.GetFloat("MasterVolume");
     }
 }
