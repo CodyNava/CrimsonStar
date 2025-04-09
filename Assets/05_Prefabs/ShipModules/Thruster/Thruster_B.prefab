@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5690955144793321250}
   - component: {fileID: 5444182976971723843}
   - component: {fileID: -1338806763121454985}
-  - component: {fileID: 2608529258943449404}
+  - component: {fileID: 3375223255104322167}
   m_Layer: 0
   m_Name: Thruster_B
   m_TagString: Untagged
@@ -60,8 +60,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59cc730286333e148a4f5a01630aab28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!58 &2608529258943449404
-CircleCollider2D:
+--- !u!60 &3375223255104322167
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -95,7 +95,24 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 2.12
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.88015664, y: 1.5175111}
+      - {x: -0.8441335, y: 1.5267394}
+      - {x: -1.7411654, y: -0.0016241968}
+      - {x: -0.8646609, y: -1.5451015}
+      - {x: 0.8849204, y: -1.5451014}
+      - {x: 1.7344124, y: 0.0051290393}
+  m_UseDelaunayMesh: 0
 --- !u!1001 &6364862448747844603
 PrefabInstance:
   m_ObjectHideFlags: 0

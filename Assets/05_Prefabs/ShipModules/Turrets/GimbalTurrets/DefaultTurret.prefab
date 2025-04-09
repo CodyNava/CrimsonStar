@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 5607217600802395003}
   - component: {fileID: 7938390201449761063}
   - component: {fileID: 2267416495183092978}
-  - component: {fileID: 1680418169062367258}
+  - component: {fileID: 6964070601456293455}
   m_Layer: 0
   m_Name: DefaultTurret
   m_TagString: Untagged
@@ -122,8 +122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59cc730286333e148a4f5a01630aab28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!58 &1680418169062367258
-CircleCollider2D:
+--- !u!60 &6964070601456293455
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -157,7 +157,24 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 2.14
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.88015664, y: 1.5175111}
+      - {x: -0.8441335, y: 1.5267394}
+      - {x: -1.7411654, y: -0.0016241968}
+      - {x: -0.8646609, y: -1.5451015}
+      - {x: 0.8849204, y: -1.5451014}
+      - {x: 1.7344124, y: 0.0051290393}
+  m_UseDelaunayMesh: 0
 --- !u!1001 &3156257486412003263
 PrefabInstance:
   m_ObjectHideFlags: 0
