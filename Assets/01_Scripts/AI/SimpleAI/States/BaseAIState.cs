@@ -29,5 +29,17 @@
             OnExitState();
         }
         protected abstract void OnExitState();
+
+        public void DrawGizmos()
+        {
+            OnDrawGizmos();   
+        }
+        protected virtual void OnDrawGizmos(){}
+
+        public void DrawGizmosSelected()
+        {
+            OnDrawGizmosSelected();
+        }
+        protected virtual void OnDrawGizmosSelected(){}
     }
 }

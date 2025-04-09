@@ -41,10 +41,19 @@ namespace _01_Scripts.AI.SimpleAI.States
         protected override void OnExitState()
         { }
 
+        protected override void OnDrawGizmos()
+        {
+            base.OnDrawGizmos();
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(_lastTargetPosition, 0.25f);
+        }
+
         private float GetDistanceLastTargetPosSqr()
         {
             Vector2 towardsLastTargetPos = _lastTargetPosition - (Vector2)AIStateMachineCtx.transform.position;
             return towardsLastTargetPos.sqrMagnitude;
         }
+        
+        
     }
 }

@@ -37,6 +37,19 @@ namespace _01_Scripts.AI.SimpleAI.States
         protected override void OnExitState()
         { }
 
+        protected override void OnDrawGizmos()
+        {
+            base.OnDrawGizmos();
+            if (_hasActiveWanderDestination)
+            {
+                Gizmos.color = Color.white;
+                Gizmos.DrawWireSphere(_wanderDestination, _wanderReachDistance);
+                
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(_wanderDestination, .1f);
+            }
+        }
+
         private void SetNewWanderTarget()
         {
             float wanderDistance = ChooseWanderDistance();
