@@ -50,14 +50,22 @@ public class Drag : MonoBehaviour
 
     void OnMouseDown()
     {
-        _holding = true;
+        if (_holding)
+        {
+            _holding = false;
+            dragEndedDelegate(this.transform);
+        }
+        else
+        {
+            _holding = true;
+        }
     }
 
-    void OnMouseUp()
-    {
-        _holding = false;
-        dragEndedDelegate(this.transform);
-    }
+    //void OnMouseUp()
+    //{
+    // _holding = false;
+    // dragEndedDelegate(this.transform);
+    // }
 
     public void ForceHold()
     {
