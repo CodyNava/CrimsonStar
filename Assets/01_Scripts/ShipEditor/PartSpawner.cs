@@ -12,11 +12,17 @@ public class PartSpawner : MonoBehaviour
     {
         if (partPrefab != null && index >= 0 && index < partPrefab.Length)
         {
-            GameObject newPart = Instantiate(partPrefab[index], SpawnPosition.transform.position, transform.rotation);
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldPos.z = 0f;
 
+            GameObject newPart = Instantiate(partPrefab[index], transform.position, transform.rotation);
             newPart.transform.SetParent(partParent.transform);
-            snap._dragscripts.Add(newPart.GetComponent<Drag>());
-            //currencySystem.currency -= partPrefab[index].GetComponent<Part>().cost;
+
+            Drag drag = newPart.GetComponent<Drag>();
+            snap._dragscripts.Add(drag);
+
+            drag.ForceHold();
+
         }
     }
 

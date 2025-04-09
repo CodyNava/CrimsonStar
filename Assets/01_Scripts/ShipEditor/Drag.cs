@@ -48,4 +48,8 @@ public class Drag : MonoBehaviour
         _holding = false;
         dragEndedDelegate(this.transform);
     }
+    public void ForceHold()
+    {
+        _holding = true;
+    }
 }
