@@ -20,7 +20,8 @@ public class Settings : MonoBehaviour
 
     void SetMusicVolume(float volume)
     {
-        audioMixer.SetFloat(masterVolume, volumeSlider.value);
+        audioMixer.SetFloat(masterVolume, Mathf.Log10(volumeSlider.value) * 20);
+        Save();
     }
 
     private void Start()
@@ -63,12 +64,6 @@ public class Settings : MonoBehaviour
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-    }
-
-    public void ChangeVolume()
-    {
-        AudioListener.volume = volumeSlider.value;
-        Save();
     }
 
     private void Save()
