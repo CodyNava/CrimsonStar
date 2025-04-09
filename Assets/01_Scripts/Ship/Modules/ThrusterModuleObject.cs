@@ -5,6 +5,6 @@ namespace _01_Scripts.Ship.Modules
     [CreateAssetMenu(fileName = "ThrusterObject", menuName = "ShipModules/ThrusterObject")]
     public class ThrusterModuleObject : BaseModuleObject
     {
-        [SerializeField] private float _thrust;
+        public float _thrust;
     }
 }
