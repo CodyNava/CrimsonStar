@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 5690955144793321250}
   - component: {fileID: 5444182976971723843}
   - component: {fileID: -1338806763121454985}
-  - component: {fileID: 2608529258943449404}
-  m_Layer: 0
+  - component: {fileID: 3375223255104322167}
+  m_Layer: 3
   m_Name: Thruster_B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,8 +60,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59cc730286333e148a4f5a01630aab28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!58 &2608529258943449404
-CircleCollider2D:
+  _collider: {fileID: 3375223255104322167}
+--- !u!60 &3375223255104322167
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -95,7 +96,24 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 2.12
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.88015664, y: 1.5175111}
+      - {x: -0.8441335, y: 1.5267394}
+      - {x: -1.7411654, y: -0.0016241968}
+      - {x: -0.8646609, y: -1.5451015}
+      - {x: 0.8849204, y: -1.5451014}
+      - {x: 1.7344124, y: 0.0051290393}
+  m_UseDelaunayMesh: 0
 --- !u!1001 &6364862448747844603
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -148,11 +166,44 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Module_Engine_B_BO
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8716433781895286287}
   m_SourcePrefab: {fileID: 100100000, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}
+--- !u!1 &6095025599076347562 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}
+  m_PrefabInstance: {fileID: 6364862448747844603}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &8716433781895286287
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6095025599076347562}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 2.0000002
+  m_Center: {x: 0, y: -0.00000011920929, z: 0}
 --- !u!4 &6908013655563695120 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}

@@ -9,6 +9,7 @@ public class PartSpawner : MonoBehaviour
     public Snap snap;
     public ShipEditorCurrencySystem currencySystem;
     public GameObject noMoneyPopUp;
+    public BridgeController bridgeController;
 
     public void SpawnPart(int index)
     {
@@ -43,6 +44,8 @@ public class PartSpawner : MonoBehaviour
         BaseModuleController newPart = Instantiate(partPrefab[index], transform.position, transform.rotation);
         newPart.transform.SetParent(partParent.transform);
 
+        newPart.Init(bridgeController);
+        
         Drag drag = newPart.GetComponent<Drag>();
         drag.refundAction = () => { currencySystem.AddCurrency(cost); };
         snap._dragscripts.Add(drag);

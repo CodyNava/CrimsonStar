@@ -6,6 +6,6 @@ namespace _01_Scripts.Ship.Modules
     {
         public int _cost;
         public float _health;
-        public float _weight;
+        public float _moveSpeedChange;
     }
 }

@@ -1,5 +1,8 @@
+using _01_Scripts.GameState;
+using _01_Scripts.GameState.States;
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [ExecuteInEditMode]
 public class Drag : MonoBehaviour
@@ -11,8 +14,32 @@ public class Drag : MonoBehaviour
     private Camera _camera;
     private Vector2 _pos;
     private bool _holding;
+    public PolygonCollider2D _collider;
 
     public Action refundAction;
+
+    private void Awake()
+    {
+        Combat_GameState.onEnterState -= OnCombatEnter;
+        Combat_GameState.onExitState -= OnCombatExit;
+        Combat_GameState.onEnterState += OnCombatEnter;
+        Combat_GameState.onExitState += OnCombatExit;
+    }
+    private void OnDestroy()
+    {
+        Combat_GameState.onEnterState -= OnCombatEnter;
+        Combat_GameState.onExitState -= OnCombatExit;
+    }
+
+    private void OnCombatExit()
+    {
+        enabled = true;
+    }
+
+    private void OnCombatEnter(GameStateController controller)
+    {
+        enabled = false;
+    }
 
     void Start()
     {
@@ -23,6 +50,12 @@ public class Drag : MonoBehaviour
     {
         if (_holding)
         {
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                _holding = false;
+                dragEndedDelegate(this.transform);
+                return;
+            }
             _pos = _camera.ScreenToWorldPoint(Input.mousePosition);
             transform.position = _pos;
             if (_holding && Input.GetKeyDown(KeyCode.Mouse1))
@@ -30,42 +63,28 @@ public class Drag : MonoBehaviour
                 refundAction();
                 Destroy(gameObject);
             }
-
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Keyboard.current.eKey.wasPressedThisFrame)
             {
                 RotateParts(60);
             }
-
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Keyboard.current.qKey.wasPressedThisFrame)
             {
                 RotateParts(-60);
             }
         }
+        else
+        {
+            Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+            if (Mouse.current.leftButton.wasPressedThisFrame && Physics.Raycast(ray, out var hit) && hit.collider.transform.parent == transform)
+            {
+                _holding = true;
+            }
+        }
     }
-
     public void RotateParts(int x)
     {
         gameObject.transform.Rotate(0, 0, x);
     }
-
-    void OnMouseDown()
-    {
-        if (_holding)
-        {
-            _holding = false;
-            dragEndedDelegate(this.transform);
-        }
-        else
-        {
-            _holding = true;
-        }
-    }
-
-    //void OnMouseUp()
-    //{
-    // _holding = false;
-    // dragEndedDelegate(this.transform);
-    // }
 
     public void ForceHold()
     {
