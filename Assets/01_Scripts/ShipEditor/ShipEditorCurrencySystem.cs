@@ -1,12 +1,30 @@
+using TMPro;
 using UnityEngine;
 
 public class ShipEditorCurrencySystem : MonoBehaviour
 {
-    public float currency;
+    [SerializeField] int _currency = 1000;
+    public TextMeshProUGUI _currencytext;
 
-    public void PayCurrency()
+    void Start()
     {
+        _currencytext.text = "Currency: " + _currency.ToString();
+    }
 
+    public void PayCurrency(int cost)
+    {
+        _currency -= cost;
+        _currencytext.text = "Currency: " + _currency.ToString();
+    }
 
+    public void AddCurrency(int cost)
+    {
+        _currency += cost;
+        _currencytext.text = "Currency: " + _currency.ToString();
+    }
+
+    public int GetCurrency()
+    {
+        return _currency;
     }
 }
