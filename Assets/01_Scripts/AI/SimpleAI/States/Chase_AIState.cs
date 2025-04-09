@@ -11,11 +11,20 @@ namespace _01_Scripts.AI.SimpleAI.States
 
         protected override void OnUpdateState(float deltaTime)
         {
-            // TODO: Move towards last target position
+            if (AIStateMachineCtx.HasTarget)
+            {
+                AIStateMachineCtx.TriggerMoveTowardsDestination(_lastTargetPosition);
+            }
         }
 
         protected override void OnFixedUpdateState(float deltaTime)
         {
+            if (!AIStateMachineCtx.HasTarget)
+            {
+                AIStateMachineCtx.SetTransitionState(new Patrol_AIState());
+                return;
+            }
+            
             float distanceTargetSqr = AIStateMachineCtx.GetTargetDistanceSqr();
             
             float perceptionDistance = AIStateMachineCtx.AIParameters.perceptionDistance;
@@ -41,10 +50,19 @@ namespace _01_Scripts.AI.SimpleAI.States
         protected override void OnExitState()
         { }
 
+        protected override void OnDrawGizmosSelected()
+        {
+            base.OnDrawGizmosSelected();
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(_lastTargetPosition, 0.25f);
+        }
+
         private float GetDistanceLastTargetPosSqr()
         {
             Vector2 towardsLastTargetPos = _lastTargetPosition - (Vector2)AIStateMachineCtx.transform.position;
             return towardsLastTargetPos.sqrMagnitude;
         }
+        
+        
     }
 }
