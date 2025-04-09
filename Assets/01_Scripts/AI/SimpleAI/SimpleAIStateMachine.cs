@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Linq;
 using _01_Scripts.AI.SimpleAI.States;
+using _01_Scripts.GameState;
+using _01_Scripts.GameState.States;
+using UnityEditor;
 using UnityEngine;
 
 namespace _01_Scripts.AI.SimpleAI
@@ -8,16 +12,50 @@ namespace _01_Scripts.AI.SimpleAI
     {
         private BaseAIState _currentAIState;
         private BaseAIState _transitionState;
+        [SerializeField] private EnemyMovementController _enemyMovementController;
 
         [SerializeField] private SimpleAIParameters _aiParameters;
         public SimpleAIParameters AIParameters => _aiParameters;
 
+        [SerializeField] private bool _isAIActive = false;
+        private Transform _currentTarget = null; 
+        public bool HasTarget => _currentTarget != null;
+        
         public void Awake()
         {
             SetTransitionState(new Patrol_AIState());
+            
+            
+            Combat_GameState.onEnterState += OnEnterCombatGameState;
+            Combat_GameState.onExitState += OnExitCombatGameState;
         }
 
-        public void ChangeState(BaseAIState newAIState)
+        public void OnDestroy()
+        {
+            Combat_GameState.onEnterState -= OnEnterCombatGameState;
+            Combat_GameState.onExitState -= OnExitCombatGameState;
+        }
+
+        private void OnExitCombatGameState()
+        {
+            _isAIActive = false;
+        }
+
+        private void OnEnterCombatGameState(GameStateController obj)
+        {
+            _isAIActive = true;
+        }
+
+        public void Start()
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            if (players.Length > 0)
+            {
+                _currentTarget = players.First().transform;
+            }
+        }
+
+        private void ChangeState(BaseAIState newAIState)
         {
             _currentAIState?.ExitState();
             _currentAIState = newAIState;
@@ -26,6 +64,8 @@ namespace _01_Scripts.AI.SimpleAI
 
         public void Update()
         {
+            if (!_isAIActive) return;
+            
             _currentAIState?.UpdateState(Time.deltaTime);
             
             
@@ -38,6 +78,8 @@ namespace _01_Scripts.AI.SimpleAI
 
         public void FixedUpdate()
         {
+            if (!_isAIActive) return;
+            
             _currentAIState?.FixedUpdateState(Time.deltaTime);
         }
 
@@ -50,10 +92,15 @@ namespace _01_Scripts.AI.SimpleAI
             _transitionState = newState;
         }
 
-        protected abstract Transform GetTargetTransform();
+        private Transform GetTargetTransform()
+        {
+            return _currentTarget;
+        }
 
         public Vector2 GetTargetPosition()
         {
+            // return new Vector2(9000f, 9000f);
+            // return GetMousePosOnPlane();
             return GetTargetTransform().position;
         }
 
@@ -62,15 +109,69 @@ namespace _01_Scripts.AI.SimpleAI
             Vector2 towardsPlayer = GetTargetPosition() - (Vector2)transform.position;
             return towardsPlayer.sqrMagnitude;
         }
+
+        private Vector2 GetMousePosOnPlane()
+        {
+            Ray worldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Plane xy = new Plane(new Vector3(0f, 0f, -1f), 0f);
+            if (xy.Raycast(worldRay, out float distance))
+            {
+                return worldRay.GetPoint(distance);
+            }
+            return Vector2.zero;
+        }
+
+        public void TriggerMoveTowardsDestination(Vector2 moveDestination)
+        {
+            Vector2 direction = moveDestination - (Vector2)transform.position;
+            _enemyMovementController.MoveTowards = direction;
+        }
+
+        public void OnDrawGizmos()
+        {
+            _currentAIState?.DrawGizmos();
+            
+            Vector2 mousePos = GetMousePosOnPlane();
+
+            switch (_currentAIState?.GetType().Name)
+            { 
+            default:
+            case "Petrol_AIState":
+                Gizmos.color = Color.cyan;
+                break;
+            case "Chase_AIState":
+                Gizmos.color = Color.green;
+                break;
+            case "Attack_AIState":
+                Gizmos.color = Color.red;
+                break;
+            }
+            
+            Gizmos.DrawWireSphere(mousePos, 1f);
+        }
+
+        public void OnDrawGizmosSelected()
+        {
+            _currentAIState?.DrawGizmosSelected();
+            
+            Vector3 pos = transform.position;
+            
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(pos, AIParameters.wanderDistanceMax);
+            Gizmos.DrawWireSphere(pos, AIParameters.wanderDistanceMin);
+            
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(pos, AIParameters.perceptionDistance);
+            
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(pos, AIParameters.attackDistance);
+            
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(pos, AIParameters.safeDistance);
+        }
     }
     
     public class SimpleAIStateMachine : AIStateMachine
     {
-        protected override Transform GetTargetTransform()
-        {
-            // TODO: Determine an algorithm to choose a Target
-            //  Probably the Player GameObject as Transform
-            throw new NotImplementedException();
-        }
     }
 }
