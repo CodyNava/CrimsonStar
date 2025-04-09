@@ -18,6 +18,7 @@ namespace _01_Scripts.AI.SimpleAI
         public SimpleAIParameters AIParameters => _aiParameters;
 
         [SerializeField] private bool _isAIActive = false;
+        public bool IsAIActive => _isAIActive;
         private Transform _currentTarget = null; 
         public bool HasTarget => _currentTarget != null;
         
@@ -39,11 +40,13 @@ namespace _01_Scripts.AI.SimpleAI
         private void OnExitCombatGameState()
         {
             _isAIActive = false;
+            _enemyMovementController.enabled = false;
         }
 
         private void OnEnterCombatGameState(GameStateController obj)
         {
             _isAIActive = true;
+            _enemyMovementController.enabled = true;
         }
 
         public void Start()
