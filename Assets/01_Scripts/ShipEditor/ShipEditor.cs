@@ -13,6 +13,7 @@ public class ShipEditor : MonoBehaviour
     public void OpenShipEditor()
     {
         editCamera.fieldOfView = CameraOffSet;
+        editCamera.orthographic = true;
         //ship.SetActive(false);
 
         shipEditor.SetActive(true);
@@ -21,8 +22,8 @@ public class ShipEditor : MonoBehaviour
 
     public void CloseShipEditor()
     {
-
         editCamera.fieldOfView = CameraOffSetOriginal;
+        editCamera.orthographic = false;
         //ship.SetActive(true);
 
         shipEditor.SetActive(false);
