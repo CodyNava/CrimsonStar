@@ -1,19 +1,29 @@
 using _01_Scripts.Ship.ModuleControllers;
-using _01_Scripts.Ship.Modules;
+using System.Collections;
 using UnityEngine;
 
 public class PartSpawner : MonoBehaviour
 {
     public BaseModuleController[] partPrefab;
     public GameObject partParent;
-    public Transform SpawnPosition;
     public Snap snap;
     public ShipEditorCurrencySystem currencySystem;
+    public GameObject noMoneyPopUp;
 
     public void SpawnPart(int index)
     {
         bool success = TrySpawnPart(index);
         //Todo: Handle failure here
+        if (!success)
+        {
+            StartCoroutine(NotEnoughMoneyPopUp());
+        }
+    }
+    IEnumerator NotEnoughMoneyPopUp()
+    {
+        noMoneyPopUp.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        noMoneyPopUp.SetActive(false);
     }
 
     public bool TrySpawnPart(int index)
