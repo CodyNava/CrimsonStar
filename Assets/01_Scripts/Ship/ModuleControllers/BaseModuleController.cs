@@ -1,8 +1,6 @@
-﻿using System;
-using _01_Scripts.GameState;
+﻿using _01_Scripts.GameState;
 using _01_Scripts.GameState.States;
 using _01_Scripts.Ship.Modules;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace _01_Scripts.Ship.ModuleControllers
@@ -14,7 +12,7 @@ namespace _01_Scripts.Ship.ModuleControllers
         private bool _isCombatActive;
         public bool IsCombatActive => _isCombatActive;
         private float currentHp;
-        
+
         protected BridgeController BridgeController;
 
         public void Awake()
@@ -35,7 +33,10 @@ namespace _01_Scripts.Ship.ModuleControllers
         {
             Combat_GameState.onEnterState -= OnEnterCombatState;
             Combat_GameState.onExitState -= OnExitCombatState;
-            BridgeController.RemoveModule(_moduleObject);
+            if (BridgeController != null)
+            {
+                BridgeController.RemoveModule(_moduleObject);
+            }
         }
 
         protected virtual void OnExitCombatState()
@@ -43,7 +44,7 @@ namespace _01_Scripts.Ship.ModuleControllers
             _isCombatActive = false;
             Debug.Log("Set IsCombatActive: False");
         }
-        
+
         protected virtual void OnEnterCombatState(GameStateController obj)
         {
             _isCombatActive = true;
@@ -53,7 +54,7 @@ namespace _01_Scripts.Ship.ModuleControllers
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.transform.root == transform.root) return;
-            
+
             if (other.transform.TryGetComponent(out Projectile projectile))
             {
                 currentHp -= projectile._BaseProjectileObject.Damage;
