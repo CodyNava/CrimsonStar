@@ -61,7 +61,8 @@ public class Player : MonoBehaviour
         if (Mathf.Abs(input.y) > 0.01f)
         {
             Vector3 movement = transform.up * input.y;
-            velocity += _bridgeModuleObject.moveSpeed * movement.normalized;
+            float totalMoveSpeed = Mathf.Max(_bridgeModuleObject.baseMoveSpeed + _bridgeController.MoveSpeedChange, 0f);
+            velocity += totalMoveSpeed * movement.normalized;
         }
         else
         {

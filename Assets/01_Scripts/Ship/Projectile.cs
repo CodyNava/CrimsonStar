@@ -7,6 +7,7 @@ public class Projectile : MonoBehaviour
     [HideInInspector] public float speed = 10f;
     [HideInInspector] public float lifetime = 3f;
     [HideInInspector] public Vector3 direction = Vector3.up;
+    [HideInInspector] public Transform source;
 
     public BaseProjectileObject _BaseProjectileObject;
 
@@ -20,8 +21,11 @@ public class Projectile : MonoBehaviour
         transform.position += direction.normalized * (speed * Time.deltaTime);
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        Destroy(gameObject);
+        if (other.transform.root != source)
+        {
+            Destroy(gameObject);
+        }
     }
 }

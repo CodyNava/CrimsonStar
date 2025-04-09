@@ -46,6 +46,7 @@ public class Shooting : MonoBehaviour
 		Projectile projectile = Instantiate(bullet, spawn.position, Quaternion.identity);
 		Vector3 shootDirection = transform.up;
 
+		projectile.source = transform.root;
 		projectile.direction = shootDirection;
 		projectile.speed = projectileSpeed;
 		projectile.lifetime = projectileLifetime;

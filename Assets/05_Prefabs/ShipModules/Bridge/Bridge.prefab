@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 553495304665080145}
   - component: {fileID: 4867466861152741153}
   - component: {fileID: 5854904199784797243}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Bridge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63,12 +63,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8509c6112321ea043ad2b5e75b2124d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.1
-  maxSpeed: 20
-  maxAngularVelocity: 180
-  movementDamping: 5
-  rotationDamping: 50
-  rotationSpeed: 5
   controllerDeadZone: 0.1
 --- !u!114 &4673824795853962558
 MonoBehaviour:
@@ -408,6 +402,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 291e74bb06e208b459023ab0f15e37b8, type: 3}
       propertyPath: m_Name
       value: SM_Module_Bridge_BO
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 291e74bb06e208b459023ab0f15e37b8, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

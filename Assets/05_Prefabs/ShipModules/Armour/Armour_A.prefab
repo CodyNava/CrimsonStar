@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -2089237292476806855}
   - component: {fileID: -7032781565963144484}
   - component: {fileID: 33303972012332542}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Armour_A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,6 +60,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59cc730286333e148a4f5a01630aab28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _collider: {fileID: 33303972012332542}
 --- !u!60 &33303972012332542
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -164,6 +165,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
       propertyPath: m_Name
       value: SM_Module_Armour1_BO
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

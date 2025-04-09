@@ -2668,6 +2668,34 @@ PrefabInstance:
       propertyPath: m_ActionEvents.Array.data[18].m_ActionName
       value: UI/TrackedDeviceOrientation
       objectReference: {fileID: 0}
+    - target: {fileID: 4673824795853962558, guid: 7bfdcd45760e53240bc88dfc7b1065d5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4673824795853962558, guid: 7bfdcd45760e53240bc88dfc7b1065d5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4673824795853962558, guid: 7bfdcd45760e53240bc88dfc7b1065d5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 530563290}
+    - target: {fileID: 4673824795853962558, guid: 7bfdcd45760e53240bc88dfc7b1065d5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4673824795853962558, guid: 7bfdcd45760e53240bc88dfc7b1065d5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnMove
+      objectReference: {fileID: 0}
+    - target: {fileID: 4673824795853962558, guid: 7bfdcd45760e53240bc88dfc7b1065d5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Player, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4673824795853962558, guid: 7bfdcd45760e53240bc88dfc7b1065d5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 7512106822483562592, guid: 7bfdcd45760e53240bc88dfc7b1065d5, type: 3}
       propertyPath: m_Name
       value: Bridge
@@ -2755,6 +2783,28 @@ AudioSource:
   m_CorrespondingSourceObject: {fileID: 553495304665080145, guid: 7bfdcd45760e53240bc88dfc7b1065d5, type: 3}
   m_PrefabInstance: {fileID: 530563279}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &530563290 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8494672984010071796, guid: 7bfdcd45760e53240bc88dfc7b1065d5, type: 3}
+  m_PrefabInstance: {fileID: 530563279}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 530563280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8509c6112321ea043ad2b5e75b2124d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &530563291 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3413508007506461642, guid: 7bfdcd45760e53240bc88dfc7b1065d5, type: 3}
+  m_PrefabInstance: {fileID: 530563279}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 530563280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf556869e8e64badb4af708853b01acd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &619204657
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6674,6 +6724,7 @@ MonoBehaviour:
   snap: {fileID: 1723766133}
   currencySystem: {fileID: 1723766134}
   noMoneyPopUp: {fileID: 1716340218}
+  bridgeController: {fileID: 530563291}
 --- !u!114 &1723766133
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [ExecuteInEditMode]
 public class Drag : MonoBehaviour
@@ -11,6 +12,7 @@ public class Drag : MonoBehaviour
     private Camera _camera;
     private Vector2 _pos;
     private bool _holding;
+    public PolygonCollider2D _collider;
 
     public Action refundAction;
 
@@ -23,6 +25,13 @@ public class Drag : MonoBehaviour
     {
         if (_holding)
         {
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                _holding = false;
+                dragEndedDelegate(this.transform);
+                return;
+            }
+            
             _pos = _camera.ScreenToWorldPoint(Input.mousePosition);
             transform.position = _pos;
             if (_holding && Input.GetKeyDown(KeyCode.Mouse1))
@@ -31,42 +40,24 @@ public class Drag : MonoBehaviour
                 Destroy(gameObject);
             }
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Keyboard.current.eKey.wasPressedThisFrame)
             {
                 RotateParts(60);
             }
 
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Keyboard.current.qKey.wasPressedThisFrame)
             {
                 RotateParts(-60);
             }
         }
+        
     }
 
     public void RotateParts(int x)
     {
         gameObject.transform.Rotate(0, 0, x);
     }
-
-    void OnMouseDown()
-    {
-        if (_holding)
-        {
-            _holding = false;
-            dragEndedDelegate(this.transform);
-        }
-        else
-        {
-            _holding = true;
-        }
-    }
-
-    //void OnMouseUp()
-    //{
-    // _holding = false;
-    // dragEndedDelegate(this.transform);
-    // }
-
+    
     public void ForceHold()
     {
         _holding = true;

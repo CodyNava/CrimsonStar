@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9171716915525381607}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: spawn2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8287526850846769230}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: spawn1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 7938390201449761063}
   - component: {fileID: 2267416495183092978}
   - component: {fileID: 6964070601456293455}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: DefaultTurret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,6 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59cc730286333e148a4f5a01630aab28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _collider: {fileID: 6964070601456293455}
 --- !u!60 &6964070601456293455
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -226,6 +227,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f563adc8a269db443a51f832277a99f5, type: 3}
       propertyPath: m_Name
       value: SM_Module_TurretHead_BO
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f563adc8a269db443a51f832277a99f5, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -334,6 +339,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c7a6346d9c463254692731dcafbdb24c, type: 3}
       propertyPath: m_Name
       value: SM_Module_TurretBase_BO
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c7a6346d9c463254692731dcafbdb24c, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
