@@ -3,10 +3,11 @@ using _01_Scripts.GameState;
 using _01_Scripts.GameState.States;
 using _01_Scripts.Ship.Modules;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace _01_Scripts.Ship.ModuleControllers
 {
-    public class BaseModuleController : MonoBehaviour
+    public abstract class BaseModuleController : MonoBehaviour
     {
         [SerializeField] private BaseModuleObject _moduleObject;
         public BaseModuleObject ModuleObject => _moduleObject;

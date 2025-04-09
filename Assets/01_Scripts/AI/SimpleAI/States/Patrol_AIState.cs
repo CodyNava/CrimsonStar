@@ -13,7 +13,7 @@ namespace _01_Scripts.AI.SimpleAI.States
 
         protected override void OnUpdateState(float deltaTime)
         {
-            // TODO: Move towards wanderPosition
+            AIStateMachineCtx.TriggerMoveTowardsDestination(_wanderDestination);
         }
 
         protected override void OnFixedUpdateState(float deltaTime)
@@ -25,21 +25,24 @@ namespace _01_Scripts.AI.SimpleAI.States
             {
                 SetNewWanderTarget();
             }
-            
-            float distancePlayerSqr = AIStateMachineCtx.GetTargetDistanceSqr();
-            float perceptionDistance = AIStateMachineCtx.AIParameters.perceptionDistance;
-            if (distancePlayerSqr < perceptionDistance * perceptionDistance)
+
+            if (AIStateMachineCtx.HasTarget)
             {
-                AIStateMachineCtx.SetTransitionState(new Chase_AIState());
+                float distancePlayerSqr = AIStateMachineCtx.GetTargetDistanceSqr();
+                float perceptionDistance = AIStateMachineCtx.AIParameters.perceptionDistance;
+                if (distancePlayerSqr < perceptionDistance * perceptionDistance)
+                {
+                    AIStateMachineCtx.SetTransitionState(new Chase_AIState());
+                }   
             }
         }
 
         protected override void OnExitState()
         { }
 
-        protected override void OnDrawGizmos()
+        protected override void OnDrawGizmosSelected()
         {
-            base.OnDrawGizmos();
+            base.OnDrawGizmosSelected();
             if (_hasActiveWanderDestination)
             {
                 Gizmos.color = Color.white;

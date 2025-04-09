@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
 using _01_Scripts.AI.SimpleAI.States;
+using _01_Scripts.GameState;
+using _01_Scripts.GameState.States;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,16 +12,50 @@ namespace _01_Scripts.AI.SimpleAI
     {
         private BaseAIState _currentAIState;
         private BaseAIState _transitionState;
+        [SerializeField] private EnemyMovementController _enemyMovementController;
 
         [SerializeField] private SimpleAIParameters _aiParameters;
         public SimpleAIParameters AIParameters => _aiParameters;
 
+        [SerializeField] private bool _isAIActive = false;
+        private Transform _currentTarget = null; 
+        public bool HasTarget => _currentTarget != null;
+        
         public void Awake()
         {
             SetTransitionState(new Patrol_AIState());
+            
+            
+            Combat_GameState.onEnterState += OnEnterCombatGameState;
+            Combat_GameState.onExitState += OnExitCombatGameState;
         }
 
-        public void ChangeState(BaseAIState newAIState)
+        public void OnDestroy()
+        {
+            Combat_GameState.onEnterState -= OnEnterCombatGameState;
+            Combat_GameState.onExitState -= OnExitCombatGameState;
+        }
+
+        private void OnExitCombatGameState()
+        {
+            _isAIActive = false;
+        }
+
+        private void OnEnterCombatGameState(GameStateController obj)
+        {
+            _isAIActive = true;
+        }
+
+        public void Start()
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            if (players.Length > 0)
+            {
+                _currentTarget = players.First().transform;
+            }
+        }
+
+        private void ChangeState(BaseAIState newAIState)
         {
             _currentAIState?.ExitState();
             _currentAIState = newAIState;
@@ -27,6 +64,8 @@ namespace _01_Scripts.AI.SimpleAI
 
         public void Update()
         {
+            if (!_isAIActive) return;
+            
             _currentAIState?.UpdateState(Time.deltaTime);
             
             
@@ -39,6 +78,8 @@ namespace _01_Scripts.AI.SimpleAI
 
         public void FixedUpdate()
         {
+            if (!_isAIActive) return;
+            
             _currentAIState?.FixedUpdateState(Time.deltaTime);
         }
 
@@ -51,12 +92,16 @@ namespace _01_Scripts.AI.SimpleAI
             _transitionState = newState;
         }
 
-        protected abstract Transform GetTargetTransform();
+        private Transform GetTargetTransform()
+        {
+            return _currentTarget;
+        }
 
         public Vector2 GetTargetPosition()
         {
-            return GetMousePosOnPlane();
-            // return GetTargetTransform().position;
+            // return new Vector2(9000f, 9000f);
+            // return GetMousePosOnPlane();
+            return GetTargetTransform().position;
         }
 
         public float GetTargetDistanceSqr()
@@ -74,6 +119,12 @@ namespace _01_Scripts.AI.SimpleAI
                 return worldRay.GetPoint(distance);
             }
             return Vector2.zero;
+        }
+
+        public void TriggerMoveTowardsDestination(Vector2 moveDestination)
+        {
+            Vector2 direction = moveDestination - (Vector2)transform.position;
+            _enemyMovementController.MoveTowards = direction;
         }
 
         public void OnDrawGizmos()
@@ -122,11 +173,5 @@ namespace _01_Scripts.AI.SimpleAI
     
     public class SimpleAIStateMachine : AIStateMachine
     {
-        protected override Transform GetTargetTransform()
-        {
-            // TODO: Determine an algorithm to choose a Target
-            //  Probably the Player GameObject as Transform
-            throw new NotImplementedException();
-        }
     }
 }
