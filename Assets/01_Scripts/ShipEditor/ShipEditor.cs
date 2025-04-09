@@ -7,25 +7,18 @@ public class ShipEditor : MonoBehaviour
     public GameObject ship;
     public GameObject shipEditor;
     public Camera editCamera;
-    public float CameraOffSet;
-    public float CameraOffSetOriginal;
 
     public void OpenShipEditor()
     {
-        editCamera.fieldOfView = CameraOffSet;
         editCamera.orthographic = true;
-        //ship.SetActive(false);
-
+        ship.transform.rotation = Quaternion.Euler(0, 0, 0);
         shipEditor.SetActive(true);
         GameStateController.Instance.ChangeState(new ShipEditor_GameState());
     }
 
     public void CloseShipEditor()
     {
-        editCamera.fieldOfView = CameraOffSetOriginal;
         editCamera.orthographic = false;
-        //ship.SetActive(true);
-
         shipEditor.SetActive(false);
         GameStateController.Instance.ChangeState(new Combat_GameState());
     }
