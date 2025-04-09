@@ -9,7 +9,20 @@ public class Settings : MonoBehaviour
     [SerializeField] Dropdown resolutionDropdown;
     Resolution[] resolutions;
     [SerializeField] Slider volumeSlider;
-    
+    [SerializeField] AudioMixer audioMixer;
+
+    const string masterVolume = "MasterVolume";
+
+    private void Awake()
+    {
+        volumeSlider.onValueChanged.AddListener(SetMusicVolume);
+    }
+
+    void SetMusicVolume(float volume)
+    {
+        audioMixer.SetFloat(masterVolume, Mathf.Log10(volumeSlider.value) * 20);
+        Save();
+    }
 
     private void Start()
     {
@@ -24,7 +37,8 @@ public class Settings : MonoBehaviour
             string resolutionoption = $"{resolutions[i].width} x {resolutions[i].height}";
             resolutionoptions.Add(resolutionoption);
 
-            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+            if (resolutions[i].width == Screen.currentResolution.width &&
+                resolutions[i].height == Screen.currentResolution.height)
             {
                 currentResolutionIndex = i;
             }
@@ -46,16 +60,10 @@ public class Settings : MonoBehaviour
         }
     }
 
-    public void SetResolution (int resolutionIndex)
+    public void SetResolution(int resolutionIndex)
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-    }
-
-    public void ChangeVolume()
-    {
-        AudioListener.volume = volumeSlider.value;
-        Save();
     }
 
     private void Save()
