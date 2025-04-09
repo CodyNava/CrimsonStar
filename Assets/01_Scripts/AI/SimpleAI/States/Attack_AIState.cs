@@ -9,12 +9,22 @@ namespace _01_Scripts.AI.SimpleAI.States
 
         protected override void OnUpdateState(float deltaTime)
         {
+            if (AIStateMachineCtx.HasTarget)
+            {
+                AIStateMachineCtx.TriggerMoveTowardsDestination(GetSafeDistanceDestination());
+            }
             // TODO: Move towards safeDistanceDestination via GetSafeDistanceDestination()
             // TODO: Shoot Weapons at TargetPosition
         }
 
         protected override void OnFixedUpdateState(float deltaTime)
         {
+            if (!AIStateMachineCtx.HasTarget)
+            {
+                AIStateMachineCtx.SetTransitionState(new Patrol_AIState());
+                return;
+            }
+            
             float targetDistanceSqr = AIStateMachineCtx.GetTargetDistanceSqr();
             float attackDistance = AIStateMachineCtx.AIParameters.attackDistance * 1.1f;
             if (targetDistanceSqr > attackDistance * attackDistance)
@@ -25,6 +35,13 @@ namespace _01_Scripts.AI.SimpleAI.States
 
         protected override void OnExitState()
         { }
+        
+        protected override void OnDrawGizmosSelected()
+        {
+            base.OnDrawGizmosSelected();
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(GetSafeDistanceDestination(), 0.25f);
+        }
 
         private Vector2 GetSafeDistanceDestination()
         {
