@@ -1,7 +1,7 @@
 using _01_Scripts.GameState;
 using _01_Scripts.GameState.States;
 using UnityEngine;
-
+using UnityEngine.Serialization;
 
 
 public class Shooting : MonoBehaviour
@@ -12,6 +12,7 @@ public class Shooting : MonoBehaviour
     [SerializeField] private ParticleSystem muzzleFlash1;
     [SerializeField] private ParticleSystem muzzleFlash2;
     [SerializeField] private float cooldown;
+    [SerializeField] private LayerMask projectileLayerMask;
     private float accumulatedTime;
     private bool canShoot;
     public float projectileSpeed = 10f;
@@ -71,7 +72,7 @@ public class Shooting : MonoBehaviour
         Projectile projectile = Instantiate(bullet, spawn.position, Quaternion.identity);
         Vector3 shootDirection = transform.up;
 
-        projectile.gameObject.layer = LayerMask.NameToLayer("PlayerProjectile");
+        projectile.gameObject.layer = (int)Mathf.Log(projectileLayerMask.value, 2f);
         projectile.source = transform.root;
         projectile.direction = shootDirection;
         projectile.speed = projectileSpeed;
