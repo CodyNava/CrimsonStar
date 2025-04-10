@@ -16,8 +16,8 @@ public class Player : MonoBehaviour
     private Vector2 input;
     private Vector3 velocity;
     private float angularVelocity;
-    private bool isAccelerating;
-    private bool isRotating;
+    public bool isAccelerating;
+    public bool isRotating;
 
     public void Awake()
     {

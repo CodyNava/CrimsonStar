@@ -9,6 +9,8 @@ public class Shooting : MonoBehaviour
     [SerializeField] private Projectile bullet;
     [SerializeField] private Transform spawn1;
     [SerializeField] private Transform spawn2;
+    [SerializeField] private ParticleSystem muzzleFlash1;
+    [SerializeField] private ParticleSystem muzzleFlash2;
     [SerializeField] private float cooldown;
     private float accumulatedTime;
     public float projectileSpeed = 10f;
@@ -57,6 +59,8 @@ public class Shooting : MonoBehaviour
 
     public void Shoot()
     {
+        muzzleFlash1.Play();
+        muzzleFlash2.Play();
         SpawnObject(spawn1);
         SpawnObject(spawn2);
     }
