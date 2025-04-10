@@ -16,13 +16,14 @@ namespace _01_Scripts.Ship.ModuleControllers
 
         protected BridgeController BridgeController;
 
-        public void Awake()
+        public virtual void Awake()
         {
             _isCombatActive = false;
             Combat_GameState.onEnterState += OnEnterCombatState;
             Combat_GameState.onExitState += OnExitCombatState;
             currentHp = _moduleObject._health;
         }
+        
 
         public void Init(BridgeController bridgeController)
         {
@@ -58,7 +59,14 @@ namespace _01_Scripts.Ship.ModuleControllers
 
             if (other.transform.TryGetComponent(out Projectile projectile))
             {
-                currentHp -= projectile._BaseProjectileObject.Damage;
+                print("hit");
+
+                float updatedHP = Mathf.Max(currentHp - projectile._BaseProjectileObject.Damage, 0f);
+                float deltaHP = updatedHP - currentHp;
+                BridgeController.ModifyCurrentHp(deltaHP);
+                currentHp = updatedHP;
+                
+                
                 if (currentHp <= 0)
                 {
                     OnModuleDestroyed();
@@ -66,9 +74,10 @@ namespace _01_Scripts.Ship.ModuleControllers
             }
         }
 
-        private void OnModuleDestroyed()
+        protected virtual void OnModuleDestroyed()
         {
-            print("lol");
+            Destroy(this.gameObject);
+            print("Death");
         }
     }
 }
