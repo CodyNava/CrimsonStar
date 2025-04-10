@@ -23,6 +23,7 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log("Hitted Projectile");
         if (other.transform.root != source)
         {
             Destroy(gameObject);

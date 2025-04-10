@@ -18,36 +18,31 @@ public class Shooting : MonoBehaviour
     public float projectileSpeed = 10f;
     public float projectileLifetime = 3f;
 
-    private Turet playerInput;
+    public bool _triggerShot;
 
-    private void Update()
+    protected virtual void Update()
     {
         accumulatedTime += Time.deltaTime;
         accumulatedTime = Mathf.Clamp(accumulatedTime, 0f, cooldown);
-        if (playerInput.Player.Attack.IsPressed())
-        {
-            if (accumulatedTime >= cooldown)
-            {
-                Shoot();
-                accumulatedTime -= cooldown * Random.Range(0.95f, 1f);
-            }
-        }
+
+        if (!_triggerShot) return;
+        if (!(accumulatedTime >= cooldown)) return;
+        
+        Shoot();
+        _triggerShot = false;
+        accumulatedTime -= cooldown * Random.Range(0.95f, 1f);
     }
-    private void Awake()
+    protected virtual void Awake()
     {
-        Combat_GameState.onEnterState -= OnEnterCombatState;
-        Combat_GameState.onExitState -= OnExitCombatState;
         Combat_GameState.onEnterState += OnEnterCombatState;
         Combat_GameState.onExitState += OnExitCombatState;
-        playerInput = new Turet();
-        playerInput.Enable();
     }
 
-    public void OnDestroy()
+    public virtual void OnDestroy()
     {
         Combat_GameState.onEnterState -= OnEnterCombatState;
         Combat_GameState.onExitState -= OnExitCombatState;
-        playerInput.Disable();
+        
     }
     private void OnExitCombatState()
     {
@@ -78,4 +73,5 @@ public class Shooting : MonoBehaviour
         projectile.speed = projectileSpeed;
         projectile.lifetime = projectileLifetime;
     }
+    
 }

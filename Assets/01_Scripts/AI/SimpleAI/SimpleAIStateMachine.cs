@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using _01_Scripts.AI.SimpleAI.States;
 using _01_Scripts.GameState;
 using _01_Scripts.GameState.States;
+using _01_Scripts.Ship.ModuleControllers;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,7 +16,7 @@ namespace _01_Scripts.AI.SimpleAI
         private BaseAIState _currentAIState;
         private BaseAIState _transitionState;
         [SerializeField] private EnemyMovementController _enemyMovementController;
-
+        [field:SerializeField] public BridgeController BridgeController { get; private set; }
         [SerializeField] private SimpleAIParameters _aiParameters;
         public SimpleAIParameters AIParameters => _aiParameters;
 
@@ -21,12 +24,13 @@ namespace _01_Scripts.AI.SimpleAI
         public bool IsAIActive => _isAIActive;
         private Transform _currentTarget = null; 
         public bool HasTarget => _currentTarget != null;
-        
+
+        public List<BaseModuleController> attachedTurrets = new List<BaseModuleController>();
+
         public void Awake()
         {
             SetTransitionState(new Patrol_AIState());
-            
-            
+
             Combat_GameState.onEnterState += OnEnterCombatGameState;
             Combat_GameState.onExitState += OnExitCombatGameState;
         }
@@ -56,6 +60,9 @@ namespace _01_Scripts.AI.SimpleAI
             {
                 _currentTarget = players.First().transform;
             }
+            
+            BridgeController.GetAttachedModuleOfType("TurretController", out attachedTurrets);
+            Debug.Log($"Found Modules: {attachedTurrets.Count}");
         }
 
         private void ChangeState(BaseAIState newAIState)
@@ -92,6 +99,7 @@ namespace _01_Scripts.AI.SimpleAI
             
             // TODO: Resolve problem: What if _transitionState is not NULL?
             //  Overwrite previous _transitionState value?
+            
             _transitionState = newState;
         }
 
@@ -102,8 +110,6 @@ namespace _01_Scripts.AI.SimpleAI
 
         public Vector2 GetTargetPosition()
         {
-            // return new Vector2(9000f, 9000f);
-            // return GetMousePosOnPlane();
             return GetTargetTransform().position;
         }
 
@@ -128,6 +134,24 @@ namespace _01_Scripts.AI.SimpleAI
         {
             Vector2 direction = moveDestination - (Vector2)transform.position;
             _enemyMovementController.MoveTowards = direction;
+        }
+
+        public void PointTurretsTowardsTarget(Vector2 position)
+        {
+            // if (attachedTurrets.Count <= 0) return;
+            foreach (TurretController turret in attachedTurrets)
+            {
+                turret.SetTargetDestination(position);
+            }
+        }
+
+        public void TriggerTurretShots()
+        {
+            // if (attachedTurrets.Count <= 0) return;
+            foreach (TurretController turret in attachedTurrets)
+            {
+                turret.ShootingController._triggerShot = true;
+            }
         }
 
         public void OnDrawGizmos()

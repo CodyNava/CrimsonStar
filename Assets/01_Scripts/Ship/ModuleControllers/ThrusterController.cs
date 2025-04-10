@@ -6,10 +6,13 @@ namespace _01_Scripts.Ship.ModuleControllers
     {
         public Player player;
         public GameObject thrusterVFX;
-        public void Start()
+        
+        public override void Start()
         {
+            base.Start();
             player = GetComponentInParent<Player>();
         }
+        
         public void Update()
         {
             EnableThrusterVFX();

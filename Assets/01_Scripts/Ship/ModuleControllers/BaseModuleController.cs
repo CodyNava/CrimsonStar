@@ -57,7 +57,9 @@ namespace _01_Scripts.Ship.ModuleControllers
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            Debug.Log("Hitted");
             if (other.transform.root == transform.root) return;
+            
 
             if (other.transform.TryGetComponent(out Projectile projectile))
             {
