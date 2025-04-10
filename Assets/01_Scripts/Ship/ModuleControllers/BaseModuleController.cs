@@ -2,7 +2,6 @@
 using _01_Scripts.GameState.States;
 using _01_Scripts.Ship.Modules;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace _01_Scripts.Ship.ModuleControllers
 {
@@ -25,19 +24,22 @@ namespace _01_Scripts.Ship.ModuleControllers
         }
         
 
+        public virtual void Start()
+        { }
+
         public void Init(BridgeController bridgeController)
         {
             BridgeController = bridgeController;
-            BridgeController.AddModule(_moduleObject);
+            BridgeController.AddModule(this);
         }
 
-        public void OnDestroy()
+        public virtual void OnDestroy()
         {
             Combat_GameState.onEnterState -= OnEnterCombatState;
             Combat_GameState.onExitState -= OnExitCombatState;
             if (BridgeController != null)
             {
-                BridgeController.RemoveModule(_moduleObject);
+                BridgeController.RemoveModule(this);
             }
         }
 
