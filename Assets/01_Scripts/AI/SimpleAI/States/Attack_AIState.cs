@@ -12,6 +12,8 @@ namespace _01_Scripts.AI.SimpleAI.States
             if (AIStateMachineCtx.HasTarget)
             {
                 AIStateMachineCtx.TriggerMoveTowardsDestination(GetSafeDistanceDestination());
+                AIStateMachineCtx.PointTurretsTowardsTarget(AIStateMachineCtx.GetTargetPosition());
+                AIStateMachineCtx.TriggerTurretShots();
             }
             // TODO: Move towards safeDistanceDestination via GetSafeDistanceDestination()
             // TODO: Shoot Weapons at TargetPosition

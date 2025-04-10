@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using _01_Scripts.GameState;
 using _01_Scripts.GameState.States;
 using _01_Scripts.Ship.Modules;
+using NUnit.Framework;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -22,17 +23,18 @@ namespace _01_Scripts.Ship.ModuleControllers
 
             BridgeController = this;
             AddModule(BridgeController);
-        }
-
-        public override void Start()
-        {
-            base.Start();
+            
             BaseModuleController[] baseModuleControllers = GetComponentsInChildren<BaseModuleController>();
             foreach (BaseModuleController baseModuleController in baseModuleControllers)
             {
                 AddModule(baseModuleController);
             }
-            
+        }
+
+        public override void Start()
+        {
+            base.Start();
+
             Debug.Log($"{_attachedModuleControllers.Count}");
             
             List<BaseModuleController> list;
@@ -91,7 +93,7 @@ namespace _01_Scripts.Ship.ModuleControllers
                 return true;
             }
 
-            result = null;
+            result = new List<BaseModuleController>();
             return false;
         }
         public void ModifyCurrentHp(float delta)

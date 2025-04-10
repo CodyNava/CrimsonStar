@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using _01_Scripts.Ship.ModuleControllers;
+using UnityEngine;
 
 namespace _01_Scripts.AI.SimpleAI.States
 {
@@ -14,6 +16,7 @@ namespace _01_Scripts.AI.SimpleAI.States
             if (AIStateMachineCtx.HasTarget)
             {
                 AIStateMachineCtx.TriggerMoveTowardsDestination(_lastTargetPosition);
+                AIStateMachineCtx.PointTurretsTowardsTarget(_lastTargetPosition);
             }
         }
 
