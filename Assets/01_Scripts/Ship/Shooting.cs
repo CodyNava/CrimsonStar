@@ -60,8 +60,8 @@ public class Shooting : MonoBehaviour
 
     public void Shoot()
     {
-        // muzzleFlash1.Play();
-        // muzzleFlash2.Play();
+        muzzleFlash1.Play();
+        muzzleFlash2.Play();
 
         SpawnObject(spawn1);
         SpawnObject(spawn2);
