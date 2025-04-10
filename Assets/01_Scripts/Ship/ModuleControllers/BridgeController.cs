@@ -21,7 +21,7 @@ namespace _01_Scripts.Ship.ModuleControllers
             _attachedModuleControllers = new Dictionary<string, List<BaseModuleController>>();
 
             BridgeController = this;
-            AddModule(BridgeController.ModuleObject);
+            AddModule(BridgeController);
         }
 
         public override void Start()
@@ -93,15 +93,6 @@ namespace _01_Scripts.Ship.ModuleControllers
 
             result = null;
             return false;
-        }
-        public void ModifyCurrentHp(float delta)
-        {
-            MaxHp += delta;
-        }
-
-        protected override void OnModuleDestroyed()
-        {
-            GameStateController.Instance.ChangeState(new CombatLose_GameState());
         }
         public void ModifyCurrentHp(float delta)
         {
