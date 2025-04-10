@@ -13,6 +13,7 @@ public class Shooting : MonoBehaviour
     [SerializeField] private ParticleSystem muzzleFlash2;
     [SerializeField] private float cooldown;
     private float accumulatedTime;
+    private bool canShoot;
     public float projectileSpeed = 10f;
     public float projectileLifetime = 3f;
 
@@ -59,8 +60,9 @@ public class Shooting : MonoBehaviour
 
     public void Shoot()
     {
-        muzzleFlash1.Play();
-        muzzleFlash2.Play();
+        // muzzleFlash1.Play();
+        // muzzleFlash2.Play();
+
         SpawnObject(spawn1);
         SpawnObject(spawn2);
     }
@@ -69,6 +71,7 @@ public class Shooting : MonoBehaviour
         Projectile projectile = Instantiate(bullet, spawn.position, Quaternion.identity);
         Vector3 shootDirection = transform.up;
 
+        projectile.gameObject.layer |= LayerMask.GetMask("Player");
         projectile.source = transform.root;
         projectile.direction = shootDirection;
         projectile.speed = projectileSpeed;
