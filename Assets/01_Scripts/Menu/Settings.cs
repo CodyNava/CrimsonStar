@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class Settings : MonoBehaviour
 {
@@ -15,10 +14,10 @@ public class Settings : MonoBehaviour
 
     private void Awake()
     {
-        volumeSlider.onValueChanged.AddListener(SetMusicVolume);
+        volumeSlider.onValueChanged.AddListener(SetVolume);
     }
 
-    void SetMusicVolume(float volume)
+    public void SetVolume(float volume)
     {
         audioMixer.SetFloat(masterVolume, Mathf.Log10(volumeSlider.value) * 20);
         Save();
