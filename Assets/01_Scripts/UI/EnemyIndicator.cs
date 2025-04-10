@@ -36,7 +36,7 @@ public class EnemyIndicator : MonoBehaviour
             fromCenterToEnemy.Normalize();
 
             float angle = Mathf.Atan2(fromCenterToEnemy.y, fromCenterToEnemy.x) * Mathf.Rad2Deg;
-            indicatorUI.rotation = Quaternion.Euler(0, 0, angle + 90f);
+            indicatorUI.rotation = Quaternion.Euler(0, 0, angle);
 
             Vector3 cappedScreenPos = screenCenter + fromCenterToEnemy * 0.45f;
             Vector3 worldPos = mainCamera.ViewportToScreenPoint(cappedScreenPos);
