@@ -34,11 +34,12 @@ public class Settings : MonoBehaviour
         for (int i = 0; i < resolutions.Length; i++)
         {
             //string resolutionoption = resolutions[i].width + " x " + resolutions[i].height;
-            string resolutionoption = $"{resolutions[i].width} x {resolutions[i].height}";
+            string resolutionoption = $"{resolutions[i].width} x {resolutions[i].height} @ {Mathf.RoundToInt((float)resolutions[i].refreshRateRatio.value)}";
             resolutionoptions.Add(resolutionoption);
 
             if (resolutions[i].width == Screen.currentResolution.width &&
-                resolutions[i].height == Screen.currentResolution.height)
+                resolutions[i].height == Screen.currentResolution.height &&
+                resolutions[i].refreshRateRatio.value == Screen.currentResolution.refreshRateRatio.value)
             {
                 currentResolutionIndex = i;
             }
@@ -64,6 +65,7 @@ public class Settings : MonoBehaviour
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        Application.targetFrameRate = (int)resolution.refreshRateRatio.value;
     }
 
     private void Save()
