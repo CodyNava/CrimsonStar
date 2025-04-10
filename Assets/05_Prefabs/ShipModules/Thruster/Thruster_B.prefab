@@ -48,6 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moduleObject: {fileID: 11400000, guid: 2e795c643d7eecc4baa6cc1754c691d3, type: 2}
+  player: {fileID: 0}
+  thrusterVFX: {fileID: 555660802992849192}
 --- !u!114 &-1338806763121454985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,6 +116,77 @@ PolygonCollider2D:
       - {x: 0.8849204, y: -1.5451014}
       - {x: 1.7344124, y: 0.0051290393}
   m_UseDelaunayMesh: 0
+--- !u!1001 &4440191324577587190
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6908013655563695120}
+    m_Modifications:
+    - target: {fileID: 4190776416218423006, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_Name
+      value: VFX_Engine_Plasma
+      objectReference: {fileID: 0}
+    - target: {fileID: 4190776416218423006, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6525279916193999052, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6525279916193999052, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 6525279916193999052, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6525279916193999052, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6525279916193999052, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6525279916193999052, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6525279916193999052, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6525279916193999052, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6525279916193999052, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6525279916193999052, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 180
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+--- !u!1 &555660802992849192 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4190776416218423006, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+  m_PrefabInstance: {fileID: 4440191324577587190}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7426657882127218490 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6525279916193999052, guid: c1652b5da79e72d40962b3ab69ee3219, type: 3}
+  m_PrefabInstance: {fileID: 4440191324577587190}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6364862448747844603
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -172,7 +245,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7426657882127218490}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}
       insertIndex: -1
