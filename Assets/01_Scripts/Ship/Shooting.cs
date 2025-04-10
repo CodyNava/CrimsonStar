@@ -13,6 +13,8 @@ public class Shooting : MonoBehaviour
     [SerializeField] private ParticleSystem muzzleFlash2;
     [SerializeField] private float cooldown;
     [SerializeField] private LayerMask projectileLayerMask;
+    [SerializeField] AudioClip shotSound;
+    [SerializeField] AudioSource audioSource;
     private float accumulatedTime;
     private bool canShoot;
     public float projectileSpeed = 10f;
@@ -27,11 +29,14 @@ public class Shooting : MonoBehaviour
 
         if (!_triggerShot) return;
         if (!(accumulatedTime >= cooldown)) return;
-        
+
+        audioSource.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
+        audioSource.PlayOneShot(shotSound);
         Shoot();
         _triggerShot = false;
         accumulatedTime -= cooldown * Random.Range(0.95f, 1f);
     }
+
     protected virtual void Awake()
     {
         Combat_GameState.onEnterState += OnEnterCombatState;
@@ -42,8 +47,8 @@ public class Shooting : MonoBehaviour
     {
         Combat_GameState.onEnterState -= OnEnterCombatState;
         Combat_GameState.onExitState -= OnExitCombatState;
-        
     }
+
     private void OnExitCombatState()
     {
         enabled = false;
@@ -62,6 +67,7 @@ public class Shooting : MonoBehaviour
         SpawnObject(spawn1);
         SpawnObject(spawn2);
     }
+
     void SpawnObject(Transform spawn)
     {
         Projectile projectile = Instantiate(bullet, spawn.position, Quaternion.identity);
@@ -73,5 +79,4 @@ public class Shooting : MonoBehaviour
         projectile.speed = projectileSpeed;
         projectile.lifetime = projectileLifetime;
     }
-    
 }
