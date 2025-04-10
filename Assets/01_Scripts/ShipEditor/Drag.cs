@@ -15,6 +15,7 @@ public class Drag : MonoBehaviour
     private Vector2 _pos;
     private bool _holding;
     public PolygonCollider2D _collider;
+    public GameObject child;
 
     public Action refundAction;
 
@@ -44,16 +45,19 @@ public class Drag : MonoBehaviour
     void Start()
     {
         _camera = Camera.main;
+        child.layer = LayerMask.NameToLayer("Modules");
     }
 
     void Update()
     {
         if (_holding)
         {
+            child.layer = LayerMask.NameToLayer("Outline");
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 _holding = false;
                 dragEndedDelegate(this.transform);
+                child.layer = LayerMask.NameToLayer("Modules");
                 return;
             }
             _pos = _camera.ScreenToWorldPoint(Input.mousePosition);
