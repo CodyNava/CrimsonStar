@@ -34,7 +34,7 @@ public class Settings : MonoBehaviour
         for (int i = 0; i < resolutions.Length; i++)
         {
             //string resolutionoption = resolutions[i].width + " x " + resolutions[i].height;
-            string resolutionoption = $"{resolutions[i].width} x {resolutions[i].height} @ {Mathf.RoundToInt((float)resolutions[i].refreshRateRatio.value)}";
+            string resolutionoption = $"{resolutions[i].width} x {resolutions[i].height} @{Mathf.RoundToInt((float)resolutions[i].refreshRateRatio.value)}";
             resolutionoptions.Add(resolutionoption);
 
             if (resolutions[i].width == Screen.currentResolution.width &&
