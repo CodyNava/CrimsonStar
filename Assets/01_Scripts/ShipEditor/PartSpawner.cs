@@ -43,7 +43,7 @@ public class PartSpawner : MonoBehaviour
 
         BaseModuleController newPart = Instantiate(partPrefab[index], transform.position, transform.rotation);
         newPart.transform.SetParent(partParent.transform);
-
+        newPart.gameObject.layer = LayerMask.NameToLayer("Player");
         newPart.Init(bridgeController);
         
         Drag drag = newPart.GetComponent<Drag>();

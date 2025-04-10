@@ -71,7 +71,7 @@ public class Shooting : MonoBehaviour
         Projectile projectile = Instantiate(bullet, spawn.position, Quaternion.identity);
         Vector3 shootDirection = transform.up;
 
-        projectile.gameObject.layer |= LayerMask.GetMask("Player");
+        projectile.gameObject.layer = LayerMask.NameToLayer("PlayerProjectile");
         projectile.source = transform.root;
         projectile.direction = shootDirection;
         projectile.speed = projectileSpeed;
