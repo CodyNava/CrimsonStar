@@ -1,11 +1,14 @@
 using _01_Scripts.GameState;
 using _01_Scripts.GameState.States;
+using _01_Scripts.Ship;
 using _01_Scripts.Ship.ModuleControllers;
 using TMPro;
 using UnityEngine;
 
 public class ShipEditor : MonoBehaviour
 {
+    [SerializeField] private ShipController _shipController;
+    
     public GameObject ship;
     public GameObject shipEditor;
     public Camera editCamera;
@@ -44,9 +47,8 @@ public class ShipEditor : MonoBehaviour
 
     public void UIShipStats()
     {
-        BridgeController controler = ship.GetComponentInChildren<BridgeController>();
-        shipHealth.text = $"HP: {controler.MaxHp}";
-        speed.text = $"Speed: {controler.MoveSpeedChange:0.00}";
+        shipHealth.text = $"HP: {_shipController.MaxHp}";
+        speed.text = $"Speed: {_shipController.MoveSpeedChange:0.00}";
         shooting = ship.GetComponentsInChildren<Shooting>();
         if (shooting.Length == 0)
         {

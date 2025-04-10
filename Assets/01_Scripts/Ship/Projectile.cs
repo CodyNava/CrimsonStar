@@ -1,4 +1,6 @@
 using System;
+using _01_Scripts.GameState;
+using _01_Scripts.GameState.States;
 using _01_Scripts.Projectiles;
 using UnityEngine;
 
@@ -10,6 +12,23 @@ public class Projectile : MonoBehaviour
     [HideInInspector] public Transform source;
 
     public BaseProjectileObject _BaseProjectileObject;
+
+    private void Awake()
+    {
+        CombatLose_GameState.onEnterState += OnCombatOverGameState;
+        CombatWin_GameState.onEnterState += OnCombatOverGameState;
+    }
+
+    private void OnCombatOverGameState(GameStateController obj)
+    {
+        Destroy(this);
+    }
+
+    private void OnDestroy()
+    {
+        CombatLose_GameState.onEnterState -= OnCombatOverGameState;
+        CombatWin_GameState.onEnterState -= OnCombatOverGameState;
+    }
 
     private void Start()
     {
@@ -23,10 +42,6 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Hitted Projectile");
-        if (other.transform.root != source)
-        {
-            Destroy(gameObject);
-        }
+        Destroy(gameObject);
     }
 }

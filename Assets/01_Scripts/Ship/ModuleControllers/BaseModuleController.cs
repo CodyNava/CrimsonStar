@@ -13,7 +13,7 @@ namespace _01_Scripts.Ship.ModuleControllers
         public bool IsCombatActive => _isCombatActive;
         private float currentHp;
 
-        protected BridgeController BridgeController;
+        protected ShipController _shipController;
 
         public virtual void Awake()
         {
@@ -27,47 +27,44 @@ namespace _01_Scripts.Ship.ModuleControllers
         public virtual void Start()
         { }
 
-        public void Init(BridgeController bridgeController)
+        public void Init(ShipController shipController)
         {
-            BridgeController = bridgeController;
-            BridgeController.AddModule(this);
+            _shipController = shipController;
+            _shipController.AddModule(this);
         }
 
         public virtual void OnDestroy()
         {
             Combat_GameState.onEnterState -= OnEnterCombatState;
             Combat_GameState.onExitState -= OnExitCombatState;
-            if (BridgeController != null)
+            if (_shipController != null)
             {
-                BridgeController.RemoveModule(this);
+                _shipController.RemoveModule(this);
             }
         }
 
         protected virtual void OnExitCombatState()
         {
             _isCombatActive = false;
-            Debug.Log("Set IsCombatActive: False");
         }
 
         protected virtual void OnEnterCombatState(GameStateController obj)
         {
             _isCombatActive = true;
-            Debug.Log("Set IsCombatActive: True");
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            Debug.Log("Hitted");
             if (other.transform.root == transform.root) return;
             
 
             if (other.transform.TryGetComponent(out Projectile projectile))
             {
-                print("hit");
+                Destroy(other);
 
                 float updatedHP = Mathf.Max(currentHp - projectile._BaseProjectileObject.Damage, 0f);
                 float deltaHP = updatedHP - currentHp;
-                BridgeController.ModifyCurrentHp(deltaHP);
+                _shipController.UpdateCurrentHP(deltaHP);
                 currentHp = updatedHP;
                 
                 
@@ -81,7 +78,7 @@ namespace _01_Scripts.Ship.ModuleControllers
         protected virtual void OnModuleDestroyed()
         {
             Destroy(this.gameObject);
-            print("Death");
+            print($"Death {this.GetType().Name}");
         }
     }
 }

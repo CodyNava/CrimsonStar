@@ -4,6 +4,7 @@ using System.Linq;
 using _01_Scripts.AI.SimpleAI.States;
 using _01_Scripts.GameState;
 using _01_Scripts.GameState.States;
+using _01_Scripts.Ship;
 using _01_Scripts.Ship.ModuleControllers;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -17,6 +18,7 @@ namespace _01_Scripts.AI.SimpleAI
         private BaseAIState _transitionState;
         [SerializeField] private EnemyMovementController _enemyMovementController;
         [field:SerializeField] public BridgeController BridgeController { get; private set; }
+        [field:SerializeField] public ShipController ShipController { get; private set; }
         [SerializeField] private SimpleAIParameters _aiParameters;
         public SimpleAIParameters AIParameters => _aiParameters;
 
@@ -25,7 +27,7 @@ namespace _01_Scripts.AI.SimpleAI
         private Transform _currentTarget = null; 
         public bool HasTarget => _currentTarget != null;
 
-        public List<BaseModuleController> attachedTurrets = new List<BaseModuleController>();
+        [HideInInspector] public List<BaseModuleController> attachedTurrets = new List<BaseModuleController>();
 
         public void Awake()
         {
@@ -61,7 +63,7 @@ namespace _01_Scripts.AI.SimpleAI
                 _currentTarget = players.First().transform;
             }
             
-            BridgeController.GetAttachedModuleOfType("TurretController", out attachedTurrets);
+            ShipController.GetAttachedModuleOfType("TurretController", out attachedTurrets);
             Debug.Log($"Found Modules: {attachedTurrets.Count}");
         }
 

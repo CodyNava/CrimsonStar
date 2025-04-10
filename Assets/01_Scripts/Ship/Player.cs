@@ -1,3 +1,7 @@
+using System;
+using _01_Scripts.GameState;
+using _01_Scripts.GameState.States;
+using _01_Scripts.Ship;
 using _01_Scripts.Ship.ModuleControllers;
 using _01_Scripts.Ship.Modules;
 using UnityEngine;
@@ -5,7 +9,8 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    private BridgeController _bridgeController;
+    [SerializeField] private ShipController _shipController;
+    [SerializeField] private BridgeController _bridgeController;
     private BridgeModuleObject _bridgeModuleObject;
 
     [SerializeField] private float controllerDeadZone = 0.1f;
@@ -13,6 +18,8 @@ public class Player : MonoBehaviour
     [SerializeField] AudioClip engineSound;
     [SerializeField] AudioSource audioSource;
 
+    private bool _isCombatActive = false;
+    
     private Vector2 input;
     private Vector3 velocity;
     private float angularVelocity;
@@ -21,23 +28,34 @@ public class Player : MonoBehaviour
 
     public void Awake()
     {
-        _bridgeController = GetComponent<BridgeController>();
         _bridgeModuleObject = _bridgeController.BridgeObject;
+        Combat_GameState.onEnterState += OnEnterCombatGameState;
+        Combat_GameState.onExitState += OnExitCombatGameState;
     }
 
+    public void OnDestroy()
+    {
+        Combat_GameState.onEnterState -= OnEnterCombatGameState;
+        Combat_GameState.onExitState -= OnExitCombatGameState;
+    }
+
+    private void OnEnterCombatGameState(GameStateController obj)
+    {
+        _isCombatActive = true;
+    }
+
+    private void OnExitCombatGameState()
+    {
+        _isCombatActive = false;
+    }
     public void OnMove(InputAction.CallbackContext context)
     {
         input = context.ReadValue<Vector2>();
     }
 
     private void Update()
-    {
-        if (_bridgeController != null)
-        {
-            if (_bridgeController.IsCombatActive)
-                movePlayer();
-        }
-        else
+    {   
+        if(_isCombatActive)
         {
             movePlayer();
         }
@@ -76,7 +94,7 @@ public class Player : MonoBehaviour
         if (Mathf.Abs(input.y) > 0.01f)
         {
             Vector3 movement = transform.up * input.y;
-            float totalMoveSpeed = Mathf.Max(_bridgeModuleObject.baseMoveSpeed + _bridgeController.MoveSpeedChange, 0f);
+            float totalMoveSpeed = Mathf.Max(_bridgeModuleObject.baseMoveSpeed + _shipController.MoveSpeedChange, 0f);
             velocity += totalMoveSpeed * movement.normalized;
             isRotating = true;
             if (!audioSource.isPlaying && (isAccelerating || isRotating))

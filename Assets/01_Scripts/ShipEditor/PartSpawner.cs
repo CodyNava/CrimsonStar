@@ -1,5 +1,6 @@
 using _01_Scripts.Ship.ModuleControllers;
 using System.Collections;
+using _01_Scripts.Ship;
 using UnityEngine;
 
 public class PartSpawner : MonoBehaviour
@@ -10,6 +11,7 @@ public class PartSpawner : MonoBehaviour
     public ShipEditorCurrencySystem currencySystem;
     public GameObject noMoneyPopUp;
     public BridgeController bridgeController;
+    [SerializeField] private ShipController _shipController; 
 
     public void SpawnPart(int index)
     {
@@ -44,7 +46,7 @@ public class PartSpawner : MonoBehaviour
         BaseModuleController newPart = Instantiate(partPrefab[index], transform.position, transform.rotation);
         newPart.transform.SetParent(partParent.transform);
         newPart.gameObject.layer = LayerMask.NameToLayer("Player");
-        newPart.Init(bridgeController);
+        newPart.Init(_shipController);
         
         Drag drag = newPart.GetComponent<Drag>();
         drag.refundAction = () => { currencySystem.AddCurrency(cost); };
