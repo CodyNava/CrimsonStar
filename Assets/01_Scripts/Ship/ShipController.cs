@@ -105,15 +105,17 @@ namespace _01_Scripts.Ship
             _attachedModuleControllers[moduleName].Remove(moduleAdded);
         }
 
-        public bool GetAttachedModuleOfType(string moduleName, out List<BaseModuleController> result)
+        // TODO: Prevent allocation of new List onto out parameter
+        public bool GetAttachedModulesOfType<T>(out List<T> result) where T : BaseModuleController
         {
-            if (_attachedModuleControllers.ContainsKey(moduleName))
+            string className = typeof(T).Name;
+            if (_attachedModuleControllers.ContainsKey(className))
             {
-                result = _attachedModuleControllers[moduleName];
+                result = _attachedModuleControllers[className].ConvertAll(module => (T)module);
                 return true;
             }
 
-            result = new List<BaseModuleController>();
+            result = new List<T>();
             return false;
         }
 

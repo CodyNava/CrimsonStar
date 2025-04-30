@@ -62,8 +62,8 @@ namespace _01_Scripts.AI.SimpleAI
             {
                 _currentTarget = players.First().transform;
             }
-            
-            ShipController.GetAttachedModuleOfType("TurretController", out attachedTurrets);
+
+            ShipController.GetAttachedModulesOfType(out attachedTurrets);
             Debug.Log($"Found Modules: {attachedTurrets.Count}");
         }
 
