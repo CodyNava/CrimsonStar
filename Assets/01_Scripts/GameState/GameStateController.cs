@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace _01_Scripts.GameState
 {
+    // TODO: Implement StateChange/-Transition restrictions per State
+    
     public class GameStateController : MonoBehaviour
     {
         public static GameStateController Instance { get; private set; }

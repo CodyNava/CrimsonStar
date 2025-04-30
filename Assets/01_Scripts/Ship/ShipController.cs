@@ -87,6 +87,8 @@ namespace _01_Scripts.Ship
             MoveSpeedChange -= moduleObject._moveSpeedChange;
         }
         
+        // TODO: Segregate BaseModule as Interface
+        
         private void AddModuleToList(BaseModuleController moduleAdded) 
         {
             string moduleName = moduleAdded.GetType().Name;
