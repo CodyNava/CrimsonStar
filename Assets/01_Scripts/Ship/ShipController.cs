@@ -70,7 +70,7 @@ namespace _01_Scripts.Ship
 
         public void AddModule(BaseModuleController moduleAdded)
         {
-            AddModuleList(moduleAdded);
+            AddModuleToList(moduleAdded);
             
 
             BaseModuleObject moduleObject = moduleAdded.ModuleObject;
@@ -80,14 +80,14 @@ namespace _01_Scripts.Ship
         
         public void RemoveModule(BaseModuleController moduleAdded)
         {
-            RemoveModuleList(moduleAdded);
+            RemoveModuleToList(moduleAdded);
             
             BaseModuleObject moduleObject = moduleAdded.ModuleObject;
             MaxHp -= moduleObject._health;
             MoveSpeedChange -= moduleObject._moveSpeedChange;
         }
         
-        private void AddModuleList(BaseModuleController moduleAdded) 
+        private void AddModuleToList(BaseModuleController moduleAdded) 
         {
             string moduleName = moduleAdded.GetType().Name;
             if (!_attachedModuleControllers.ContainsKey(moduleName))
@@ -96,13 +96,14 @@ namespace _01_Scripts.Ship
             }
             _attachedModuleControllers[moduleName].Add(moduleAdded);
         }
-
-        private void RemoveModuleList(BaseModuleController moduleAdded)
+        
+        private bool RemoveModuleToList(BaseModuleController moduleAdded)
         {
             string moduleName = moduleAdded.GetType().Name;
-            if (!_attachedModuleControllers.ContainsKey(moduleName)) return;
+            if (!_attachedModuleControllers.ContainsKey(moduleName)) return false;
 
             _attachedModuleControllers[moduleName].Remove(moduleAdded);
+            return true;
         }
 
         // TODO: Prevent allocation of new List onto out parameter

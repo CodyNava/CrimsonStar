@@ -41,6 +41,7 @@ namespace _01_Scripts.Ship.ModuleControllers
             {
                 _shipController.RemoveModule(this);
             }
+            
         }
 
         protected virtual void OnExitCombatState()
