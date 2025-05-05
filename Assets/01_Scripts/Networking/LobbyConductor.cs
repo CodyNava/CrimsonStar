@@ -2,6 +2,8 @@
 using System.Linq;
 using FishNet;
 using FishNet.Connection;
+using FishNet.Managing.Scened;
+using FishNet.Object;
 using FishNet.Transporting;
 using Steamworks;
 using UnityEngine;
@@ -67,6 +69,17 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
     private void OnGameStartRequested(NetworkConnection connection, LobbyBroadcasts.GameStartRequested msg, Channel channel)
     {
         Debug.Log("Game start requested");
+        CloseLobbyScene();
+
+        SceneLoadData sceneData = new("NetShipEditor");
+        var connections = ServerManager.Clients.Values.ToArray();
+        SceneManager.LoadConnectionScenes(connections, sceneData);
+    }
+
+    [ObserversRpc]
+    private void CloseLobbyScene()
+    {
+        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("NetLobby");
     }
 
     public override void OnStopNetwork()
