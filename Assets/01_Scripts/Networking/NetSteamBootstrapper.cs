@@ -38,7 +38,7 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
     {
         if (args.ConnectionState == LocalConnectionState.Started)
         {
-            InstanceFinder.ClientManager.Broadcast(new LobbyBroadcasts.PlayerJoined
+            InstanceFinder.ClientManager.Broadcast(new LobbyBroadcasts.PlayerIdentified
             {
                 SteamID = SteamPlayer.SteamID,
                 DisplayName = SteamPlayer.DisplayName
@@ -96,11 +96,6 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
 
     public static void LeaveLobby()
     {
-        InstanceFinder.ClientManager.Broadcast(new LobbyBroadcasts.PlayerLeft()
-        {
-            SteamID = SteamPlayer.SteamID
-        });
-        
         SteamMatchmaking.LeaveLobby(SteamPlayer.CurrentLobbyID);
         SteamPlayer.SetLobbyID(0);
 

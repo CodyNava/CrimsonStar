@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FishNet;
 using FishNet.Connection;
 using FishNet.Transporting;
@@ -14,7 +15,6 @@ public struct LobbyPlayerData
 
 public class LobbyConductor : NetworkSingleton<LobbyConductor>
 {
-    private readonly List<LobbyPlayerData> _playerData = new();
     private readonly Dictionary<NetworkConnection, LobbyPlayerData> _connectionPlayerMap = new();
 
     public override void OnStartNetwork()
@@ -22,10 +22,46 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
         if (IsServerInitialized)
         {
             InstanceFinder.RegisterInstance(this);
-            ServerManager.RegisterBroadcast<LobbyBroadcasts.PlayerJoined>(OnPlayerJoined, false);
-            ServerManager.RegisterBroadcast<LobbyBroadcasts.PlayerLeft>(OnPlayerLeft, false);
+            ServerManager.OnRemoteConnectionState += OnConnectionStateChange;
+            ServerManager.RegisterBroadcast<LobbyBroadcasts.PlayerIdentified>(OnPlayerIdentified, false);
             ServerManager.RegisterBroadcast<LobbyBroadcasts.GameStartRequested>(OnGameStartRequested, false);
         }
+    }
+
+    private void OnPlayerIdentified(NetworkConnection conn, LobbyBroadcasts.PlayerIdentified msg, Channel channel)
+    {
+        _connectionPlayerMap[conn] = new LobbyPlayerData
+        {
+            playerSteamID = msg.SteamID,
+            playerDisplayName = msg.DisplayName
+        };
+        SendPlayerDataUpdate();
+    }
+
+    private void OnConnectionStateChange(NetworkConnection connection, RemoteConnectionStateArgs args)
+    {
+        if (args.ConnectionState == RemoteConnectionState.Started)
+        {
+            _connectionPlayerMap[connection] = new LobbyPlayerData
+            {
+                playerDisplayName = "Connecting..."
+            };
+        }
+
+        if (args.ConnectionState == RemoteConnectionState.Stopped)
+        {
+            _connectionPlayerMap.Remove(connection);
+        }
+
+        SendPlayerDataUpdate();
+    }
+
+    private void SendPlayerDataUpdate()
+    {
+        ServerManager.Broadcast(new LobbyBroadcasts.PlayerListUpdate
+        {
+            Players = _connectionPlayerMap.Values.ToArray()
+        }, false);
     }
 
     private void OnGameStartRequested(NetworkConnection connection, LobbyBroadcasts.GameStartRequested msg, Channel channel)
@@ -33,44 +69,13 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
         Debug.Log("Game start requested");
     }
 
-    private void OnPlayerJoined(NetworkConnection connection, LobbyBroadcasts.PlayerJoined msg, Channel channel)
-    {
-        int idx = _playerData.FindIndex(player => player.playerSteamID == msg.SteamID);
-        if (idx != -1)
-            return;
-        var data = new LobbyPlayerData
-        {
-            playerSteamID = msg.SteamID,
-            playerDisplayName = msg.DisplayName,
-        };
-        _playerData.Add(data);
-        _connectionPlayerMap[connection] = data;
-        ServerManager.Broadcast(new LobbyBroadcasts.PlayerListUpdate
-        {
-            Players = _playerData.ToArray()
-        });
-    }
-
-    private void OnPlayerLeft(NetworkConnection connection, LobbyBroadcasts.PlayerLeft msg, Channel channel)
-    {
-        int idx = _playerData.FindIndex(player => player.playerSteamID == msg.SteamID);
-        if (idx == -1)
-            return;
-        
-        _playerData.RemoveAt(idx);
-        _connectionPlayerMap.Remove(connection);
-        ServerManager.Broadcast(new LobbyBroadcasts.PlayerListUpdate
-        {
-            Players = _playerData.ToArray()
-        });
-    }
-
     public override void OnStopNetwork()
     {
         if (IsServerInitialized)
         {
             InstanceFinder.UnregisterInstance<LobbyConductor>();
-            ServerManager.UnregisterBroadcast<LobbyBroadcasts.PlayerJoined>(OnPlayerJoined);
+            ServerManager.OnRemoteConnectionState -= OnConnectionStateChange;
+            ServerManager.UnregisterBroadcast<LobbyBroadcasts.PlayerIdentified>(OnPlayerIdentified);
             ServerManager.UnregisterBroadcast<LobbyBroadcasts.GameStartRequested>(OnGameStartRequested);
         }
     }
