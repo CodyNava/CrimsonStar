@@ -11,6 +11,16 @@ public static class LobbyBroadcasts
 
     public struct PlayerLeft : IBroadcast
     {
+        public CSteamID SteamID;
+    }
+
+    public struct PlayerListUpdate : IBroadcast
+    {
+        public LobbyPlayerData[] Players;
+    }
+
+    public struct GameStartRequested : IBroadcast
+    {
         
     }
 }

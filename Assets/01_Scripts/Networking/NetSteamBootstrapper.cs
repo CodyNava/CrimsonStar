@@ -1,5 +1,7 @@
+using System;
 using FishNet;
 using FishNet.Managing;
+using FishNet.Transporting;
 using Steamworks;
 using UnityEngine;
 using Fishy = FishySteamworks.FishySteamworks;
@@ -15,6 +17,28 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
     protected Callback<LobbyCreated_t> SteamLobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> SteamLobbyJoinRequested;
     protected Callback<LobbyEnter_t> SteamLobbyEnter;
+
+    private void OnEnable()
+    {
+        steamTransport.OnClientConnectionState += OnConnectionState;
+    }
+
+    private void OnDisable()
+    {
+        steamTransport.OnClientConnectionState -= OnConnectionState;
+    }
+
+    private void OnConnectionState(ClientConnectionStateArgs args)
+    {
+        if (args.ConnectionState == LocalConnectionState.Started)
+        {
+            InstanceFinder.ClientManager.Broadcast(new LobbyBroadcasts.PlayerJoined
+            {
+                SteamID = SteamPlayer.SteamID,
+                DisplayName = SteamPlayer.DisplayName
+            });
+        }
+    }
 
     private void Start()
     {
@@ -40,6 +64,7 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
         steamTransport.StartConnection(true); // This starts only server on host
         var lobbyConductorGo = Instantiate(lobbyConductor).gameObject;
         InstanceFinder.ServerManager.Spawn(lobbyConductorGo);
+        SteamPlayer.SetLobbyHost(true);
     }
 
     private void OnSteamLobbyJoinRequested(GameLobbyJoinRequested_t data)
@@ -55,5 +80,20 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
         string host = SteamMatchmaking.GetLobbyData(SteamPlayer.CurrentLobbyID, SteamLobby.HostKey);
         steamTransport.SetClientAddress(host);
         steamTransport.StartConnection(false);
+    }
+
+    public static void LeaveLobby()
+    {
+        InstanceFinder.ClientManager.Broadcast(new LobbyBroadcasts.PlayerLeft()
+        {
+            SteamID = SteamPlayer.SteamID
+        });
+        
+        SteamMatchmaking.LeaveLobby(SteamPlayer.CurrentLobbyID);
+        SteamPlayer.SetLobbyID(0);
+
+        Instance.steamTransport.StopConnection(false);
+        if (Instance.networkManager.IsServerStarted)
+            Instance.steamTransport.StopConnection(true);
     }
 }
