@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "ModuleData", menuName = "Module Data")]
-public class ModuleData : ScriptableObject
+[CreateAssetMenu(fileName = "NetModuleData", menuName = "Modules/Net Module Data")]
+public class NetModuleData : ScriptableObject
 {
     public NetModuleID moduleID;
     public int cost;
