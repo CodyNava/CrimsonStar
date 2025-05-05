@@ -27,7 +27,7 @@ namespace _01_Scripts.AI.SimpleAI
         private Transform _currentTarget = null; 
         public bool HasTarget => _currentTarget != null;
 
-        [HideInInspector] public List<BaseModuleController> attachedTurrets = new List<BaseModuleController>();
+        [HideInInspector] public List<TurretController> attachedTurrets = new();
 
         public void Awake()
         {
@@ -62,8 +62,8 @@ namespace _01_Scripts.AI.SimpleAI
             {
                 _currentTarget = players.First().transform;
             }
-            
-            ShipController.GetAttachedModuleOfType("TurretController", out attachedTurrets);
+
+            ShipController.GetAttachedModulesOfType(out attachedTurrets);
             Debug.Log($"Found Modules: {attachedTurrets.Count}");
         }
 

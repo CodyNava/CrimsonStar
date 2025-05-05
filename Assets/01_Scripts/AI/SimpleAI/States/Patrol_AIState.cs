@@ -33,7 +33,7 @@ namespace _01_Scripts.AI.SimpleAI.States
                 if (distancePlayerSqr < perceptionDistance * perceptionDistance)
                 {
                     AIStateMachineCtx.SetTransitionState(new Chase_AIState());
-                }   
+                }
             }
         }
 

@@ -7,6 +7,8 @@ namespace _01_Scripts.Ship.ModuleControllers
 {
     public abstract class BaseModuleController : MonoBehaviour
     {
+        // TODO: Prevent miss setting of ModuleObject
+        
         [SerializeField] private BaseModuleObject _moduleObject;
         public BaseModuleObject ModuleObject => _moduleObject;
         private bool _isCombatActive;
@@ -15,6 +17,8 @@ namespace _01_Scripts.Ship.ModuleControllers
 
         protected ShipController _shipController;
 
+        // TODO: Reduce OnCombatState Hooks into ShipController
+        
         public virtual void Awake()
         {
             _isCombatActive = false;
@@ -41,6 +45,7 @@ namespace _01_Scripts.Ship.ModuleControllers
             {
                 _shipController.RemoveModule(this);
             }
+            
         }
 
         protected virtual void OnExitCombatState()

@@ -70,7 +70,7 @@ namespace _01_Scripts.Ship
 
         public void AddModule(BaseModuleController moduleAdded)
         {
-            AddModuleList(moduleAdded);
+            AddModuleToList(moduleAdded);
             
 
             BaseModuleObject moduleObject = moduleAdded.ModuleObject;
@@ -80,14 +80,16 @@ namespace _01_Scripts.Ship
         
         public void RemoveModule(BaseModuleController moduleAdded)
         {
-            RemoveModuleList(moduleAdded);
+            RemoveModuleToList(moduleAdded);
             
             BaseModuleObject moduleObject = moduleAdded.ModuleObject;
             MaxHp -= moduleObject._health;
             MoveSpeedChange -= moduleObject._moveSpeedChange;
         }
         
-        private void AddModuleList(BaseModuleController moduleAdded) 
+        // TODO: Segregate BaseModule as Interface
+        
+        private void AddModuleToList(BaseModuleController moduleAdded) 
         {
             string moduleName = moduleAdded.GetType().Name;
             if (!_attachedModuleControllers.ContainsKey(moduleName))
@@ -96,24 +98,27 @@ namespace _01_Scripts.Ship
             }
             _attachedModuleControllers[moduleName].Add(moduleAdded);
         }
-
-        private void RemoveModuleList(BaseModuleController moduleAdded)
+        
+        private bool RemoveModuleToList(BaseModuleController moduleAdded)
         {
             string moduleName = moduleAdded.GetType().Name;
-            if (!_attachedModuleControllers.ContainsKey(moduleName)) return;
+            if (!_attachedModuleControllers.ContainsKey(moduleName)) return false;
 
             _attachedModuleControllers[moduleName].Remove(moduleAdded);
+            return true;
         }
 
-        public bool GetAttachedModuleOfType(string moduleName, out List<BaseModuleController> result)
+        // TODO: Prevent allocation of new List onto out parameter
+        public bool GetAttachedModulesOfType<T>(out List<T> result) where T : BaseModuleController
         {
-            if (_attachedModuleControllers.ContainsKey(moduleName))
+            string className = typeof(T).Name;
+            if (_attachedModuleControllers.ContainsKey(className))
             {
-                result = _attachedModuleControllers[moduleName];
+                result = _attachedModuleControllers[className].ConvertAll(module => (T)module);
                 return true;
             }
 
-            result = new List<BaseModuleController>();
+            result = new List<T>();
             return false;
         }
 
