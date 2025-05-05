@@ -7,7 +7,6 @@ namespace _01_Scripts.Ship.ModuleControllers
 {
     public class BridgeController : BaseModuleController
     {
-        [SerializeField] private ShipController _shipController;
         public BridgeModuleObject BridgeObject => (BridgeModuleObject)ModuleObject;
 
         public event Action OnBridgeDestroyed;
