@@ -5,12 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] string playScene;
+    [SerializeField] string playScene, lobbyScene;
 
     public void StartGame()
     {
         GameStateController.Instance.ChangeState(new ShipEditor_GameState());
         SceneManager.LoadScene(playScene);
+    }
+    
+    public void CreateLobby()
+    {
+        SceneManager.LoadScene(lobbyScene);
     }
 
     public void Quit()
