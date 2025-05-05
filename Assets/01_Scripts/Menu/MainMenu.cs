@@ -28,8 +28,7 @@ public class MainMenu : MonoBehaviour
     
     public void CreateLobby()
     {
-        SceneManager.LoadScene(lobbyScene);
-        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, 9);
+        NetSteamBootstrapper.CreateLobby();
     }
 
     public void Quit()
