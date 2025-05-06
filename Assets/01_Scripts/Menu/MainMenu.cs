@@ -1,11 +1,24 @@
 using _01_Scripts.GameState;
 using _01_Scripts.GameState.States;
+using HeathenEngineering.SteamworksIntegration.API;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] string playScene, lobbyScene;
+    [SerializeField] private Button onlineButton;
+
+    private void OnEnable()
+    {
+        SteamPlayer.SetLobbyHost(false);
+        if (App.Initialized)
+        {
+            onlineButton.gameObject.SetActive(true);
+        }
+    }
 
     public void StartGame()
     {
@@ -15,7 +28,7 @@ public class MainMenu : MonoBehaviour
     
     public void CreateLobby()
     {
-        SceneManager.LoadScene(lobbyScene);
+        NetSteamBootstrapper.CreateLobby();
     }
 
     public void Quit()

@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using FishNet.Object;
 
-public class LobbyClient : MonoBehaviour
+public class LobbyClient : NetworkBehaviour
 {
-    
+
 }

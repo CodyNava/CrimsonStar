@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Assertions;
 
+[Serializable]
 public readonly struct HexCoordinate : IEquatable<HexCoordinate>
 {
     private readonly int _q, _r, _s;
@@ -18,6 +22,8 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
     public int R => _r;
     public int S => _s;
     
+    public static readonly HexCoordinate Zero = new(0, 0);
+    
     public HexCoordinate(int q, int r)
     {
         _q = q;
@@ -30,6 +36,14 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
         _q = q;
         _r = r;
         _s = s;
+    }
+
+    public HexCoordinate(Vector3Int coords)
+    {
+        _q = coords.x;
+        _r = coords.y;
+        _s = coords.z;
+        Assert.IsTrue(_s == -_q - _r, "Illegal coordinates found in Module Data Scriptable Object.");
     }
 
     public static bool operator ==(HexCoordinate lhs, HexCoordinate rhs)
@@ -65,6 +79,26 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
     public static HexCoordinate Neighbor(HexCoordinate hex, HexDirection direction)
     {
         return hex + DirectionOffsets[(int)direction];
+    }
+
+    public HexCoordinate RotateClockwise()
+    {
+        return new HexCoordinate(-_r, -_s, -_q);
+    }
+
+    public HexCoordinate RotateCounterClockwise()
+    {
+        return new HexCoordinate(-_s, -_q, -_r);
+    }
+
+    // IEnumerable<T> is a return type that lets us use foreach(T var in coord.Neighbors()) to loop through
+    // all neighboring coordinates of a HexCoordinate, note the use of "yield return" instead of "return" (similar to coroutines)
+    public IEnumerable<HexCoordinate> Neighbors()
+    {
+        for (HexDirection direction = HexDirection.SouthEast; direction <= HexDirection.South; direction++)
+        {
+            yield return Neighbor(this, direction);
+        }
     }
     
     public bool Equals(HexCoordinate other)

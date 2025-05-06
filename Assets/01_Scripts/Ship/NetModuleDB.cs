@@ -5,5 +5,5 @@ using UnityEngine;
 public class NetModuleDB : ScriptableObject
 {
     [SerializedDictionary("Module ID", "Module Data")]
-    public SerializedDictionary<NetModuleID, NetModuleData> moduleData;
+    [field: SerializeField] public SerializedDictionary<NetModuleID, NetModuleData> ModuleData { get; private set; }
 }

@@ -1347,6 +1347,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playScene: EditorScene
   lobbyScene: NetLobby
+  onlineButton: {fileID: 2130771311}
 --- !u!1 &1007614724
 GameObject:
   m_ObjectHideFlags: 0
@@ -4011,7 +4012,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2130771310
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4078,7 +4079,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 970918243}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: StartGame
+        m_MethodName: CreateLobby
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

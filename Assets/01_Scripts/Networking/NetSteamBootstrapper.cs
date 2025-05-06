@@ -1,7 +1,9 @@
 using FishNet;
 using FishNet.Managing;
+using FishNet.Transporting;
 using Steamworks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Fishy = FishySteamworks.FishySteamworks;
 
 public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
@@ -9,12 +11,40 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
     [Header("Dependencies")]
     [SerializeField] private NetworkManager networkManager;
     [SerializeField] private Fishy steamTransport;
+    [SerializeField] private string mainMenuSceneName;
     [Header("Conductors")]
     [SerializeField] private LobbyConductor lobbyConductor;
     
     protected Callback<LobbyCreated_t> SteamLobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> SteamLobbyJoinRequested;
     protected Callback<LobbyEnter_t> SteamLobbyEnter;
+
+    public void LoadNextScene()
+    {
+        SceneManager.LoadScene(mainMenuSceneName, LoadSceneMode.Additive);
+    }
+    
+    private void OnEnable()
+    {
+        steamTransport.OnClientConnectionState += OnConnectionState;
+    }
+
+    private void OnDisable()
+    {
+        steamTransport.OnClientConnectionState -= OnConnectionState;
+    }
+
+    private void OnConnectionState(ClientConnectionStateArgs args)
+    {
+        if (args.ConnectionState == LocalConnectionState.Started)
+        {
+            InstanceFinder.ClientManager.Broadcast(new LobbyBroadcasts.PlayerIdentified
+            {
+                SteamID = SteamPlayer.SteamID,
+                DisplayName = SteamPlayer.DisplayName
+            });
+        }
+    }
 
     private void Start()
     {
@@ -40,6 +70,7 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
         steamTransport.StartConnection(true); // This starts only server on host
         var lobbyConductorGo = Instantiate(lobbyConductor).gameObject;
         InstanceFinder.ServerManager.Spawn(lobbyConductorGo);
+        SteamPlayer.SetLobbyHost(true);
     }
 
     private void OnSteamLobbyJoinRequested(GameLobbyJoinRequested_t data)
@@ -55,5 +86,21 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
         string host = SteamMatchmaking.GetLobbyData(SteamPlayer.CurrentLobbyID, SteamLobby.HostKey);
         steamTransport.SetClientAddress(host);
         steamTransport.StartConnection(false);
+        SceneManager.LoadScene("NetLobby");
+    }
+
+    public static void CreateLobby()
+    {
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, 9);
+    }
+
+    public static void LeaveLobby()
+    {
+        SteamMatchmaking.LeaveLobby(SteamPlayer.CurrentLobbyID);
+        SteamPlayer.SetLobbyID(0);
+
+        Instance.steamTransport.StopConnection(false);
+        if (Instance.networkManager.IsServerStarted)
+            Instance.steamTransport.StopConnection(true);
     }
 }
