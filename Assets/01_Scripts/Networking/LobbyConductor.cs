@@ -17,6 +17,8 @@ public struct LobbyPlayerData
 
 public class LobbyConductor : NetworkSingleton<LobbyConductor>
 {
+    [SerializeField] private ShipEditorConductor shipEditorConductor;
+    
     private readonly Dictionary<NetworkConnection, LobbyPlayerData> _connectionPlayerMap = new();
 
     public override void OnStartNetwork()
@@ -68,12 +70,15 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
 
     private void OnGameStartRequested(NetworkConnection connection, LobbyBroadcasts.GameStartRequested msg, Channel channel)
     {
-        Debug.Log("Game start requested");
+        Debug.Log("Editor start requested");
         CloseLobbyScene();
 
         SceneLoadData sceneData = new("NetShipEditor");
         var connections = ServerManager.Clients.Values.ToArray();
         SceneManager.LoadConnectionScenes(connections, sceneData);
+
+        GameObject shipEditor = Instantiate(shipEditorConductor.gameObject);
+        ServerManager.Spawn(shipEditor);
     }
 
     [ObserversRpc]

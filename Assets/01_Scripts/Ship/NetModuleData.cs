@@ -1,12 +1,22 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "NetModuleData", menuName = "Modules/Net Module Data")]
 public class NetModuleData : ScriptableObject
 {
-    public NetModuleID moduleID;
-    public int cost;
-    public NetModuleBaseStats baseStats;
+    [field: SerializeField] public NetModuleID ModuleID { get; private set; }
 
-    public NetEditorModule shipEditorPrefab;
-    public NetGameplayModule gameplayPrefab;
+    [field: SerializeField]
+    public List<Vector3Int> LocalModuleCoordinates { get; private set; } = new()
+    {
+        new Vector3Int(0, 0, 0)
+    };
+    
+    [SerializedDictionary("Resource Type", "Cost")]
+    [field: SerializeField] public SerializedDictionary<NetResourceType, int> Costs { get; private set; }
+    [field: SerializeField] public NetModuleBaseStats BaseStats { get; private set; }
+
+    [field: SerializeField] public NetEditorModule ShipEditorPrefab { get; private set; }
+    [field: SerializeField] public NetGameplayModule GameplayPrefab { get; private set; }
 }

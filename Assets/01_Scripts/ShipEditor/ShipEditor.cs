@@ -17,6 +17,13 @@ public class ShipEditor : MonoBehaviour
     public Shooting[] shooting;
     public TextMeshProUGUI weapons;
 
+    private PlayerShipEditor _shipEditor;
+
+    public void SetPlayerShipEditor(PlayerShipEditor playerShipEditor)
+    {
+        _shipEditor = playerShipEditor;
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -25,6 +32,7 @@ public class ShipEditor : MonoBehaviour
         }
         UIShipStats();
     }
+
     private void Start()
     {
         weapons.text = $"DPS: 0";
