@@ -1,5 +1,3 @@
-using _01_Scripts.GameState;
-using _01_Scripts.GameState.States;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,32 +14,9 @@ public class Drag : MonoBehaviour
     private bool _holding;
     public PolygonCollider2D _collider;
     public GameObject child;
-
+    [SerializeField] private NetEditorModule netEditorModule;
     public Action refundAction;
-
-    private void Awake()
-    {
-        Combat_GameState.onEnterState -= OnCombatEnter;
-        Combat_GameState.onExitState -= OnCombatExit;
-        Combat_GameState.onEnterState += OnCombatEnter;
-        Combat_GameState.onExitState += OnCombatExit;
-    }
-    private void OnDestroy()
-    {
-        Combat_GameState.onEnterState -= OnCombatEnter;
-        Combat_GameState.onExitState -= OnCombatExit;
-    }
-
-    private void OnCombatExit()
-    {
-        enabled = true;
-    }
-
-    private void OnCombatEnter(GameStateController controller)
-    {
-        enabled = false;
-    }
-
+    private int _moduleRotation;
     void Start()
     {
         _camera = Camera.main;
@@ -69,11 +44,11 @@ public class Drag : MonoBehaviour
             }
             if (Keyboard.current.eKey.wasPressedThisFrame)
             {
-                RotateParts(60);
+                RotateClockWise();
             }
             if (Keyboard.current.qKey.wasPressedThisFrame)
             {
-                RotateParts(-60);
+                RotateCounterClockWise();
             }
         }
         else
@@ -85,11 +60,30 @@ public class Drag : MonoBehaviour
             }
         }
     }
-    public void RotateParts(int x)
+    public void RotateClockWise()
     {
-        gameObject.transform.Rotate(0, 0, x);
+        _moduleRotation++;
+        if (_moduleRotation > 5)
+        {
+            _moduleRotation -= 6;
+        }
+        SetTransformRotation();
+        netEditorModule.RotateClockwise();
     }
-
+    public void RotateCounterClockWise()
+    {
+        _moduleRotation--;
+        if (_moduleRotation < 0)
+        {
+            _moduleRotation += 6;
+        }
+        SetTransformRotation();
+        netEditorModule.RotateCounterclockwise();
+    }
+    private void SetTransformRotation()
+    {
+        transform.rotation = Quaternion.AngleAxis(_moduleRotation * 60, Vector3.back);
+    }
     public void ForceHold()
     {
         _holding = true;

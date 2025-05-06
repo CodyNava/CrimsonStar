@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class NetEditorModule : MonoBehaviour
 {
-    [SerializeField] private NetModuleID moduleID;
-
+    [field: SerializeField] public NetModuleID ModuleID { get; private set; }
+    public HexCoordinate PlacedLocation { get; set; }
     public List<HexCoordinate> LocalCoordinates { get; private set; }
 
     private void Start()
     {
-        NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
+        NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[ModuleID];
         LocalCoordinates = new List<HexCoordinate>();
         foreach (Vector3Int localCoordinate in moduleData.LocalModuleCoordinates)
         {

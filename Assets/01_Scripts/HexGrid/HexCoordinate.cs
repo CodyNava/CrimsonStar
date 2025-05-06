@@ -21,9 +21,9 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
     public int Q => _q;
     public int R => _r;
     public int S => _s;
-    
+
     public static readonly HexCoordinate Zero = new(0, 0);
-    
+
     public HexCoordinate(int q, int r)
     {
         _q = q;
@@ -60,12 +60,12 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
     {
         return new HexCoordinate(lhs._q + rhs._q, lhs._r + rhs._r, lhs._s + rhs._s);
     }
-    
+
     public static HexCoordinate operator -(HexCoordinate lhs, HexCoordinate rhs)
     {
         return new HexCoordinate(lhs._q - rhs._q, lhs._r - rhs._r, lhs._s - rhs._s);
     }
-    
+
     public static HexCoordinate operator *(HexCoordinate lhs, HexCoordinate rhs)
     {
         return new HexCoordinate(lhs._q * rhs._q, lhs._r * rhs._r, lhs._s * rhs._s);
@@ -100,7 +100,7 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
             yield return Neighbor(this, direction);
         }
     }
-    
+
     public bool Equals(HexCoordinate other)
     {
         return _q == other._q && _r == other._r && _s == other._s;

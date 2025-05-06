@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
- public readonly struct HexLayout
+public readonly struct HexLayout
 {
     private readonly HexOrientation _orientation;
     private readonly Vector2 _size, _origin;
@@ -8,7 +8,7 @@
     public HexLayout(HexOrientation orientation, Vector2 size, Vector2 origin)
     {
         _orientation = orientation;
-        _size = size;
+        _size = size * new Vector2(1, -1);
         _origin = origin;
     }
 

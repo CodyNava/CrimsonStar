@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FishNet.Object;
+﻿using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using System.Collections.Generic;
+using System.Linq;
 
 public class ServerModuleStorage : NetworkBehaviour
 {
     private static readonly HexCoordinate[] BridgeCoordinates = {
-        HexCoordinate.Zero, 
+        HexCoordinate.Zero,
         HexCoordinate.Neighbor(HexCoordinate.Zero, HexDirection.North),
     };
-    
+
     private readonly SyncDictionary<HexCoordinate, NetModuleID> _modules = new();
 
     private void Awake()
@@ -45,7 +45,7 @@ public class ServerModuleStorage : NetworkBehaviour
         // return false;
         return coord.Neighbors().Any(IsCoordinateOccupied);
     }
-    
+
     // (HexCoordinate coord, NetModuleID) is a "Value Tuple" which lets one return multiple variables from a function
     public IEnumerable<(HexCoordinate coord, NetModuleID id)> GetNeighboringModules(HexCoordinate coord)
     {

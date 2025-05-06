@@ -6,7 +6,7 @@ public class HexTransform : MonoBehaviour
 
     public HexLayout Layout => new(HexOrientation.Flat, Vector2.one * scale, transform.position.xy());
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         var layout = Layout;
         for (int q = -3; q <= 3; q++)
