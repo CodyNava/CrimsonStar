@@ -19,9 +19,10 @@ public class GameplayConductor : NetworkSingleton<GameplayConductor>
     
     public override void OnStartNetwork()
     {
+        InstanceFinder.RegisterInstance(this);
+        
         if (IsServerInitialized)
         {
-            InstanceFinder.RegisterInstance(this);
             _editorConductor = InstanceFinder.GetInstance<ShipEditorConductor>();
             SceneManager.OnClientPresenceChangeStart += OnSceneChange;
         }
@@ -29,9 +30,10 @@ public class GameplayConductor : NetworkSingleton<GameplayConductor>
 
     public override void OnStopNetwork()
     {
+        InstanceFinder.UnregisterInstance<GameplayConductor>();
+        
         if (IsServerInitialized)
         {
-            InstanceFinder.UnregisterInstance<GameplayConductor>();
             SceneManager.OnClientPresenceChangeStart -= OnSceneChange;
         }
     }
