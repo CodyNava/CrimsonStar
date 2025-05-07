@@ -74,9 +74,10 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
         Debug.Log("Editor start requested");
 
         SceneLoadData sceneData = new("NetShipEditor");
-        sceneData.ReplaceScenes = ReplaceOption.OnlineOnly;
-        var connections = ServerManager.Clients.Values.ToArray();
-        SceneManager.LoadConnectionScenes(connections, sceneData);
+        sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
+        SceneUnloadData unloadData = new("NetLobby");
+        SceneManager.LoadGlobalScenes(sceneData);
+        SceneManager.UnloadGlobalScenes(unloadData);
 
         GameObject shipEditor = Instantiate(shipEditorConductor).gameObject;
         ServerManager.Spawn(shipEditor);
