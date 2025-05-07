@@ -42,19 +42,12 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
         if (args.Scene.name == "NetShipEditor" && args.Added)
         {
             var shipEditor = Instantiate(shipEditorDataPrefab);
-            shipEditor.Initialize();
+            shipEditor.Initialize(args.Connection);
             shipEditor.SetResourceCounts(defaultResources.DefaultResourceCounts);
             ServerManager.Spawn(shipEditor.gameObject, args.Connection, args.Scene);
-            InitializeShipEditor(args.Connection, shipEditor, defaultResources.DefaultResourceCounts);
             PlayerShipEditors.Add(args.Connection, shipEditor);
             _playersReady.Add(args.Connection, false);
         }
-    }
-
-    [TargetRpc]
-    public void InitializeShipEditor(NetworkConnection conn, ServerShipEditorData shipEditor, Dictionary<NetResourceType, int> resourceCounts)
-    {
-        shipEditor.Initialize();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -67,7 +60,7 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
             Debug.Log("Game start requested");
 
             SceneLoadData sceneData = new("NetGameplayScene");
-            sceneData.ReplaceScenes = ReplaceOption.OnlineOnly;
+            sceneData.ReplaceScenes = ReplaceOption.All;
             var connections = ServerManager.Clients.Values.ToArray();
             SceneManager.LoadConnectionScenes(connections, sceneData);
 
