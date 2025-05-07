@@ -27,8 +27,16 @@ public class ServerResourceStorage : NetworkBehaviour
         return true;
     }
 
+    public void PayForModule(NetModuleID id)
+    {
+        if (IsOwner)
+        {
+            PayForModuleRPC(id);
+        }
+    }
+    
     [ServerRpc]
-    public void PayForModule(NetModuleID moduleID)
+    public void PayForModuleRPC(NetModuleID moduleID)
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
         foreach ((NetResourceType resourceType, int cost) in moduleData.Costs)
@@ -37,8 +45,16 @@ public class ServerResourceStorage : NetworkBehaviour
         }
     }
 
+    public void RefundModule(NetModuleID id)
+    {
+        if (IsOwner)
+        {
+            RefundModuleRPC(id);
+        }
+    }
+    
     [ServerRpc]
-    public void RefundModule(NetModuleID moduleID)
+    public void RefundModuleRPC(NetModuleID moduleID)
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
         foreach ((NetResourceType resourceType, int cost) in moduleData.Costs)
