@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 7126793065188569584}
   - component: {fileID: 8044024618627473456}
   - component: {fileID: 3189388433212872395}
+  - component: {fileID: 1102225645727348474}
+  - component: {fileID: 8163907783443336317}
   m_Layer: 3
   m_Name: NetBridgeGameplay
   m_TagString: Untagged
@@ -117,9 +119,9 @@ MonoBehaviour:
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  _enablePrediction: 0
-  _predictionType: 0
-  _graphicalObject: {fileID: 0}
+  _enablePrediction: 1
+  _predictionType: 2
+  _graphicalObject: {fileID: 12732445774338757}
   _detachGraphicalObject: 0
   _enableStateForwarding: 1
   _networkTransform: {fileID: 0}
@@ -182,6 +184,90 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
+--- !u!60 &1102225645727348474
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7512106822483562592}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 1.0027506, y: 1.7521911}
+      - {x: 1.9997653, y: 3.4891222}
+      - {x: 0.9994006, y: 5.196717}
+      - {x: -1.0071328, y: 5.1954665}
+      - {x: -1.9967055, y: 3.4640813}
+      - {x: -1.0017545, y: 1.7509114}
+      - {x: -2.0108724, y: -0.0016241968}
+      - {x: -1.0103717, y: -1.7515252}
+      - {x: 1.0040116, y: -1.75176}
+      - {x: 2.0006168, y: -0.0018763244}
+  m_UseDelaunayMesh: 0
+--- !u!50 &8163907783443336317
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7512106822483562592}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1001 &551556173803633966
 PrefabInstance:
   m_ObjectHideFlags: 0
