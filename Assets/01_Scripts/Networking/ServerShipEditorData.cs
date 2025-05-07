@@ -12,15 +12,9 @@ public class ServerShipEditorData : NetworkBehaviour
 
     public void SetResourceCounts(Dictionary<NetResourceType, int> resources)
     {
+        ModuleStorage ??= GetComponent<ServerModuleStorage>();
+        ResourceStorage ??= GetComponent<ServerResourceStorage>();
         ResourceStorage.SetResourceCounts(resources);
-    }
-    
-    public void Initialize(NetworkConnection conn)
-    {
-        ModuleStorage = GetComponent<ServerModuleStorage>();
-        ModuleStorage.GiveOwnership(conn);
-        ResourceStorage = GetComponent<ServerResourceStorage>();
-        ResourceStorage.GiveOwnership(conn);
     }
     
     public override void OnOwnershipClient(NetworkConnection prevOwner)

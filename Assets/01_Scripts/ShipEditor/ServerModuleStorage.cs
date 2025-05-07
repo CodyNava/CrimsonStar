@@ -18,7 +18,9 @@ public class ServerModuleStorage : NetworkBehaviour
         HexCoordinate.Neighbor(HexCoordinate.Zero, HexDirection.North),
     };
 
-    public SyncDictionary<HexCoordinate, ModulePlacementData> ModuleMap { get; } = new();
+    private readonly SyncDictionary<HexCoordinate, ModulePlacementData> _moduleMap = new();
+    
+    public SyncDictionary<HexCoordinate, ModulePlacementData> ModuleMap => _moduleMap;
 
     private void Awake()
     {
@@ -30,11 +32,20 @@ public class ServerModuleStorage : NetworkBehaviour
         };
         foreach (HexCoordinate bridgeCoord in BridgeCoordinates)
         {
-            ModuleMap[bridgeCoord] = bridgeData;
+            _moduleMap[bridgeCoord] = bridgeData;
         }
     }
 
     public void AddModule(HexCoordinate coord, NetModuleID id, int rotation)
+    {
+        if (IsOwner)
+        {
+            AddModuleRPC(coord, id, rotation);
+        }
+    }
+    
+    [ServerRpc]
+    public void AddModuleRPC(HexCoordinate coord, NetModuleID id, int rotation)
     {
         ModulePlacementData placementData = new()
         {
@@ -67,12 +78,21 @@ public class ServerModuleStorage : NetworkBehaviour
 
     private void AddModuleReference(HexCoordinate coord, ModulePlacementData data)
     {
-        ModuleMap[coord] = data;
+        _moduleMap[coord] = data;
     }
 
     public void RemoveModule(HexCoordinate coord)
     {
-        ModulePlacementData placementData = ModuleMap[coord];
+        if (IsOwner)
+        {
+            RemoveModuleRPC(coord);
+        }
+    }
+
+    [ServerRpc]
+    public void RemoveModuleRPC(HexCoordinate coord)
+    {
+        ModulePlacementData placementData = _moduleMap[coord];
         var localHexCoordinates = placementData.ModuleID.GetModuleData().GetLocalHexCoordinates();
         foreach (var rotatedLocalCoord in GetRotatedCoordinates(localHexCoordinates, placementData.Rotation))
         {
@@ -82,12 +102,12 @@ public class ServerModuleStorage : NetworkBehaviour
 
     private void RemoveModuleReference(HexCoordinate coord)
     {
-        ModuleMap.Remove(coord);
+        _moduleMap.Remove(coord);
     }
 
     public bool IsCoordinateOccupied(HexCoordinate coord)
     {
-        return ModuleMap.ContainsKey(coord);
+        return _moduleMap.ContainsKey(coord);
     }
 
     public bool IsNeighboringModule(HexCoordinate coord)
@@ -106,7 +126,7 @@ public class ServerModuleStorage : NetworkBehaviour
     {
         foreach (HexCoordinate neighbor in coord.Neighbors())
         {
-            if (ModuleMap.TryGetValue(neighbor, out ModulePlacementData placementData))
+            if (_moduleMap.TryGetValue(neighbor, out ModulePlacementData placementData))
             {
                 yield return (coord, placementData.ModuleID);
             }
@@ -115,7 +135,7 @@ public class ServerModuleStorage : NetworkBehaviour
 
     private void OnDrawGizmos()
     {
-        foreach (HexCoordinate coord in ModuleMap.Keys)
+        foreach (HexCoordinate coord in _moduleMap.Keys)
         {
             coord.DrawGizmos(Color.yellow, 2f, 0.9f);
         }

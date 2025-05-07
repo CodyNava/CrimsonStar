@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using FishNet.CodeGenerating;
+using FishNet.Serializing;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-[Serializable]
-public readonly struct HexCoordinate : IEquatable<HexCoordinate>
+[Serializable, UseGlobalCustomSerializer]
+public struct HexCoordinate : IEquatable<HexCoordinate>
 {
-    private readonly int _q, _r, _s;
-
     private static readonly HexCoordinate[] DirectionOffsets =
     {
         new(1, 0, -1),
@@ -18,32 +18,35 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
         new(0, 1, -1),
     };
 
-    public int Q => _q;
-    public int R => _r;
-    public int S => _s;
+    [field: SerializeField]
+    public int Q { get; private set; }
+    [field: SerializeField]
+    public int R { get; private set; }
+    [field: SerializeField]
+    public int S { get; private set; }
 
     public static readonly HexCoordinate Zero = new(0, 0);
 
     public HexCoordinate(int q, int r)
     {
-        _q = q;
-        _r = r;
-        _s = -q - r;
+        Q = q;
+        R = r;
+        S = -q - r;
     }
 
     public HexCoordinate(int q, int r, int s)
     {
-        _q = q;
-        _r = r;
-        _s = s;
+        Q = q;
+        R = r;
+        S = s;
     }
 
     public HexCoordinate(Vector3Int coords)
     {
-        _q = coords.x;
-        _r = coords.y;
-        _s = coords.z;
-        Assert.IsTrue(_s == -_q - _r, "Illegal coordinates found in Module Data Scriptable Object.");
+        Q = coords.x;
+        R = coords.y;
+        S = coords.z;
+        Assert.IsTrue(S == -Q - R, "Illegal coordinates found in Module Data Scriptable Object.");
     }
 
     public static bool operator ==(HexCoordinate lhs, HexCoordinate rhs)
@@ -58,17 +61,17 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
 
     public static HexCoordinate operator +(HexCoordinate lhs, HexCoordinate rhs)
     {
-        return new HexCoordinate(lhs._q + rhs._q, lhs._r + rhs._r, lhs._s + rhs._s);
+        return new HexCoordinate(lhs.Q + rhs.Q, lhs.R + rhs.R, lhs.S + rhs.S);
     }
 
     public static HexCoordinate operator -(HexCoordinate lhs, HexCoordinate rhs)
     {
-        return new HexCoordinate(lhs._q - rhs._q, lhs._r - rhs._r, lhs._s - rhs._s);
+        return new HexCoordinate(lhs.Q - rhs.Q, lhs.R - rhs.R, lhs.S - rhs.S);
     }
 
     public static HexCoordinate operator *(HexCoordinate lhs, HexCoordinate rhs)
     {
-        return new HexCoordinate(lhs._q * rhs._q, lhs._r * rhs._r, lhs._s * rhs._s);
+        return new HexCoordinate(lhs.Q * rhs.Q, lhs.R * rhs.R, lhs.S * rhs.S);
     }
 
     public static HexCoordinate Direction(HexDirection direction)
@@ -83,12 +86,12 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
 
     public HexCoordinate RotateClockwise()
     {
-        return new HexCoordinate(-_r, -_s, -_q);
+        return new HexCoordinate(-R, -S, -Q);
     }
 
     public HexCoordinate RotateCounterClockwise()
     {
-        return new HexCoordinate(-_s, -_q, -_r);
+        return new HexCoordinate(-S, -Q, -R);
     }
 
     // IEnumerable<T> is a return type that lets us use foreach(T var in coord.Neighbors()) to loop through
@@ -103,7 +106,7 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
 
     public bool Equals(HexCoordinate other)
     {
-        return _q == other._q && _r == other._r && _s == other._s;
+        return Q == other.Q && R == other.R && S == other.S;
     }
 
     public override bool Equals(object obj)
@@ -113,12 +116,26 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_q, _r, _s);
+        return HashCode.Combine(Q, R, S);
     }
 
     public void DrawGizmos(Color color, float size = 2f, float scale = 1f)
     {
         HexLayout layout = new(HexOrientation.Flat, Vector2.one * size, Vector2.zero);
         layout.DrawGizmos(this, color, scale);
+    }
+}
+
+public static class HexCoordinateSerialization
+{
+    public static void WriteCoordinate(this Writer writer, HexCoordinate value)
+    {
+        writer.WriteInt32(value.Q);
+        writer.WriteInt32(value.R);
+    }
+
+    public static HexCoordinate ReadCoordinate(this Reader reader)
+    {
+        return new HexCoordinate(reader.ReadInt32(), reader.ReadInt32());
     }
 }
