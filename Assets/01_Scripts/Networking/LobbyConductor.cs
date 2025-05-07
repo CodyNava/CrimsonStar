@@ -74,18 +74,12 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
         Debug.Log("Editor start requested");
 
         SceneLoadData sceneData = new("NetShipEditor");
+        sceneData.ReplaceScenes = ReplaceOption.OnlineOnly;
         var connections = ServerManager.Clients.Values.ToArray();
         SceneManager.LoadConnectionScenes(connections, sceneData);
 
-        CloseLobbyScene();
         GameObject shipEditor = Instantiate(shipEditorConductor).gameObject;
         ServerManager.Spawn(shipEditor);
-    }
-
-    [ObserversRpc]
-    private void CloseLobbyScene()
-    {
-        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("NetLobby");
     }
 
     public override void OnStopNetwork()

@@ -67,26 +67,13 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
             Debug.Log("Game start requested");
 
             SceneLoadData sceneData = new("NetGameplayScene");
+            sceneData.ReplaceScenes = ReplaceOption.OnlineOnly;
             var connections = ServerManager.Clients.Values.ToArray();
             SceneManager.LoadConnectionScenes(connections, sceneData);
 
-            CloseEditorScene();
             GameObject gameConductor = Instantiate(gameplayConductor).gameObject;
             ServerManager.Spawn(gameConductor);
         }
-    }
-
-    [ObserversRpc]
-    private void CloseEditorScene()
-    {
-        var editorModules = FindObjectsByType<NetEditorModule>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-
-        foreach (NetEditorModule editorModule in editorModules)
-        {
-            Destroy(editorModule.gameObject);
-        }
-        
-        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("NetShipEditor");
     }
 
     private bool AllPlayersReady()
