@@ -77,7 +77,7 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
         var connections = ServerManager.Clients.Values.ToArray();
         SceneManager.LoadConnectionScenes(connections, sceneData);
 
-        GameObject shipEditor = Instantiate(shipEditorConductor.gameObject);
+        GameObject shipEditor = Instantiate(shipEditorConductor).gameObject;
         ServerManager.Spawn(shipEditor);
     }
 

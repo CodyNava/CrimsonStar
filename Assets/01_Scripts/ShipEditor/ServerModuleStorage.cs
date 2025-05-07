@@ -18,7 +18,7 @@ public class ServerModuleStorage : NetworkBehaviour
         HexCoordinate.Neighbor(HexCoordinate.Zero, HexDirection.North),
     };
 
-    private readonly SyncDictionary<HexCoordinate, ModulePlacementData> _moduleMap = new();
+    public SyncDictionary<HexCoordinate, ModulePlacementData> ModuleMap { get; } = new();
 
     private void Awake()
     {
@@ -30,7 +30,7 @@ public class ServerModuleStorage : NetworkBehaviour
         };
         foreach (HexCoordinate bridgeCoord in BridgeCoordinates)
         {
-            _moduleMap[bridgeCoord] = bridgeData;
+            ModuleMap[bridgeCoord] = bridgeData;
         }
     }
 
@@ -67,12 +67,12 @@ public class ServerModuleStorage : NetworkBehaviour
 
     private void AddModuleReference(HexCoordinate coord, ModulePlacementData data)
     {
-        _moduleMap[coord] = data;
+        ModuleMap[coord] = data;
     }
 
     public void RemoveModule(HexCoordinate coord)
     {
-        ModulePlacementData placementData = _moduleMap[coord];
+        ModulePlacementData placementData = ModuleMap[coord];
         var localHexCoordinates = placementData.ModuleID.GetModuleData().GetLocalHexCoordinates();
         foreach (var rotatedLocalCoord in GetRotatedCoordinates(localHexCoordinates, placementData.Rotation))
         {
@@ -82,12 +82,12 @@ public class ServerModuleStorage : NetworkBehaviour
 
     private void RemoveModuleReference(HexCoordinate coord)
     {
-        _moduleMap.Remove(coord);
+        ModuleMap.Remove(coord);
     }
 
     public bool IsCoordinateOccupied(HexCoordinate coord)
     {
-        return _moduleMap.ContainsKey(coord);
+        return ModuleMap.ContainsKey(coord);
     }
 
     public bool IsNeighboringModule(HexCoordinate coord)
@@ -106,7 +106,7 @@ public class ServerModuleStorage : NetworkBehaviour
     {
         foreach (HexCoordinate neighbor in coord.Neighbors())
         {
-            if (_moduleMap.TryGetValue(neighbor, out ModulePlacementData placementData))
+            if (ModuleMap.TryGetValue(neighbor, out ModulePlacementData placementData))
             {
                 yield return (coord, placementData.ModuleID);
             }
@@ -115,7 +115,7 @@ public class ServerModuleStorage : NetworkBehaviour
 
     private void OnDrawGizmos()
     {
-        foreach (HexCoordinate coord in _moduleMap.Keys)
+        foreach (HexCoordinate coord in ModuleMap.Keys)
         {
             coord.DrawGizmos(Color.yellow, 2f, 0.9f);
         }

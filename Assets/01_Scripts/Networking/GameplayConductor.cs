@@ -1,7 +1,10 @@
-﻿using AYellowpaper.SerializedCollections;
+﻿using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
 using FishNet;
+using FishNet.Connection;
 using FishNet.Managing.Scened;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameplayConductor : NetworkSingleton<GameplayConductor>
 {
@@ -39,15 +42,36 @@ public class GameplayConductor : NetworkSingleton<GameplayConductor>
         {
             var bridge = Instantiate(bridgePrefab);
             var spawnPoint = GetSpawnTransform();
-            bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
-            ConstructPlayerShip(bridge, _editorConductor.PlayerShipEditors[args.Connection]);
+            ConstructPlayerShip(args.Connection, bridge, _editorConductor.PlayerShipEditors[args.Connection], args.Scene);
             ServerManager.Spawn(bridge.gameObject, args.Connection, args.Scene);
+            bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+
+            if (_spawnedPlayers == PlayerCount)
+            {
+                StartMatch();
+            }
         }
     }
 
-    private void ConstructPlayerShip(NetworkedBridge bridge, ServerShipEditorData editorData)
+    private void StartMatch()
     {
-        
+        Debug.Log("Imagine the game would start right now! Wow!");
+    }
+
+    private void ConstructPlayerShip(NetworkConnection conn, NetworkedBridge bridge, ServerShipEditorData editorData, Scene scene)
+    {
+        HashSet<HexCoordinate> spawnedRoots = new HashSet<HexCoordinate>();
+        foreach (var placementData in editorData.ModuleStorage.ModuleMap.Values)
+        {
+            if (!spawnedRoots.Add(placementData.RootCoordinate)) continue;
+            if (placementData.ModuleID <= NetModuleID.Bridge) continue;
+            Quaternion moduleRotation = Quaternion.AngleAxis(placementData.Rotation * 60, Vector3.back);
+            Vector3 modulePos = bridge.HexTransform.Layout.HexToPositionXY(placementData.RootCoordinate);
+            NetGameplayModule module = Instantiate(placementData.ModuleID.GetModuleData().GameplayPrefab);
+            module.NetworkObject.SetParent(bridge);
+            module.transform.SetLocalPositionAndRotation(bridge.transform.InverseTransformPoint(modulePos), moduleRotation);
+            module.LinkToBridge(bridge);
+        }
     }
 
     private Transform GetSpawnTransform()
