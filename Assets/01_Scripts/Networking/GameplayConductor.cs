@@ -45,7 +45,7 @@ public class GameplayConductor : NetworkSingleton<GameplayConductor>
             var bridge = Instantiate(bridgePrefab);
             var spawnPoint = GetSpawnTransform();
             ConstructPlayerShip(args.Connection, bridge, _editorConductor.PlayerShipEditors[args.Connection], args.Scene);
-            ServerManager.Spawn(bridge.gameObject, args.Connection, args.Scene);
+            ServerManager.Spawn(bridge.gameObject, args.Connection);
             bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
 
             if (_spawnedPlayers == PlayerCount)

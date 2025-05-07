@@ -27,6 +27,7 @@ public class ServerResourceStorage : NetworkBehaviour
         return true;
     }
 
+    [ServerRpc]
     public void PayForModule(NetModuleID moduleID)
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
@@ -36,6 +37,7 @@ public class ServerResourceStorage : NetworkBehaviour
         }
     }
 
+    [ServerRpc]
     public void RefundModule(NetModuleID moduleID)
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];

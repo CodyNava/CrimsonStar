@@ -42,19 +42,12 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
         if (args.Scene.name == "NetShipEditor" && args.Added)
         {
             var shipEditor = Instantiate(shipEditorDataPrefab);
-            ServerManager.Spawn(shipEditor.gameObject, args.Connection, args.Scene);
-            shipEditor.Initialize();
+            shipEditor.Initialize(args.Connection);
             shipEditor.SetResourceCounts(defaultResources.DefaultResourceCounts);
-            InitializeShipEditor(args.Connection, shipEditor, defaultResources.DefaultResourceCounts);
+            ServerManager.Spawn(shipEditor.gameObject, args.Connection, args.Scene);
             PlayerShipEditors.Add(args.Connection, shipEditor);
             _playersReady.Add(args.Connection, false);
         }
-    }
-
-    [TargetRpc]
-    public void InitializeShipEditor(NetworkConnection conn, ServerShipEditorData shipEditor, Dictionary<NetResourceType, int> resourceCounts)
-    {
-        shipEditor.Initialize();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -67,26 +60,14 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
             Debug.Log("Game start requested");
 
             SceneLoadData sceneData = new("NetGameplayScene");
-            var connections = ServerManager.Clients.Values.ToArray();
-            SceneManager.LoadConnectionScenes(connections, sceneData);
+            sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
+            SceneUnloadData unloadData = new("NetShipEditor");
+            SceneManager.LoadGlobalScenes(sceneData);
+            SceneManager.UnloadGlobalScenes(unloadData);
 
-            CloseEditorScene();
             GameObject gameConductor = Instantiate(gameplayConductor).gameObject;
             ServerManager.Spawn(gameConductor);
         }
-    }
-
-    [ObserversRpc]
-    private void CloseEditorScene()
-    {
-        var editorModules = FindObjectsByType<NetEditorModule>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-
-        foreach (NetEditorModule editorModule in editorModules)
-        {
-            Destroy(editorModule.gameObject);
-        }
-        
-        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("NetShipEditor");
     }
 
     private bool AllPlayersReady()
