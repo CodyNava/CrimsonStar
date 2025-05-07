@@ -9,6 +9,7 @@ using UnityEngine;
 
 public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
 {
+    [SerializeField] private GameplayConductor gameplayConductor;
     [SerializeField] private ServerShipEditorData shipEditorDataPrefab;
     private Dictionary<NetworkConnection, bool> _playersReady = new();
 
@@ -59,12 +60,22 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
             SceneLoadData sceneData = new("NetGameplayScene");
             var connections = ServerManager.Clients.Values.ToArray();
             SceneManager.LoadConnectionScenes(connections, sceneData);
+
+            GameObject gameConductor = Instantiate(gameplayConductor).gameObject;
+            ServerManager.Spawn(gameConductor);
         }
     }
 
     [ObserversRpc]
     private void CloseEditorScene()
     {
+        var editorModules = FindObjectsByType<NetEditorModule>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+        foreach (NetEditorModule editorModule in editorModules)
+        {
+            Destroy(editorModule.gameObject);
+        }
+        
         UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("NetShipEditor");
     }
 
