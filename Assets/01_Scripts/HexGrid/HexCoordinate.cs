@@ -115,4 +115,10 @@ public readonly struct HexCoordinate : IEquatable<HexCoordinate>
     {
         return HashCode.Combine(_q, _r, _s);
     }
+
+    public void DrawGizmos(Color color, float size = 2f, float scale = 1f)
+    {
+        HexLayout layout = new(HexOrientation.Flat, Vector2.one * size, Vector2.zero);
+        layout.DrawGizmos(this, color, scale);
+    }
 }

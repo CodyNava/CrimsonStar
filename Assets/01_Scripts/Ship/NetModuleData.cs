@@ -1,5 +1,6 @@
 ﻿using AYellowpaper.SerializedCollections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NetModuleData", menuName = "Modules/Net Module Data")]
@@ -20,4 +21,8 @@ public class NetModuleData : ScriptableObject
 
     [field: SerializeField] public NetEditorModule ShipEditorPrefab { get; private set; }
     [field: SerializeField] public NetGameplayModule GameplayPrefab { get; private set; }
+
+
+    public IEnumerable<HexCoordinate> GetLocalHexCoordinates() =>
+        LocalModuleCoordinates.Select(vec => new HexCoordinate(vec));
 }

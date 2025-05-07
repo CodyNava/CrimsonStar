@@ -36,13 +36,13 @@ public readonly struct HexLayout
         return new Vector2(_size.x * Mathf.Cos(angle), _size.y * Mathf.Sin(angle));
     }
 
-    public void DrawGizmos(HexCoordinate hex, Color color)
+    public void DrawGizmos(HexCoordinate hex, Color color, float hexScale = 1f)
     {
         Gizmos.color = color;
         Vector2 center = HexToPositionXY(hex);
         for (int i = 0; i < 6; i++)
         {
-            Gizmos.DrawLine(center + HexCornerOffsetXY(i), center + HexCornerOffsetXY(i + 1));
+            Gizmos.DrawLine(center + HexCornerOffsetXY(i) * hexScale, center + HexCornerOffsetXY(i + 1) * hexScale);
         }
     }
 }

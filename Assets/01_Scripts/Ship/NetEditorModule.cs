@@ -5,6 +5,7 @@ public class NetEditorModule : MonoBehaviour
 {
     [field: SerializeField] public NetModuleID ModuleID { get; private set; }
     public HexCoordinate PlacedLocation { get; set; }
+    public int PlacedRotation { get; set; }
     public List<HexCoordinate> LocalCoordinates { get; private set; }
 
     private void Start()
@@ -23,6 +24,14 @@ public class NetEditorModule : MonoBehaviour
         {
             LocalCoordinates[i] = LocalCoordinates[i].RotateClockwise();
         }
+
+        PlacedRotation++;
+        if (PlacedRotation > 5)
+        {
+            PlacedRotation -= 6;
+        }
+        
+        UpdateRotation();
     }
 
     public void RotateCounterclockwise()
@@ -31,5 +40,18 @@ public class NetEditorModule : MonoBehaviour
         {
             LocalCoordinates[i] = LocalCoordinates[i].RotateCounterClockwise();
         }
+        
+        PlacedRotation--;
+        if (PlacedRotation < 0)
+        {
+            PlacedRotation += 6;
+        }
+        
+        UpdateRotation();
+    }
+
+    private void UpdateRotation()
+    {
+        transform.rotation = Quaternion.AngleAxis(PlacedRotation * 60, Vector3.back);
     }
 }
