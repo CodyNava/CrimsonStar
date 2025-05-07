@@ -1,11 +1,9 @@
-﻿using FishNet.Component.Transforming;
-using FishNet.Object;
+﻿using FishNet.Object;
 using UnityEngine;
 
 public class NetworkedBridge : NetworkBehaviour
 {
     [field: SerializeField] public HexTransform HexTransform { get; private set; }
-    [field: SerializeField] public NetworkTransform NetworkTransform { get; private set; }
 
     private NetModuleBaseStats _baseStats;
 
@@ -32,5 +30,15 @@ public class NetworkedBridge : NetworkBehaviour
         {
             FindFirstObjectByType<CameraFollow>().SetTargetFollow(null);
         }
+    }
+
+    public float ComputeRotationSpeed()
+    {
+        return 10f;
+    }
+
+    public float ComputeMovementSpeed()
+    {
+        return 5f;
     }
 }

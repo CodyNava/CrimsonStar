@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3189388433212872395}
   - component: {fileID: 1102225645727348474}
   - component: {fileID: 8163907783443336317}
+  - component: {fileID: 2511837122799470115}
   m_Layer: 3
   m_Name: NetBridgeGameplay
   m_TagString: Untagged
@@ -56,7 +57,6 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 8044024618627473456}
   _networkObjectCache: {fileID: 8044024618627473456}
   <HexTransform>k__BackingField: {fileID: 7126793065188569584}
-  <NetworkTransform>k__BackingField: {fileID: 0}
 --- !u!114 &8401872920864926394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,6 +268,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &2511837122799470115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7512106822483562592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 663213eeb1f34f58ad32921acf6ecb2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 8044024618627473456}
+  _networkObjectCache: {fileID: 0}
+  bridge: {fileID: 4735051456491862256}
 --- !u!1001 &551556173803633966
 PrefabInstance:
   m_ObjectHideFlags: 0
