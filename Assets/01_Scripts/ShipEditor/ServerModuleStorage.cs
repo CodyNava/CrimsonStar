@@ -34,6 +34,7 @@ public class ServerModuleStorage : NetworkBehaviour
         }
     }
 
+    [ServerRpc]
     public void AddModule(HexCoordinate coord, NetModuleID id, int rotation)
     {
         ModulePlacementData placementData = new()
@@ -70,6 +71,7 @@ public class ServerModuleStorage : NetworkBehaviour
         ModuleMap[coord] = data;
     }
 
+    [ServerRpc]
     public void RemoveModule(HexCoordinate coord)
     {
         ModulePlacementData placementData = ModuleMap[coord];
