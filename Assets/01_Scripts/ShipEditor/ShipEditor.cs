@@ -2,53 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 public class ShipEditor : MonoBehaviour
 {
-    public Camera editCamera;
-    //public TextMeshProUGUI shipHealth;
-    //public TextMeshProUGUI speed;
-    //public TextMeshProUGUI weapons;
-    private int _turretCount;
-    public PlayerShipEditor PlayerShipEditor { get; private set; }
+    [SerializeField] private Camera editCamera;
     [SerializeField] private GameObject noMoneyPopUp;
     [SerializeField] private HexTransform hexTransform;
-    private NetEditorModule _heldNetEditorModule;
-    private int _moduleRotation;
+    
+    public ServerShipEditorData ServerShipEditorData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModules = new();
-    public void SetPlayerShipEditor(PlayerShipEditor playerShipEditor)
+    private NetEditorModule _heldNetEditorModule;
+    private int _turretCount;
+
+    public void SetPlayerShipEditor(ServerShipEditorData serverShipEditorData)
     {
-        PlayerShipEditor = playerShipEditor;
+        ServerShipEditorData = serverShipEditorData;
     }
 
     private void Update()
     {
-        //UIShipStats();
         ModuleHolding();
     }
 
     private void Start()
     {
-        //weapons.text = $"DPS: 0";
         editCamera ??= Camera.main;
     }
-
-    /*public void UIShipStats()
-    {
-        shipHealth.text = $"HP: {_shipController.MaxHp}";
-        speed.text = $"Speed: {_shipController.MoveSpeedChange:0.00}";
-        shooting = ship.GetComponentsInChildren<Shooting>();
-        if (shooting.Length == 0)
-        {
-            weapons.text = $"DPS: 0";
-        }
-        else
-        {
-            weapons.text = $"DPS: {shooting.Length * 10 * 2 * 2}";
-        }
-
-
-    }*/
 
     public void SpawnPart(NetModuleID moduleID)
     {
@@ -58,14 +38,14 @@ public class ShipEditor : MonoBehaviour
             StartCoroutine(NotEnoughMoneyPopUp());
         }
     }
-    IEnumerator NotEnoughMoneyPopUp()
+
+    private IEnumerator NotEnoughMoneyPopUp()
     {
         noMoneyPopUp.SetActive(true);
         yield return new WaitForSeconds(1f);
         noMoneyPopUp.SetActive(false);
     }
-
-
+    
     public bool TrySpawnPart(NetModuleID moduleID)
     {
         if (_heldNetEditorModule != null)
@@ -73,21 +53,17 @@ public class ShipEditor : MonoBehaviour
             return false;
         }
 
-        NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
-
-        if (!PlayerShipEditor.ResourceStorage.HasResourcesForModule(moduleID))
+        if (!ServerShipEditorData.ResourceStorage.HasResourcesForModule(moduleID))
         {
             return false;
         }
 
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mouseWorldPos.z = 0f;
-        _heldNetEditorModule = Instantiate(moduleData.ShipEditorPrefab, transform.position, transform.rotation);
-        PlayerShipEditor.ResourceStorage.PayForModule(moduleID);
+        _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
+        ServerShipEditorData.ResourceStorage.PayForModule(moduleID);
         return true;
     }
 
-    void ModuleHolding()
+    private void ModuleHolding()
     {
         Vector2 mousePosWorld = editCamera.ScreenToWorldPoint(Input.mousePosition).xy();
         HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
@@ -108,17 +84,18 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule.transform.position = mousePosWorld.xy0();
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                PlayerShipEditor.ResourceStorage.RefundModule(_heldNetEditorModule.ModuleID);
+                ServerShipEditorData.ResourceStorage.RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
                 _heldNetEditorModule = null;
+                return;
             }
             if (Keyboard.current.eKey.wasPressedThisFrame && DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
             {
-                RotateClockWise();
+                _heldNetEditorModule.RotateClockwise();
             }
             if (Keyboard.current.qKey.wasPressedThisFrame && DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
             {
-                RotateCounterClockWise();
+                _heldNetEditorModule.RotateCounterclockwise();
             }
         }
         else
@@ -128,30 +105,30 @@ public class ShipEditor : MonoBehaviour
                 _heldNetEditorModule = placedModule;
                 RemoveModule(placedModule);
             }
-
         }
     }
+    
     public bool CanPlaceModule(HexCoordinate rootCoord)
     {
         bool isAttached = false;
-
-
+        
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
             HexCoordinate coord = rootCoord + localCoord;
             _editorModules[coord] = _heldNetEditorModule;
 
-            if (PlayerShipEditor.ModuleStorage.IsCoordinateOccupied(coord))
+            if (ServerShipEditorData.ModuleStorage.IsCoordinateOccupied(coord))
             {
                 return false;
             }
-            if (PlayerShipEditor.ModuleStorage.IsNeighboringModule(coord))
+            if (ServerShipEditorData.ModuleStorage.IsNeighboringModule(coord))
             {
                 isAttached = true;
             }
         }
         return isAttached;
     }
+    
     public void PlaceModule(HexCoordinate rootCoord)
     {
         _heldNetEditorModule.PlacedLocation = rootCoord;
@@ -159,42 +136,27 @@ public class ShipEditor : MonoBehaviour
         {
             HexCoordinate coord = rootCoord + localCoord;
             _editorModules[coord] = _heldNetEditorModule;
-            PlayerShipEditor.ModuleStorage.AddModule(rootCoord, _heldNetEditorModule.ModuleID);
         }
+        ServerShipEditorData.ModuleStorage.AddModule(rootCoord, _heldNetEditorModule.ModuleID, _heldNetEditorModule.PlacedRotation);
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
         _heldNetEditorModule = null;
     }
+    
     public void RemoveModule(NetEditorModule moduleToRemove)
     {
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
         {
             HexCoordinate coord = moduleToRemove.PlacedLocation + localCoord;
             _editorModules.Remove(coord);
-            PlayerShipEditor.ModuleStorage.RemoveModule(moduleToRemove.PlacedLocation);
         }
+        ServerShipEditorData.ModuleStorage.RemoveModule(moduleToRemove.PlacedLocation);
     }
-    public void RotateClockWise()
+
+    public void SignalReady()
     {
-        _moduleRotation++;
-        if (_moduleRotation > 5)
+        if (ServerShipEditorData.SignalReady())
         {
-            _moduleRotation -= 6;
+            gameObject.SetActive(false);
         }
-        SetTransformRotation();
-        _heldNetEditorModule.RotateClockwise();
-    }
-    public void RotateCounterClockWise()
-    {
-        _moduleRotation--;
-        if (_moduleRotation < 0)
-        {
-            _moduleRotation += 6;
-        }
-        SetTransformRotation();
-        _heldNetEditorModule.RotateCounterclockwise();
-    }
-    private void SetTransformRotation()
-    {
-        _heldNetEditorModule.transform.rotation = Quaternion.AngleAxis(_moduleRotation * 60, Vector3.back);
     }
 }

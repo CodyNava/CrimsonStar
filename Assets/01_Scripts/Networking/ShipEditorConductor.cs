@@ -9,9 +9,10 @@ using UnityEngine;
 
 public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
 {
-    [SerializeField] private PlayerShipEditor shipEditorPrefab;
-    private Dictionary<NetworkConnection, PlayerShipEditor> _playerShipEditors = new();
+    [SerializeField] private ServerShipEditorData shipEditorDataPrefab;
     private Dictionary<NetworkConnection, bool> _playersReady = new();
+
+    public Dictionary<NetworkConnection, ServerShipEditorData> PlayerShipEditors { get; } = new();
 
     public override void OnStartNetwork()
     {
@@ -37,10 +38,10 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
         
         if (args.Scene.name == "NetShipEditor" && args.Added)
         {
-            var shipEditor = Instantiate(shipEditorPrefab);
+            var shipEditor = Instantiate(shipEditorDataPrefab);
             shipEditor.Initialize(defaultResources.DefaultResourceCounts);
             ServerManager.Spawn(shipEditor.gameObject, args.Connection, args.Scene);
-            _playerShipEditors.Add(args.Connection, shipEditor);
+            PlayerShipEditors.Add(args.Connection, shipEditor);
             _playersReady.Add(args.Connection, false);
         }
     }
