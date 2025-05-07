@@ -23,9 +23,10 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
 
     public override void OnStartNetwork()
     {
+        InstanceFinder.RegisterInstance(this);
+        
         if (IsServerInitialized)
         {
-            InstanceFinder.RegisterInstance(this);
             ServerManager.OnRemoteConnectionState += OnConnectionStateChange;
             ServerManager.RegisterBroadcast<LobbyBroadcasts.PlayerIdentified>(OnPlayerIdentified, false);
             ServerManager.RegisterBroadcast<LobbyBroadcasts.GameStartRequested>(OnGameStartRequested, false);
@@ -89,9 +90,10 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
 
     public override void OnStopNetwork()
     {
+        InstanceFinder.UnregisterInstance<LobbyConductor>();
+        
         if (IsServerInitialized)
         {
-            InstanceFinder.UnregisterInstance<LobbyConductor>();
             ServerManager.OnRemoteConnectionState -= OnConnectionStateChange;
             ServerManager.UnregisterBroadcast<LobbyBroadcasts.PlayerIdentified>(OnPlayerIdentified);
             ServerManager.UnregisterBroadcast<LobbyBroadcasts.GameStartRequested>(OnGameStartRequested);

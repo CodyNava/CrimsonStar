@@ -47,9 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0de6c2e5ff13433c8da027975e53c627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 6443614646664665821}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 6443614646664665821}
 --- !u!114 &6443614646664665821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,7 +68,10 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
-  NetworkBehaviours: []
+  NetworkBehaviours:
+  - {fileID: 717885967007016320}
+  - {fileID: 1852204791798378530}
+  - {fileID: 7005231947872849630}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -87,21 +90,21 @@ MonoBehaviour:
   _enableStateForwarding: 1
   _networkTransform: {fileID: 0}
   _ownerInterpolation: 1
-  _ownerSmoothedProperties: 255
+  _ownerSmoothedProperties: 4294967295
   _adaptiveInterpolation: 3
-  _spectatorSmoothedProperties: 255
+  _spectatorSmoothedProperties: 4294967295
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 65535
+  <PrefabId>k__BackingField: 1
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 2226410376654602619
   <SceneId>k__BackingField: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    Scale: {x: 0, y: 0, z: 0}
-    IsValid: 0
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Scale: {x: 1, y: 1, z: 1}
+    IsValid: 1
 --- !u!114 &1852204791798378530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,9 +117,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96dc121ed325464d8bbc5581843de132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 6443614646664665821}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 6443614646664665821}
 --- !u!114 &7005231947872849630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,6 +132,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd4bea2a03bd4f1e917a94635035ee9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 6443614646664665821}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 6443614646664665821}

@@ -17,18 +17,20 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
 
     public override void OnStartNetwork()
     {
+        InstanceFinder.RegisterInstance(this);
+        
         if (IsServerInitialized)
         {
-            InstanceFinder.RegisterInstance(this);
             SceneManager.OnClientPresenceChangeStart += OnSceneChange;
         }
     }
 
     public override void OnStopNetwork()
     {
+        InstanceFinder.UnregisterInstance<ShipEditorConductor>();
+        
         if (IsServerInitialized)
         {
-            InstanceFinder.UnregisterInstance<ShipEditorConductor>();
             SceneManager.OnClientPresenceChangeStart -= OnSceneChange;
         }
     }
@@ -40,11 +42,18 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
         if (args.Scene.name == "NetShipEditor" && args.Added)
         {
             var shipEditor = Instantiate(shipEditorDataPrefab);
-            shipEditor.Initialize(defaultResources.DefaultResourceCounts);
             ServerManager.Spawn(shipEditor.gameObject, args.Connection, args.Scene);
+            shipEditor.Initialize(defaultResources.DefaultResourceCounts);
+            InitializeShipEditor(args.Connection, shipEditor, defaultResources.DefaultResourceCounts);
             PlayerShipEditors.Add(args.Connection, shipEditor);
             _playersReady.Add(args.Connection, false);
         }
+    }
+
+    [TargetRpc]
+    public void InitializeShipEditor(NetworkConnection conn, ServerShipEditorData shipEditor, Dictionary<NetResourceType, int> resourceCounts)
+    {
+        shipEditor.Initialize(resourceCounts);
     }
 
     [ServerRpc(RequireOwnership = false)]
