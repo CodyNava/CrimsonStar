@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1349169098673917716}
   - component: {fileID: -6686089169810634203}
   - component: {fileID: 1126688241392469851}
+  - component: {fileID: 7569464437239490623}
   m_Layer: 3
   m_Name: NetGameplayArmour_A
   m_TagString: Untagged
@@ -72,6 +73,7 @@ MonoBehaviour:
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours:
   - {fileID: 6229659692362667850}
+  - {fileID: -6686089169810634203}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -117,9 +119,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 1349169098673917716}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 1349169098673917716}
   _componentConfiguration: 0
   _synchronizeParent: 1
   _packing:
@@ -201,6 +203,27 @@ PolygonCollider2D:
       - {x: 1.0040116, y: -1.75176}
       - {x: 2.0006168, y: -0.0018763244}
   m_UseDelaunayMesh: 0
+--- !u!114 &7569464437239490623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6855830645283034957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be3cb2952c351714c963b0766f53cef3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 1349169098673917716}
+  _networkObjectCache: {fileID: 0}
+  _maximumSimultaneousHits: 16
+  _historyDuration: 0.5
+  _additionalSize: 0.1
+  _layers:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1001 &1405241135860973323
 PrefabInstance:
   m_ObjectHideFlags: 0
