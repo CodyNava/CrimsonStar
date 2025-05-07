@@ -72,12 +72,12 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
     private void OnGameStartRequested(NetworkConnection connection, LobbyBroadcasts.GameStartRequested msg, Channel channel)
     {
         Debug.Log("Editor start requested");
-        CloseLobbyScene();
 
         SceneLoadData sceneData = new("NetShipEditor");
         var connections = ServerManager.Clients.Values.ToArray();
         SceneManager.LoadConnectionScenes(connections, sceneData);
 
+        CloseLobbyScene();
         GameObject shipEditor = Instantiate(shipEditorConductor).gameObject;
         ServerManager.Spawn(shipEditor);
     }

@@ -42,9 +42,9 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
         if (args.Scene.name == "NetShipEditor" && args.Added)
         {
             var shipEditor = Instantiate(shipEditorDataPrefab);
-            ServerManager.Spawn(shipEditor.gameObject, args.Connection, args.Scene);
             shipEditor.Initialize();
             shipEditor.SetResourceCounts(defaultResources.DefaultResourceCounts);
+            ServerManager.Spawn(shipEditor.gameObject, args.Connection, args.Scene);
             InitializeShipEditor(args.Connection, shipEditor, defaultResources.DefaultResourceCounts);
             PlayerShipEditors.Add(args.Connection, shipEditor);
             _playersReady.Add(args.Connection, false);
