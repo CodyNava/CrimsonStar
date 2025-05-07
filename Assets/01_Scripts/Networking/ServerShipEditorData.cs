@@ -12,6 +12,8 @@ public class ServerShipEditorData : NetworkBehaviour
 
     public void SetResourceCounts(Dictionary<NetResourceType, int> resources)
     {
+        ModuleStorage ??= GetComponent<ServerModuleStorage>();
+        ResourceStorage ??= GetComponent<ServerResourceStorage>();
         ResourceStorage.SetResourceCounts(resources);
     }
     
