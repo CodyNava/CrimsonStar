@@ -7,8 +7,9 @@ public class ShipEditor : MonoBehaviour
 {
     [SerializeField] private Camera editCamera;
     [SerializeField] private GameObject noMoneyPopUp;
+    [SerializeField] private GameObject cantBePlacedPopUp;
     [SerializeField] private HexTransform hexTransform;
-    
+
     public ServerShipEditorData ServerShipEditorData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModules = new();
@@ -45,7 +46,13 @@ public class ShipEditor : MonoBehaviour
         yield return new WaitForSeconds(1f);
         noMoneyPopUp.SetActive(false);
     }
-    
+    private IEnumerator CantBePlacedPopUp()
+    {
+        cantBePlacedPopUp.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        cantBePlacedPopUp.SetActive(false);
+    }
+
     public bool TrySpawnPart(NetModuleID moduleID)
     {
         if (_heldNetEditorModule != null)
@@ -78,7 +85,8 @@ public class ShipEditor : MonoBehaviour
                 }
                 else
                 {
-                    // inplement feedback if cant place
+                    cantBePlacedPopUp.transform.position = mousePosWorld;
+                    StartCoroutine(CantBePlacedPopUp());
                 }
             }
             _heldNetEditorModule.transform.position = mousePosWorld.xy0();
@@ -107,11 +115,11 @@ public class ShipEditor : MonoBehaviour
             }
         }
     }
-    
+
     public bool CanPlaceModule(HexCoordinate rootCoord)
     {
         bool isAttached = false;
-        
+
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
             HexCoordinate coord = rootCoord + localCoord;
@@ -128,7 +136,7 @@ public class ShipEditor : MonoBehaviour
         }
         return isAttached;
     }
-    
+
     public void PlaceModule(HexCoordinate rootCoord)
     {
         _heldNetEditorModule.PlacedLocation = rootCoord;
@@ -141,7 +149,7 @@ public class ShipEditor : MonoBehaviour
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
         _heldNetEditorModule = null;
     }
-    
+
     public void RemoveModule(NetEditorModule moduleToRemove)
     {
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
