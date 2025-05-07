@@ -6,7 +6,7 @@ public struct NetModuleBaseStats
     public float thrust;
     public float energyCapacity;
     public float energyProduction;
-    
+
     public NetModuleBaseStats Combine(NetModuleBaseStats other)
     {
         return new NetModuleBaseStats
@@ -18,7 +18,7 @@ public struct NetModuleBaseStats
             energyProduction = energyProduction + other.energyProduction,
         };
     }
-    
+
     public NetModuleBaseStats Subtract(NetModuleBaseStats other)
     {
         return new NetModuleBaseStats

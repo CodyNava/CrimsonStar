@@ -18,4 +18,19 @@ public class NetworkedBridge : NetworkBehaviour
     {
         _baseStats = _baseStats.Subtract(detachedModuleBaseStats);
     }
+
+    public override void OnStartClient()
+    {
+        if (IsOwner)
+        {
+            FindFirstObjectByType<CameraFollow>().SetTargetFollow(transform);
+        }
+    }
+    public override void OnStopClient()
+    {
+        if (IsOwner)
+        {
+            FindFirstObjectByType<CameraFollow>().SetTargetFollow(null);
+        }
+    }
 }
