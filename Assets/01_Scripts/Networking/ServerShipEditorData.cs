@@ -23,9 +23,12 @@ public class ServerShipEditorData : NetworkBehaviour
     
     public override void OnOwnershipClient(NetworkConnection prevOwner)
     {
-        ModuleStorage ??= GetComponent<ServerModuleStorage>();
-        ResourceStorage ??= GetComponent<ServerResourceStorage>();
-        StartCoroutine(LinkToEditor());
+        if (IsOwner)
+        {
+            ModuleStorage ??= GetComponent<ServerModuleStorage>();
+            ResourceStorage ??= GetComponent<ServerResourceStorage>();
+            StartCoroutine(LinkToEditor());
+        }
     }
 
     private IEnumerator LinkToEditor()
