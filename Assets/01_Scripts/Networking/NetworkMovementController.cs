@@ -102,10 +102,10 @@ public class NetworkMovementController : NetworkBehaviour
         }
         
         Vector2 linearVelocity = PredictionRB.Rigidbody2D.linearVelocity;
-        Vector2 forward = PredictionRB.Rigidbody2D.transform.up * inputThrust;
+        Vector2 thrust = PredictionRB.Rigidbody2D.transform.up * inputThrust;
         if (Mathf.Abs(inputThrust) > 0.2f)
         {
-            linearVelocity += inputThrust * bridge.ComputeMovementSpeed() * deltaTime * forward;
+            linearVelocity += bridge.ComputeMovementSpeed() * deltaTime * thrust;
         }
         else
         {
