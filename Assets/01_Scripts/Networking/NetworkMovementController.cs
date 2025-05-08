@@ -88,15 +88,32 @@ public class NetworkMovementController : NetworkBehaviour
         Channel channel = Channel.Unreliable)
     {
         float deltaTime = (float) TimeManager.TickDelta;
+        float inputThrust = data.Input.y;
+        float inputSteer = -data.Input.x;
+
         float angularVelocity = PredictionRB.Rigidbody2D.angularVelocity;
-        float angularVelocityDelta = -data.Input.x * bridge.ComputeRotationSpeed() * deltaTime;
-        PredictionRB.AngularVelocity(angularVelocity + angularVelocityDelta);
+        if (Mathf.Abs(inputSteer) > 0.2f)
+        {
+            angularVelocity += inputSteer * bridge.ComputeRotationSpeed() * deltaTime;
+        }
+        else
+        {
+            angularVelocity *= 1f - bridge.GetAngularDampingCoefficient() / 1000f;
+        }
         
-        Vector2 velocity = PredictionRB.Rigidbody2D.linearVelocity;
-        Vector2 forward = PredictionRB.Rigidbody2D.transform.up * data.Input.y;
-        Vector2 thrust = bridge.ComputeMovementSpeed() * deltaTime * forward;
-        PredictionRB.Velocity(velocity + thrust);
+        Vector2 linearVelocity = PredictionRB.Rigidbody2D.linearVelocity;
+        Vector2 forward = PredictionRB.Rigidbody2D.transform.up * inputThrust;
+        if (Mathf.Abs(inputThrust) > 0.2f)
+        {
+            linearVelocity += inputThrust * bridge.ComputeMovementSpeed() * deltaTime * forward;
+        }
+        else
+        {
+            linearVelocity *= 1f - bridge.GetLinearDampingCoefficient() / 1000f;
+        }
         
+        PredictionRB.AngularVelocity(angularVelocity);
+        PredictionRB.Velocity(linearVelocity);
         PredictionRB.Simulate();
     }
 

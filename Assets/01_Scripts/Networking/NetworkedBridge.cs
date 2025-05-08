@@ -4,6 +4,7 @@ using UnityEngine;
 public class NetworkedBridge : NetworkBehaviour
 {
     [field: SerializeField] public HexTransform HexTransform { get; private set; }
+    [field: SerializeField] public Transform VisualRootTransform { get; private set; }
 
     private NetModuleBaseStats _baseStats;
 
@@ -28,17 +29,27 @@ public class NetworkedBridge : NetworkBehaviour
     {
         if (IsOwner)
         {
-            FindFirstObjectByType<CameraFollow>().SetTargetFollow(null);
+            FindFirstObjectByType<CameraFollow>()?.SetTargetFollow(null);
         }
     }
 
     public float ComputeRotationSpeed()
     {
-        return 10f;
+        return 60f;
     }
 
     public float ComputeMovementSpeed()
     {
         return 5f;
+    }
+
+    public float GetAngularDampingCoefficient()
+    {
+        return 10f;
+    }
+
+    public float GetLinearDampingCoefficient()
+    {
+        return 10f;
     }
 }
