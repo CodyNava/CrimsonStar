@@ -1,21 +1,24 @@
 ﻿using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using UnityEngine;
 
 public class NetworkedBridge : NetworkBehaviour
 {
+    [field: SerializeField] public NetBridgeConfig BridgeConfig { get; private set; }
     [field: SerializeField] public HexTransform HexTransform { get; private set; }
     [field: SerializeField] public Transform VisualRootTransform { get; private set; }
 
-    private NetModuleBaseStats _baseStats;
-
+    private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
+    public NetModuleBaseStats BaseStats => _baseStats.Value;
+    
     public void AddModuleBaseStats(NetModuleBaseStats attachedModuleBaseStats)
     {
-        _baseStats = _baseStats.Combine(attachedModuleBaseStats);
+        _baseStats.Value = _baseStats.Value.Combine(attachedModuleBaseStats);
     }
 
     public void DetachModuleBaseStats(NetModuleBaseStats detachedModuleBaseStats)
     {
-        _baseStats = _baseStats.Subtract(detachedModuleBaseStats);
+        _baseStats.Value = _baseStats.Value.Subtract(detachedModuleBaseStats);
     }
 
     public override void OnStartClient()
@@ -35,21 +38,21 @@ public class NetworkedBridge : NetworkBehaviour
 
     public float ComputeRotationSpeed()
     {
-        return 60f;
+        return BridgeConfig.BaseAngularSpeed + _baseStats.Value.angularThrust / _baseStats.Value.mass;
     }
 
     public float ComputeMovementSpeed()
     {
-        return 5f;
+        return BridgeConfig.BaseMovementSpeed + _baseStats.Value.thrust / _baseStats.Value.mass;
     }
 
     public float GetAngularDampingCoefficient()
     {
-        return 10f;
+        return BridgeConfig.AngularDampingCoefficient;
     }
 
     public float GetLinearDampingCoefficient()
     {
-        return 10f;
+        return BridgeConfig.LinearDampingCoefficient;
     }
 }

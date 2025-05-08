@@ -4,6 +4,7 @@ public struct NetModuleBaseStats
     public float health;
     public float mass;
     public float thrust;
+    public float angularThrust;
     public float energyCapacity;
     public float energyProduction;
 

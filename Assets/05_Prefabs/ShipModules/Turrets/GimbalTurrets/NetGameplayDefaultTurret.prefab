@@ -39184,6 +39184,7 @@ GameObject:
   - component: {fileID: -1199866678845263563}
   - component: {fileID: 3068879227175671063}
   - component: {fileID: -6516749871641350677}
+  - component: {fileID: 2517333665208831810}
   m_Layer: 3
   m_Name: NetGameplayDefaultTurret
   m_TagString: Untagged
@@ -39264,9 +39265,9 @@ MonoBehaviour:
   _enableStateForwarding: 1
   _networkTransform: {fileID: 0}
   _ownerInterpolation: 1
-  _ownerSmoothedProperties: 255
+  _ownerSmoothedProperties: 4294967295
   _adaptiveInterpolation: 3
-  _spectatorSmoothedProperties: 255
+  _spectatorSmoothedProperties: 4294967295
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
@@ -39396,6 +39397,25 @@ MonoBehaviour:
   _layers:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &2517333665208831810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6107309012093280526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b49e902d2564efc9ac0da4a3142595c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 8117090760363641474}
+  _networkObjectCache: {fileID: 0}
+  cooldown: 0.5
+  turretModule: {fileID: 138746299594672162}
+  spawnTransform: {fileID: 8287526850846769230}
+  projectile: {fileID: 1840815982162558663, guid: ee5f60c5c865f4846827d7b50d4492e3, type: 3}
 --- !u!1 &7060856661427977236
 GameObject:
   m_ObjectHideFlags: 0
