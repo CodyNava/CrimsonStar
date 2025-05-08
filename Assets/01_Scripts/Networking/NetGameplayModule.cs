@@ -32,15 +32,13 @@ public class NetGameplayModule : NetworkBehaviour
     {
         _bridge.DetachModuleBaseStats(ModuleID.GetModuleData().BaseStats);
         DetachModuleObserver();
-        Destroy(VisualTransform.gameObject);
-        Destroy(gameObject);
+        Despawn(NetworkObject);
     }
 
     [ObserversRpc]
     public void DetachModuleObserver()
     {
         Destroy(VisualTransform.gameObject);
-        Destroy(gameObject);
     }
 
     public void InflictDamage(float damage)
