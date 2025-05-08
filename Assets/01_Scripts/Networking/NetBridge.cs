@@ -25,7 +25,7 @@ public class NetBridge : NetworkBehaviour
     {
         if (IsOwner)
         {
-            FindFirstObjectByType<CameraFollow>().SetTargetFollow(transform);
+            FindFirstObjectByType<CameraFollow>().SetTargetFollow(VisualRootTransform);
         }
     }
     public override void OnStopClient()
