@@ -5,5 +5,5 @@ using UnityEngine;
 public class NetShipEditorConfig : ScriptableObject
 {
     [SerializedDictionary("Resource Type", "Default Resource Count")]
-    [field: SerializeField] public SerializedDictionary<NetResourceType, int> DefaultResourceCounts { get; private set; }
+    [field: SerializeField] public SerializedDictionary<NetCurrencyType, int> DefaultResourceCounts { get; private set; }
 }
