@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class NetResourceStorage : NetworkBehaviour
 {
-    private readonly SyncDictionary<NetResourceType, int> _resourceStorage = new();
+    private readonly SyncDictionary<NetCurrencyType, int> _resourceStorage = new();
 
-    public void SetResourceCounts(Dictionary<NetResourceType, int> resourceCounts)
+    public void SetResourceCounts(Dictionary<NetCurrencyType, int> resourceCounts)
     {
         _resourceStorage.Clear();
-        foreach ((NetResourceType resource, int count) in resourceCounts)
+        foreach ((NetCurrencyType resource, int count) in resourceCounts)
         {
             _resourceStorage[resource] = count;
         }
@@ -19,7 +19,7 @@ public class NetResourceStorage : NetworkBehaviour
     public bool HasResourcesForModule(NetModuleID moduleID)
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
-        foreach ((NetResourceType resourceType, int cost) in moduleData.Costs)
+        foreach ((NetCurrencyType resourceType, int cost) in moduleData.Costs)
         {
             if (!_resourceStorage.TryGetValue(resourceType, out int storage)) return false;
             if (storage < cost) return false;
@@ -40,11 +40,11 @@ public class NetResourceStorage : NetworkBehaviour
     public void PayForModuleRPC(NetModuleID moduleID)
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
-        foreach ((NetResourceType resourceType, int cost) in moduleData.Costs)
+        foreach ((NetCurrencyType resourceType, int cost) in moduleData.Costs)
         {
             _resourceStorage[resourceType] -= cost;
         }
-        Debug.Log($"Currency left: {_resourceStorage[NetResourceType.Chroma]}");
+        Debug.Log($"Currency left: {_resourceStorage[NetCurrencyType.Gold]}");
     }
 
     public void RefundModule(NetModuleID id)
@@ -59,14 +59,14 @@ public class NetResourceStorage : NetworkBehaviour
     public void RefundModuleRPC(NetModuleID moduleID)
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
-        foreach ((NetResourceType resourceType, int cost) in moduleData.Costs)
+        foreach ((NetCurrencyType resourceType, int cost) in moduleData.Costs)
         {
             _resourceStorage[resourceType] += cost;
         }
-        Debug.Log($"Currency left: {_resourceStorage[NetResourceType.Chroma]}");
+        Debug.Log($"Currency left: {_resourceStorage[NetCurrencyType.Gold]}");
     }
 
-    public int GetRemainingResourceCount(NetResourceType type)
+    public int GetRemainingResourceCount(NetCurrencyType type)
     {
         return _resourceStorage.GetValueOrDefault(type, 0);
     }

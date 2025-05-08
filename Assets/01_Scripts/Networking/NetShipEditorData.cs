@@ -10,7 +10,7 @@ public class NetShipEditorData : NetworkBehaviour
     public NetModuleStorage ModuleStorage { get; private set; }
     public NetResourceStorage ResourceStorage { get; private set; }
 
-    public void SetResourceCounts(Dictionary<NetResourceType, int> resources)
+    public void SetResourceCounts(Dictionary<NetCurrencyType, int> resources)
     {
         ModuleStorage ??= GetComponent<NetModuleStorage>();
         ResourceStorage ??= GetComponent<NetResourceStorage>();

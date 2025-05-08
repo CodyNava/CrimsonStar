@@ -15,7 +15,7 @@ public class NetModuleData : ScriptableObject
     };
 
     [SerializedDictionary("Resource Type", "Cost")]
-    [field: SerializeField] public SerializedDictionary<NetResourceType, int> Costs { get; private set; }
+    [field: SerializeField] public SerializedDictionary<NetCurrencyType, int> Costs { get; private set; }
     [field: SerializeField] public NetModuleBaseStats BaseStats { get; private set; }
     [field: SerializeField] public bool CanRotate { get; private set; }
 
