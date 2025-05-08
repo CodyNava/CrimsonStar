@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using UnityEngine;
 
 public class ServerResourceStorage : NetworkBehaviour
 {
@@ -43,6 +44,7 @@ public class ServerResourceStorage : NetworkBehaviour
         {
             _resourceStorage[resourceType] -= cost;
         }
+        Debug.Log($"Currency left: {_resourceStorage[NetResourceType.Chroma]}");
     }
 
     public void RefundModule(NetModuleID id)
@@ -61,6 +63,7 @@ public class ServerResourceStorage : NetworkBehaviour
         {
             _resourceStorage[resourceType] += cost;
         }
+        Debug.Log($"Currency left: {_resourceStorage[NetResourceType.Chroma]}");
     }
 
     public int GetRemainingResourceCount(NetResourceType type)
