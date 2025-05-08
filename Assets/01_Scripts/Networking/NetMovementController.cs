@@ -33,9 +33,9 @@ public struct MoveReconcileData : IReconcileData
     public void SetTick(uint tick) => _tick = tick;
 }
 
-public class NetworkMovementController : NetworkBehaviour
+public class NetMovementController : NetworkBehaviour
 {
-    [SerializeField] private NetworkedBridge bridge;
+    [SerializeField] private NetBridge bridge;
     
     public PredictionRigidbody2D PredictionRB;
 

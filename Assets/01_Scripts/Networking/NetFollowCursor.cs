@@ -1,7 +1,7 @@
 ﻿using FishNet.Object;
 using UnityEngine;
 
-public class NetworkFollowCursor : NetworkBehaviour
+public class NetFollowCursor : NetworkBehaviour
 {
     private Plane _plane = new Plane(Vector3.back, Vector3.zero);
     private Camera _camera;

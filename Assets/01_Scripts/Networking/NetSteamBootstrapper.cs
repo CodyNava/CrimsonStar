@@ -4,6 +4,7 @@ using FishNet.Transporting;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using Fishy = FishySteamworks.FishySteamworks;
 
 public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
@@ -13,7 +14,7 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
     [SerializeField] private Fishy steamTransport;
     [SerializeField] private string mainMenuSceneName;
     [Header("Conductors")]
-    [SerializeField] private LobbyConductor lobbyConductor;
+    [SerializeField] private NetLobbyConductor netLobbyConductor;
     
     protected Callback<LobbyCreated_t> SteamLobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> SteamLobbyJoinRequested;
@@ -38,7 +39,7 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
     {
         if (args.ConnectionState == LocalConnectionState.Started)
         {
-            InstanceFinder.ClientManager.Broadcast(new LobbyBroadcasts.PlayerIdentified
+            InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.PlayerIdentified
             {
                 SteamID = SteamPlayer.SteamID,
                 DisplayName = SteamPlayer.DisplayName
@@ -68,7 +69,7 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
         SteamMatchmaking.SetLobbyData(SteamPlayer.CurrentLobbyID, SteamLobby.HostKey, host);
         steamTransport.SetClientAddress(host);
         steamTransport.StartConnection(true); // This starts only server on host
-        var lobbyConductorGo = Instantiate(lobbyConductor).gameObject;
+        var lobbyConductorGo = Instantiate(netLobbyConductor).gameObject;
         InstanceFinder.ServerManager.Spawn(lobbyConductorGo);
         SteamPlayer.SetLobbyHost(true);
     }

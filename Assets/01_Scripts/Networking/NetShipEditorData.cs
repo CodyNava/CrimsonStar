@@ -5,15 +5,15 @@ using FishNet.Connection;
 using FishNet.Object;
 using UnityEngine;
 
-public class ServerShipEditorData : NetworkBehaviour
+public class NetShipEditorData : NetworkBehaviour
 {
-    public ServerModuleStorage ModuleStorage { get; private set; }
-    public ServerResourceStorage ResourceStorage { get; private set; }
+    public NetModuleStorage ModuleStorage { get; private set; }
+    public NetResourceStorage ResourceStorage { get; private set; }
 
     public void SetResourceCounts(Dictionary<NetResourceType, int> resources)
     {
-        ModuleStorage ??= GetComponent<ServerModuleStorage>();
-        ResourceStorage ??= GetComponent<ServerResourceStorage>();
+        ModuleStorage ??= GetComponent<NetModuleStorage>();
+        ResourceStorage ??= GetComponent<NetResourceStorage>();
         ResourceStorage.SetResourceCounts(resources);
     }
     
@@ -21,8 +21,8 @@ public class ServerShipEditorData : NetworkBehaviour
     {
         if (IsOwner)
         {
-            ModuleStorage ??= GetComponent<ServerModuleStorage>();
-            ResourceStorage ??= GetComponent<ServerResourceStorage>();
+            ModuleStorage ??= GetComponent<NetModuleStorage>();
+            ResourceStorage ??= GetComponent<NetResourceStorage>();
             StartCoroutine(LinkToEditor());
         }
     }
@@ -41,7 +41,7 @@ public class ServerShipEditorData : NetworkBehaviour
 
     public bool SignalReady()
     {
-        var conductor = InstanceFinder.GetInstance<ShipEditorConductor>();
+        var conductor = InstanceFinder.GetInstance<NetShipEditorConductor>();
         if (conductor != null)
         {
             conductor.SignalReady();

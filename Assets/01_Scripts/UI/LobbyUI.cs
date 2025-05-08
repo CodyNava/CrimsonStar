@@ -12,10 +12,10 @@ public class LobbyUI : MonoBehaviour
     
     private void OnEnable()
     {
-        InstanceFinder.ClientManager.RegisterBroadcast<LobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
+        InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
     }
 
-    private void OnPlayerListUpdate(LobbyBroadcasts.PlayerListUpdate msg, Channel channel)
+    private void OnPlayerListUpdate(NetLobbyBroadcasts.PlayerListUpdate msg, Channel channel)
     {
         if (SteamPlayer.IsLobbyHost)
         {
@@ -40,7 +40,7 @@ public class LobbyUI : MonoBehaviour
 
     public void StartGame()
     {
-        InstanceFinder.ClientManager.Broadcast(new LobbyBroadcasts.GameStartRequested());
+        InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.GameStartRequested());
     }
     
     public void LeaveLobby()
@@ -51,6 +51,6 @@ public class LobbyUI : MonoBehaviour
 
     private void OnDisable()
     {
-        InstanceFinder.ClientManager.UnregisterBroadcast<LobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using FishNet.Broadcast;
 using Steamworks;
 
-public static class LobbyBroadcasts
+public static class NetLobbyBroadcasts
 {
     public struct PlayerIdentified : IBroadcast
     {

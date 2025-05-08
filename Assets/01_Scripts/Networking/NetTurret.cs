@@ -1,9 +1,9 @@
 ﻿using FishNet.Object;
 using UnityEngine;
 
-public class NetworkedTurret : NetworkBehaviour
+public class NetTurret : NetworkBehaviour
 {
-    [SerializeField] private TurretData turretData;
+    [SerializeField] private NetTurretData netTurretData;
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransformA, spawnTransformB;
 
@@ -40,9 +40,9 @@ public class NetworkedTurret : NetworkBehaviour
         if (!IsOwner) return;
         
         _accumulatedTime += Time.deltaTime;
-        _accumulatedTime = Mathf.Min(_accumulatedTime, turretData.Cooldown);
+        _accumulatedTime = Mathf.Min(_accumulatedTime, netTurretData.Cooldown);
 
-        if (_accumulatedTime < turretData.Cooldown) return;
+        if (_accumulatedTime < netTurretData.Cooldown) return;
         if (!_inputAsset.Player.Attack.IsPressed()) return;
         
         if (_nextSpawnTransform == spawnTransformA) 
@@ -51,7 +51,7 @@ public class NetworkedTurret : NetworkBehaviour
             _nextSpawnTransform = spawnTransformA;
         
         ClientFire();
-        _accumulatedTime -= turretData.Cooldown;
+        _accumulatedTime -= netTurretData.Cooldown;
     }
 
     private void ClientFire()
@@ -65,8 +65,8 @@ public class NetworkedTurret : NetworkBehaviour
 
     private void SpawnProjectile(Vector3 position, Vector3 direction, float passedTime)
     {
-        PredictedProjectile pp = Instantiate(turretData.Projectile, position, Quaternion.identity);
-        pp.Initialize(direction, passedTime, turretModule.PlayerID);
+        NetPredictedProjectile pp = Instantiate(netTurretData.Projectile, position, Quaternion.identity);
+        pp.Initialize(direction, passedTime, turretModule.NetPlayerID);
     }
 
     [ServerRpc]

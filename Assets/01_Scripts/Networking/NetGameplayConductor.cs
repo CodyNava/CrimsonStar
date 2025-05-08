@@ -6,13 +6,13 @@ using FishNet.Managing.Scened;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameplayConductor : NetworkSingleton<GameplayConductor>
+public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
 {
-    [SerializeField] private NetworkedBridge bridgePrefab;
+    [SerializeField] private NetBridge bridgePrefab;
     [SerializeField, SerializedDictionary] 
     private SerializedDictionary<int, Transform[]> spawnTransforms;
 
-    private ShipEditorConductor _editorConductor;
+    private NetShipEditorConductor _editorConductor;
 
     private int PlayerCount => _editorConductor.PlayerShipEditors.Count;
     private int _spawnedPlayers = 0;
@@ -23,14 +23,14 @@ public class GameplayConductor : NetworkSingleton<GameplayConductor>
         
         if (IsServerInitialized)
         {
-            _editorConductor = InstanceFinder.GetInstance<ShipEditorConductor>();
+            _editorConductor = InstanceFinder.GetInstance<NetShipEditorConductor>();
             SceneManager.OnClientPresenceChangeStart += OnSceneChange;
         }
     }
 
     public override void OnStopNetwork()
     {
-        InstanceFinder.UnregisterInstance<GameplayConductor>();
+        InstanceFinder.UnregisterInstance<NetGameplayConductor>();
         
         if (IsServerInitialized)
         {
@@ -42,7 +42,7 @@ public class GameplayConductor : NetworkSingleton<GameplayConductor>
     {
         if (args.Scene.name == "NetGameplayScene" && args.Added)
         {
-            PlayerID id = (PlayerID) _spawnedPlayers + 1;
+            NetPlayerID id = (NetPlayerID) _spawnedPlayers + 1;
             var bridge = Instantiate(bridgePrefab);
             var spawnPoint = GetSpawnTransform();
             bridge.GetComponent<NetGameplayModule>().ServerInit(bridge, id);
@@ -62,7 +62,7 @@ public class GameplayConductor : NetworkSingleton<GameplayConductor>
         Debug.Log("Imagine the game would start right now! Wow!");
     }
 
-    private void ConstructPlayerShip(NetworkConnection conn, PlayerID id, NetworkedBridge bridge, ServerShipEditorData editorData, Scene scene)
+    private void ConstructPlayerShip(NetworkConnection conn, NetPlayerID id, NetBridge bridge, NetShipEditorData editorData, Scene scene)
     {
         HashSet<HexCoordinate> spawnedRoots = new HashSet<HexCoordinate>();
         foreach (var placementData in editorData.ModuleStorage.ModuleMap.Values)

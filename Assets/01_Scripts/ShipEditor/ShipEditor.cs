@@ -10,15 +10,15 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private GameObject cantBePlacedPopUp;
     [SerializeField] private HexTransform hexTransform;
 
-    public ServerShipEditorData ServerShipEditorData { get; private set; }
+    public NetShipEditorData NetShipEditorData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModules = new();
     private NetEditorModule _heldNetEditorModule;
     private int _turretCount;
 
-    public void SetPlayerShipEditor(ServerShipEditorData serverShipEditorData)
+    public void SetPlayerShipEditor(NetShipEditorData netShipEditorData)
     {
-        ServerShipEditorData = serverShipEditorData;
+        NetShipEditorData = netShipEditorData;
     }
 
     private void Update()
@@ -60,13 +60,13 @@ public class ShipEditor : MonoBehaviour
             return false;
         }
 
-        if (!ServerShipEditorData.ResourceStorage.HasResourcesForModule(moduleID))
+        if (!NetShipEditorData.ResourceStorage.HasResourcesForModule(moduleID))
         {
             return false;
         }
 
         _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
-        ServerShipEditorData.ResourceStorage.PayForModule(moduleID);
+        NetShipEditorData.ResourceStorage.PayForModule(moduleID);
         return true;
     }
 
@@ -92,7 +92,7 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule.transform.position = mousePosWorld.xy0();
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                ServerShipEditorData.ResourceStorage.RefundModule(_heldNetEditorModule.ModuleID);
+                NetShipEditorData.ResourceStorage.RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
                 _heldNetEditorModule = null;
                 return;
@@ -125,11 +125,11 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = rootCoord + localCoord;
             _editorModules[coord] = _heldNetEditorModule;
 
-            if (ServerShipEditorData.ModuleStorage.IsCoordinateOccupied(coord))
+            if (NetShipEditorData.ModuleStorage.IsCoordinateOccupied(coord))
             {
                 return false;
             }
-            if (ServerShipEditorData.ModuleStorage.IsNeighboringModule(coord))
+            if (NetShipEditorData.ModuleStorage.IsNeighboringModule(coord))
             {
                 isAttached = true;
             }
@@ -145,7 +145,7 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = rootCoord + localCoord;
             _editorModules[coord] = _heldNetEditorModule;
         }
-        ServerShipEditorData.ModuleStorage.AddModule(rootCoord, _heldNetEditorModule.ModuleID, _heldNetEditorModule.PlacedRotation);
+        NetShipEditorData.ModuleStorage.AddModule(rootCoord, _heldNetEditorModule.ModuleID, _heldNetEditorModule.PlacedRotation);
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
         _heldNetEditorModule = null;
     }
@@ -157,12 +157,12 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = moduleToRemove.PlacedLocation + localCoord;
             _editorModules.Remove(coord);
         }
-        ServerShipEditorData.ModuleStorage.RemoveModule(moduleToRemove.PlacedLocation);
+        NetShipEditorData.ModuleStorage.RemoveModule(moduleToRemove.PlacedLocation);
     }
 
     public void SignalReady()
     {
-        if (ServerShipEditorData.SignalReady())
+        if (NetShipEditorData.SignalReady())
         {
             gameObject.SetActive(false);
         }

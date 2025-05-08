@@ -6,14 +6,15 @@ using FishNet.Managing.Scened;
 using FishNet.Object;
 using FishNet.Transporting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
+public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
 {
-    [SerializeField] private GameplayConductor gameplayConductor;
-    [SerializeField] private ServerShipEditorData shipEditorDataPrefab;
+    [SerializeField] private NetGameplayConductor netGameplayConductor;
+    [SerializeField] private NetShipEditorData shipEditorDataPrefab;
     private Dictionary<NetworkConnection, bool> _playersReady = new();
 
-    public Dictionary<NetworkConnection, ServerShipEditorData> PlayerShipEditors { get; } = new();
+    public Dictionary<NetworkConnection, NetShipEditorData> PlayerShipEditors { get; } = new();
 
     public override void OnStartNetwork()
     {
@@ -27,7 +28,7 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
 
     public override void OnStopNetwork()
     {
-        InstanceFinder.UnregisterInstance<ShipEditorConductor>();
+        InstanceFinder.UnregisterInstance<NetShipEditorConductor>();
         
         if (IsServerInitialized)
         {
@@ -64,7 +65,7 @@ public class ShipEditorConductor : NetworkSingleton<ShipEditorConductor>
             SceneManager.LoadGlobalScenes(sceneData);
             SceneManager.UnloadGlobalScenes(unloadData);
 
-            GameObject gameConductor = Instantiate(gameplayConductor).gameObject;
+            GameObject gameConductor = Instantiate(netGameplayConductor).gameObject;
             ServerManager.Spawn(gameConductor);
         }
     }

@@ -2,7 +2,7 @@
 using FishNet.Object.Synchronizing;
 using UnityEngine;
 
-public class NetworkedBridge : NetworkBehaviour
+public class NetBridge : NetworkBehaviour
 {
     [field: SerializeField] public NetBridgeConfig BridgeConfig { get; private set; }
     [field: SerializeField] public HexTransform HexTransform { get; private set; }

@@ -3,7 +3,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine;
 
-public class ServerResourceStorage : NetworkBehaviour
+public class NetResourceStorage : NetworkBehaviour
 {
     private readonly SyncDictionary<NetResourceType, int> _resourceStorage = new();
 

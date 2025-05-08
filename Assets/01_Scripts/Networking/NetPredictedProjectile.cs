@@ -1,20 +1,20 @@
 ﻿using FishNet;
 using UnityEngine;
 
-public class PredictedProjectile : MonoBehaviour
+public class NetPredictedProjectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float projectileDamage;
 
-    private PlayerID _playerID;
+    private NetPlayerID _netPlayerID;
     private Vector3 _direction;
     private float _passedTime = 0f;
     
-    public void Initialize(Vector3 direction, float passedTime, PlayerID playerID)
+    public void Initialize(Vector3 direction, float passedTime, NetPlayerID netPlayerID)
     {
         _direction = direction;
         _passedTime = passedTime;
-        _playerID = playerID;
+        _netPlayerID = netPlayerID;
     }
 
     private void Update()
@@ -41,7 +41,7 @@ public class PredictedProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.PlayerID == _playerID) return;
+        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.NetPlayerID == _netPlayerID) return;
         
         if (InstanceFinder.IsClientStarted)
         {

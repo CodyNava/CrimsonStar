@@ -11,7 +11,7 @@ public class ModulePlacementData
     public NetModuleID ModuleID;
 }
 
-public class ServerModuleStorage : NetworkBehaviour
+public class NetModuleStorage : NetworkBehaviour
 {
     private static readonly HexCoordinate[] BridgeCoordinates = {
         HexCoordinate.Zero,

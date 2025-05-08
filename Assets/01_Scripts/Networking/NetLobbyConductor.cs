@@ -7,6 +7,7 @@ using FishNet.Object;
 using FishNet.Transporting;
 using Steamworks;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [System.Serializable]
 public struct LobbyPlayerData
@@ -15,9 +16,9 @@ public struct LobbyPlayerData
     public string playerDisplayName;
 }
 
-public class LobbyConductor : NetworkSingleton<LobbyConductor>
+public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
 {
-    [SerializeField] private ShipEditorConductor shipEditorConductor;
+    [SerializeField] private NetShipEditorConductor netShipEditorConductor;
     
     private readonly Dictionary<NetworkConnection, LobbyPlayerData> _connectionPlayerMap = new();
 
@@ -28,12 +29,12 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
         if (IsServerInitialized)
         {
             ServerManager.OnRemoteConnectionState += OnConnectionStateChange;
-            ServerManager.RegisterBroadcast<LobbyBroadcasts.PlayerIdentified>(OnPlayerIdentified, false);
-            ServerManager.RegisterBroadcast<LobbyBroadcasts.GameStartRequested>(OnGameStartRequested, false);
+            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(OnPlayerIdentified, false);
+            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(OnGameStartRequested, false);
         }
     }
 
-    private void OnPlayerIdentified(NetworkConnection conn, LobbyBroadcasts.PlayerIdentified msg, Channel channel)
+    private void OnPlayerIdentified(NetworkConnection conn, NetLobbyBroadcasts.PlayerIdentified msg, Channel channel)
     {
         _connectionPlayerMap[conn] = new LobbyPlayerData
         {
@@ -63,13 +64,13 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
 
     private void SendPlayerDataUpdate()
     {
-        ServerManager.Broadcast(new LobbyBroadcasts.PlayerListUpdate
+        ServerManager.Broadcast(new NetLobbyBroadcasts.PlayerListUpdate
         {
             Players = _connectionPlayerMap.Values.ToArray()
         }, false);
     }
 
-    private void OnGameStartRequested(NetworkConnection connection, LobbyBroadcasts.GameStartRequested msg, Channel channel)
+    private void OnGameStartRequested(NetworkConnection connection, NetLobbyBroadcasts.GameStartRequested msg, Channel channel)
     {
         Debug.Log("Editor start requested");
 
@@ -79,19 +80,19 @@ public class LobbyConductor : NetworkSingleton<LobbyConductor>
         SceneManager.LoadGlobalScenes(sceneData);
         SceneManager.UnloadGlobalScenes(unloadData);
 
-        GameObject shipEditor = Instantiate(shipEditorConductor).gameObject;
+        GameObject shipEditor = Instantiate(netShipEditorConductor).gameObject;
         ServerManager.Spawn(shipEditor);
     }
 
     public override void OnStopNetwork()
     {
-        InstanceFinder.UnregisterInstance<LobbyConductor>();
+        InstanceFinder.UnregisterInstance<NetLobbyConductor>();
         
         if (IsServerInitialized)
         {
             ServerManager.OnRemoteConnectionState -= OnConnectionStateChange;
-            ServerManager.UnregisterBroadcast<LobbyBroadcasts.PlayerIdentified>(OnPlayerIdentified);
-            ServerManager.UnregisterBroadcast<LobbyBroadcasts.GameStartRequested>(OnGameStartRequested);
+            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(OnPlayerIdentified);
+            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(OnGameStartRequested);
         }
     }
 }
