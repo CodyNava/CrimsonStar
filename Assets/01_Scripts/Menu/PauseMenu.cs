@@ -71,7 +71,7 @@ public class PauseMenu : MonoBehaviour
     public void BackToMenu()
     {
         Resume();
-        GameStateController.Instance.ChangeState(new MainMenu_GameState());
+        //GameStateController.Instance.ChangeState(new MainMenu_GameState());
         SceneManager.LoadScene("MainMenu");
     }
 

@@ -22,7 +22,6 @@ public class MainMenu : MonoBehaviour
 
     public void StartGame()
     {
-        GameStateController.Instance.ChangeState(new ShipEditor_GameState());
         SceneManager.LoadScene(playScene);
     }
     

@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class NetworkedTurret : NetworkBehaviour
 {
-    [SerializeField] private float cooldown;
+    [SerializeField] private TurretData turretData;
     [SerializeField] private NetGameplayModule turretModule;
-    [SerializeField] private Transform spawnTransform;
-    [SerializeField] private PredictedProjectile projectile;
+    [SerializeField] private Transform spawnTransformA, spawnTransformB;
 
     private const float MaxPassedTime = 0.3f;
-
+    private Transform _nextSpawnTransform;
+    
     private Turet _inputAsset;
     private float _accumulatedTime;
     
@@ -18,6 +18,7 @@ public class NetworkedTurret : NetworkBehaviour
         if (IsOwner)
         {
             _inputAsset.Enable();
+            _nextSpawnTransform = spawnTransformA;
         }
     }
 
@@ -39,19 +40,24 @@ public class NetworkedTurret : NetworkBehaviour
         if (!IsOwner) return;
         
         _accumulatedTime += Time.deltaTime;
-        _accumulatedTime = Mathf.Min(_accumulatedTime, cooldown);
+        _accumulatedTime = Mathf.Min(_accumulatedTime, turretData.Cooldown);
 
-        if (_accumulatedTime < cooldown) return;
+        if (_accumulatedTime < turretData.Cooldown) return;
         if (!_inputAsset.Player.Attack.IsPressed()) return;
         
+        if (_nextSpawnTransform == spawnTransformA) 
+            _nextSpawnTransform = spawnTransformB;
+        else
+            _nextSpawnTransform = spawnTransformA;
+        
         ClientFire();
-        _accumulatedTime -= cooldown;
+        _accumulatedTime -= turretData.Cooldown;
     }
 
     private void ClientFire()
     {
-        Vector3 position = spawnTransform.position;
-        Vector3 direction = spawnTransform.up;
+        Vector3 position = _nextSpawnTransform.position;
+        Vector3 direction = _nextSpawnTransform.up;
         
         SpawnProjectile(position, direction, 0f);
         ServerFire(position, direction, TimeManager.Tick);
@@ -59,7 +65,7 @@ public class NetworkedTurret : NetworkBehaviour
 
     private void SpawnProjectile(Vector3 position, Vector3 direction, float passedTime)
     {
-        PredictedProjectile pp = Instantiate(projectile, position, Quaternion.identity);
+        PredictedProjectile pp = Instantiate(turretData.Projectile, position, Quaternion.identity);
         pp.Initialize(direction, passedTime, turretModule.PlayerID);
     }
 
