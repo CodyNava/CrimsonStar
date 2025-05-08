@@ -1,4 +1,5 @@
 ﻿public enum NetCurrencyType
 {
-    Gold
+    Gold,
+    Iron
 }
