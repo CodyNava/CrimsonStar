@@ -5,16 +5,18 @@ public class NetPredictedProjectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float projectileDamage;
+    [SerializeField] private float _projectileTimer;
 
     private NetPlayerID _netPlayerID;
     private Vector3 _direction;
     private float _passedTime = 0f;
-    
+
     public void Initialize(Vector3 direction, float passedTime, NetPlayerID netPlayerID)
     {
         _direction = direction;
         _passedTime = passedTime;
         _netPlayerID = netPlayerID;
+        Destroy(gameObject, _projectileTimer);
     }
 
     private void Update()
@@ -35,14 +37,14 @@ public class NetPredictedProjectile : MonoBehaviour
 
             passedDt = step;
         }
-        
+
         transform.position += _direction * (projectileSpeed * (dt + passedDt));
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.NetPlayerID == _netPlayerID) return;
-        
+
         if (InstanceFinder.IsClientStarted)
         {
             // Visual and Audio
@@ -52,7 +54,7 @@ public class NetPredictedProjectile : MonoBehaviour
         {
             module.InflictDamage(projectileDamage);
         }
-        
+
         Destroy(gameObject);
     }
 }
