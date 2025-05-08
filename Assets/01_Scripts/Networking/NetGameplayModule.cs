@@ -32,6 +32,8 @@ public class NetGameplayModule : NetworkBehaviour
     {
         _bridge.DetachModuleBaseStats(ModuleID.GetModuleData().BaseStats);
         DetachModuleObserver();
+        Destroy(VisualTransform);
+        Destroy(gameObject);
     }
 
     [ObserversRpc]

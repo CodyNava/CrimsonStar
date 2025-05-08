@@ -92,7 +92,11 @@ public class NetModuleStorage : NetworkBehaviour
     [ServerRpc]
     public void RemoveModuleRPC(HexCoordinate coord)
     {
-        ModulePlacementData placementData = _moduleMap[coord];
+        if (!_moduleMap.TryGetValue(coord, out ModulePlacementData placementData))
+        {
+            Debug.LogError($"Tried remove module at Coordinate ({coord.Q}, {coord.R}, {coord.S}) which was not found.");
+            return;
+        }
         var localHexCoordinates = placementData.ModuleID.GetModuleData().GetLocalHexCoordinates();
         foreach (var rotatedLocalCoord in GetRotatedCoordinates(localHexCoordinates, placementData.Rotation))
         {
