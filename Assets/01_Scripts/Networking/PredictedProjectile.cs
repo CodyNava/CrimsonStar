@@ -39,7 +39,7 @@ public class PredictedProjectile : MonoBehaviour
         transform.position += _direction * (projectileSpeed * (dt + passedDt));
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.PlayerID == _playerID) return;
         
@@ -52,5 +52,7 @@ public class PredictedProjectile : MonoBehaviour
         {
             module.InflictDamage(projectileDamage);
         }
+        
+        Destroy(gameObject);
     }
 }
