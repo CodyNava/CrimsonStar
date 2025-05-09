@@ -4,6 +4,7 @@ using UnityEngine;
 public class NetEditorModule : MonoBehaviour
 {
     [field: SerializeField] public NetModuleID ModuleID { get; private set; }
+    [field: SerializeField] public Transform VisualTransform { get; private set; }
     public HexCoordinate PlacedLocation { get; set; }
     public int PlacedRotation { get; set; }
     public List<HexCoordinate> LocalCoordinates { get; private set; }
@@ -30,7 +31,7 @@ public class NetEditorModule : MonoBehaviour
         {
             PlacedRotation -= 6;
         }
-        
+
         UpdateRotation();
     }
 
@@ -40,13 +41,13 @@ public class NetEditorModule : MonoBehaviour
         {
             LocalCoordinates[i] = LocalCoordinates[i].RotateCounterClockwise();
         }
-        
+
         PlacedRotation--;
         if (PlacedRotation < 0)
         {
             PlacedRotation += 6;
         }
-        
+
         UpdateRotation();
     }
 

@@ -67,6 +67,7 @@ public class ShipEditor : MonoBehaviour
 
         _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
         NetShipEditorData.ResourceStorage.PayForModule(moduleID);
+        _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
         return true;
     }
 
@@ -112,6 +113,7 @@ public class ShipEditor : MonoBehaviour
             {
                 _heldNetEditorModule = placedModule;
                 RemoveModule(placedModule);
+                _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
             }
         }
     }
@@ -147,6 +149,7 @@ public class ShipEditor : MonoBehaviour
         }
         NetShipEditorData.ModuleStorage.AddModule(rootCoord, _heldNetEditorModule.ModuleID, _heldNetEditorModule.PlacedRotation);
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
+        _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
         _heldNetEditorModule = null;
     }
 
