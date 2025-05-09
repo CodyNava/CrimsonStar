@@ -1,4 +1,5 @@
-﻿using FishNet.Object;
+﻿using FishNet;
+using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine;
 
@@ -19,6 +20,12 @@ public class NetBridge : NetworkBehaviour
     public void S_DetachModule(NetGameplayModule module)
     {
         _baseStats.Value = _baseStats.Value.Subtract(module.ModuleID.GetModuleData().BaseStats);
+        
+        if (module.ModuleID == NetModuleID.Bridge)
+        {
+            InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath();
+            Despawn(NetworkObject);
+        }
     }
 
     public override void OnStartClient()

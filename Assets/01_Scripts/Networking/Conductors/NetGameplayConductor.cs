@@ -3,6 +3,8 @@ using AYellowpaper.SerializedCollections;
 using FishNet;
 using FishNet.Connection;
 using FishNet.Managing.Scened;
+using FishNet.Object;
+using FishNet.Transporting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,6 +15,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
     private SerializedDictionary<int, Transform[]> spawnTransforms;
 
     private NetShipEditorConductor _editorConductor;
+    private List<NetworkConnection> _eliminatedPlayers = new();
 
     private int PlayerCount => _editorConductor.PlayerShipEditors.Count;
     private int _spawnedPlayers = 0;
@@ -60,6 +63,21 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
     private void S_StartMatch()
     {
         Debug.Log("Imagine the game would start right now! Wow!");
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    public void S_RegisterPlayerDeath(Channel channel = Channel.Reliable, NetworkConnection conn = null)
+    {
+        _eliminatedPlayers.Add(conn);
+        if (_eliminatedPlayers.Count == PlayerCount - 1)
+        {
+            S_StopMatch();
+        }
+    }
+
+    private void S_StopMatch()
+    {
+        Debug.Log("Imagine the game would end right now! Wow!");
     }
 
     private void S_ConstructPlayerShip(NetworkConnection conn, NetPlayerID id, NetBridge bridge, NetShipEditorData editorData, Scene scene)
