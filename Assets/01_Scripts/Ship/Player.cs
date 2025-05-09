@@ -120,7 +120,7 @@ public class Player : MonoBehaviour
         {
             velocity = Vector3.zero;
         }
-
+        
         rb.MovePosition(rb.position + (Vector2)(velocity * Time.fixedDeltaTime));
     }
 }

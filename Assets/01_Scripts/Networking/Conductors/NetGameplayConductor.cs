@@ -24,7 +24,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
         if (IsServerInitialized)
         {
             _editorConductor = InstanceFinder.GetInstance<NetShipEditorConductor>();
-            SceneManager.OnClientPresenceChangeStart += OnSceneChange;
+            SceneManager.OnClientPresenceChangeStart += S_OnSceneChange;
         }
     }
 
@@ -34,35 +34,35 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
         
         if (IsServerInitialized)
         {
-            SceneManager.OnClientPresenceChangeStart -= OnSceneChange;
+            SceneManager.OnClientPresenceChangeStart -= S_OnSceneChange;
         }
     }
 
-    private void OnSceneChange(ClientPresenceChangeEventArgs args)
+    private void S_OnSceneChange(ClientPresenceChangeEventArgs args)
     {
         if (args.Scene.name == "NetGameplayScene" && args.Added)
         {
             NetPlayerID id = (NetPlayerID) _spawnedPlayers + 1;
             var bridge = Instantiate(bridgePrefab);
-            var spawnPoint = GetSpawnTransform();
-            bridge.GetComponent<NetGameplayModule>().ServerInit(bridge, id);
-            ConstructPlayerShip(args.Connection, id, bridge, _editorConductor.PlayerShipEditors[args.Connection], args.Scene);
+            var spawnPoint = S_GetSpawnTransform();
+            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, id);
+            S_ConstructPlayerShip(args.Connection, id, bridge, _editorConductor.PlayerShipEditors[args.Connection], args.Scene);
             ServerManager.Spawn(bridge.gameObject, args.Connection);
             bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
 
             if (_spawnedPlayers == PlayerCount)
             {
-                StartMatch();
+                S_StartMatch();
             }
         }
     }
 
-    private void StartMatch()
+    private void S_StartMatch()
     {
         Debug.Log("Imagine the game would start right now! Wow!");
     }
 
-    private void ConstructPlayerShip(NetworkConnection conn, NetPlayerID id, NetBridge bridge, NetShipEditorData editorData, Scene scene)
+    private void S_ConstructPlayerShip(NetworkConnection conn, NetPlayerID id, NetBridge bridge, NetShipEditorData editorData, Scene scene)
     {
         HashSet<HexCoordinate> spawnedRoots = new HashSet<HexCoordinate>();
         foreach (var placementData in editorData.ModuleStorage.ModuleMap.Values)
@@ -74,11 +74,11 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
             NetGameplayModule module = Instantiate(placementData.ModuleID.GetModuleData().GameplayPrefab);
             module.NetworkObject.SetParent(bridge);
             module.transform.SetLocalPositionAndRotation(bridge.transform.InverseTransformPoint(modulePos), moduleRotation);
-            module.ServerInit(bridge, id);
+            module.S_ServerInit(bridge, id);
         }
     }
 
-    private Transform GetSpawnTransform()
+    private Transform S_GetSpawnTransform()
     {
         if (!spawnTransforms.TryGetValue(PlayerCount, out Transform[] spawnPoints))
         {

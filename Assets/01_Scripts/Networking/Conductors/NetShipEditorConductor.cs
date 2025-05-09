@@ -6,7 +6,6 @@ using FishNet.Managing.Scened;
 using FishNet.Object;
 using FishNet.Transporting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
 {
@@ -22,7 +21,7 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
         
         if (IsServerInitialized)
         {
-            SceneManager.OnClientPresenceChangeStart += OnSceneChange;
+            SceneManager.OnClientPresenceChangeStart += S_OnSceneChange;
         }
     }
 
@@ -32,18 +31,18 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
         
         if (IsServerInitialized)
         {
-            SceneManager.OnClientPresenceChangeStart -= OnSceneChange;
+            SceneManager.OnClientPresenceChangeStart -= S_OnSceneChange;
         }
     }
 
-    private void OnSceneChange(ClientPresenceChangeEventArgs args)
+    private void S_OnSceneChange(ClientPresenceChangeEventArgs args)
     {
         var defaultResources = DataProvider.Instance.DefaultEditorResources;
         
         if (args.Scene.name == "NetShipEditor" && args.Added)
         {
             var shipEditor = Instantiate(shipEditorDataPrefab);
-            shipEditor.SetResourceCounts(defaultResources.DefaultResourceCounts);
+            shipEditor.S_SetResourceCounts(defaultResources.DefaultResourceCounts);
             ServerManager.Spawn(shipEditor.gameObject, args.Connection, args.Scene);
             PlayerShipEditors.Add(args.Connection, shipEditor);
             _playersReady.Add(args.Connection, false);
@@ -51,14 +50,12 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void SignalReady(Channel channel = Channel.Reliable, NetworkConnection conn = null)
+    public void S_SignalReady(Channel channel = Channel.Reliable, NetworkConnection conn = null)
     {
         _playersReady[conn!] = true;
 
-        if (AllPlayersReady())
+        if (S_AllPlayersReady())
         {
-            Debug.Log("Game start requested");
-
             SceneLoadData sceneData = new("NetGameplayScene");
             sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
             SceneUnloadData unloadData = new("NetShipEditor");
@@ -70,7 +67,7 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
         }
     }
 
-    private bool AllPlayersReady()
+    private bool S_AllPlayersReady()
     {
         return _playersReady.Values.All(ready => ready);
     }

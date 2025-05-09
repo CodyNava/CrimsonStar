@@ -68,7 +68,7 @@ public class Drag : MonoBehaviour
             _moduleRotation -= 6;
         }
         SetTransformRotation();
-        netEditorModule.RotateClockwise();
+        netEditorModule.C_RotateClockwise();
     }
     public void RotateCounterClockWise()
     {
@@ -78,7 +78,7 @@ public class Drag : MonoBehaviour
             _moduleRotation += 6;
         }
         SetTransformRotation();
-        netEditorModule.RotateCounterclockwise();
+        netEditorModule.C_RotateCounterclockwise();
     }
     private void SetTransformRotation()
     {

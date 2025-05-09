@@ -60,13 +60,13 @@ public class ShipEditor : MonoBehaviour
             return false;
         }
 
-        if (!NetShipEditorData.ResourceStorage.HasResourcesForModule(moduleID))
+        if (!NetShipEditorData.ResourceStorage.SC_HasResourcesForModule(moduleID))
         {
             return false;
         }
 
         _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
-        NetShipEditorData.ResourceStorage.PayForModule(moduleID);
+        NetShipEditorData.ResourceStorage.C_PayForModule(moduleID);
         return true;
     }
 
@@ -92,18 +92,18 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule.transform.position = mousePosWorld.xy0();
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                NetShipEditorData.ResourceStorage.RefundModule(_heldNetEditorModule.ModuleID);
+                NetShipEditorData.ResourceStorage.C_RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
                 _heldNetEditorModule = null;
                 return;
             }
             if (Keyboard.current.eKey.wasPressedThisFrame && DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
             {
-                _heldNetEditorModule.RotateClockwise();
+                _heldNetEditorModule.C_RotateClockwise();
             }
             if (Keyboard.current.qKey.wasPressedThisFrame && DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
             {
-                _heldNetEditorModule.RotateCounterclockwise();
+                _heldNetEditorModule.C_RotateCounterclockwise();
             }
         }
         else
@@ -125,11 +125,11 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = rootCoord + localCoord;
             _editorModules[coord] = _heldNetEditorModule;
 
-            if (NetShipEditorData.ModuleStorage.IsCoordinateOccupied(coord))
+            if (NetShipEditorData.ModuleStorage.SC_IsCoordinateOccupied(coord))
             {
                 return false;
             }
-            if (NetShipEditorData.ModuleStorage.IsNeighboringModule(coord))
+            if (NetShipEditorData.ModuleStorage.SC_IsNeighboringModule(coord))
             {
                 isAttached = true;
             }
@@ -145,7 +145,7 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = rootCoord + localCoord;
             _editorModules[coord] = _heldNetEditorModule;
         }
-        NetShipEditorData.ModuleStorage.AddModule(rootCoord, _heldNetEditorModule.ModuleID, _heldNetEditorModule.PlacedRotation);
+        NetShipEditorData.ModuleStorage.C_AddModule(rootCoord, _heldNetEditorModule.ModuleID, _heldNetEditorModule.PlacedRotation);
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
         _heldNetEditorModule = null;
     }
@@ -157,7 +157,7 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = moduleToRemove.PlacedLocation + localCoord;
             _editorModules.Remove(coord);
         }
-        NetShipEditorData.ModuleStorage.RemoveModule(moduleToRemove.PlacedLocation);
+        NetShipEditorData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
     }
 
     public void SignalReady()
