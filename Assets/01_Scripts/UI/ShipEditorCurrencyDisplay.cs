@@ -20,7 +20,7 @@ public class ShipEditorCurrencyDisplay : MonoBehaviour
         foreach (int currencyNumber in Enum.GetValues(typeof(NetCurrencyType)))
         {
             NetCurrencyType currencyType = (NetCurrencyType)currencyNumber;
-            int count = netShipEditorData.ResourceStorage.GetRemainingResourceCount(currencyType);
+            int count = netShipEditorData.ResourceStorage.C_GetRemainingResourceCount(currencyType);
             stringBuilder.AppendLine($"{count} {currencyType}");
         }
         currency.text = stringBuilder.ToString();

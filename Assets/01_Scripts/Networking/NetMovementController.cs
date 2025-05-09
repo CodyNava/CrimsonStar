@@ -48,6 +48,12 @@ public class NetMovementController : NetworkBehaviour
         TimeManager.OnPostTick += OnPostTick;
     }
 
+    public override void OnStopNetwork()
+    {
+        TimeManager.OnTick -= OnTick;
+        TimeManager.OnPostTick -= OnPostTick;
+    }
+
     public override void OnStartClient()
     {
         if (IsOwner)
@@ -62,12 +68,6 @@ public class NetMovementController : NetworkBehaviour
         {
             _inputAsset.Disable();
         }
-    }
-
-    public override void OnStopNetwork()
-    {
-        TimeManager.OnTick -= OnTick;
-        TimeManager.OnPostTick -= OnPostTick;
     }
 
     private void OnTick()

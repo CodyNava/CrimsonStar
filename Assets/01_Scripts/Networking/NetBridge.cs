@@ -1,4 +1,5 @@
-﻿using FishNet.Object;
+﻿using FishNet;
+using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine;
 
@@ -11,14 +12,20 @@ public class NetBridge : NetworkBehaviour
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
     public NetModuleBaseStats BaseStats => _baseStats.Value;
     
-    public void AddModuleBaseStats(NetModuleBaseStats attachedModuleBaseStats)
+    public void S_AttachModule(NetGameplayModule module)
     {
-        _baseStats.Value = _baseStats.Value.Combine(attachedModuleBaseStats);
+        _baseStats.Value = _baseStats.Value.Combine(module.ModuleID.GetModuleData().BaseStats);
     }
 
-    public void DetachModuleBaseStats(NetModuleBaseStats detachedModuleBaseStats)
+    public void S_DetachModule(NetGameplayModule module)
     {
-        _baseStats.Value = _baseStats.Value.Subtract(detachedModuleBaseStats);
+        _baseStats.Value = _baseStats.Value.Subtract(module.ModuleID.GetModuleData().BaseStats);
+        
+        if (module.ModuleID == NetModuleID.Bridge)
+        {
+            InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath();
+            Despawn(NetworkObject);
+        }
     }
 
     public override void OnStartClient()
@@ -34,6 +41,7 @@ public class NetBridge : NetworkBehaviour
         {
             FindFirstObjectByType<CameraFollow>()?.SetTargetFollow(null);
         }
+        Destroy(VisualRootTransform.gameObject);
     }
 
     public float ComputeRotationSpeed()

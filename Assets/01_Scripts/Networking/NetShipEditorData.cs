@@ -10,11 +10,11 @@ public class NetShipEditorData : NetworkBehaviour
     public NetModuleStorage ModuleStorage { get; private set; }
     public NetResourceStorage ResourceStorage { get; private set; }
 
-    public void SetResourceCounts(Dictionary<NetCurrencyType, int> resources)
+    public void S_SetResourceCounts(Dictionary<NetCurrencyType, int> resources)
     {
         ModuleStorage ??= GetComponent<NetModuleStorage>();
         ResourceStorage ??= GetComponent<NetResourceStorage>();
-        ResourceStorage.SetResourceCounts(resources);
+        ResourceStorage.S_SetResourceCounts(resources);
     }
     
     public override void OnOwnershipClient(NetworkConnection prevOwner)
@@ -44,7 +44,7 @@ public class NetShipEditorData : NetworkBehaviour
         var conductor = InstanceFinder.GetInstance<NetShipEditorConductor>();
         if (conductor != null)
         {
-            conductor.SignalReady();
+            conductor.S_SignalReady();
             return true;
         }
 

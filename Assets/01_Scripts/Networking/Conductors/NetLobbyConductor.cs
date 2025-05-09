@@ -28,23 +28,23 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         
         if (IsServerInitialized)
         {
-            ServerManager.OnRemoteConnectionState += OnConnectionStateChange;
-            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(OnPlayerIdentified, false);
-            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(OnGameStartRequested, false);
+            ServerManager.OnRemoteConnectionState += S_OnConnectionStateChange;
+            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified, false);
+            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested, false);
         }
     }
 
-    private void OnPlayerIdentified(NetworkConnection conn, NetLobbyBroadcasts.PlayerIdentified msg, Channel channel)
+    private void S_OnPlayerIdentified(NetworkConnection conn, NetLobbyBroadcasts.PlayerIdentified msg, Channel channel)
     {
         _connectionPlayerMap[conn] = new LobbyPlayerData
         {
             playerSteamID = msg.SteamID,
             playerDisplayName = msg.DisplayName
         };
-        SendPlayerDataUpdate();
+        S_SendPlayerDataUpdate();
     }
 
-    private void OnConnectionStateChange(NetworkConnection connection, RemoteConnectionStateArgs args)
+    private void S_OnConnectionStateChange(NetworkConnection connection, RemoteConnectionStateArgs args)
     {
         if (args.ConnectionState == RemoteConnectionState.Started)
         {
@@ -59,10 +59,10 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
             _connectionPlayerMap.Remove(connection);
         }
 
-        SendPlayerDataUpdate();
+        S_SendPlayerDataUpdate();
     }
 
-    private void SendPlayerDataUpdate()
+    private void S_SendPlayerDataUpdate()
     {
         ServerManager.Broadcast(new NetLobbyBroadcasts.PlayerListUpdate
         {
@@ -70,10 +70,8 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         }, false);
     }
 
-    private void OnGameStartRequested(NetworkConnection connection, NetLobbyBroadcasts.GameStartRequested msg, Channel channel)
+    private void S_OnGameStartRequested(NetworkConnection connection, NetLobbyBroadcasts.GameStartRequested msg, Channel channel)
     {
-        Debug.Log("Editor start requested");
-
         SceneLoadData sceneData = new("NetShipEditor");
         sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
         SceneUnloadData unloadData = new("NetLobby");
@@ -90,9 +88,9 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         
         if (IsServerInitialized)
         {
-            ServerManager.OnRemoteConnectionState -= OnConnectionStateChange;
-            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(OnPlayerIdentified);
-            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(OnGameStartRequested);
+            ServerManager.OnRemoteConnectionState -= S_OnConnectionStateChange;
+            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified);
+            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested);
         }
     }
 }

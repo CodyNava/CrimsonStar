@@ -14,39 +14,39 @@ public class NetGameplayModule : NetworkBehaviour
     public float Health => _health.Value;
     public NetPlayerID NetPlayerID => _playerID.Value;
     
-    public void ServerInit(NetBridge bridge, NetPlayerID netPlayerID)
+    public void S_ServerInit(NetBridge bridge, NetPlayerID netPlayerID)
     {
         _bridge = bridge;
-        _bridge.AddModuleBaseStats(ModuleID.GetModuleData().BaseStats);
+        _bridge.S_AttachModule(this);
         _health.Value = ModuleID.GetModuleData().BaseStats.health;
         _playerID.Value = netPlayerID;
     }
-
+    
     public override void OnStartClient()
     {
         _bridge = ModuleID == NetModuleID.Bridge ? GetComponent<NetBridge>() : GetComponentInParent<NetBridge>();
         VisualTransform.SetParent(_bridge.VisualRootTransform);
     }
-
-    private void DetachModule()
+    
+    private void S_DetachModule()
     {
-        _bridge.DetachModuleBaseStats(ModuleID.GetModuleData().BaseStats);
-        DetachModuleObserver();
+        _bridge.S_DetachModule(this);
+        C_DetachModuleObserver();
         Despawn(NetworkObject);
     }
-
+    
     [ObserversRpc]
-    public void DetachModuleObserver()
+    public void C_DetachModuleObserver()
     {
         Destroy(VisualTransform.gameObject);
     }
 
-    public void InflictDamage(float damage)
+    public void S_InflictDamage(float damage)
     {
         _health.Value -= damage;
         if (_health.Value <= 0)
         {
-            DetachModule();
+            S_DetachModule();
         }
     }
 }

@@ -20,10 +20,10 @@ public class NetFollowCursor : NetworkBehaviour
 
     private void Update()
     {
-        LookAtMouse();
+        C_LookAtMouse();
     }
 	
-    private void LookAtMouse()
+    private void C_LookAtMouse()
     {
         if (!_camera) return;
         

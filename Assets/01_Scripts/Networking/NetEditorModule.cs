@@ -19,7 +19,7 @@ public class NetEditorModule : MonoBehaviour
         }
     }
 
-    public void RotateClockwise()
+    public void C_RotateClockwise()
     {
         for (int i = 0; i < LocalCoordinates.Count; i++)
         {
@@ -31,11 +31,11 @@ public class NetEditorModule : MonoBehaviour
         {
             PlacedRotation -= 6;
         }
-
-        UpdateRotation();
+        
+        C_UpdateRotation();
     }
 
-    public void RotateCounterclockwise()
+    public void C_RotateCounterclockwise()
     {
         for (int i = 0; i < LocalCoordinates.Count; i++)
         {
@@ -47,11 +47,11 @@ public class NetEditorModule : MonoBehaviour
         {
             PlacedRotation += 6;
         }
-
-        UpdateRotation();
+        
+        C_UpdateRotation();
     }
 
-    private void UpdateRotation()
+    private void C_UpdateRotation()
     {
         transform.rotation = Quaternion.AngleAxis(PlacedRotation * 60, Vector3.back);
     }

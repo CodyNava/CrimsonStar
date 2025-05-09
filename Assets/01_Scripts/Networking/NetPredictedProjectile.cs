@@ -52,7 +52,7 @@ public class NetPredictedProjectile : MonoBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            module.InflictDamage(projectileDamage);
+            module.S_InflictDamage(projectileDamage);
         }
 
         Destroy(gameObject);

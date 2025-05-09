@@ -4,7 +4,6 @@ using FishNet.Transporting;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using Fishy = FishySteamworks.FishySteamworks;
 
 public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
