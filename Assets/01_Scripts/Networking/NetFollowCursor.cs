@@ -18,7 +18,7 @@ public class NetFollowCursor : NetworkBehaviour
         }
     }
 
-    private void C_Update()
+    private void Update()
     {
         C_LookAtMouse();
     }
