@@ -25,14 +25,7 @@ public class NetBridge : NetworkBehaviour
         {
             InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath();
             Despawn(NetworkObject);
-            C_DespawnVisualTransform();
         }
-    }
-
-    [ObserversRpc] 
-    public void C_DespawnVisualTransform()
-    {
-        Destroy(VisualRootTransform.gameObject);
     }
 
     public override void OnStartClient()
@@ -48,6 +41,7 @@ public class NetBridge : NetworkBehaviour
         {
             FindFirstObjectByType<CameraFollow>()?.SetTargetFollow(null);
         }
+        Destroy(VisualRootTransform.gameObject);
     }
 
     public float ComputeRotationSpeed()
