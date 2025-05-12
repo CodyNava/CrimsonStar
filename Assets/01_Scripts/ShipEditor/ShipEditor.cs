@@ -67,6 +67,7 @@ public class ShipEditor : MonoBehaviour
 
         _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
         NetShipEditorData.ResourceStorage.C_PayForModule(moduleID);
+        _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
         return true;
     }
 
