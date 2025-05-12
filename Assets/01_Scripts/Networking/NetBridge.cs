@@ -11,7 +11,7 @@ public class NetBridge : NetworkBehaviour
 
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
     public NetModuleBaseStats BaseStats => _baseStats.Value;
-    
+
     public void S_AttachModule(NetGameplayModule module)
     {
         _baseStats.Value = _baseStats.Value.Combine(module.ModuleID.GetModuleData().BaseStats);
@@ -20,7 +20,7 @@ public class NetBridge : NetworkBehaviour
     public void S_DetachModule(NetGameplayModule module)
     {
         _baseStats.Value = _baseStats.Value.Subtract(module.ModuleID.GetModuleData().BaseStats);
-        
+
         if (module.ModuleID == NetModuleID.Bridge)
         {
             InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath();
@@ -46,12 +46,12 @@ public class NetBridge : NetworkBehaviour
 
     public float ComputeRotationSpeed()
     {
-        return BridgeConfig.BaseAngularSpeed + _baseStats.Value.angularThrust / _baseStats.Value.mass;
+        return BridgeConfig.BaseAngularSpeed + _baseStats.Value.angularThrust / (1 + _baseStats.Value.mass);
     }
 
     public float ComputeMovementSpeed()
     {
-        return BridgeConfig.BaseMovementSpeed + _baseStats.Value.thrust / _baseStats.Value.mass;
+        return BridgeConfig.BaseMovementSpeed + _baseStats.Value.thrust / (1 + _baseStats.Value.mass);
     }
 
     public float GetAngularDampingCoefficient()
@@ -62,5 +62,13 @@ public class NetBridge : NetworkBehaviour
     public float GetLinearDampingCoefficient()
     {
         return BridgeConfig.LinearDampingCoefficient;
+    }
+    public float GetMaxMoveSpeed()
+    {
+        return BridgeConfig.MaxMovementSpeed / (1 + _baseStats.Value.mass);
+    }
+    public float GetMaxAngularVelocity()
+    {
+        return BridgeConfig.MaxAngularSpeed / (1 + _baseStats.Value.mass);
     }
 }

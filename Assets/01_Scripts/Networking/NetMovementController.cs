@@ -13,7 +13,7 @@ public struct MoveReplicateData : IReplicateData
     }
 
     private uint _tick;
-    public void Dispose() {}
+    public void Dispose() { }
     public uint GetTick() => _tick;
     public void SetTick(uint tick) => _tick = tick;
 }
@@ -26,9 +26,9 @@ public struct MoveReconcileData : IReconcileData
     {
         PredictionRB = prb;
     }
-    
+
     private uint _tick;
-    public void Dispose() {}
+    public void Dispose() { }
     public uint GetTick() => _tick;
     public void SetTick(uint tick) => _tick = tick;
 }
@@ -36,12 +36,12 @@ public struct MoveReconcileData : IReconcileData
 public class NetMovementController : NetworkBehaviour
 {
     [SerializeField] private NetBridge bridge;
-    
+
     public PredictionRigidbody2D PredictionRB;
 
     private Vector2 _input;
     private Turet _inputAsset;
-    
+
     public override void OnStartNetwork()
     {
         TimeManager.OnTick += OnTick;
@@ -87,7 +87,7 @@ public class NetMovementController : NetworkBehaviour
     private void RunInputs(MoveReplicateData data, ReplicateState state = ReplicateState.Invalid,
         Channel channel = Channel.Unreliable)
     {
-        float deltaTime = (float) TimeManager.TickDelta;
+        float deltaTime = (float)TimeManager.TickDelta;
         float inputThrust = data.Input.y;
         float inputSteer = -data.Input.x;
 
@@ -95,26 +95,45 @@ public class NetMovementController : NetworkBehaviour
         if (Mathf.Abs(inputSteer) > 0.2f)
         {
             angularVelocity += inputSteer * bridge.ComputeRotationSpeed() * deltaTime;
+            angularVelocity = Mathf.Clamp(angularVelocity, -bridge.GetMaxAngularVelocity(), bridge.GetMaxAngularVelocity());
+
         }
         else
         {
             angularVelocity *= 1f - bridge.GetAngularDampingCoefficient() / 1000f;
         }
-        
+
         Vector2 linearVelocity = PredictionRB.Rigidbody2D.linearVelocity;
         Vector2 thrust = PredictionRB.Rigidbody2D.transform.up * inputThrust;
         if (Mathf.Abs(inputThrust) > 0.2f)
         {
-            linearVelocity += bridge.ComputeMovementSpeed() * deltaTime * thrust;
+            float acceleration = 0.15f;
+            float dampingX = bridge.GetLinearDampingCoefficient() / 1000f;
+            float dampingY = bridge.GetLinearDampingCoefficient() / 1000f;
+            linearVelocity += bridge.ComputeMovementSpeed() * deltaTime * acceleration * thrust;
+            linearVelocity.x = Mathf.Clamp(linearVelocity.x, -bridge.GetMaxMoveSpeed(), bridge.GetMaxMoveSpeed());
+            linearVelocity.y = Mathf.Clamp(linearVelocity.y, -bridge.GetMaxMoveSpeed(), bridge.GetMaxMoveSpeed());
+            if (Mathf.Abs(linearVelocity.x) > Mathf.Abs(linearVelocity.y))
+            {
+                dampingY *= 2f;
+            }
+            else
+            {
+                dampingX *= 2f;
+            }
+            linearVelocity.x *= 1f - dampingX;
+            linearVelocity.y *= 1f - dampingY;
         }
         else
         {
             linearVelocity *= 1f - bridge.GetLinearDampingCoefficient() / 1000f;
         }
-        
+
         PredictionRB.AngularVelocity(angularVelocity);
         PredictionRB.Velocity(linearVelocity);
         PredictionRB.Simulate();
+        Debug.Log("av" + angularVelocity);
+        Debug.Log("lv" + linearVelocity);
     }
 
     private void OnPostTick()
