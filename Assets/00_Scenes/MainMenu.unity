@@ -533,6 +533,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 177423826}
   m_CullTransparentMesh: 1
+--- !u!1 &193676276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 193676278}
+  - component: {fileID: 193676277}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &193676277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193676276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 10fc4df2da32a41aaa32d77bc913491c, type: 2}
+--- !u!4 &193676278
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193676276}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.05661563, y: -3.7316658, z: 2.2756603}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &193884887
 GameObject:
   m_ObjectHideFlags: 0
@@ -1009,7 +1058,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -1725,8 +1774,8 @@ Canvas:
   m_GameObject: {fileID: 970918238}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 625629132}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -2990,8 +3039,8 @@ Canvas:
   m_GameObject: {fileID: 1390394344}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 625629132}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -3040,7 +3089,9 @@ MonoBehaviour:
   resolutionDropdown: {fileID: 1515105077}
   volumeSlider: {fileID: 1914578928}
   audioMixer: {fileID: 24100000, guid: 1378e013332436242ab06aea7ba02e1e, type: 2}
-  brightnessSlider: {fileID: 0}
+  brightnessSlider: {fileID: 1694748865}
+  gamma: {fileID: 0}
+  volume: {fileID: 193676277}
 --- !u!1 &1426955558
 GameObject:
   m_ObjectHideFlags: 0
@@ -3894,7 +3945,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 177423827}
   m_Direction: 0
   m_MinValue: 0.0001
-  m_MaxValue: 1
+  m_MaxValue: 5
   m_WholeNumbers: 0
   m_Value: 0.0001
   m_OnValueChanged:
@@ -3902,8 +3953,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1390394349}
         m_TargetAssemblyTypeName: Settings, Assembly-CSharp
-        m_MethodName: SetBrightness
-        m_Mode: 1
+        m_MethodName: AdjustGamma
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4948,3 +4999,4 @@ SceneRoots:
   - {fileID: 970918242}
   - {fileID: 1390394348}
   - {fileID: 1284747277}
+  - {fileID: 193676278}
