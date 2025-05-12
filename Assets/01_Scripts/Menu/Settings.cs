@@ -64,7 +64,19 @@ public class Settings : MonoBehaviour
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-        Application.targetFrameRate = (int)resolution.refreshRateRatio.value;
+        //Application.targetFrameRate = (int)resolution.refreshRateRatio.value;
+    }
+
+    public void SetVsync()
+    {
+        if (QualitySettings.vSyncCount == 1)
+        {
+            QualitySettings.vSyncCount = 0;
+        }
+        else
+        {
+            QualitySettings.vSyncCount = 1;
+        }
     }
 
     private void Save()
