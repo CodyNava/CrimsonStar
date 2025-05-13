@@ -28,47 +28,44 @@ public class SettingsBehaviour : MonoBehaviour
     const string sfxVolume = "SFXVolume";
     const string uiVolume = "UIVolume";
     const string gammaValue = "GammaValue";
+    const string brightnessValue = "BrightnessValue";
 
     private void Awake()
     {
         volume.profile.TryGet<LiftGammaGain>(out gamma);
-        masterSlider.onValueChanged.AddListener(MasterVolume);
-        musicSlider.onValueChanged.AddListener(MusicVolume);
-        sfxSlider.onValueChanged.AddListener(SFXVolume);
-        uiSlider.onValueChanged.AddListener(UIVolume);
     }
 
-    public void MasterVolume(float volume)
+    public void MasterVolume()
     {
         master.SetFloat(masterVolume, Mathf.Log10(masterSlider.value) * 20);
         Save();
     }
 
-    public void MusicVolume(float volume)
+    public void MusicVolume()
     {
         master.SetFloat(musicVolume, Mathf.Log10(musicSlider.value) * 20);
         Save();
     }
 
-    public void SFXVolume(float volume)
+    public void SFXVolume()
     {
         master.SetFloat(sfxVolume, Mathf.Log10(sfxSlider.value) * 20);
         Save();
     }
 
-    public void UIVolume(float volume)
+    public void UIVolume()
     {
         master.SetFloat(uiVolume, Mathf.Log10(uiSlider.value) * 20);
         Save();
     }
 
-    /*public void AdjustBrightness(float value)
+    public void AdjustBrightness()
     {
         brightness.color = new Color(0f, 0f, 0f, brightnessSlider.value);
         Save();
-    }*/
+    }
 
-    public void AdjustGamma(float value)
+    public void AdjustGamma()
     {
         gamma.gamma.value = new Vector4(1f, 1f, 1f, gammaSlider.value);
         Save();
@@ -128,6 +125,7 @@ public class SettingsBehaviour : MonoBehaviour
         PlayerPrefs.SetFloat("SFXVolume", sfxSlider.value);
         PlayerPrefs.SetFloat("UIVolume", uiSlider.value);
         PlayerPrefs.SetFloat("GammaValue", gammaSlider.value);
+        PlayerPrefs.SetFloat("BrightnessValue", brightnessSlider.value);
     }
 
     private void Load()
@@ -137,5 +135,6 @@ public class SettingsBehaviour : MonoBehaviour
         sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume", 0.5f);
         uiSlider.value = PlayerPrefs.GetFloat("UIVolume", 0.5f);
         gammaSlider.value = PlayerPrefs.GetFloat("GammaValue", 0.5f);
+        brightnessSlider.value = PlayerPrefs.GetFloat("BrightnessValue", 0.5f);
     }
 }
