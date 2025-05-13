@@ -20,6 +20,8 @@ public class SettingsBehaviour : MonoBehaviour
     [SerializeField] Volume volume;
     [SerializeField] LiftGammaGain gamma;
     [SerializeField] Slider gammaSlider;
+    [SerializeField] Slider brightnessSlider;
+    [SerializeField] Image brightness;
 
     const string masterVolume = "MasterVolume";
     const string musicVolume = "MusicVolume";
@@ -59,6 +61,12 @@ public class SettingsBehaviour : MonoBehaviour
         master.SetFloat(uiVolume, Mathf.Log10(uiSlider.value) * 20);
         Save();
     }
+
+    /*public void AdjustBrightness(float value)
+    {
+        brightness.color = new Color(0f, 0f, 0f, brightnessSlider.value);
+        Save();
+    }*/
 
     public void AdjustGamma(float value)
     {
