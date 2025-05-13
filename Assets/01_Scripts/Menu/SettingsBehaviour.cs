@@ -16,19 +16,23 @@ public class SettingsBehaviour : MonoBehaviour
     [SerializeField] Slider musicSlider;
     [SerializeField] Slider sfxSlider;
     [SerializeField] Slider uiSlider;
+    [SerializeField] Slider announcerSlider;
 
     [SerializeField] Volume volume;
     [SerializeField] LiftGammaGain gamma;
     [SerializeField] Slider gammaSlider;
     [SerializeField] Slider brightnessSlider;
     [SerializeField] Image brightness;
+    [SerializeField] Toggle toggle;
 
     const string masterVolume = "MasterVolume";
     const string musicVolume = "MusicVolume";
     const string sfxVolume = "SFXVolume";
     const string uiVolume = "UIVolume";
+    const string announcerVolume = "AnnouncerVolume";
     const string gammaValue = "GammaValue";
     const string brightnessValue = "BrightnessValue";
+    const string vSync = "VSync";
 
     private void Awake()
     {
@@ -56,6 +60,12 @@ public class SettingsBehaviour : MonoBehaviour
     public void UIVolume()
     {
         master.SetFloat(uiVolume, Mathf.Log10(uiSlider.value) * 20);
+        Save();
+    }
+
+    public void AnnouncerVolume()
+    {
+        master.SetFloat(announcerVolume, Mathf.Log10(announcerSlider.value) * 20);
         Save();
     }
 
@@ -116,25 +126,30 @@ public class SettingsBehaviour : MonoBehaviour
         {
             QualitySettings.vSyncCount = 1;
         }
+        Save();
     }
 
     private void Save()
     {
-        PlayerPrefs.SetFloat("MasterVolume", masterSlider.value);
-        PlayerPrefs.SetFloat("MusicVolume", musicSlider.value);
-        PlayerPrefs.SetFloat("SFXVolume", sfxSlider.value);
-        PlayerPrefs.SetFloat("UIVolume", uiSlider.value);
-        PlayerPrefs.SetFloat("GammaValue", gammaSlider.value);
-        PlayerPrefs.SetFloat("BrightnessValue", brightnessSlider.value);
+        PlayerPrefs.SetFloat(masterVolume, masterSlider.value);
+        PlayerPrefs.SetFloat(musicVolume, musicSlider.value);
+        PlayerPrefs.SetFloat(sfxVolume, sfxSlider.value);
+        PlayerPrefs.SetFloat(uiVolume, uiSlider.value);
+        PlayerPrefs.SetFloat(announcerVolume, announcerSlider.value);
+        PlayerPrefs.SetFloat(gammaValue, gammaSlider.value);
+        PlayerPrefs.SetFloat(brightnessValue, brightnessSlider.value);
+        PlayerPrefs.SetInt(vSync, QualitySettings.vSyncCount);
     }
 
     private void Load()
     {
-        masterSlider.value = PlayerPrefs.GetFloat("MasterVolume", 0.5f);
-        musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
-        sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume", 0.5f);
-        uiSlider.value = PlayerPrefs.GetFloat("UIVolume", 0.5f);
-        gammaSlider.value = PlayerPrefs.GetFloat("GammaValue", 0.5f);
-        brightnessSlider.value = PlayerPrefs.GetFloat("BrightnessValue", 0.5f);
+        masterSlider.value = PlayerPrefs.GetFloat(masterVolume, 0.5f);
+        musicSlider.value = PlayerPrefs.GetFloat(musicVolume, 0.5f);
+        sfxSlider.value = PlayerPrefs.GetFloat(sfxVolume, 0.5f);
+        uiSlider.value = PlayerPrefs.GetFloat(uiVolume, 0.5f);
+        announcerSlider.value = PlayerPrefs.GetFloat(announcerVolume, 0.5f);
+        gammaSlider.value = PlayerPrefs.GetFloat(gammaValue, 0.5f);
+        brightnessSlider.value = PlayerPrefs.GetFloat(brightnessValue, 0.5f);
+        toggle.isOn = PlayerPrefs.GetInt(vSync, 1) == 1;
     }
 }
