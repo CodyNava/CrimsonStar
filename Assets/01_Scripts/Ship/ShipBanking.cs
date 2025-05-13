@@ -22,6 +22,7 @@ namespace _01_Scripts.Ship
         {
             Assert.IsNotNull(_netMovementController, "NetMovementController Script reference needs to be assigned!");
             Assert.IsNotNull(_netObject, "NetworkObject reference needs to be assigned!");
+            Assert.IsNotNull(_visualRoot, "VisualRoot Transform reference needs to be assigned");
         }
 
         public void Start()
