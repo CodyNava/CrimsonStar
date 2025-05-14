@@ -29,6 +29,12 @@ public class ShipEditor : MonoBehaviour
     private void Start()
     {
         editCamera ??= Camera.main;
+        ModuleSelectionButton.ModuleSelected -= SpawnPart;
+        ModuleSelectionButton.ModuleSelected += SpawnPart;
+    }
+    private void OnDestroy()
+    {
+        ModuleSelectionButton.ModuleSelected -= SpawnPart;
     }
 
     public void SpawnPart(NetModuleID moduleID)

@@ -6,9 +6,8 @@ public class ModuleCategoryButton : MonoBehaviour
     [SerializeField] private ModuleCategoryContainer categoryContainer;
 
 
-    public async void ButtonClick()
+    public void ButtonClick()
     {
-
-        await categoryContainer.SetModuleCategory(moduleCategory);
+        categoryContainer.SetModuleCategory(moduleCategory);
     }
 }
