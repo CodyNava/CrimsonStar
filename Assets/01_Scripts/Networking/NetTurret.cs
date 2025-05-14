@@ -21,20 +21,19 @@ public class NetTurret : NetworkBehaviour
         {
             _nextSpawnTransform = spawnTransformA;
         }
-        else
-        {
-            enabled = false;
-        }
+
+        _nextMuzzleFlash = muzzleFlashA;
     }
-    
+
     private void Update()
     {
+        if (!IsOwner) return;
         _accumulatedTime += Time.deltaTime;
         _accumulatedTime = Mathf.Min(_accumulatedTime, netTurretData.Cooldown);
 
         if (_accumulatedTime < netTurretData.Cooldown) return;
         if (!Keybinds.Actions.Player.Attack.IsPressed()) return;
-        
+
         if (_nextSpawnTransform == spawnTransformA)
         {
             _nextSpawnTransform = spawnTransformB;
@@ -46,42 +45,51 @@ public class NetTurret : NetworkBehaviour
             _nextMuzzleFlash = muzzleFlashA;
         }
 
-        ClientFire();
+        C_ClientFire();
         _accumulatedTime -= netTurretData.Cooldown;
     }
 
-    private void ClientFire()
+    private void C_ClientFire()
     {
         Vector3 position = _nextSpawnTransform.position;
         Vector3 direction = _nextSpawnTransform.up;
 
-        SpawnProjectile(position, direction, 0f);
-        ServerFire(position, direction, TimeManager.Tick);
+        C_SpawnProjectile(position, direction, 0f);
+        S_ServerFire(position, direction, TimeManager.Tick);
         _nextMuzzleFlash.Play();
     }
 
-    private void SpawnProjectile(Vector3 position, Vector3 direction, float passedTime)
+    private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime)
     {
         NetPredictedProjectile pp = Instantiate(netTurretData.Projectile, position, Quaternion.identity);
         pp.Initialize(direction, passedTime, turretModule.NetPlayerID);
     }
 
     [ServerRpc]
-    private void ServerFire(Vector3 position, Vector3 direction, uint tick)
+    private void S_ServerFire(Vector3 position, Vector3 direction, uint tick)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
-        SpawnProjectile(position, direction, passedTime);
-        ObserversFire(position, direction, tick);
+        C_SpawnProjectile(position, direction, passedTime);
+        C_ObserversFire(position, direction, tick);
     }
 
     [ObserversRpc(ExcludeOwner = true)]
-    private void ObserversFire(Vector3 position, Vector3 direction, uint tick)
+    private void C_ObserversFire(Vector3 position, Vector3 direction, uint tick)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
-        SpawnProjectile(position, direction, passedTime);
+        C_SpawnProjectile(position, direction, passedTime);
         _nextMuzzleFlash.Play();
+
+        if (_nextMuzzleFlash == muzzleFlashA)
+        {
+            _nextMuzzleFlash = muzzleFlashB;
+        }
+        else
+        {
+            _nextMuzzleFlash = muzzleFlashA;
+        }
     }
 }
