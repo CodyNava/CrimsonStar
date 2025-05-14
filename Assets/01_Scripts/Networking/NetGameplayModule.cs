@@ -49,6 +49,8 @@ public class NetGameplayModule : NetworkBehaviour
         {
             Instantiate(deathVFX, VisualTransform.position, Quaternion.identity);
             
+            // TODO: Debug detachment of destroyed module to test detachment.
+            //  Needs to be moved into method to spawn for true detached modules
             Vector2 detachDirection = (VisualTransform.position - _bridge.transform.position).normalized;
             DetachedModuleSpawner.Instance.SpawnDetachedModule(ModuleID, VisualTransform, detachDirection * _detachmentForce);
         }
