@@ -5,28 +5,34 @@ public class ModuleCategoryContainer : MonoBehaviour
 {
     [SerializeField] private GameObject container;
     [SerializeField] private ModuleSelectionButton selectionButton;
-    public void SetModuleCategory(NetModuleCategory category)
+    public async Awaitable SetModuleCategory(NetModuleCategory category)
     {
         ClearButtons();
+        await Awaitable.NextFrameAsync();
         foreach (int idInt in Enum.GetValues(typeof(NetModuleID)))
         {
             NetModuleID id = (NetModuleID)idInt;
+            if (id == NetModuleID.Unknown)
+            {
+                continue;
+            }
             NetModuleData moduleData = id.GetModuleData();
             if (moduleData.ModuleCategory != category)
             {
                 continue;
             }
+
             ModuleSelectionButton selectedButton = Instantiate(selectionButton, container.transform);
             selectionButton.Configure(moduleData);
-            //Todo add vertical layout group to container
         }
     }
+
     public void ClearButtons()
     {
         int containerChildren = container.transform.childCount;
-        for (int i = containerChildren - 1; i >= 0; i--)
+        for (int i = 0; i < containerChildren; i++)
         {
-            Destroy(container.transform.GetChild(i).gameObject);
+            Destroy(container.transform.GetChild(0).gameObject);
         }
     }
 }
