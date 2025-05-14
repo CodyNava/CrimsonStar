@@ -1,7 +1,8 @@
-﻿using FishNet.Object;
+﻿using _01_Scripts.Ship;
+using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine;
-using UnityEngine.VFX;
+using UnityEngine.InputSystem;
 
 public class NetGameplayModule : NetworkBehaviour
 {
@@ -9,6 +10,9 @@ public class NetGameplayModule : NetworkBehaviour
     [field: SerializeField] public Transform VisualTransform { get; private set; }
 
     [SerializeField] private GameObject deathVFX;
+
+    [Header("Detachment Settings")] [SerializeField]
+    private float _detachmentForce;
 
     private NetBridge _bridge;
     private readonly SyncVar<float> _health = new();
@@ -44,6 +48,9 @@ public class NetGameplayModule : NetworkBehaviour
         if (deathVFX != null)
         {
             Instantiate(deathVFX, VisualTransform.position, Quaternion.identity);
+            
+            Vector2 detachDirection = (VisualTransform.position - _bridge.transform.position).normalized;
+            DetachedModuleSpawner.Instance.SpawnDetachedModule(ModuleID, VisualTransform, detachDirection * _detachmentForce);
         }
 
         Destroy(VisualTransform.gameObject);
