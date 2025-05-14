@@ -8,6 +8,11 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private Vector3 offset;
     private Vector3 velocity = Vector3.zero;
 
+    public float CameraDistance
+    {
+        get => offset.z;
+        set => offset.z = value;
+    } 
 
     void LateUpdate()
     {

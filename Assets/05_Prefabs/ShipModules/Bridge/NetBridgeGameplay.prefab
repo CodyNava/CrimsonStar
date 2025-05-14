@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 8163907783443336317}
   - component: {fileID: 2511837122799470115}
   - component: {fileID: 8340832466762308199}
+  - component: {fileID: 3651307376315669086}
   m_Layer: 3
   m_Name: NetBridgeGameplay
   m_TagString: Untagged
@@ -115,6 +116,7 @@ MonoBehaviour:
   - {fileID: 3189388433212872395}
   - {fileID: 2511837122799470115}
   - {fileID: 8340832466762308199}
+  - {fileID: 5067484619480882466}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -312,6 +314,22 @@ MonoBehaviour:
   _layers:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &3651307376315669086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7512106822483562592}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 788abef65f144a8891a43fbb07451f83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rigidbody2D: {fileID: 8163907783443336317}
+  _targetTransform: {fileID: 2613784735972627428}
+  _maxBankAngle: 30
+  _bankSmoothing: 2
 --- !u!1 &9038909177974191782
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,9 +374,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 453481867b26f7c43b5bf38802a5f50e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 5
   _addedNetworkObject: {fileID: 8044024618627473456}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 8044024618627473456}
   _initializationSettings:
     TargetTransform: {fileID: 8869851105163984641}
     DetachOnStart: 1
