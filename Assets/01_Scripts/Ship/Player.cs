@@ -17,6 +17,8 @@ public class Player : MonoBehaviour
 
     [SerializeField] AudioClip engineSound;
     [SerializeField] AudioSource audioSource;
+    
+    [SerializeField] private Rigidbody2D rb;
 
     private bool _isCombatActive = false;
     
@@ -31,6 +33,11 @@ public class Player : MonoBehaviour
         _bridgeModuleObject = _bridgeController.BridgeObject;
         Combat_GameState.onEnterState += OnEnterCombatGameState;
         Combat_GameState.onExitState += OnExitCombatGameState;
+        
+        if (rb == null)
+        {
+            rb = GetComponent<Rigidbody2D>();
+        }
     }
 
     public void OnDestroy()
@@ -39,15 +46,9 @@ public class Player : MonoBehaviour
         Combat_GameState.onExitState -= OnExitCombatGameState;
     }
 
-    private void OnEnterCombatGameState(GameStateController obj)
-    {
-        _isCombatActive = true;
-    }
-
-    private void OnExitCombatGameState()
-    {
-        _isCombatActive = false;
-    }
+    private void OnEnterCombatGameState(GameStateController obj) => _isCombatActive = true;
+    private void OnExitCombatGameState() => _isCombatActive = false;
+    
     public void OnMove(InputAction.CallbackContext context)
     {
         input = context.ReadValue<Vector2>();
@@ -55,17 +56,17 @@ public class Player : MonoBehaviour
 
     private void Update()
     {   
-        if(_isCombatActive)
+        if (input.magnitude < controllerDeadZone)
         {
-            movePlayer();
+            input = Vector2.zero;
         }
     }
 
-    public void movePlayer()
+    private void FixedUpdate()
     {
-        if (input.magnitude < controllerDeadZone)
-            input = Vector2.zero;
-
+        if (!_isCombatActive) return;
+        
+        // Rotation
         if (Mathf.Abs(input.x) > 0.01f)
         {
             angularVelocity += -input.x * _bridgeModuleObject.rotationSpeed;
@@ -84,18 +85,20 @@ public class Player : MonoBehaviour
                 audioSource.Stop();
             }
         }
+        angularVelocity = Mathf.Clamp(angularVelocity, -_bridgeModuleObject.maxAngularVelocity, _bridgeModuleObject.maxAngularVelocity);
 
-        angularVelocity = Mathf.Clamp(angularVelocity, -_bridgeModuleObject.maxAngularVelocity,
-            _bridgeModuleObject.maxAngularVelocity);
-
-        transform.Rotate(0f, 0f, angularVelocity * Time.deltaTime);
-
-
+        rb.MoveRotation(rb.rotation + angularVelocity * Time.fixedDeltaTime);
+        
+        // Forward/Backward Movement
         if (Mathf.Abs(input.y) > 0.01f)
         {
-            Vector3 movement = transform.up * input.y;
+            float angleRad = (rb.rotation + 90f) * Mathf.Deg2Rad;
+            Vector2 forward = new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
+            Vector3 movement = forward * input.y;
+
             float totalMoveSpeed = Mathf.Max(_bridgeModuleObject.baseMoveSpeed + _shipController.MoveSpeedChange, 0f);
             velocity += totalMoveSpeed * movement.normalized;
+
             isRotating = true;
             if (!audioSource.isPlaying && (isAccelerating || isRotating))
             {
@@ -113,12 +116,11 @@ public class Player : MonoBehaviour
         }
 
         velocity = Vector3.ClampMagnitude(velocity, _bridgeModuleObject.maxSpeed);
-
         if (velocity.magnitude <= 0.0001f)
         {
             velocity = Vector3.zero;
         }
-
-        transform.Translate(velocity * Time.deltaTime, Space.World);
+        
+        rb.MovePosition(rb.position + (Vector2)(velocity * Time.fixedDeltaTime));
     }
 }

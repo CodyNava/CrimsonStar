@@ -1,65 +1,173 @@
-using _01_Scripts.GameState;
-using _01_Scripts.GameState.States;
-using _01_Scripts.Ship;
-using _01_Scripts.Ship.ModuleControllers;
-using TMPro;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ShipEditor : MonoBehaviour
 {
-    [SerializeField] private ShipController _shipController;
-    
-    public GameObject ship;
-    public GameObject shipEditor;
-    public Camera editCamera;
-    public TextMeshProUGUI shipHealth;
-    public TextMeshProUGUI speed;
-    public Shooting[] shooting;
-    public TextMeshProUGUI weapons;
+    [SerializeField] private Camera editCamera;
+    [SerializeField] private GameObject noMoneyPopUp;
+    [SerializeField] private GameObject cantBePlacedPopUp;
+    [SerializeField] private HexTransform hexTransform;
+
+    public NetShipEditorData NetShipEditorData { get; private set; }
+
+    private Dictionary<HexCoordinate, NetEditorModule> _editorModules = new();
+    private NetEditorModule _heldNetEditorModule;
+    private int _turretCount;
+
+    public void SetPlayerShipEditor(NetShipEditorData netShipEditorData)
+    {
+        NetShipEditorData = netShipEditorData;
+    }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            CloseShipEditor();
-        }
-        UIShipStats();
+        ModuleHolding();
     }
+
     private void Start()
     {
-        weapons.text = $"DPS: 0";
+        editCamera ??= Camera.main;
     }
 
-    public void OpenShipEditor()
+    public void SpawnPart(NetModuleID moduleID)
     {
-        editCamera.orthographic = true;
-        ship.transform.rotation = Quaternion.Euler(0, 0, 0);
-        shipEditor.SetActive(true);
-        GameStateController.Instance.ChangeState(new ShipEditor_GameState());
-    }
-
-    public void CloseShipEditor()
-    {
-        editCamera.orthographic = false;
-        shipEditor.SetActive(false);
-        GameStateController.Instance.ChangeState(new Combat_GameState());
-    }
-
-    public void UIShipStats()
-    {
-        shipHealth.text = $"HP: {_shipController.MaxHp}";
-        speed.text = $"Speed: {_shipController.MoveSpeedChange:0.00}";
-        shooting = ship.GetComponentsInChildren<Shooting>();
-        if (shooting.Length == 0)
+        bool success = TrySpawnPart(moduleID);
+        if (!success)
         {
-            weapons.text = $"DPS: 0";
+            StartCoroutine(NotEnoughMoneyPopUp());
+        }
+    }
+
+    private IEnumerator NotEnoughMoneyPopUp()
+    {
+        noMoneyPopUp.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        noMoneyPopUp.SetActive(false);
+    }
+    private IEnumerator CantBePlacedPopUp()
+    {
+        cantBePlacedPopUp.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        cantBePlacedPopUp.SetActive(false);
+    }
+
+    public bool TrySpawnPart(NetModuleID moduleID)
+    {
+        if (_heldNetEditorModule != null)
+        {
+            return false;
+        }
+
+        if (!NetShipEditorData.ResourceStorage.SC_HasResourcesForModule(moduleID))
+        {
+            return false;
+        }
+
+        _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
+        NetShipEditorData.ResourceStorage.C_PayForModule(moduleID);
+        _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
+        return true;
+    }
+
+    private void ModuleHolding()
+    {
+        Vector2 mousePosWorld = editCamera.ScreenToWorldPoint(Input.mousePosition).xy();
+        HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
+        if (_heldNetEditorModule != null)
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                if (CanPlaceModule(cursorHexCoord))
+                {
+                    PlaceModule(cursorHexCoord);
+                    return;
+                }
+                else
+                {
+                    cantBePlacedPopUp.transform.position = mousePosWorld;
+                    StartCoroutine(CantBePlacedPopUp());
+                }
+            }
+            _heldNetEditorModule.transform.position = mousePosWorld.xy0();
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                NetShipEditorData.ResourceStorage.C_RefundModule(_heldNetEditorModule.ModuleID);
+                Destroy(_heldNetEditorModule.gameObject);
+                _heldNetEditorModule = null;
+                return;
+            }
+            if (Keyboard.current.eKey.wasPressedThisFrame && DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
+            {
+                _heldNetEditorModule.C_RotateClockwise();
+            }
+            if (Keyboard.current.qKey.wasPressedThisFrame && DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
+            {
+                _heldNetEditorModule.C_RotateCounterclockwise();
+            }
         }
         else
         {
-            weapons.text = $"DPS: {shooting.Length * 10 * 2 * 2}";
+            if (Mouse.current.leftButton.wasPressedThisFrame && _editorModules.TryGetValue(cursorHexCoord, out NetEditorModule placedModule))
+            {
+                _heldNetEditorModule = placedModule;
+                RemoveModule(placedModule);
+                _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
+            }
         }
-
-
     }
 
+    public bool CanPlaceModule(HexCoordinate rootCoord)
+    {
+        bool isAttached = false;
+
+        foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
+        {
+            HexCoordinate coord = rootCoord + localCoord;
+            _editorModules[coord] = _heldNetEditorModule;
+
+            if (NetShipEditorData.ModuleStorage.SC_IsCoordinateOccupied(coord))
+            {
+                return false;
+            }
+            if (NetShipEditorData.ModuleStorage.SC_IsNeighboringModule(coord))
+            {
+                isAttached = true;
+            }
+        }
+        return isAttached;
+    }
+
+    public void PlaceModule(HexCoordinate rootCoord)
+    {
+        _heldNetEditorModule.PlacedLocation = rootCoord;
+        foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
+        {
+            HexCoordinate coord = rootCoord + localCoord;
+            _editorModules[coord] = _heldNetEditorModule;
+        }
+        NetShipEditorData.ModuleStorage.C_AddModule(rootCoord, _heldNetEditorModule.ModuleID, _heldNetEditorModule.PlacedRotation);
+        _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
+        _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
+        _heldNetEditorModule = null;
+    }
+
+    public void RemoveModule(NetEditorModule moduleToRemove)
+    {
+        foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
+        {
+            HexCoordinate coord = moduleToRemove.PlacedLocation + localCoord;
+            _editorModules.Remove(coord);
+        }
+        NetShipEditorData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
+    }
+
+    public void SignalReady()
+    {
+        if (NetShipEditorData.SignalReady())
+        {
+            gameObject.SetActive(false);
+        }
+    }
 }
