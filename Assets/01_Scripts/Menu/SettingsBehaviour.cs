@@ -39,6 +39,69 @@ public class SettingsBehaviour : MonoBehaviour
         volume.profile.TryGet<LiftGammaGain>(out gamma);
     }
 
+    private void Start()
+    {
+        resolutions = Screen.resolutions;
+        resolutionDropdown.ClearOptions();
+        List<string> resolutionoptions = new List<string>();
+
+        int currentResolutionIndex = 0;
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            //string resolutionoption = resolutions[i].width + " x " + resolutions[i].height;
+            string resolutionoption = $"{resolutions[i].width} x {resolutions[i].height} @{Mathf.RoundToInt((float)resolutions[i].refreshRateRatio.value)}";
+            resolutionoptions.Add(resolutionoption);
+
+            if (resolutions[i].width == Screen.currentResolution.width &&
+                resolutions[i].height == Screen.currentResolution.height &&
+                resolutions[i].refreshRateRatio.value == Screen.currentResolution.refreshRateRatio.value)
+            {
+                currentResolutionIndex = i;
+            }
+        }
+
+        resolutionDropdown.AddOptions(resolutionoptions);
+        resolutionDropdown.value = currentResolutionIndex;
+        resolutionDropdown.RefreshShownValue();
+
+        Load();
+    }
+
+    #region Graphics
+    public void SetResolution(int resolutionIndex)
+    {
+        Resolution resolution = resolutions[resolutionIndex];
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        //Application.targetFrameRate = (int)resolution.refreshRateRatio.value;
+    }
+
+    public void AdjustBrightness()
+    {
+        brightness.color = new Color(0f, 0f, 0f, brightnessSlider.value);
+        Save();
+    }
+
+    public void AdjustGamma()
+    {
+        gamma.gamma.value = new Vector4(1f, 1f, 1f, gammaSlider.value);
+        Save();
+    }
+
+    public void SetVsync()
+    {
+        if (QualitySettings.vSyncCount == 1)
+        {
+            QualitySettings.vSyncCount = 0;
+        }
+        else
+        {
+            QualitySettings.vSyncCount = 1;
+        }
+        Save();
+    }
+    #endregion
+
+    #region Sound
     public void MasterVolume()
     {
         master.SetFloat(masterVolume, Mathf.Log10(masterSlider.value) * 20);
@@ -68,66 +131,7 @@ public class SettingsBehaviour : MonoBehaviour
         master.SetFloat(announcerVolume, Mathf.Log10(announcerSlider.value) * 20);
         Save();
     }
-
-    public void AdjustBrightness()
-    {
-        brightness.color = new Color(0f, 0f, 0f, brightnessSlider.value);
-        Save();
-    }
-
-    public void AdjustGamma()
-    {
-        gamma.gamma.value = new Vector4(1f, 1f, 1f, gammaSlider.value);
-        Save();
-    }
-
-    private void Start()
-    {
-        resolutions = Screen.resolutions;
-        resolutionDropdown.ClearOptions();
-        List<string> resolutionoptions = new List<string>();
-
-        int currentResolutionIndex = 0;
-        for (int i = 0; i < resolutions.Length; i++)
-        {
-            //string resolutionoption = resolutions[i].width + " x " + resolutions[i].height;
-            string resolutionoption = $"{resolutions[i].width} x {resolutions[i].height} @{Mathf.RoundToInt((float)resolutions[i].refreshRateRatio.value)}";
-            resolutionoptions.Add(resolutionoption);
-
-            if (resolutions[i].width == Screen.currentResolution.width &&
-                resolutions[i].height == Screen.currentResolution.height &&
-                resolutions[i].refreshRateRatio.value == Screen.currentResolution.refreshRateRatio.value)
-            {
-                currentResolutionIndex = i;
-            }
-        }
-
-        resolutionDropdown.AddOptions(resolutionoptions);
-        resolutionDropdown.value = currentResolutionIndex;
-        resolutionDropdown.RefreshShownValue();
-
-        Load();
-    }
-
-    public void SetResolution(int resolutionIndex)
-    {
-        Resolution resolution = resolutions[resolutionIndex];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-        //Application.targetFrameRate = (int)resolution.refreshRateRatio.value;
-    }
-
-    public void SetVsync()
-    {
-        if (QualitySettings.vSyncCount == 1)
-        {
-            QualitySettings.vSyncCount = 0;
-        }
-        else
-        {
-            QualitySettings.vSyncCount = 1;
-        }
-        Save();
-    }
+    #endregion
 
     private void Save()
     {
