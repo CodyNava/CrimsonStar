@@ -7,6 +7,7 @@ using UnityEngine;
 public class NetModuleData : ScriptableObject
 {
     [field: SerializeField] public NetModuleID ModuleID { get; private set; }
+    [field: SerializeField] public NetModuleCategory ModuleCategory { get; private set; }
 
     [field: SerializeField]
     public List<Vector3Int> LocalModuleCoordinates { get; private set; } = new()
@@ -21,6 +22,11 @@ public class NetModuleData : ScriptableObject
 
     [field: SerializeField] public NetEditorModule ShipEditorPrefab { get; private set; }
     [field: SerializeField] public NetGameplayModule GameplayPrefab { get; private set; }
+    [Header("UI")]
+    [field: SerializeField] public Sprite Icon { get; private set; }
+    [field: SerializeField] public string DisplayName { get; private set; }
+    [field: SerializeField] public float HexagonSize { get; private set; }
+
 
 
     public IEnumerable<HexCoordinate> GetLocalHexCoordinates() =>
