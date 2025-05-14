@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 
 public class NetFollowCursor : NetworkBehaviour
 {
-	private Turet _inputAsset;
 	private Plane _plane = new Plane(Vector3.back, Vector3.zero);
 	private Camera _camera;
 	private Vector2 _input;
@@ -15,25 +14,18 @@ public class NetFollowCursor : NetworkBehaviour
 		if (IsOwner)
 		{
 			_camera = Camera.main;
-			_inputAsset.Enable();
 		}
 		else
 		{
 			enabled = false;
-			_inputAsset.Disable();
 		}
-	}
-
-	private void Awake()
-	{
-		_inputAsset = new Turet();
 	}
 
 	private void Update()
 	{
-		_input = _inputAsset.Player.Look.ReadValue<Vector2>();
+		_input = Keybinds.Actions.Player.Look.ReadValue<Vector2>();
 		
-		if (_input.magnitude > 0.2f && Gamepad.current != null)
+		if (_input.magnitude > 0.2f && InputManager.Instance.IsGamepadUsed)
 		{
 			transform.up = _input.normalized;
 		}
@@ -46,9 +38,8 @@ public class NetFollowCursor : NetworkBehaviour
 	private void C_LookAtMouse()
 	{
 		if (!_camera) return;
-        
-		Vector3 mouseScreenPos = Input.mousePosition;
-		Ray ray = _camera.ScreenPointToRay(mouseScreenPos);
+		
+		Ray ray = _camera.ScreenPointToRay(_input);
 		_plane.Raycast(ray, out float distance);
 	
 		Vector3 mouseWorldPos = ray.GetPoint(distance);

@@ -13,41 +13,28 @@ public class NetTurret : NetworkBehaviour
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
 
-    private Turet _inputAsset;
     private float _accumulatedTime;
 
     public override void OnStartClient()
     {
         if (IsOwner)
         {
-            _inputAsset.Enable();
             _nextSpawnTransform = spawnTransformA;
         }
-    }
-
-    public override void OnStopClient()
-    {
-        if (IsOwner)
+        else
         {
-            _inputAsset.Disable();
+            enabled = false;
         }
     }
-
-    private void Awake()
-    {
-        _inputAsset = new Turet();
-    }
-
+    
     private void Update()
     {
-        if (!IsOwner) return;
-
         _accumulatedTime += Time.deltaTime;
         _accumulatedTime = Mathf.Min(_accumulatedTime, netTurretData.Cooldown);
 
         if (_accumulatedTime < netTurretData.Cooldown) return;
-        if (!_inputAsset.Player.Attack.IsPressed()) return;
-
+        if (!Keybinds.Actions.Player.Attack.IsPressed()) return;
+        
         if (_nextSpawnTransform == spawnTransformA)
         {
             _nextSpawnTransform = spawnTransformB;
