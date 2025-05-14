@@ -8,25 +8,30 @@ public class ModuleCategoryContainer : MonoBehaviour
     public void SetModuleCategory(NetModuleCategory category)
     {
         ClearButtons();
+
         foreach (int idInt in Enum.GetValues(typeof(NetModuleID)))
         {
             NetModuleID id = (NetModuleID)idInt;
+            if (id == NetModuleID.Unknown)
+            {
+                continue;
+            }
             NetModuleData moduleData = id.GetModuleData();
             if (moduleData.ModuleCategory != category)
             {
                 continue;
             }
+
             ModuleSelectionButton selectedButton = Instantiate(selectionButton, container.transform);
-            selectionButton.Configure(moduleData);
-            //Todo add vertical layout group to container
+            selectedButton.Configure(moduleData);
         }
     }
     public void ClearButtons()
     {
         int containerChildren = container.transform.childCount;
-        for (int i = containerChildren - 1; i >= 0; i--)
+        for (int i = 0; i < containerChildren; i++)
         {
-            Destroy(container.transform.GetChild(i).gameObject);
+            Destroy(container.transform.GetChild(0).gameObject);
         }
     }
 }

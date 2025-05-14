@@ -9,10 +9,12 @@ public class ModuleSelectionButton : MonoBehaviour
     public static event Action<NetModuleID> ModuleSelected;
     private NetModuleID moduleID;
 
+
     public void SpawnModule()
     {
         ModuleSelected?.Invoke(moduleID);
     }
+
     public void Configure(NetModuleData data)
     {
         currencyLabel.text = $"{data.Costs[NetCurrencyType.Gold]}";
