@@ -34,8 +34,6 @@ namespace _01_Scripts.Networking
         {
             gameObject.isStatic = true;
             enabled = false;
-            
-            Debug.Log("Made static!");
         }
     }
 }
