@@ -35,7 +35,7 @@ public class NetBridge : NetworkBehaviour
 
     private void OnAttackStarted(InputAction.CallbackContext obj)
     {
-        DetachLooseModules();
+        S_DetachLooseModules();
     }
 
     
@@ -61,7 +61,7 @@ public class NetBridge : NetworkBehaviour
         }
     }
 
-    public void DetachLooseModules()
+    public void S_DetachLooseModules()
     {
         var looseModules = GetLooseModules();
         foreach (NetGameplayModule looseModule in looseModules)

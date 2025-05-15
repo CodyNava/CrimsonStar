@@ -43,7 +43,7 @@ public class NetGameplayModule : NetworkBehaviour
     private void S_DestroyModule()
     {
         _bridge.S_DetachModule(this, _rootCoordinate.Value);
-        _bridge.DetachLooseModules();
+        _bridge.S_DetachLooseModules();
         C_DestroyModuleObserver();
         Despawn(NetworkObject);
     }
