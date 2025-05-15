@@ -22,6 +22,8 @@ public class NetModuleData : ScriptableObject
 
     [field: SerializeField] public NetEditorModule ShipEditorPrefab { get; private set; }
     [field: SerializeField] public NetGameplayModule GameplayPrefab { get; private set; }
+    [field: SerializeField] public GameObject VisualModelPrefab { get; private set; }
+    
     [Header("UI")]
     [field: SerializeField] public Sprite Icon { get; private set; }
     [field: SerializeField] public string DisplayName { get; private set; }
