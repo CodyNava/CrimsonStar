@@ -30,7 +30,20 @@ public class NetModuleData : ScriptableObject
     [field: SerializeField] public float HexagonSize { get; private set; }
 
 
-
+    
     public IEnumerable<HexCoordinate> GetLocalHexCoordinates() =>
         LocalModuleCoordinates.Select(vec => new HexCoordinate(vec));
+
+    // TODO: Provide ability to define connectionEdges/valid connection neighbours or inverse
+    public IEnumerable<HexCoordinate> GetLocalNeighbourCoordinates()
+    {
+        HashSet<HexCoordinate> neighbourCoordinates = new HashSet<HexCoordinate>();
+        foreach (HexCoordinate localHexCoordinate in GetLocalHexCoordinates())
+        {
+            neighbourCoordinates.UnionWith(localHexCoordinate.Neighbors());
+        }
+        neighbourCoordinates.ExceptWith(GetLocalHexCoordinates());
+
+        return neighbourCoordinates;
+    }
 }
