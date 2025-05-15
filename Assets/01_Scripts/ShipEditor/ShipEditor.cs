@@ -36,6 +36,7 @@ public class ShipEditor : MonoBehaviour
         {
             netEditorBridgeRef
         };
+        shipEditorStats.GetTotalStats(editorModuleList);
     }
     private void OnDestroy()
     {

@@ -107,10 +107,9 @@ public class NetMovementController : NetworkBehaviour
         Vector2 thrust = PredictionRB.Rigidbody2D.transform.up * inputThrust;
         if (Mathf.Abs(inputThrust) > 0.2f)
         {
-            float acceleration = 0.15f;
             float dampingX = bridge.GetLinearDampingCoefficient() / 1000f;
             float dampingY = bridge.GetLinearDampingCoefficient() / 1000f;
-            linearVelocity += bridge.ComputeMovementSpeed() * deltaTime * acceleration * thrust;
+            linearVelocity += bridge.ComputeMovementSpeed() * deltaTime * thrust;
             linearVelocity.x = Mathf.Clamp(linearVelocity.x, -bridge.GetMaxMoveSpeed(), bridge.GetMaxMoveSpeed());
             linearVelocity.y = Mathf.Clamp(linearVelocity.y, -bridge.GetMaxMoveSpeed(), bridge.GetMaxMoveSpeed());
             if (Mathf.Abs(linearVelocity.x) > Mathf.Abs(linearVelocity.y))
@@ -132,8 +131,6 @@ public class NetMovementController : NetworkBehaviour
         PredictionRB.AngularVelocity(angularVelocity);
         PredictionRB.Velocity(linearVelocity);
         PredictionRB.Simulate();
-        Debug.Log("av" + angularVelocity);
-        Debug.Log("lv" + linearVelocity);
     }
 
     private void OnPostTick()
