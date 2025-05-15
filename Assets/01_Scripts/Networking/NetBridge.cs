@@ -2,9 +2,8 @@
 using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.Assertions;
 
 public class NetBridge : NetworkBehaviour
 {
@@ -57,7 +56,7 @@ public class NetBridge : NetworkBehaviour
         var localHexCoordinates = module.ModuleID.GetModuleData().GetLocalHexCoordinates();
         foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
         {
-            Assert.False(_modules.ContainsKey(localHexCoordinate + rootCoordinate), "Placement check failed! Tried to add Module that overlaps already occupied HexCoordinate!");
+            Assert.IsFalse(_modules.ContainsKey(localHexCoordinate + rootCoordinate), "Placement check failed! Tried to add Module that overlaps already occupied HexCoordinate!");
             // We add each localHexCoordinate that the module occupies to the list
             // As the localHexCoordinates are only in module local space, we add the rootCoordinate as an offset
             _modules.Add(localHexCoordinate + rootCoordinate, module);
