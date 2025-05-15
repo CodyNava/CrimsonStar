@@ -35,7 +35,7 @@ namespace _01_Scripts.Networking
 
             if (_elapsedTime >= _decayTime)
             {
-                Instantiate(deathVFX, transform.position, Quaternion.identity);
+                Instantiate(deathVFX, _visualRoot.transform.position, Quaternion.identity);
                 Destroy(gameObject);
             }
         }
