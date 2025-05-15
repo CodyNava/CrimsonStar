@@ -141,10 +141,11 @@ public class ShipEditor : MonoBehaviour
             {
                 return false;
             }
-            if (NetShipEditorData.ModuleStorage.SC_IsNeighboringModule(coord))
-            {
-                isAttached = true;
-            }
+            // if (NetShipEditorData.ModuleStorage.SC_IsNeighboringModule(coord))
+            // {
+            //     isAttached = true;
+            // }
+            isAttached = true;
         }
         return isAttached;
     }
