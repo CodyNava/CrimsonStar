@@ -62,7 +62,13 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
 
     private void S_StartMatch()
     {
-        Debug.Log("Imagine the game would start right now! Wow!");
+        C_OnMatchStart();
+    }
+
+    [ObserversRpc]
+    public void C_OnMatchStart()
+    {
+        InputManager.EnableGameControls();
     }
     
     [ServerRpc(RequireOwnership = false)]
