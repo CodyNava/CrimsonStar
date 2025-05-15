@@ -8,6 +8,7 @@ public class NetPredictedProjectile : MonoBehaviour
     [SerializeField] private float projectileDamage;
     [SerializeField] private float _projectileTimer;
     [SerializeField] private VisualEffect bulletVFX;
+    [SerializeField] private GameObject hitFeedbackVFX;
 
     private NetPlayerID _netPlayerID;
     private Vector3 _direction;
@@ -60,7 +61,7 @@ public class NetPredictedProjectile : MonoBehaviour
         {
             module.S_InflictDamage(projectileDamage);
         }
-
+        Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
 }
