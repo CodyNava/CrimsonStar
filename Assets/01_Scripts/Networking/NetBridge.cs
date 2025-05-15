@@ -28,20 +28,19 @@ public class NetBridge : NetworkBehaviour
     public void S_DetachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         _baseStats.Value = _baseStats.Value.Subtract(module.ModuleID.GetModuleData().BaseStats);
-        
+        RemoveModuleCoordinates(module, rootCoordinate);
+
         if (module.ModuleID == NetModuleID.Bridge)
         {
-            foreach (var (c, m) in _modules)
+            Dictionary<HexCoordinate, NetGameplayModule> modules = new Dictionary<HexCoordinate, NetGameplayModule>(_modules);
+            foreach (var (c,m) in modules)
             {
-                if(m.ModuleID == NetModuleID.Bridge) continue;
                 m.S_DetachModule();
             }
             
             InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath();
             Despawn(NetworkObject);
         }
-        
-        RemoveModuleCoordinates(module, rootCoordinate);
     }
 
     public void S_DetachLooseModules()
