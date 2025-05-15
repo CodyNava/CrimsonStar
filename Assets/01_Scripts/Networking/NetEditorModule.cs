@@ -7,6 +7,7 @@ public class NetEditorModule : MonoBehaviour
     [field: SerializeField] public Transform VisualTransform { get; private set; }
     public HexCoordinate PlacedLocation { get; set; }
     public int PlacedRotation { get; set; }
+    public NetModuleData ModuleData => ModuleID.GetModuleData();
     public List<HexCoordinate> LocalCoordinates { get; private set; }
 
     private void Start()
@@ -31,7 +32,7 @@ public class NetEditorModule : MonoBehaviour
         {
             PlacedRotation -= 6;
         }
-        
+
         C_UpdateRotation();
     }
 
@@ -47,7 +48,7 @@ public class NetEditorModule : MonoBehaviour
         {
             PlacedRotation += 6;
         }
-        
+
         C_UpdateRotation();
     }
 

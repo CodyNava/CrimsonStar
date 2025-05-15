@@ -9,12 +9,14 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private GameObject noMoneyPopUp;
     [SerializeField] private GameObject cantBePlacedPopUp;
     [SerializeField] private HexTransform hexTransform;
-
+    [SerializeField] private ShipEditorStats shipEditorStats;
+    [SerializeField] private NetEditorModule netEditorBridgeRef;
     public NetShipEditorData NetShipEditorData { get; private set; }
 
-    private Dictionary<HexCoordinate, NetEditorModule> _editorModules = new();
+    private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
     private NetEditorModule _heldNetEditorModule;
-    private int _turretCount;
+
+    private List<NetEditorModule> editorModuleList;
 
     public void SetPlayerShipEditor(NetShipEditorData netShipEditorData)
     {
@@ -25,12 +27,20 @@ public class ShipEditor : MonoBehaviour
     {
         ModuleHolding();
     }
-
     private void Start()
     {
         editCamera ??= Camera.main;
+        ModuleSelectionButton.ModuleSelected -= SpawnPart;
+        ModuleSelectionButton.ModuleSelected += SpawnPart;
+        editorModuleList = new List<NetEditorModule> // collection initialization syntax uwu
+        {
+            netEditorBridgeRef
+        };
     }
-
+    private void OnDestroy()
+    {
+        ModuleSelectionButton.ModuleSelected -= SpawnPart;
+    }
     public void SpawnPart(NetModuleID moduleID)
     {
         bool success = TrySpawnPart(moduleID);
@@ -109,7 +119,7 @@ public class ShipEditor : MonoBehaviour
         }
         else
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame && _editorModules.TryGetValue(cursorHexCoord, out NetEditorModule placedModule))
+            if (Mouse.current.leftButton.wasPressedThisFrame && _editorModulesMap.TryGetValue(cursorHexCoord, out NetEditorModule placedModule))
             {
                 _heldNetEditorModule = placedModule;
                 RemoveModule(placedModule);
@@ -125,7 +135,7 @@ public class ShipEditor : MonoBehaviour
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
             HexCoordinate coord = rootCoord + localCoord;
-            _editorModules[coord] = _heldNetEditorModule;
+            _editorModulesMap[coord] = _heldNetEditorModule;
 
             if (NetShipEditorData.ModuleStorage.SC_IsCoordinateOccupied(coord))
             {
@@ -145,11 +155,13 @@ public class ShipEditor : MonoBehaviour
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
             HexCoordinate coord = rootCoord + localCoord;
-            _editorModules[coord] = _heldNetEditorModule;
+            _editorModulesMap[coord] = _heldNetEditorModule;
         }
         NetShipEditorData.ModuleStorage.C_AddModule(rootCoord, _heldNetEditorModule.ModuleID, _heldNetEditorModule.PlacedRotation);
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
+        editorModuleList.Add(_heldNetEditorModule);
+        shipEditorStats.GetTotalStats(editorModuleList);
         _heldNetEditorModule = null;
     }
 
@@ -158,9 +170,11 @@ public class ShipEditor : MonoBehaviour
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
         {
             HexCoordinate coord = moduleToRemove.PlacedLocation + localCoord;
-            _editorModules.Remove(coord);
+            _editorModulesMap.Remove(coord);
         }
         NetShipEditorData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
+        editorModuleList.Remove(_heldNetEditorModule);
+        shipEditorStats.GetTotalStats(editorModuleList);
     }
 
     public void SignalReady()
