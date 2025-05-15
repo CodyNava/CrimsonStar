@@ -18,30 +18,6 @@ public class NetBridge : NetworkBehaviour
     private Dictionary<HexCoordinate, NetGameplayModule> _modules = new();
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
 
-    
-    
-    
-    // TODO: Remove if not needed: Debug hardcoded keybindings to trigger detachment of loose modules
-    public void OnEnable()
-    {
-        Keybinds.Actions.Player.Attack.started -= OnAttackStarted;
-        Keybinds.Actions.Player.Attack.started += OnAttackStarted;
-    }
-
-    public void OnDisable()
-    {
-        Keybinds.Actions.Player.Attack.started -= OnAttackStarted;
-    }
-
-    private void OnAttackStarted(InputAction.CallbackContext obj)
-    {
-        S_DetachLooseModules();
-    }
-
-    
-    
-    
-    
     public void S_AttachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         _baseStats.Value = _baseStats.Value.Combine(module.ModuleID.GetModuleData().BaseStats);
