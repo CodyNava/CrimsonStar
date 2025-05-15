@@ -1,12 +1,13 @@
 ﻿using FishNet;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class NetPredictedProjectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float projectileDamage;
     [SerializeField] private float _projectileTimer;
-    //[SerializeField] private VisualEffect bulletVFX;
+    [SerializeField] private VisualEffect bulletVFX;
 
     private NetPlayerID _netPlayerID;
     private Vector3 _direction;
@@ -18,8 +19,10 @@ public class NetPredictedProjectile : MonoBehaviour
         _passedTime = passedTime;
         _netPlayerID = netPlayerID;
         Destroy(gameObject, _projectileTimer);
-        //Vector3 directionBulletVFX = bulletVFX.GetVector3("DirectionVector");
-        //directionBulletVFX = _direction;
+        if (bulletVFX.HasVector3("DirectionVector_position"))
+        {
+            bulletVFX.SetVector3("DirectionVector_position", _direction);
+        }
     }
 
     private void Update()
