@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem.UI;
 
@@ -6,16 +5,27 @@ public class VirtualMouseEvents : MonoBehaviour
 {
     [SerializeField] private VirtualMouseInput virtualMouseInput;
 
-    public static event Action inputEnabled;
-    public static event Action inputDisabled;
-    
-    private static void OnInputEnabled()
+    private void OnEnable()
     {
-        inputEnabled?.Invoke();
+        InputManager.GameInputEnabled -= OnGameInputEnabled;
+        InputManager.GameInputDisabled -= OnGameInputDisabled;
+        InputManager.GameInputDisabled += OnGameInputDisabled;
+        InputManager.GameInputEnabled += OnGameInputEnabled;
     }
-    
-    private static void OnInputDisabled()
+
+    private void OnGameInputDisabled()
     {
-        inputDisabled?.Invoke();
+        virtualMouseInput.enabled = true;
+    }
+
+    private void OnGameInputEnabled()
+    {
+        virtualMouseInput.enabled = false;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.GameInputEnabled -= OnGameInputEnabled;
+        InputManager.GameInputDisabled -= OnGameInputDisabled;
     }
 }
