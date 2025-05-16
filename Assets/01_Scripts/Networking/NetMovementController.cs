@@ -1,7 +1,6 @@
 ﻿using FishNet.Object;
 using FishNet.Object.Prediction;
 using FishNet.Transporting;
-using System;
 using UnityEngine;
 
 public struct MoveReplicateData : IReplicateData
@@ -37,9 +36,8 @@ public struct MoveReconcileData : IReconcileData
 public class NetMovementController : NetworkBehaviour
 {
     [SerializeField] private NetBridge bridge;
-
     public PredictionRigidbody2D PredictionRB;
-    public static event Action<Vector2> thrusterVFXController;
+    private ThrusterVFXController[] _localThrusters;
 
     private Vector2 _input;
     private Turet _inputAsset;
@@ -61,6 +59,7 @@ public class NetMovementController : NetworkBehaviour
         if (IsOwner)
         {
             _inputAsset.Enable();
+            _localThrusters = GetComponentsInChildren<ThrusterVFXController>();
         }
     }
 
@@ -164,7 +163,11 @@ public class NetMovementController : NetworkBehaviour
         if (IsOwner)
         {
             _input = _inputAsset.Player.Move.ReadValue<Vector2>();
-            thrusterVFXController?.Invoke(_input);
+
+            foreach (var thruster in _localThrusters)
+            {
+                thruster.UpdateThrustVisual(_input);
+            }
         }
     }
 
