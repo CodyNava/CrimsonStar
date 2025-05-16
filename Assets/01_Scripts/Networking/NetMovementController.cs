@@ -164,18 +164,14 @@ public class NetMovementController : NetworkBehaviour
         if (IsOwner)
         {
             _input = _inputAsset.Player.Move.ReadValue<Vector2>();
+        }
 
-            if (_localThrusters == null)
-                _localThrusters = GetComponentsInChildren<ThrusterVFXController>();
+        if (_localThrusters == null)
+            _localThrusters = GetComponentsInChildren<ThrusterVFXController>();
 
-            foreach (var thruster in _localThrusters)
-            {
-                thruster.SetThrustActive(_isThrusting);
-            }
-            if (IsOwner)
-            {
-                _input = _inputAsset.Player.Move.ReadValue<Vector2>();
-            }
+        foreach (var thruster in _localThrusters)
+        {
+            thruster.SetThrustActive(_isThrusting);
         }
     }
 
