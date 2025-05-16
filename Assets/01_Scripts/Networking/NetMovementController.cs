@@ -38,6 +38,7 @@ public class NetMovementController : NetworkBehaviour
     [SerializeField] private NetBridge bridge;
     public PredictionRigidbody2D PredictionRB;
     private ThrusterVFXController[] _localThrusters;
+    private bool _isThrusting = false;
 
     private Vector2 _input;
     private Turet _inputAsset;
@@ -91,7 +92,7 @@ public class NetMovementController : NetworkBehaviour
         float deltaTime = (float)TimeManager.TickDelta;
         float inputThrust = data.Input.y;
         float inputSteer = -data.Input.x;
-
+        _isThrusting = inputThrust > 0.2f;
         float angularVelocity = PredictionRB.Rigidbody2D.angularVelocity;
         if (Mathf.Abs(inputSteer) > 0.2f)
         {
@@ -164,9 +165,16 @@ public class NetMovementController : NetworkBehaviour
         {
             _input = _inputAsset.Player.Move.ReadValue<Vector2>();
 
+            if (_localThrusters == null)
+                _localThrusters = GetComponentsInChildren<ThrusterVFXController>();
+
             foreach (var thruster in _localThrusters)
             {
-                thruster.UpdateThrustVisual(_input);
+                thruster.SetThrustActive(_isThrusting);
+            }
+            if (IsOwner)
+            {
+                _input = _inputAsset.Player.Move.ReadValue<Vector2>();
             }
         }
     }
