@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using FishNet;
+﻿using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -11,6 +11,7 @@ public class NetBridge : NetworkBehaviour
     [field: SerializeField] public HexTransform HexTransform { get; private set; }
     [field: SerializeField] public Transform VisualRootTransform { get; private set; }
 
+    [SerializeField] private GameObject deathVFX;
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
     public NetModuleBaseStats BaseStats => _baseStats.Value;
 
@@ -32,11 +33,11 @@ public class NetBridge : NetworkBehaviour
         if (module.ModuleID == NetModuleID.Bridge)
         {
             Dictionary<HexCoordinate, NetGameplayModule> modules = new Dictionary<HexCoordinate, NetGameplayModule>(_modules);
-            foreach (var (c,m) in modules)
+            foreach (var (c, m) in modules)
             {
                 m.S_DetachModule();
             }
-            
+
             InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath();
             Despawn(NetworkObject);
         }
@@ -73,7 +74,7 @@ public class NetBridge : NetworkBehaviour
             _modules.Remove(localHexCoordinate + rootCoordinate);
         }
     }
-    
+
     // TODO: Check performance impact and might need to be optimized to reduce call count
     private HashSet<NetGameplayModule> GetLooseModules()
     {
@@ -81,13 +82,13 @@ public class NetBridge : NetworkBehaviour
         HashSet<NetGameplayModule> looseModules = new HashSet<NetGameplayModule>();
         foreach (var (coord, module) in _modules)
         {
-            if(module.ModuleID == NetModuleID.Bridge) continue; 
+            if (module.ModuleID == NetModuleID.Bridge) continue;
             looseModules.Add(module);
         }
 
         HashSet<HexCoordinate> handledCoordinates = new HashSet<HexCoordinate>();
         Queue<HexCoordinate> checkingCoordinates = new Queue<HexCoordinate>();
-        
+
         // Initialize Queue with NeighbourCoordinates of Bridge
         handledCoordinates.UnionWith(BridgeModule.ModuleID.GetModuleData().GetLocalHexCoordinates());
         var bridgeNeighbourCoordinates = BridgeModule.ModuleID.GetModuleData().GetLocalNeighbourCoordinates();
@@ -95,19 +96,19 @@ public class NetBridge : NetworkBehaviour
         {
             checkingCoordinates.Enqueue(bridgeNeighbourCoordinate);
         }
-        
-        
+
+
         while (checkingCoordinates.TryDequeue(out HexCoordinate coord))
         {
             // We might have added the to checking coord already as handled, as an earlier coord pointed to the same module
-            if(handledCoordinates.Contains(coord)) continue;
-            
+            if (handledCoordinates.Contains(coord)) continue;
+
             // We add the to checking coord to handled coords, so no loop would occur on checking modules next to each other
             handledCoordinates.Add(coord);
-            
+
             // If the coord is empty, do nothing
-            if(!_modules.ContainsKey(coord)) continue;
-            
+            if (!_modules.ContainsKey(coord)) continue;
+
             NetGameplayModule module = _modules[coord];
             looseModules.Remove(module);
 
@@ -118,18 +119,18 @@ public class NetBridge : NetworkBehaviour
             {
                 handledCoordinates.Add(ownCoord + module.RootCoordinate);
             }
-            
+
             // TODO: Rotated modules might need more care to get the correct valid neighbour coordinates
             // We add all neighbouring coords of the module to the checking list, that weren't handled already
             var moduleNeighbourCoords = module.ModuleID.GetModuleData().GetLocalNeighbourCoordinates();
             foreach (HexCoordinate ownCoord in moduleNeighbourCoords)
             {
                 if (handledCoordinates.Contains(ownCoord + module.RootCoordinate)) continue;
-                
+
                 checkingCoordinates.Enqueue(ownCoord + module.RootCoordinate);
             }
         }
-        
+
         return looseModules;
     }
 
@@ -146,6 +147,7 @@ public class NetBridge : NetworkBehaviour
         {
             FindFirstObjectByType<CameraFollow>()?.SetTargetFollow(null);
         }
+        Instantiate(deathVFX, VisualRootTransform.position, Quaternion.identity);
         Destroy(VisualRootTransform.gameObject);
     }
 
