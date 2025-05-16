@@ -48,7 +48,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
             NetPlayerID id = (NetPlayerID) _spawnedPlayers + 1;
             var bridge = Instantiate(bridgePrefab);
             var spawnPoint = S_GetSpawnTransform();
-            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, id);
+            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, id, HexCoordinate.Zero);
             S_ConstructPlayerShip(args.Connection, id, bridge, _editorConductor.PlayerShipEditors[args.Connection], args.Scene);
             ServerManager.Spawn(bridge.gameObject, args.Connection);
             bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
@@ -98,7 +98,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
             NetGameplayModule module = Instantiate(placementData.ModuleID.GetModuleData().GameplayPrefab);
             module.NetworkObject.SetParent(bridge);
             module.transform.SetLocalPositionAndRotation(bridge.transform.InverseTransformPoint(modulePos), moduleRotation);
-            module.S_ServerInit(bridge, id);
+            module.S_ServerInit(bridge, id, placementData.RootCoordinate);
         }
     }
 
