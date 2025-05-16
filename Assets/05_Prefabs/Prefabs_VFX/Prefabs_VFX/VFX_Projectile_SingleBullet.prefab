@@ -57,18 +57,27 @@ VisualEffect:
       - m_Value: 0.4
         m_Name: Size_Bullet
         m_Overridden: 0
+      - m_Value: 0
+        m_Name: Velocity
+        m_Overridden: 0
     m_Vector2f:
       m_Array:
-      - m_Value: {x: 2, y: 2}
+      - m_Value: {x: 1, y: 2}
         m_Name: 2DScale_BulletBloom
         m_Overridden: 1
     m_Vector3f:
       m_Array:
-      - m_Value: {x: 0, y: 0, z: 0}
+      - m_Value: {x: 15, y: 16, z: 15}
         m_Name: DirectionVector_position
         m_Overridden: 1
+      - m_Value: {x: -0.02, y: 0.04, z: 0}
+        m_Name: Pivot_BulletBloom
+        m_Overridden: 1
     m_Vector4f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 0.5283019, y: 0.5283019, z: 0.5283019, w: 0}
+        m_Name: Color_BulletTrail
+        m_Overridden: 1
     m_Uint:
       m_Array: []
     m_Int:
@@ -85,6 +94,9 @@ VisualEffect:
       m_Array:
       - m_Value: 0
         m_Name: ToggleTestVelocity
+        m_Overridden: 0
+      - m_Value: 0
+        m_Name: ToggleLoop
         m_Overridden: 1
 --- !u!73398921 &294713059508180743
 VFXRenderer:
