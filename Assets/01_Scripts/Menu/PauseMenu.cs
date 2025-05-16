@@ -1,5 +1,7 @@
 using _01_Scripts.GameState.States;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
@@ -8,7 +10,7 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject settingsMenuUI;
     [SerializeField] GameObject deathScreenUi;
 
-    [SerializeField] bool paused = false;
+    [SerializeField] bool paused;
 
     private void Awake()
     {
@@ -51,7 +53,6 @@ public class PauseMenu : MonoBehaviour
     {
         paused = true;
         pauseMenuUI.SetActive(true);
-        Time.timeScale = 0f;
     }
 
     public void Resume()
@@ -59,7 +60,6 @@ public class PauseMenu : MonoBehaviour
         paused = false;
         pauseMenuUI.SetActive(false);
         settingsMenuUI.SetActive(false);
-        Time.timeScale = 1.0f;
     }
 
     public void BackToMenu()
