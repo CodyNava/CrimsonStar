@@ -148,5 +148,6 @@ public class SettingsBehaviour : MonoBehaviour
         gammaSlider.value = PlayerPrefs.GetFloat(gammaValue, 0.5f);
         brightnessSlider.value = PlayerPrefs.GetFloat(brightnessValue, 0.5f);
         toggle.isOn = PlayerPrefs.GetInt(vSync, 1) == 1;
+        QualitySettings.vSyncCount = QualitySettings.vSyncCount == 1 ? 0 : 1;
     }
 }
