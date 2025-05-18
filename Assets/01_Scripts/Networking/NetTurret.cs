@@ -1,17 +1,17 @@
 ﻿using FishNet.Object;
 using UnityEngine;
-using UnityEngine.VFX;
-
+using UnityEngine.VFX; 
 public class NetTurret : NetworkBehaviour
 {
     [SerializeField] private NetTurretData netTurretData;
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransformA, spawnTransformB;
     [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
-
+    [SerializeField] private AudioSource shootingSound;
     private const float MaxPassedTime = 0.3f;
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
+    
 
     private float _accumulatedTime;
 
@@ -57,6 +57,7 @@ public class NetTurret : NetworkBehaviour
         C_SpawnProjectile(position, direction, 0f);
         S_ServerFire(position, direction, TimeManager.Tick);
         _nextMuzzleFlash.Play();
+        shootingSound.Play();
     }
 
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime)

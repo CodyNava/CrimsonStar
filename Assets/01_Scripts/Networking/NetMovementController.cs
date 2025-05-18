@@ -36,6 +36,7 @@ public struct MoveReconcileData : IReconcileData
 public class NetMovementController : NetworkBehaviour
 {
     [SerializeField] private NetBridge bridge;
+    [SerializeField] private AudioSource thrusterSound;
 
     public PredictionRigidbody2D PredictionRB;
 
@@ -162,6 +163,18 @@ public class NetMovementController : NetworkBehaviour
         if (IsOwner)
         {
             _input = _inputAsset.Player.Move.ReadValue<Vector2>();
+            if (_input.y > 0.2f)
+            {
+                if (!thrusterSound.isPlaying)
+                {
+                    thrusterSound.PlayOneShot(thrusterSound.clip);
+                    
+                }
+            }
+            else
+            {
+                thrusterSound.Stop();
+            }
         }
     }
 
