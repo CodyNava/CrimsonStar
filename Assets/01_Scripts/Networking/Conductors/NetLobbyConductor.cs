@@ -25,7 +25,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     private NetworkConnection _hostConnection;
     private int _roundCount = 1;
     private int _resourcesAddedPerRound = 0;
-    private bool _canRecycleModules;
+    private float _moduleRecycleRate;
 
     public override void OnStartNetwork()
     {
@@ -55,7 +55,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         if (conn != _hostConnection) return;
         _roundCount = msg.NumberOfRounds;
         _resourcesAddedPerRound = msg.ResourceGainPerRound;
-        _canRecycleModules = msg.CanRecycleModules;
+        _moduleRecycleRate = msg.ModuleRecycleRate;
         S_SendLobbySettingsUpdate();
     }
 
@@ -118,7 +118,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         {
             NumberOfRounds = _roundCount,
             ResourceGainPerRound = _resourcesAddedPerRound,
-            CanRecycleModules = _canRecycleModules
+            ModuleRecycleRate = _moduleRecycleRate
         }, false);
     }
 
