@@ -2850,8 +2850,8 @@ GameObject:
   m_Component:
   - component: {fileID: 625629133}
   - component: {fileID: 625629132}
-  - component: {fileID: 625629131}
   - component: {fileID: 625629134}
+  - component: {fileID: 625629135}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2859,14 +2859,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &625629131
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625629130}
-  m_Enabled: 1
 --- !u!20 &625629132
 Camera:
   m_ObjectHideFlags: 0
@@ -2977,6 +2969,20 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &625629135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625629130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1 &637520984
 GameObject:
   m_ObjectHideFlags: 0
@@ -5732,6 +5738,7 @@ GameObject:
   - component: {fileID: 1069341260}
   - component: {fileID: 1069341259}
   - component: {fileID: 1069341258}
+  - component: {fileID: 1069341261}
   m_Layer: 5
   m_Name: SettingsButton
   m_TagString: Untagged
@@ -5865,6 +5872,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069341256}
   m_CullTransparentMesh: 1
+--- !u!114 &1069341261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069341256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1501653614
+      Data2: 1108968818
+      Data3: -1784062276
+      Data4: 284458447
+    Path: event:/ambience-pad
+  Event: 
+  EventPlayTrigger: 19
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &1075217797
 GameObject:
   m_ObjectHideFlags: 0
