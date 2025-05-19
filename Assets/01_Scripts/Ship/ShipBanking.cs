@@ -8,6 +8,7 @@ namespace _01_Scripts.Ship
 {
     public class ShipMovementRoll : MonoBehaviour
     {
+        [SerializeField] private NetBridge _bridge;
         [SerializeField] private Rigidbody2D _rigidbody2D;
         [SerializeField] private Transform _targetTransform;
         [SerializeField] private float _maxBankAngle;
@@ -23,10 +24,11 @@ namespace _01_Scripts.Ship
 
         public void LateUpdate()
         {
+            float steeringInput = Keybinds.Actions.Player.Move.ReadValue<Vector2>().x;
+
             float steeringAngle = _rigidbody2D.rotation;
             
-            float angularVel = _rigidbody2D.angularVelocity;
-            float targetBankAngle = Mathf.Clamp(angularVel * _maxBankAngle / 100f, -_maxBankAngle, _maxBankAngle);
+            float targetBankAngle = Mathf.Clamp(-steeringInput * _maxBankAngle, -_maxBankAngle, _maxBankAngle);
             
             _currentBank = Mathf.Lerp(_currentBank, targetBankAngle, Time.deltaTime * _bankSmoothing);
             
