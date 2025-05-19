@@ -45,7 +45,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
     {
         if (args.Scene.name == "NetGameplayScene" && args.Added)
         {
-            NetPlayerID id = (NetPlayerID) _spawnedPlayers + 1;
+            NetTeamID id = (NetTeamID) _spawnedPlayers + 1;
             var bridge = Instantiate(bridgePrefab);
             var spawnPoint = S_GetSpawnTransform();
             bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, id, HexCoordinate.Zero);
@@ -86,7 +86,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
         Debug.Log("Imagine the game would end right now! Wow!");
     }
 
-    private void S_ConstructPlayerShip(NetworkConnection conn, NetPlayerID id, NetBridge bridge, NetShipEditorData editorData, Scene scene)
+    private void S_ConstructPlayerShip(NetworkConnection conn, NetTeamID id, NetBridge bridge, NetShipEditorData editorData, Scene scene)
     {
         HashSet<HexCoordinate> spawnedRoots = new HashSet<HexCoordinate>();
         foreach (var placementData in editorData.ModuleStorage.ModuleMap.Values)

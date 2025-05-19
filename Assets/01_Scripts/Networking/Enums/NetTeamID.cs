@@ -1,4 +1,4 @@
-﻿public enum NetPlayerID
+﻿public enum NetTeamID
 {
     Observer = 0,
     Player1 = 1,

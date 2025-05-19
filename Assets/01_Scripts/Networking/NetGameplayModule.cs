@@ -14,28 +14,35 @@ public class NetGameplayModule : NetworkBehaviour
     private float _detachmentForce;
 
     private NetBridge _bridge;
+    private float _maxHealth;
     private readonly SyncVar<float> _health = new();
-    private readonly SyncVar<NetPlayerID> _playerID = new();
+    private readonly SyncVar<NetTeamID> _playerID = new();
     
     // HexCoordinate relative to attached bridge coordinate
     private readonly SyncVar<HexCoordinate> _rootCoordinate = new();
 
     public float Health => _health.Value;
-    public NetPlayerID NetPlayerID => _playerID.Value;
+    public float HealthPct => Mathf.Clamp01(Health / Mathf.Max(_maxHealth, Mathf.Epsilon));
+    public NetTeamID NetTeamID => _playerID.Value;
     public HexCoordinate RootCoordinate => _rootCoordinate.Value;
 
-    public void S_ServerInit(NetBridge bridge, NetPlayerID netPlayerID, HexCoordinate rootCoordinate)
+    public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, HexCoordinate rootCoordinate)
     {
+        var moduleData = ModuleID.GetModuleData();
+        
         _bridge = bridge;
         _rootCoordinate.Value = rootCoordinate;
         _bridge.S_AttachModule(this, rootCoordinate);
-        _health.Value = ModuleID.GetModuleData().BaseStats.health;
-        _playerID.Value = netPlayerID;
+        _health.Value = moduleData.BaseStats.health;
+        _maxHealth = _health.Value;
+        _playerID.Value = netTeamID;
     }
 
     public override void OnStartClient()
     {
         _bridge = ModuleID == NetModuleID.Bridge ? GetComponent<NetBridge>() : GetComponentInParent<NetBridge>();
+        var moduleData = ModuleID.GetModuleData();
+        _maxHealth = moduleData.BaseStats.health;
         VisualTransform.SetParent(_bridge.VisualRootTransform);
     }
 

@@ -1,5 +1,6 @@
 ﻿using FishNet.Object;
 using FishNet.Object.Prediction;
+using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using UnityEngine;
 
@@ -40,6 +41,10 @@ public class NetMovementController : NetworkBehaviour
 
     public PredictionRigidbody2D PredictionRB;
 
+    private readonly SyncVar<float> _inputThrust = new();
+    
+    public float InputThrust => _inputThrust.Value;
+
     private Vector2 _input;
     private Turet _inputAsset;
 
@@ -73,6 +78,10 @@ public class NetMovementController : NetworkBehaviour
 
     private void OnTick()
     {
+        if (IsOwner)
+        {
+            SetInputThrust();
+        }
         RunInputs(CreateReplicateData());
     }
 
@@ -176,6 +185,12 @@ public class NetMovementController : NetworkBehaviour
                 thrusterSound.Stop();
             }
         }
+    }
+
+    [ServerRpc]
+    public void SetInputThrust()
+    {
+        _inputThrust.Value = _input.y;
     }
 
     private void OnDestroy()
