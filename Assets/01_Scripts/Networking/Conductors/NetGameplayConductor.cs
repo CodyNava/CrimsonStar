@@ -16,7 +16,10 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
 
     private NetLobbyConductor _lobbyConductor;
     private NetShipEditorConductor _editorConductor;
+    
     private List<NetworkConnection> _eliminatedPlayers = new();
+
+    private int _roundsPlayed;
 
     private int PlayerCount => _editorConductor.PlayerShipEditors.Count;
     private int _spawnedPlayers = 0;
@@ -78,15 +81,50 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
     public void S_RegisterPlayerDeath(Channel channel = Channel.Reliable, NetworkConnection conn = null)
     {
         _eliminatedPlayers.Add(conn);
-        if (_eliminatedPlayers.Count == PlayerCount - 1)
+        if (S_IsMatchComplete())
         {
             S_StopMatch();
         }
     }
 
+    private bool S_IsMatchComplete()
+    {
+        NetTeamID teamID = NetTeamID.Observer;
+        
+        foreach (var (conn, playData) in _lobbyConductor.ConnectionPlayerMap)
+        {
+            if (_eliminatedPlayers.Contains(conn)) continue;
+
+            if (teamID == NetTeamID.Observer)
+            {
+                teamID = playData.playerTeamID;
+            }
+            else
+            {
+                if (teamID != playData.playerTeamID) return false;
+            }
+        }
+        
+        // Todo: Record victory somewhere
+        return true;
+    }
+
     private void S_StopMatch()
     {
-        Debug.Log("Imagine the game would end right now! Wow!");
+        _roundsPlayed++;
+        if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
+        {
+            // Todo: Move to some final result screen?
+        }
+        else
+        {
+            _editorConductor.S_SetupNewEditPhase();
+            SceneLoadData sceneData = new("NetShipEditor");
+            sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
+            SceneUnloadData unloadData = new("NetGameplayScene");
+            SceneManager.LoadGlobalScenes(sceneData);
+            SceneManager.UnloadGlobalScenes(unloadData);
+        }
     }
 
     private void S_ConstructPlayerShip(NetworkConnection conn, NetTeamID id, NetBridge bridge, NetShipEditorData editorData, Scene scene)

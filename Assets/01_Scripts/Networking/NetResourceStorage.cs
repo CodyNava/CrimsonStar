@@ -70,4 +70,9 @@ public class NetResourceStorage : NetworkBehaviour
     {
         return _resourceStorage.GetValueOrDefault(type, 0);
     }
+
+    public void S_AddResourceCount(NetCurrencyType type, int addedAmount)
+    {
+        _resourceStorage[type] += addedAmount;
+    }
 }
