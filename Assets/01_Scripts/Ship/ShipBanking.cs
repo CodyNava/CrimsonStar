@@ -8,7 +8,6 @@ namespace _01_Scripts.Ship
 {
     public class ShipMovementRoll : MonoBehaviour
     {
-        [SerializeField] private NetBridge _bridge;
         [SerializeField] private Rigidbody2D _rigidbody2D;
         [SerializeField] private Transform _targetTransform;
         [SerializeField] private float _maxBankAngle;
