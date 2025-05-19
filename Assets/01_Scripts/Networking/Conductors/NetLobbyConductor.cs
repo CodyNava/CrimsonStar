@@ -150,4 +150,9 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
             ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged);
         }
     }
+
+    public NetPlayerData S_GetPlayerData(NetworkConnection connection)
+    {
+        return _connectionPlayerMap[connection];
+    }
 }
