@@ -14,6 +14,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
     [SerializeField, SerializedDictionary] 
     private SerializedDictionary<int, Transform[]> spawnTransforms;
 
+    private NetLobbyConductor _lobbyConductor;
     private NetShipEditorConductor _editorConductor;
     private List<NetworkConnection> _eliminatedPlayers = new();
 
@@ -26,6 +27,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
         
         if (IsServerInitialized)
         {
+            _lobbyConductor = InstanceFinder.GetInstance<NetLobbyConductor>();
             _editorConductor = InstanceFinder.GetInstance<NetShipEditorConductor>();
             SceneManager.OnClientPresenceChangeStart += S_OnSceneChange;
         }
@@ -45,11 +47,12 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
     {
         if (args.Scene.name == "NetGameplayScene" && args.Added)
         {
-            NetTeamID id = (NetTeamID) _spawnedPlayers + 1;
+            NetPlayerData playerData = _lobbyConductor.S_GetPlayerData(args.Connection);
             var bridge = Instantiate(bridgePrefab);
             var spawnPoint = S_GetSpawnTransform();
-            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, id, HexCoordinate.Zero);
-            S_ConstructPlayerShip(args.Connection, id, bridge, _editorConductor.PlayerShipEditors[args.Connection], args.Scene);
+            bridge.S_SetDisplayName(playerData.playerDisplayName);
+            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, playerData.playerTeamID, HexCoordinate.Zero);
+            S_ConstructPlayerShip(args.Connection, playerData.playerTeamID, bridge, _editorConductor.PlayerShipEditors[args.Connection], args.Scene);
             ServerManager.Spawn(bridge.gameObject, args.Connection);
             bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
 

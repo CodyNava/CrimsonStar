@@ -13,7 +13,9 @@ public class NetBridge : NetworkBehaviour
 
     [SerializeField] private GameObject deathVFX;
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
+    private readonly SyncVar<string> _displayName = new();
     public NetModuleBaseStats BaseStats => _baseStats.Value;
+    public string DisplayName => _displayName.Value;
 
     private Dictionary<HexCoordinate, NetGameplayModule> _modules = new();
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
@@ -177,5 +179,10 @@ public class NetBridge : NetworkBehaviour
     public float GetMaxAngularVelocity()
     {
         return BridgeConfig.MaxAngularSpeed / (1 + _baseStats.Value.mass);
+    }
+
+    public void S_SetDisplayName(string displayName)
+    {
+        _displayName.Value = displayName;
     }
 }
