@@ -82,6 +82,14 @@ public class NetGameplayModule : NetworkBehaviour
 
         Destroy(VisualTransform.gameObject);
     }
+    [ObserversRpc]
+    public void C_DisplayDamageObserver()
+    {
+        float health = HealthPct;
+        
+        //Todo: Implement VFX Here
+        // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
+    }
 
     public void S_InflictDamage(float damage)
     {
@@ -90,5 +98,7 @@ public class NetGameplayModule : NetworkBehaviour
         {
             S_DestroyModule();
         }
+        
+        C_DisplayDamageObserver();
     }
 }

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4731981198245060191}
   - component: {fileID: 1889560182786349539}
   - component: {fileID: -2040889024678824918}
+  - component: {fileID: 8814180570869749153}
   m_Layer: 3
   m_Name: NetGameplayThruster_B
   m_TagString: Untagged
@@ -228,6 +229,22 @@ MonoBehaviour:
   _layers:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &8814180570869749153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8417619336110101989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab54b683dbfa55f4fb42ecca5736f8d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thrusterEffect: {fileID: 1543253697881164415}
+  thrustInput: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  changeSpeed: 0.8
+  netMovementController: {fileID: 0}
 --- !u!1001 &6364862448747844603
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -349,11 +366,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5356601498858575877, guid: 1bda5f2dd084b65468e61c9df9f9457a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bda5f2dd084b65468e61c9df9f9457a, type: 3}
+--- !u!2083052967 &1543253697881164415 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 9095724411216837872, guid: 1bda5f2dd084b65468e61c9df9f9457a, type: 3}
+  m_PrefabInstance: {fileID: 7732746697959175823}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3776690879978529865 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6861722759085265606, guid: 1bda5f2dd084b65468e61c9df9f9457a, type: 3}
