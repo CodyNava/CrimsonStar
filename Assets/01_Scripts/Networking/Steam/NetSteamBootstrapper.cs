@@ -41,7 +41,8 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
             InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.PlayerIdentified
             {
                 SteamID = SteamPlayer.SteamID,
-                DisplayName = SteamPlayer.DisplayName
+                DisplayName = SteamPlayer.DisplayName,
+                IsHost = SteamPlayer.IsLobbyHost
             });
         }
     }

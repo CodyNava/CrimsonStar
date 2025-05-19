@@ -1,12 +1,12 @@
 ﻿public enum NetTeamID
 {
     Observer = 0,
-    Player1 = 1,
-    Player2 = 2,
-    Player3 = 3,
-    Player4 = 4,
-    Player5 = 5,
-    Player6 = 6,
-    Player7 = 7,
-    Player8 = 8,
+    Team1 = 1,
+    Team2 = 2,
+    Team3 = 3,
+    Team4 = 4,
+    Team5 = 5,
+    Team6 = 6,
+    Team7 = 7,
+    Team8 = 8,
 }
