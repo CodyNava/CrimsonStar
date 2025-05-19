@@ -19,8 +19,8 @@ public class NetPlayerData
 public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
 {
     [SerializeField] private NetShipEditorConductor netShipEditorConductor;
-    
-    private readonly Dictionary<NetworkConnection, NetPlayerData> _connectionPlayerMap = new();
+
+    public Dictionary<NetworkConnection, NetPlayerData> ConnectionPlayerMap { get; } = new();
 
     private NetworkConnection _hostConnection;
     private int _roundCount = 1;
@@ -44,7 +44,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
 
     private void S_OnPlayerReadyStateChanged(NetworkConnection conn, NetLobbyBroadcasts.SetReadyState msg, Channel channel)
     {
-        if (!_connectionPlayerMap.TryGetValue(conn, out var playerData))
+        if (!ConnectionPlayerMap.TryGetValue(conn, out var playerData))
             return;
         playerData.isReady = msg.ReadyState;
         S_SendPlayerDataUpdate();
@@ -61,7 +61,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
 
     private void S_OnPlayerTeamChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.PlayerTeamChangeRequested msg, Channel channel)
     {
-        foreach (var (connection, data) in _connectionPlayerMap)
+        foreach (var (connection, data) in ConnectionPlayerMap)
         {
             if (data.playerSteamID != msg.Player) continue;
             if (conn != connection && conn != _hostConnection) return;
@@ -72,7 +72,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
 
     private void S_OnPlayerIdentified(NetworkConnection conn, NetLobbyBroadcasts.PlayerIdentified msg, Channel channel)
     {
-        _connectionPlayerMap[conn] = new NetPlayerData
+        ConnectionPlayerMap[conn] = new NetPlayerData
         {
             playerSteamID = msg.SteamID,
             playerDisplayName = msg.DisplayName,
@@ -81,7 +81,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         if (msg.IsHost)
         {
             _hostConnection = conn;
-            _connectionPlayerMap[conn].isReady = true;
+            ConnectionPlayerMap[conn].isReady = true;
         }
         S_SendPlayerDataUpdate();
     }
@@ -90,7 +90,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     {
         if (args.ConnectionState == RemoteConnectionState.Started)
         {
-            _connectionPlayerMap[connection] = new NetPlayerData
+            ConnectionPlayerMap[connection] = new NetPlayerData
             {
                 playerDisplayName = "Connecting..."
             };
@@ -98,7 +98,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
 
         if (args.ConnectionState == RemoteConnectionState.Stopped)
         {
-            _connectionPlayerMap.Remove(connection);
+            ConnectionPlayerMap.Remove(connection);
         }
 
         S_SendPlayerDataUpdate();
@@ -108,7 +108,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     {
         ServerManager.Broadcast(new NetLobbyBroadcasts.PlayerListUpdate
         {
-            Players = _connectionPlayerMap.Values.ToArray()
+            Players = ConnectionPlayerMap.Values.ToArray()
         }, false);
     }
 
@@ -124,7 +124,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
 
     private void S_OnGameStartRequested(NetworkConnection connection, NetLobbyBroadcasts.GameStartRequested msg, Channel channel)
     {
-        if (!_connectionPlayerMap.Values.All(player => player.isReady)) return;
+        if (!ConnectionPlayerMap.Values.All(player => player.isReady)) return;
         
         SceneLoadData sceneData = new("NetShipEditor");
         sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
@@ -132,8 +132,11 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         SceneManager.LoadGlobalScenes(sceneData);
         SceneManager.UnloadGlobalScenes(unloadData);
 
-        GameObject shipEditor = Instantiate(netShipEditorConductor).gameObject;
-        ServerManager.Spawn(shipEditor);
+        if (!InstanceFinder.HasInstance<NetGameplayConductor>())
+        {
+            GameObject shipEditor = Instantiate(netShipEditorConductor).gameObject;
+            ServerManager.Spawn(shipEditor);
+        }
     }
 
     public override void OnStopNetwork()
@@ -151,8 +154,9 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         }
     }
 
-    public NetPlayerData S_GetPlayerData(NetworkConnection connection)
-    {
-        return _connectionPlayerMap[connection];
-    }
+    public NetPlayerData S_GetPlayerData(NetworkConnection connection) => ConnectionPlayerMap[connection];
+    
+    public int S_GetRoundCount() => _roundCount;
+
+    public int S_GetResourcePerRound() => _resourcesAddedPerRound;
 }
