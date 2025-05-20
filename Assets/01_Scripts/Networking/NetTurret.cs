@@ -54,7 +54,10 @@ public class NetTurret : NetworkBehaviour
         Vector3 position = _nextSpawnTransform.position;
         Vector3 direction = _nextSpawnTransform.up;
 
-        C_SpawnProjectile(position, direction, 0f);
+        if (!IsHostInitialized)
+        {
+            C_SpawnProjectile(position, direction, 0f);
+        }
         S_ServerFire(position, direction, TimeManager.Tick);
         _nextMuzzleFlash.Play();
         shootingSound.Play();
