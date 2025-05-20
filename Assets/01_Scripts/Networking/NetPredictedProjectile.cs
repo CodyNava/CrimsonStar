@@ -6,9 +6,13 @@ public class NetPredictedProjectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float projectileDamage;
-    [SerializeField] private float _projectileTimer;
+    [SerializeField] private float projectileTimer;
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
+    
+    public float ProjectileSpeed => projectileSpeed;
+    public float ProjectileDamage => projectileDamage;
+    public float ProjectileTimer => projectileTimer;
 
     private NetTeamID _netTeamID;
     private Vector3 _direction;
@@ -19,7 +23,7 @@ public class NetPredictedProjectile : MonoBehaviour
         _direction = direction;
         _passedTime = passedTime;
         _netTeamID = netTeamID;
-        Destroy(gameObject, _projectileTimer);
+        Destroy(gameObject, projectileTimer);
         if (bulletVFX.HasVector3("DirectionVector_position"))
         {
             bulletVFX.SetVector3("DirectionVector_position", _direction);
