@@ -27,6 +27,15 @@ public class NetShipEditorData : NetworkBehaviour
         }
     }
 
+    [ObserversRpc]
+    public void Relink()
+    {
+        if (IsOwner)
+        {
+            StartCoroutine(LinkToEditor());
+        }
+    }
+
     private IEnumerator LinkToEditor()
     {
         ShipEditor shipEditor = null;

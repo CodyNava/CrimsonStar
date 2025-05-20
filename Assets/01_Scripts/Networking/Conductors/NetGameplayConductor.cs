@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AYellowpaper.SerializedCollections;
 using FishNet;
 using FishNet.Connection;
@@ -121,6 +122,8 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
             _editorConductor.S_SetupNewEditPhase();
             SceneLoadData sceneData = new("NetShipEditor");
             sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
+            sceneData.MovedNetworkObjects =
+                _editorConductor.PlayerShipEditors.Values.Select(data => data.NetworkObject).ToArray();
             SceneUnloadData unloadData = new("NetGameplayScene");
             SceneManager.LoadGlobalScenes(sceneData);
             SceneManager.UnloadGlobalScenes(unloadData);
