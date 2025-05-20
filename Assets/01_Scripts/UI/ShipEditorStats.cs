@@ -47,8 +47,15 @@ public class ShipEditorStats : MonoBehaviour
             _acceleration = netBridge.BaseMovementSpeed + _thrust / (1 + _mass);
             _maneuverablility = netBridge.MaxAngularSpeed / (1 + _mass);
 
+            // Example usage of specialized editor modules
+            //if (modules is NetTurretEditorModule turretModule)
+            //{
+            //    turretModule.ModuleScriptableObject.Projectile.
+            //}
+            
         }
         DisplayStats();
+        
         // todo: write classes that inherite from netEditorModule to access-
         // specialized scriplableobjects such as projectiles.
         // todo: make the speed calcuations more clean by getting the value directly from NetBridge
