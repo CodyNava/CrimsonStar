@@ -271,15 +271,19 @@ MonoBehaviour:
   stickyNoteInfos: []
   categories:
   - name: ToggleSubgraphs
-    collapsed: 0
+    collapsed: 1
   - name: Lifetime
-    collapsed: 0
+    collapsed: 1
   - name: Color
-    collapsed: 0
+    collapsed: 1
   - name: Size
-    collapsed: 0
+    collapsed: 1
+  - name: Velocity
+    collapsed: 1
+  - name: SpawnRate
+    collapsed: 1
   - name: General
-    collapsed: 0
+    collapsed: 1
   uiBounds:
     serializedVersion: 2
     x: 142
@@ -805,7 +809,7 @@ MonoBehaviour:
     max: Infinity
     enumValues: []
     descendantCount: 0
-  - name: General
+  - name: Velocity
     path: 
     tooltip: 
     space: -1
@@ -816,54 +820,6 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: 
       m_SerializableObject: 
-    min: -Infinity
-    max: Infinity
-    enumValues: []
-    descendantCount: 0
-  - name: Delay
-    path: Delay
-    tooltip: 
-    space: -1
-    spaceable: 0
-    sheetType: m_Float
-    realType: Single
-    defaultValue:
-      m_Type:
-        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-          PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0.28
-    min: -Infinity
-    max: Infinity
-    enumValues: []
-    descendantCount: 0
-  - name: SpawnRateParticle
-    path: SpawnRateParticle
-    tooltip: 
-    space: -1
-    spaceable: 0
-    sheetType: m_Float
-    realType: Single
-    defaultValue:
-      m_Type:
-        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-          PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 40
-    min: -Infinity
-    max: Infinity
-    enumValues: []
-    descendantCount: 0
-  - name: SpawnRateDebriParticle
-    path: SpawnRateDebriParticle
-    tooltip: 
-    space: -1
-    spaceable: 0
-    sheetType: m_Float
-    realType: Single
-    defaultValue:
-      m_Type:
-        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-          PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 30
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -900,6 +856,37 @@ MonoBehaviour:
     max: Infinity
     enumValues: []
     descendantCount: 0
+  - name: General
+    path: 
+    tooltip: 
+    space: -1
+    spaceable: 0
+    sheetType: 
+    realType: 
+    defaultValue:
+      m_Type:
+        m_SerializableType: 
+      m_SerializableObject: 
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
+  - name: Delay
+    path: Delay
+    tooltip: 
+    space: -1
+    spaceable: 0
+    sheetType: m_Float
+    realType: Single
+    defaultValue:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 0.28
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
   - name: ToggleLooping
     path: ToggleLooping
     tooltip: 
@@ -912,6 +899,53 @@ MonoBehaviour:
         m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
       m_SerializableObject: False
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
+  - name: SpawnRate
+    path: 
+    tooltip: 
+    space: -1
+    spaceable: 0
+    sheetType: 
+    realType: 
+    defaultValue:
+      m_Type:
+        m_SerializableType: 
+      m_SerializableObject: 
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
+  - name: SpawnRateParticle
+    path: SpawnRateParticle
+    tooltip: 
+    space: -1
+    spaceable: 0
+    sheetType: m_Float
+    realType: Single
+    defaultValue:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 40
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
+  - name: SpawnRateDebriParticle
+    path: SpawnRateDebriParticle
+    tooltip: 
+    space: -1
+    spaceable: 0
+    sheetType: m_Float
+    realType: Single
+    defaultValue:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 30
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -1671,7 +1705,7 @@ MonoBehaviour:
   m_ExposedName: SpawnRateDebriParticle
   m_Exposed: 1
   m_Order: 8
-  m_Category: General
+  m_Category: SpawnRate
   m_Min:
     m_Type:
       m_SerializableType: 
@@ -12809,7 +12843,7 @@ MonoBehaviour:
   m_ExposedName: SpawnRateParticle
   m_Exposed: 1
   m_Order: 5
-  m_Category: General
+  m_Category: SpawnRate
   m_Min:
     m_Type:
       m_SerializableType: 
@@ -12890,7 +12924,7 @@ MonoBehaviour:
   m_ExposedName: Velocity_DebriParticle
   m_Exposed: 1
   m_Order: 11
-  m_Category: General
+  m_Category: Velocity
   m_Min:
     m_Type:
       m_SerializableType: 
@@ -12974,7 +13008,7 @@ MonoBehaviour:
   m_ExposedName: Velocity_Particle
   m_Exposed: 1
   m_Order: 13
-  m_Category: General
+  m_Category: Velocity
   m_Min:
     m_Type:
       m_SerializableType: 
