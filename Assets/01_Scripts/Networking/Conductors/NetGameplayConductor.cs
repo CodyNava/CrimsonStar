@@ -133,11 +133,8 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
 
     private void S_ConstructPlayerShip(NetworkConnection conn, NetTeamID id, NetBridge bridge, NetShipEditorData editorData, Scene scene)
     {
-        HashSet<HexCoordinate> spawnedRoots = new HashSet<HexCoordinate>();
-        foreach (var placementData in editorData.ModuleStorage.ModuleMap.Values)
+        foreach (var placementData in editorData.ModuleStorage.GetUniqueModules())
         {
-            if (!spawnedRoots.Add(placementData.RootCoordinate)) continue;
-            if (placementData.ModuleID <= NetModuleID.Bridge) continue;
             Quaternion moduleRotation = Quaternion.AngleAxis(placementData.Rotation * 60, Vector3.back);
             Vector3 modulePos = bridge.HexTransform.Layout.HexToPositionXY(placementData.RootCoordinate);
             NetGameplayModule module = Instantiate(placementData.ModuleID.GetModuleData().GameplayPrefab);

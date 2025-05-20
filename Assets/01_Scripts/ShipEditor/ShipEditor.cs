@@ -185,4 +185,10 @@ public class ShipEditor : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+
+    public void ReconstructShip(IEnumerable<ModulePlacementData> uniqueModules
+    )
+    {
+        
+    }
 }
