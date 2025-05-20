@@ -14,7 +14,7 @@ public class PlayerPlateDisplay : MonoBehaviour
     public void UpdateDisplay(NetPlayerData playerData)
     {
         _playerData = playerData;
-        readyImage.enabled = playerData.isReady;
+        readyImage.gameObject.SetActive(playerData.isReady);
         playerName.text = playerData.playerDisplayName;
         bool canEdit = playerData.playerSteamID == SteamPlayer.SteamID || SteamPlayer.IsLobbyHost;
         if (canEdit)
