@@ -70,6 +70,11 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
         }
     }
 
+    private void Update()
+    {
+        _editorTimer.Update(Time.deltaTime);
+    }
+
     private void OnTimerChange(SyncTimerOperation op, float prev, float next, bool asServer)
     {
         if (asServer && op == SyncTimerOperation.Finished)

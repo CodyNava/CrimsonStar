@@ -23,9 +23,9 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     public Dictionary<NetworkConnection, NetPlayerData> ConnectionPlayerMap { get; } = new();
 
     private NetworkConnection _hostConnection;
-    private int _initialResourceCount = 1000;
+    private int _initialResourceCount = 500;
     private int _roundCount = 3;
-    private int _resourcesAddedPerRound = 0;
+    private int _resourcesAddedPerRound = 100;
     private float _moduleRecycleRate;
 
     public override void OnStartNetwork()

@@ -8,11 +8,22 @@ using UnityEngine.UI;
 public class LobbyUI : MonoBehaviour
 {
     [SerializeField] private PlayerPlateDisplay[] playerPlates;
-    [SerializeField] private Button startGameButton;
+    [SerializeField] private GameSettingsHost hostSettings;
+    [SerializeField] private Button startGameButton, readyButton;
+    [SerializeField] private TMP_Text readyButtonText;
+
+    private bool _ready;
     
     private void OnEnable()
     {
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
+        InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetLobbySettings>(OnLobbySettingsUpdate);
+        hostSettings.Initialize();
+    }
+
+    private void OnLobbySettingsUpdate(NetLobbyBroadcasts.SetLobbySettings msg, Channel channel)
+    {
+        hostSettings.UpdateGameSettingsDisplay(msg);
     }
 
     private void OnPlayerListUpdate(NetLobbyBroadcasts.PlayerListUpdate msg, Channel channel)
@@ -21,6 +32,10 @@ public class LobbyUI : MonoBehaviour
         {
             startGameButton.gameObject.SetActive(true);
         }
+        else
+        {
+            readyButton.gameObject.SetActive(true);
+        }
         
         ClearNames();
 
@@ -28,6 +43,16 @@ public class LobbyUI : MonoBehaviour
         {
             playerPlates[i].UpdateDisplay(msg.Players[i]);
         }
+    }
+
+    public void ToggleReady()
+    {
+        _ready = !_ready;
+        readyButtonText.text = _ready ? "Unready" : "Ready";
+        InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.SetReadyState
+        {
+            ReadyState = _ready
+        });
     }
 
     private void ClearNames()
@@ -52,5 +77,6 @@ public class LobbyUI : MonoBehaviour
     private void OnDisable()
     {
         InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.SetLobbySettings>(OnLobbySettingsUpdate);
     }
 }

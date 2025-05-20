@@ -19,14 +19,14 @@ public class PlayerPlateDisplay : MonoBehaviour
         bool canEdit = playerData.playerSteamID == SteamPlayer.SteamID || SteamPlayer.IsLobbyHost;
         if (canEdit)
         {
-            teamDropDown.enabled = true;
+            teamDropDown.gameObject.SetActive(true);
             teamDropDown.SetValueWithoutNotify((int)playerData.playerTeamID);
-            teamLabel.enabled = false;
+            teamLabel.gameObject.SetActive(false);
         }
         else
         {
-            teamDropDown.enabled = false;
-            teamLabel.enabled = true;
+            teamDropDown.gameObject.SetActive(false);
+            teamLabel.gameObject.SetActive(true);
             teamLabel.text = playerData.playerTeamID.ToString();
         }
     }
@@ -42,9 +42,9 @@ public class PlayerPlateDisplay : MonoBehaviour
 
     public void ResetDisplay()
     {
-        readyImage.enabled = false;
+        readyImage.gameObject.SetActive(false);
         playerName.text = "-";
-        teamDropDown.enabled = false;
-        teamLabel.enabled = false;
+        teamDropDown.gameObject.SetActive(false);
+        teamLabel.gameObject.SetActive(false);
     }
 }
