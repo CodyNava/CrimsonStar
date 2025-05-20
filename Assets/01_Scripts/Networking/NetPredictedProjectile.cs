@@ -1,25 +1,29 @@
 ﻿using FishNet;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class NetPredictedProjectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float projectileDamage;
     [SerializeField] private float _projectileTimer;
-    //[SerializeField] private VisualEffect bulletVFX;
+    [SerializeField] private VisualEffect bulletVFX;
+    [SerializeField] private GameObject hitFeedbackVFX;
 
-    private NetPlayerID _netPlayerID;
+    private NetTeamID _netTeamID;
     private Vector3 _direction;
     private float _passedTime = 0f;
 
-    public void Initialize(Vector3 direction, float passedTime, NetPlayerID netPlayerID)
+    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID)
     {
         _direction = direction;
         _passedTime = passedTime;
-        _netPlayerID = netPlayerID;
+        _netTeamID = netTeamID;
         Destroy(gameObject, _projectileTimer);
-        //Vector3 directionBulletVFX = bulletVFX.GetVector3("DirectionVector");
-        //directionBulletVFX = _direction;
+        if (bulletVFX.HasVector3("DirectionVector_position"))
+        {
+            bulletVFX.SetVector3("DirectionVector_position", _direction);
+        }
     }
 
     private void Update()
@@ -46,7 +50,7 @@ public class NetPredictedProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.NetPlayerID == _netPlayerID) return;
+        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.NetTeamID == _netTeamID) return;
 
         if (InstanceFinder.IsClientStarted)
         {
@@ -57,7 +61,7 @@ public class NetPredictedProjectile : MonoBehaviour
         {
             module.S_InflictDamage(projectileDamage);
         }
-
+        Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
 }

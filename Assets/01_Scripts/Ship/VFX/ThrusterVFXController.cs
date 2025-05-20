@@ -21,5 +21,6 @@ public class ThrusterVFXController : MonoBehaviour
         float targetStrength = isThrusting ? 1f : 0f;
         _currentStrength = Mathf.MoveTowards(_currentStrength, targetStrength, changeSpeed * Time.deltaTime);
         thrusterEffect.SetFloat("ThrusterStrength", _currentStrength);
+       
     }
 }

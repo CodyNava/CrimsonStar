@@ -1,5 +1,6 @@
 ﻿using FishNet.Object;
 using FishNet.Object.Prediction;
+using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using UnityEngine;
 
@@ -36,8 +37,13 @@ public struct MoveReconcileData : IReconcileData
 public class NetMovementController : NetworkBehaviour
 {
     [SerializeField] private NetBridge bridge;
+    [SerializeField] private AudioSource thrusterSound;
 
     public PredictionRigidbody2D PredictionRB;
+
+    private readonly SyncVar<float> _inputThrust = new();
+    
+    public float InputThrust => _inputThrust.Value;
 
     private Vector2 _input;
     private Turet _inputAsset;
@@ -72,6 +78,10 @@ public class NetMovementController : NetworkBehaviour
 
     private void OnTick()
     {
+        if (IsOwner)
+        {
+            SetInputThrust();
+        }
         RunInputs(CreateReplicateData());
     }
 
@@ -162,7 +172,25 @@ public class NetMovementController : NetworkBehaviour
         if (IsOwner)
         {
             _input = _inputAsset.Player.Move.ReadValue<Vector2>();
+            if (_input.y > 0.2f)
+            {
+                if (!thrusterSound.isPlaying)
+                {
+                    thrusterSound.PlayOneShot(thrusterSound.clip);
+                    
+                }
+            }
+            else
+            {
+                thrusterSound.Stop();
+            }
         }
+    }
+
+    [ServerRpc]
+    public void SetInputThrust()
+    {
+        _inputThrust.Value = _input.y;
     }
 
     private void OnDestroy()
