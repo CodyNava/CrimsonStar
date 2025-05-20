@@ -23,6 +23,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     public Dictionary<NetworkConnection, NetPlayerData> ConnectionPlayerMap { get; } = new();
 
     private NetworkConnection _hostConnection;
+    private int _initialResourceCount = 1000;
     private int _roundCount = 1;
     private int _resourcesAddedPerRound = 0;
     private float _moduleRecycleRate;
@@ -53,6 +54,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     private void S_OnLobbySettingsChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetLobbySettings msg, Channel channel)
     {
         if (conn != _hostConnection) return;
+        _initialResourceCount = msg.InitialResourceCount;
         _roundCount = msg.NumberOfRounds;
         _resourcesAddedPerRound = msg.ResourceGainPerRound;
         _moduleRecycleRate = msg.ModuleRecycleRate;
@@ -116,6 +118,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     {
         ServerManager.Broadcast(new NetLobbyBroadcasts.SetLobbySettings
         {
+            InitialResourceCount = _initialResourceCount,
             NumberOfRounds = _roundCount,
             ResourceGainPerRound = _resourcesAddedPerRound,
             ModuleRecycleRate = _moduleRecycleRate
@@ -157,6 +160,6 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     public NetPlayerData S_GetPlayerData(NetworkConnection connection) => ConnectionPlayerMap[connection];
     
     public int S_GetRoundCount() => _roundCount;
-
     public int S_GetResourcePerRound() => _resourcesAddedPerRound;
+    public int S_GetInitialResourceCount() => _initialResourceCount;
 }

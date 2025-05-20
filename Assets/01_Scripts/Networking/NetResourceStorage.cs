@@ -7,13 +7,10 @@ public class NetResourceStorage : NetworkBehaviour
 {
     private readonly SyncDictionary<NetCurrencyType, int> _resourceStorage = new();
 
-    public void S_SetResourceCounts(Dictionary<NetCurrencyType, int> resourceCounts)
+    public void S_SetResourceCount(int count)
     {
         _resourceStorage.Clear();
-        foreach ((NetCurrencyType resource, int count) in resourceCounts)
-        {
-            _resourceStorage[resource] = count;
-        }
+        _resourceStorage[NetCurrencyType.Gold] = count;
     }
     
     public bool SC_HasResourcesForModule(NetModuleID moduleID)
