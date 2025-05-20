@@ -24,7 +24,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
 
     private NetworkConnection _hostConnection;
     private int _initialResourceCount = 1000;
-    private int _roundCount = 1;
+    private int _roundCount = 3;
     private int _resourcesAddedPerRound = 0;
     private float _moduleRecycleRate;
 
