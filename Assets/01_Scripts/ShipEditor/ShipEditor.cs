@@ -82,6 +82,7 @@ public class ShipEditor : MonoBehaviour
 
         _heldNetEditorModule =
             Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
+        _heldNetEditorModule.Initialize();
         NetShipEditorData.ResourceStorage.C_PayForModule(moduleID);
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
         return true;
@@ -209,6 +210,7 @@ public class ShipEditor : MonoBehaviour
         foreach (ModulePlacementData uniqueModule in uniqueModules)
         {
             _heldNetEditorModule = Instantiate(uniqueModule.ModuleID.GetModuleData().ShipEditorPrefab);
+            _heldNetEditorModule.Initialize();
 
             for (int i = 0; i < uniqueModule.Rotation; i++)
             {
