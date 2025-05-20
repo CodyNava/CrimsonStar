@@ -119,6 +119,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
         }
         else
         {
+            _spawnedPlayers = 0;
             _editorConductor.S_SetupNewEditPhase();
             SceneLoadData sceneData = new("NetShipEditor");
             sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
