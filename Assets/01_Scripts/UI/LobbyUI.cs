@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class LobbyUI : MonoBehaviour
 {
-    [SerializeField] private TMP_Text[] nameList;
+    [SerializeField] private PlayerPlateDisplay[] playerPlates;
     [SerializeField] private Button startGameButton;
     
     private void OnEnable()
@@ -26,15 +26,15 @@ public class LobbyUI : MonoBehaviour
 
         for (int i = 0; i < msg.Players.Length; i++)
         {
-            nameList[i].text = msg.Players[i].playerDisplayName;
+            playerPlates[i].UpdateDisplay(msg.Players[i]);
         }
     }
 
     private void ClearNames()
     {
-        foreach (TMP_Text label in nameList)
+        foreach (PlayerPlateDisplay display in playerPlates)
         {
-            label.text = string.Empty;
+            display.ResetDisplay();
         }
     }
 
