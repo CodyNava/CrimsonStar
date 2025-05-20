@@ -23,9 +23,10 @@ public static class NetLobbyBroadcasts
 
     public struct SetLobbySettings : IBroadcast
     {
+        public int InitialResourceCount;
         public int NumberOfRounds;
         public int ResourceGainPerRound;
-        public bool CanRecycleModules;
+        public float ModuleRecycleRate;
     }
 
     public struct SetReadyState : IBroadcast

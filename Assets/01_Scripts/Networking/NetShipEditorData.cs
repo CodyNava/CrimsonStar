@@ -10,11 +10,11 @@ public class NetShipEditorData : NetworkBehaviour
     public NetModuleStorage ModuleStorage { get; private set; }
     public NetResourceStorage ResourceStorage { get; private set; }
 
-    public void S_SetResourceCounts(Dictionary<NetCurrencyType, int> resources)
+    public void S_SetResourceCount(int count)
     {
         ModuleStorage ??= GetComponent<NetModuleStorage>();
         ResourceStorage ??= GetComponent<NetResourceStorage>();
-        ResourceStorage.S_SetResourceCounts(resources);
+        ResourceStorage.S_SetResourceCount(count);
     }
     
     public override void OnOwnershipClient(NetworkConnection prevOwner)
