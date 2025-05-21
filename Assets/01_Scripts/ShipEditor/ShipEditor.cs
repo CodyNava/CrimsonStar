@@ -94,7 +94,7 @@ public class ShipEditor : MonoBehaviour
         HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
         if (_heldNetEditorModule != null)
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
                 if (CanPlaceModule(cursorHexCoord))
                 {
@@ -106,6 +106,7 @@ public class ShipEditor : MonoBehaviour
                     {
                         SpawnPart(id);
                     }
+
                     return;
                 }
                 else
