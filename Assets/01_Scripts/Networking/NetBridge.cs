@@ -185,4 +185,10 @@ public class NetBridge : NetworkBehaviour
     {
         _displayName.Value = displayName;
     }
+
+    [ObserversRpc(ExcludeOwner = false)]
+    public void HandleEndOfRound()
+    {
+        // Todo: Perhaps replace ship with non-networked copy and despawn networked version w/o playing explosions
+    }
 }

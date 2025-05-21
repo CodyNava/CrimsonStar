@@ -1,4 +1,5 @@
 ﻿using FishNet;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -10,15 +11,17 @@ public class NetPredictedProjectile : MonoBehaviour
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
 
+    private CSteamID _attackerID;
     private NetTeamID _netTeamID;
     private Vector3 _direction;
     private float _passedTime = 0f;
 
-    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID)
+    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, CSteamID attackerID)
     {
         _direction = direction;
         _passedTime = passedTime;
         _netTeamID = netTeamID;
+        _attackerID = attackerID;
         Destroy(gameObject, _projectileTimer);
         if (bulletVFX.HasVector3("DirectionVector_position"))
         {
@@ -59,7 +62,7 @@ public class NetPredictedProjectile : MonoBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(projectileDamage);
+            module.S_InflictDamage(projectileDamage, _attackerID);
         }
         Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
         Destroy(gameObject);

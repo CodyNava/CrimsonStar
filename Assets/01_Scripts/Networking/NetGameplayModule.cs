@@ -1,6 +1,8 @@
 ﻿using _01_Scripts.Ship;
+using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using Steamworks;
 using UnityEngine;
 
 public class NetGameplayModule : NetworkBehaviour
@@ -83,8 +85,13 @@ public class NetGameplayModule : NetworkBehaviour
         Destroy(VisualTransform.gameObject);
     }
 
-    public void S_InflictDamage(float damage)
+    public void S_InflictDamage(float damage, CSteamID attackerID)
     {
+        if (InstanceFinder.HasInstance<NetGameplayConductor>())
+        {
+            InstanceFinder.GetInstance<NetGameplayConductor>().S_ReportDamageInstance(attackerID, NetworkObject.LocalConnection, damage);
+        }
+        
         _health.Value -= damage;
         if (_health.Value <= 0)
         {
