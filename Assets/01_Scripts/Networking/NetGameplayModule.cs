@@ -97,7 +97,7 @@ public class NetGameplayModule : NetworkBehaviour
         // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
     }
 
-    public void S_InflictDamage(float damage)
+    public void S_InflictDamage(float damage, CSteamID attackerID)
     {
         if (InstanceFinder.HasInstance<NetGameplayConductor>())
         {

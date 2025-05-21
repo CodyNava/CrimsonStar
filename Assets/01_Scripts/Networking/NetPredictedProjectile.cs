@@ -26,7 +26,7 @@ public class NetPredictedProjectile : MonoBehaviour
         _passedTime = passedTime;
         _netTeamID = netTeamID;
         _attackerID = attackerID;
-        Destroy(gameObject, _projectileTimer);
+        Destroy(gameObject, projectileTimer);
         if (bulletVFX.HasVector3("DirectionVector_position"))
         {
             bulletVFX.SetVector3("DirectionVector_position", _direction);
