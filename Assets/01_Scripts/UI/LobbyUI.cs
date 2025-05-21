@@ -17,11 +17,11 @@ public class LobbyUI : MonoBehaviour
     private void OnEnable()
     {
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
-        InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetLobbySettings>(OnLobbySettingsUpdate);
+        InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
         hostSettings.Initialize();
     }
-
-    private void OnLobbySettingsUpdate(NetLobbyBroadcasts.SetLobbySettings msg, Channel channel)
+    
+    private void OnGameModeChanged(NetLobbyBroadcasts.SetGameMode msg, Channel channel)
     {
         hostSettings.UpdateGameSettingsDisplay(msg);
     }
@@ -41,7 +41,7 @@ public class LobbyUI : MonoBehaviour
 
         for (int i = 0; i < msg.Players.Length; i++)
         {
-            playerPlates[i].UpdateDisplay(msg.Players[i]);
+            playerPlates[i].UpdateDisplay(msg.Players[i], msg.TeamMode);
         }
     }
 
@@ -77,6 +77,6 @@ public class LobbyUI : MonoBehaviour
     private void OnDisable()
     {
         InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
-        InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.SetLobbySettings>(OnLobbySettingsUpdate);
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
     }
 }

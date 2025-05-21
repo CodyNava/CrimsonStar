@@ -11,7 +11,7 @@ public class PlayerPlateDisplay : MonoBehaviour
     [SerializeField] private TMP_Text teamLabel;
     private NetPlayerData _playerData;
 
-    public void UpdateDisplay(NetPlayerData playerData)
+    public void UpdateDisplay(NetPlayerData playerData, NetTeamModeID teamMode)
     {
         _playerData = playerData;
         readyImage.gameObject.SetActive(playerData.isReady);
@@ -19,14 +19,14 @@ public class PlayerPlateDisplay : MonoBehaviour
         bool canEdit = playerData.playerSteamID == SteamPlayer.SteamID || SteamPlayer.IsLobbyHost;
         if (canEdit)
         {
-            teamDropDown.gameObject.SetActive(true);
+            teamDropDown.gameObject.SetActive(teamMode == NetTeamModeID.TeamMode);
             teamDropDown.SetValueWithoutNotify((int)playerData.playerTeamID);
             teamLabel.gameObject.SetActive(false);
         }
         else
         {
             teamDropDown.gameObject.SetActive(false);
-            teamLabel.gameObject.SetActive(true);
+            teamLabel.gameObject.SetActive(teamMode == NetTeamModeID.TeamMode);
             teamLabel.text = playerData.playerTeamID.ToString();
         }
     }
