@@ -2,6 +2,7 @@
 using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using FMOD.Studio;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -86,7 +87,8 @@ public class NetGameplayModule : NetworkBehaviour
     {
         Vector2 detachDirection = (VisualTransform.position - _bridge.transform.position).normalized;
         DetachedModuleSpawner.Instance.SpawnDetachedModule(ModuleID, VisualTransform, detachDirection * 10f);
-
+        //_damagedModuleSFXInstance.stop(STOP_MODE.IMMEDIATE);
+        //_damagedModuleSFXInstance.release();
         Destroy(VisualTransform.gameObject);
     }
 
@@ -96,8 +98,8 @@ public class NetGameplayModule : NetworkBehaviour
         float health = HealthPct;
 
         damagedVFX.SetFloat("DamageInput", 1 - health);
-        _damagedModuleSFXInstance = FMODUnity.RuntimeManager.CreateInstance(damagedModuleSFXEvent);
-        _damagedModuleSFXInstance.start();
+        //_damagedModuleSFXInstance = FMODUnity.RuntimeManager.CreateInstance(damagedModuleSFXEvent);
+        //_damagedModuleSFXInstance.start();
         //Todo: Implement VFX Here
         // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
     }
