@@ -65,6 +65,17 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         S_SendPlayerDataUpdate();
     }
 
+    private void S_SetTeamsFreeForAll()
+    {
+        NetTeamID teamID = NetTeamID.Team1;
+        foreach (var playerData in ConnectionPlayerMap.Values)
+        {
+            if (playerData.playerTeamID == NetTeamID.Observer) continue;
+            playerData.playerTeamID = teamID;
+            teamID++;
+        }
+    }
+
     private void S_OnPlayerReadyStateChanged(NetworkConnection conn, NetLobbyBroadcasts.SetReadyState msg, Channel channel)
     {
         if (!ConnectionPlayerMap.TryGetValue(conn, out var playerData))
@@ -99,6 +110,12 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
             playerDisplayName = msg.DisplayName,
             playerTeamID = NetTeamID.Team1
         };
+
+        if (_selectedTeamMode == NetTeamModeID.FreeForAll)
+        {
+            S_SetTeamsFreeForAll();
+        }
+        
         if (msg.IsHost)
         {
             _hostConnection = conn;
