@@ -36,6 +36,17 @@ public class NetModuleStorage : NetworkBehaviour
         }
     }
 
+    public IEnumerable<ModulePlacementData> GetUniqueModules()
+    {
+        HashSet<HexCoordinate> spawnedRoots = new();
+        foreach (ModulePlacementData placementData in _moduleMap.Values)
+        {
+            if (!spawnedRoots.Add(placementData.RootCoordinate)) continue;
+            if (placementData.ModuleID <= NetModuleID.Bridge) continue;
+            yield return placementData;
+        }
+    }
+
     public void C_AddModule(HexCoordinate coord, NetModuleID id, int rotation)
     {
         if (IsOwner)
