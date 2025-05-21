@@ -21,6 +21,7 @@ public class NetPlayerMatchStats
     public float damageDealtRound;
     public float damageDealtMatch;
     public int score;
+    public bool wasAlive;
 }
 
 public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
@@ -87,6 +88,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
 
             stats.damageReceivedRound = 0;
             stats.damageDealtRound = 0;
+            stats.wasAlive = false;
             
             var bridge = Instantiate(bridgePrefab);
             _bridges.Add(args.Connection, bridge);
@@ -154,10 +156,6 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
                 stats.score = score;
             }
         }
-        ServerManager.Broadcast(new NetGameplayBroadcasts.RoundResult
-        {
-            Stats = _matchStats.Values.ToArray()
-        });
         return true;
     }
 
@@ -177,10 +175,15 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
 
     private IEnumerator EndOfRoundRoutine()
     {
-        foreach (var (_, bridge) in _bridges)
+        foreach (var (conn, bridge) in _bridges)
         {
+            _matchStats[conn].wasAlive = true;
             bridge.HandleEndOfRound();
         }
+        ServerManager.Broadcast(new NetGameplayBroadcasts.RoundResult
+        {
+            Stats = _matchStats.Values.ToArray()
+        });
         yield return new WaitForSecondsRealtime(endOfRoundTime);
         _spawnedPlayers = 0;
         _editorConductor.S_SetupNewEditPhase();
@@ -196,6 +199,10 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
 
     private IEnumerator EndOfMatchRoutine()
     {
+        ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult()
+        {
+            Stats = _matchStats.Values.ToArray()
+        });
         yield return new WaitForSecondsRealtime(endOfRoundTime);
         _spawnedPlayers = 0;
         SceneLoadData sceneData = new("NetLobby");

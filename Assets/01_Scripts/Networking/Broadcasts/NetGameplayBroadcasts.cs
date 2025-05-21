@@ -6,4 +6,9 @@ public static class NetGameplayBroadcasts
     {
         public NetPlayerMatchStats[] Stats;
     }
+
+    public struct MatchResult : IBroadcast
+    {
+        public NetPlayerMatchStats[] Stats;
+    }
 }
