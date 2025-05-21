@@ -29,12 +29,12 @@ public class NetBridge : NetworkBehaviour
     {
         _networkCollision2D = gameObject.GetComponent<NetworkCollision2D>();
 
-        _networkCollision2D.OnEnter += OnCollision2DEnter;
+        _networkCollision2D.OnEnter += OnEnterCollision2D;
     }
 
     public void OnDestroy()
     {
-        _networkCollision2D.OnEnter -= OnCollision2DEnter;
+        _networkCollision2D.OnEnter -= OnEnterCollision2D;
     }
 
     public void S_AttachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
@@ -209,7 +209,7 @@ public class NetBridge : NetworkBehaviour
     //     OnCollision2DEnter(collision.collider);
     // }
 
-    private void OnCollision2DEnter(Collider2D collider)
+    private void OnEnterCollision2D(Collider2D collider)
     {
         NetGameplayModule module = collider.gameObject.GetComponent<NetGameplayModule>();
         BaseModuleController moduleController = collider.gameObject.GetComponent<BaseModuleController>();
