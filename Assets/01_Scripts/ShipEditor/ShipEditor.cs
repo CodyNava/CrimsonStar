@@ -100,7 +100,12 @@ public class ShipEditor : MonoBehaviour
                 {
                     NetShipEditorData.ModuleStorage.C_AddModule(cursorHexCoord, _heldNetEditorModule.ModuleID,
                         _heldNetEditorModule.PlacedRotation);
+                    NetModuleID id = _heldNetEditorModule.ModuleID;
                     PlaceModule(cursorHexCoord);
+                    if (Keyboard.current.leftShiftKey.isPressed)
+                    {
+                        SpawnPart(id);
+                    }
                     return;
                 }
                 else
