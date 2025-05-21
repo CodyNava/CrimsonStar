@@ -13,6 +13,7 @@ public static class NetLobbyBroadcasts
     public struct PlayerListUpdate : IBroadcast
     {
         public NetPlayerData[] Players;
+        public NetTeamModeID TeamMode;
     }
 
     public struct PlayerTeamChangeRequested : IBroadcast
@@ -21,12 +22,14 @@ public static class NetLobbyBroadcasts
         public NetTeamID NewTeamID;
     }
 
-    public struct SetLobbySettings : IBroadcast
+    public struct SetGameMode : IBroadcast
     {
-        public int InitialResourceCount;
-        public int NumberOfRounds;
-        public int ResourceGainPerRound;
-        public float ModuleRecycleRate;
+        public NetGameModeID GameMode;
+    }
+
+    public struct SetTeamMode : IBroadcast
+    {
+        public NetTeamModeID TeamMode;
     }
 
     public struct SetReadyState : IBroadcast

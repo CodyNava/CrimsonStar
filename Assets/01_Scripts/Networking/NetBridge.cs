@@ -57,7 +57,7 @@ public class NetBridge : NetworkBehaviour
                 m.S_DetachModule();
             }
 
-            InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath();
+            InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath(NetworkObject.Owner);
             Despawn(NetworkObject);
         }
     }
@@ -202,12 +202,13 @@ public class NetBridge : NetworkBehaviour
     {
         _displayName.Value = displayName;
     }
-    
-    // public void OnCollisionEnter2D(Collision2D collision)
-    // {
-    //     Debug.Log("OnCollisionEnter2D");
-    //     OnCollision2DEnter(collision.collider);
-    // }
+
+    [ObserversRpc(ExcludeOwner = false)]
+    public void HandleEndOfRound()
+    {
+        // Todo: Perhaps replace ship with non-networked copy and despawn networked version w/o playing explosions
+    }
+
 
     private void OnEnterCollision2D(Collider2D collider)
     {

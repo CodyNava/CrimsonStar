@@ -23,11 +23,20 @@ public class NetShipEditorData : NetworkBehaviour
         {
             ModuleStorage ??= GetComponent<NetModuleStorage>();
             ResourceStorage ??= GetComponent<NetResourceStorage>();
-            StartCoroutine(LinkToEditor());
+            StartCoroutine(LinkToEditor(true));
         }
     }
 
-    private IEnumerator LinkToEditor()
+    [ObserversRpc]
+    public void Relink()
+    {
+        if (IsOwner)
+        {
+            StartCoroutine(LinkToEditor(false));
+        }
+    }
+
+    private IEnumerator LinkToEditor(bool isInit)
     {
         ShipEditor shipEditor = null;
         while (!shipEditor)
@@ -37,6 +46,10 @@ public class NetShipEditorData : NetworkBehaviour
         }
         
         shipEditor.SetPlayerShipEditor(this);
+        if (!isInit)
+        {
+            shipEditor.ReconstructShip(ModuleStorage.GetUniqueModules());
+        }
     }
 
     public bool SignalReady()

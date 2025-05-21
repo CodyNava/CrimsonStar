@@ -1,6 +1,8 @@
 ﻿using _01_Scripts.Ship;
+using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -96,8 +98,13 @@ public class NetGameplayModule : NetworkBehaviour
         // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
     }
 
-    public void S_InflictDamage(float damage)
+    public void S_InflictDamage(float damage, CSteamID attackerID)
     {
+        if (InstanceFinder.HasInstance<NetGameplayConductor>())
+        {
+            InstanceFinder.GetInstance<NetGameplayConductor>().S_ReportDamageInstance(attackerID, NetworkObject.Owner, damage);
+        }
+        
         _health.Value -= damage;
         if (_health.Value <= 0)
         {

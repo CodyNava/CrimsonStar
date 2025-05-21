@@ -59,6 +59,10 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
                 ServerManager.Spawn(shipEditor.gameObject, args.Connection, args.Scene);
                 PlayerShipEditors.Add(args.Connection, shipEditor);
             }
+            else
+            {
+                PlayerShipEditors[args.Connection].Relink();
+            }
 
             if (_playersReady.Count == 0)
             {
@@ -68,6 +72,11 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
             
             _playersReady.Add(args.Connection, false);
         }
+    }
+
+    private void Update()
+    {
+        _editorTimer.Update(Time.deltaTime);
     }
 
     private void OnTimerChange(SyncTimerOperation op, float prev, float next, bool asServer)
@@ -94,6 +103,7 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
     {
         SceneLoadData sceneData = new("NetGameplayScene");
         sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
+        sceneData.MovedNetworkObjects = PlayerShipEditors.Values.Select(data => data.NetworkObject).ToArray();
         SceneUnloadData unloadData = new("NetShipEditor");
         SceneManager.LoadGlobalScenes(sceneData);
         SceneManager.UnloadGlobalScenes(unloadData);

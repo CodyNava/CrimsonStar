@@ -23,10 +23,8 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     public Dictionary<NetworkConnection, NetPlayerData> ConnectionPlayerMap { get; } = new();
 
     private NetworkConnection _hostConnection;
-    private int _initialResourceCount = 1000;
-    private int _roundCount = 3;
-    private int _resourcesAddedPerRound = 0;
-    private float _moduleRecycleRate;
+    private NetGameModeID _selectedGameMode;
+    private NetTeamModeID _selectedTeamMode;
 
     public override void OnStartNetwork()
     {
@@ -37,9 +35,44 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
             ServerManager.OnRemoteConnectionState += S_OnConnectionStateChange;
             ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified, false);
             ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerTeamChangeRequested>(S_OnPlayerTeamChangeRequested, false);
-            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetLobbySettings>(S_OnLobbySettingsChangeRequested, false);
+            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(S_OnGameModeChangeRequested, false);
+            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(S_OnTeamModeChangeRequested, false);
             ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged, false);
             ServerManager.RegisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested, false);
+        }
+    }
+
+    private void S_OnTeamModeChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetTeamMode msg, Channel channel)
+    {
+        NetTeamID teamID = NetTeamID.Team1;
+        foreach (var playerData in ConnectionPlayerMap.Values)
+        {
+            if (playerData.playerTeamID == NetTeamID.Observer) continue;
+
+            if (msg.TeamMode == NetTeamModeID.FreeForAll)
+            {
+                playerData.playerTeamID = teamID;
+                teamID++;
+            }
+            else
+            {
+                playerData.playerTeamID = NetTeamID.Team1;
+            }
+        }
+
+        _selectedTeamMode = msg.TeamMode;
+        
+        S_SendPlayerDataUpdate();
+    }
+
+    private void S_SetTeamsFreeForAll()
+    {
+        NetTeamID teamID = NetTeamID.Team1;
+        foreach (var playerData in ConnectionPlayerMap.Values)
+        {
+            if (playerData.playerTeamID == NetTeamID.Observer) continue;
+            playerData.playerTeamID = teamID;
+            teamID++;
         }
     }
 
@@ -51,13 +84,10 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         S_SendPlayerDataUpdate();
     }
 
-    private void S_OnLobbySettingsChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetLobbySettings msg, Channel channel)
+    private void S_OnGameModeChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetGameMode msg, Channel channel)
     {
         if (conn != _hostConnection) return;
-        _initialResourceCount = msg.InitialResourceCount;
-        _roundCount = msg.NumberOfRounds;
-        _resourcesAddedPerRound = msg.ResourceGainPerRound;
-        _moduleRecycleRate = msg.ModuleRecycleRate;
+        _selectedGameMode = msg.GameMode;
         S_SendLobbySettingsUpdate();
     }
 
@@ -80,6 +110,12 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
             playerDisplayName = msg.DisplayName,
             playerTeamID = NetTeamID.Team1
         };
+
+        if (_selectedTeamMode == NetTeamModeID.FreeForAll)
+        {
+            S_SetTeamsFreeForAll();
+        }
+        
         if (msg.IsHost)
         {
             _hostConnection = conn;
@@ -110,18 +146,16 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     {
         ServerManager.Broadcast(new NetLobbyBroadcasts.PlayerListUpdate
         {
-            Players = ConnectionPlayerMap.Values.ToArray()
+            Players = ConnectionPlayerMap.Values.ToArray(),
+            TeamMode = _selectedTeamMode
         }, false);
     }
 
     private void S_SendLobbySettingsUpdate()
     {
-        ServerManager.Broadcast(new NetLobbyBroadcasts.SetLobbySettings
+        ServerManager.Broadcast(new NetLobbyBroadcasts.SetGameMode
         {
-            InitialResourceCount = _initialResourceCount,
-            NumberOfRounds = _roundCount,
-            ResourceGainPerRound = _resourcesAddedPerRound,
-            ModuleRecycleRate = _moduleRecycleRate
+            GameMode = _selectedGameMode
         }, false);
     }
 
@@ -152,14 +186,15 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
             ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified);
             ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested);
             ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerTeamChangeRequested>(S_OnPlayerTeamChangeRequested);
-            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetLobbySettings>(S_OnLobbySettingsChangeRequested);
+            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetGameMode>(S_OnGameModeChangeRequested);
+            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(S_OnTeamModeChangeRequested);
             ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged);
         }
     }
 
     public NetPlayerData S_GetPlayerData(NetworkConnection connection) => ConnectionPlayerMap[connection];
     
-    public int S_GetRoundCount() => _roundCount;
-    public int S_GetResourcePerRound() => _resourcesAddedPerRound;
-    public int S_GetInitialResourceCount() => _initialResourceCount;
+    public int S_GetRoundCount() => 3;
+    public int S_GetResourcePerRound() => DataProvider.Instance.GameModeConfig.Descriptions[_selectedGameMode].CurrencyAddedPerRound;
+    public int S_GetInitialResourceCount() => DataProvider.Instance.GameModeConfig.Descriptions[_selectedGameMode].BaseCurrency;
 }

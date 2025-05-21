@@ -11,22 +11,22 @@ public class PlayerPlateDisplay : MonoBehaviour
     [SerializeField] private TMP_Text teamLabel;
     private NetPlayerData _playerData;
 
-    public void UpdateDisplay(NetPlayerData playerData)
+    public void UpdateDisplay(NetPlayerData playerData, NetTeamModeID teamMode)
     {
         _playerData = playerData;
-        readyImage.enabled = playerData.isReady;
+        readyImage.gameObject.SetActive(playerData.isReady);
         playerName.text = playerData.playerDisplayName;
         bool canEdit = playerData.playerSteamID == SteamPlayer.SteamID || SteamPlayer.IsLobbyHost;
         if (canEdit)
         {
-            teamDropDown.enabled = true;
+            teamDropDown.gameObject.SetActive(teamMode == NetTeamModeID.TeamMode);
             teamDropDown.SetValueWithoutNotify((int)playerData.playerTeamID);
-            teamLabel.enabled = false;
+            teamLabel.gameObject.SetActive(false);
         }
         else
         {
-            teamDropDown.enabled = false;
-            teamLabel.enabled = true;
+            teamDropDown.gameObject.SetActive(false);
+            teamLabel.gameObject.SetActive(teamMode == NetTeamModeID.TeamMode);
             teamLabel.text = playerData.playerTeamID.ToString();
         }
     }
@@ -42,9 +42,9 @@ public class PlayerPlateDisplay : MonoBehaviour
 
     public void ResetDisplay()
     {
-        readyImage.enabled = false;
+        readyImage.gameObject.SetActive(false);
         playerName.text = "-";
-        teamDropDown.enabled = false;
-        teamLabel.enabled = false;
+        teamDropDown.gameObject.SetActive(false);
+        teamLabel.gameObject.SetActive(false);
     }
 }

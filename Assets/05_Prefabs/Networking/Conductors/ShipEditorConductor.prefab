@@ -45,12 +45,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b998c64c46d42dd8278d312dbd6d7d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 2144009910062883374}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 2144009910062883374}
   netGameplayConductor: {fileID: 6680581375134339915, guid: 33c7ec8e18daee24e8b32f2499eb4ee7, type: 3}
   shipEditorDataPrefab: {fileID: 717885967007016320, guid: d31477ac24c39a84da77ef5d0c635e71, type: 3}
-  minimumResourceCount: 1000
+  minimumResourceCount: 150
   shipEditorTimerDuration: 120
 --- !u!114 &2144009910062883374
 MonoBehaviour:
@@ -70,7 +70,8 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
-  NetworkBehaviours: []
+  NetworkBehaviours:
+  - {fileID: 505200247359620666}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -95,12 +96,12 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 65535
+  <PrefabId>k__BackingField: 18
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 16899503620260125463
   <SceneId>k__BackingField: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    Scale: {x: 0, y: 0, z: 0}
-    IsValid: 0
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Scale: {x: 1, y: 1, z: 1}
+    IsValid: 1
