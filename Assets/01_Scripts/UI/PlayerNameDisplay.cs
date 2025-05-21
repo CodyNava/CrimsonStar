@@ -10,6 +10,7 @@ public class PlayerNameDisplay : MonoBehaviour
     public void Update()
     {
         DisplayName();
+        gameObject.transform.rotation = Quaternion.identity;
     }
 
     public void DisplayName()
