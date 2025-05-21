@@ -130,28 +130,25 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
 
     private bool S_IsMatchComplete()
     {
-        NetTeamID teamID = NetTeamID.Observer;
+        HashSet<NetTeamID> teamIDs = new HashSet<NetTeamID>();
         
-        foreach (var (conn, playData) in _lobbyConductor.ConnectionPlayerMap)
+        foreach (var (conn, _) in _bridges)
         {
-            if (_eliminatedPlayers.Contains(conn)) continue;
-
-            if (teamID == NetTeamID.Observer)
-            {
-                teamID = playData.playerTeamID;
-            }
-            else
-            {
-                if (teamID != playData.playerTeamID) return false;
-            }
+            var teamID = _matchStats[conn].player.playerTeamID;
+            if (teamID == NetTeamID.Observer) continue;
+            teamIDs.Add(teamID);
         }
 
-        int score = _scoreBoard.GetValueOrDefault(teamID) + 1;
-        _scoreBoard[teamID] = score;
+        if (teamIDs.Count > 1) return false;
+
+        NetTeamID winnerID = teamIDs.First();
+
+        int score = _scoreBoard.GetValueOrDefault(winnerID) + 1;
+        _scoreBoard[winnerID] = score;
 
         foreach (var stats in _matchStats.Values)
         {
-            if (stats.player.playerTeamID == teamID)
+            if (stats.player.playerTeamID == winnerID)
             {
                 stats.score = score;
             }
