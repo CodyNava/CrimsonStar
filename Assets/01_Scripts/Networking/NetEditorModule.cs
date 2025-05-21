@@ -10,7 +10,7 @@ public class NetEditorModule : MonoBehaviour
     public NetModuleData ModuleData => ModuleID.GetModuleData();
     public List<HexCoordinate> LocalCoordinates { get; private set; }
 
-    private void Start()
+    public void Initialize()
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[ModuleID];
         LocalCoordinates = new List<HexCoordinate>();
