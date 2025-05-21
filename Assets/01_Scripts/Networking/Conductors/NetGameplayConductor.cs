@@ -180,6 +180,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
             _matchStats[conn].wasAlive = true;
             bridge.HandleEndOfRound();
         }
+        _bridges.Clear();
         ServerManager.Broadcast(new NetGameplayBroadcasts.RoundResult
         {
             Stats = _matchStats.Values.ToArray()
