@@ -44,7 +44,10 @@ public class EndResultsUI : MonoBehaviour
 
     private void OnDisable()
     {
-        InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.RoundResult>(OnRoundResult);
-        InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.MatchResult>(OnMatchResult);
+        if (InstanceFinder.ClientManager != null)
+        {
+            InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.RoundResult>(OnRoundResult);
+            InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.MatchResult>(OnMatchResult);
+        }
     }
 }
