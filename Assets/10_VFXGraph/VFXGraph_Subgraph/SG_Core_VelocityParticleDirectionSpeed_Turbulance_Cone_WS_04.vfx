@@ -2485,7 +2485,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: True
+      m_SerializableObject: False
     m_Space: -1
   m_Property:
     name: _vfx_enabled
@@ -2671,7 +2671,8 @@ MonoBehaviour:
       m_SerializableType: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
   m_Direction: 0
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 114350483966675118}
 --- !u!114 &114350483966675053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4654,7 +4655,9 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 114350483966675118}
       inputSlot: {fileID: 114350483966675039}
-    position: {x: -272.66666, y: 3110.6667}
+    - outputSlot: {fileID: 114350483966675118}
+      inputSlot: {fileID: 114350483966675052}
+    position: {x: -320.66666, y: 3256.6667}
     expandedSlots: []
     expanded: 1
     supecollapsed: 1
@@ -4696,6 +4699,7 @@ MonoBehaviour:
   m_Direction: 1
   m_LinkedSlots:
   - {fileID: 114350483966675039}
+  - {fileID: 114350483966675052}
 --- !u!114 &114350483966675119
 MonoBehaviour:
   m_ObjectHideFlags: 0
