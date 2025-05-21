@@ -23,10 +23,11 @@ namespace _01_Scripts.Ship
 
         public void LateUpdate()
         {
+            float steeringInput = Keybinds.Actions.Player.Move.ReadValue<Vector2>().x;
+
             float steeringAngle = _rigidbody2D.rotation;
             
-            float angularVel = _rigidbody2D.angularVelocity;
-            float targetBankAngle = Mathf.Clamp(angularVel * _maxBankAngle / 100f, -_maxBankAngle, _maxBankAngle);
+            float targetBankAngle = Mathf.Clamp(-steeringInput * _maxBankAngle, -_maxBankAngle, _maxBankAngle);
             
             _currentBank = Mathf.Lerp(_currentBank, targetBankAngle, Time.deltaTime * _bankSmoothing);
             
