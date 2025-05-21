@@ -7,6 +7,7 @@ public class GameSettingsHost : MonoBehaviour
     [SerializeField] private TMP_Dropdown gameModeDropdown;
     [SerializeField] private TMP_Dropdown teamModeDropdown;
     [SerializeField] private TMP_Text gameModeText;
+    [SerializeField] private TMP_Text teamModeText;
     [SerializeField] private TMP_Text startingCurrencyText;
     [SerializeField] private TMP_Text currencyPerRoundText;
 
@@ -14,13 +15,20 @@ public class GameSettingsHost : MonoBehaviour
     {
         gameModeDropdown.gameObject.SetActive(SteamPlayer.IsLobbyHost);
         gameModeText.gameObject.SetActive(!SteamPlayer.IsLobbyHost);
-
+        teamModeDropdown.gameObject.SetActive(SteamPlayer.IsLobbyHost);
+        teamModeText.gameObject.SetActive(!SteamPlayer.IsLobbyHost);
+        
         UpdateGameSettingsDisplay(new NetLobbyBroadcasts.SetGameMode
         {
             GameMode = NetGameModeID.DefaultMode
         });
     }
 
+    public void SetTeamMode(NetTeamModeID teamMode)
+    {
+        teamModeText.text = teamMode.ToString();
+    }
+    
     public void UpdateGameSettingsDisplay(NetLobbyBroadcasts.SetGameMode settings)
     {
         gameModeText.text = settings.GameMode.ToString();
