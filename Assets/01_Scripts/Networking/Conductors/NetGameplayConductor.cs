@@ -196,6 +196,12 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
 
     private IEnumerator EndOfMatchRoutine()
     {
+        foreach (var (conn, bridge) in _bridges)
+        {
+            _matchStats[conn].wasAlive = true;
+            bridge.HandleEndOfRound();
+        }
+        _bridges.Clear();
         ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult()
         {
             Stats = _matchStats.Values.ToArray()
