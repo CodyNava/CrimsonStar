@@ -40,7 +40,7 @@ public class NetBridge : NetworkBehaviour
                 m.S_DetachModule();
             }
 
-            InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath();
+            InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath(NetworkObject.Owner);
             Despawn(NetworkObject);
         }
     }
@@ -184,5 +184,11 @@ public class NetBridge : NetworkBehaviour
     public void S_SetDisplayName(string displayName)
     {
         _displayName.Value = displayName;
+    }
+
+    [ObserversRpc(ExcludeOwner = false)]
+    public void HandleEndOfRound()
+    {
+        // Todo: Perhaps replace ship with non-networked copy and despawn networked version w/o playing explosions
     }
 }

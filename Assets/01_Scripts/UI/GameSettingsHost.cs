@@ -4,63 +4,51 @@ using UnityEngine;
 
 public class GameSettingsHost : MonoBehaviour
 {
-    [SerializeField] private TMP_Dropdown startingCurrencyDropdown;
-    [SerializeField] private TMP_Dropdown currencyPerRoundDropdown;
+    [SerializeField] private TMP_Dropdown gameModeDropdown;
+    [SerializeField] private TMP_Dropdown teamModeDropdown;
+    [SerializeField] private TMP_Text gameModeText;
+    [SerializeField] private TMP_Text teamModeText;
     [SerializeField] private TMP_Text startingCurrencyText;
     [SerializeField] private TMP_Text currencyPerRoundText;
 
-    private int _selectedStartingCurrency;
-    private int _selectedCurrencyPerRound;
-    
     public void Initialize()
     {
-        bool canEdit = SteamPlayer.IsLobbyHost;
-        if (canEdit)
+        gameModeDropdown.gameObject.SetActive(SteamPlayer.IsLobbyHost);
+        gameModeText.gameObject.SetActive(!SteamPlayer.IsLobbyHost);
+        teamModeDropdown.gameObject.SetActive(SteamPlayer.IsLobbyHost);
+        teamModeText.gameObject.SetActive(!SteamPlayer.IsLobbyHost);
+        
+        UpdateGameSettingsDisplay(new NetLobbyBroadcasts.SetGameMode
         {
-            startingCurrencyDropdown.gameObject.SetActive(true);
-            currencyPerRoundDropdown.gameObject.SetActive(true);
-            startingCurrencyText.gameObject.SetActive(false);
-            currencyPerRoundText.gameObject.SetActive(false);
-        }
-        else
+            GameMode = NetGameModeID.DefaultMode
+        });
+    }
+
+    public void SetTeamMode(NetTeamModeID teamMode)
+    {
+        teamModeText.text = teamMode.ToString();
+    }
+    
+    public void UpdateGameSettingsDisplay(NetLobbyBroadcasts.SetGameMode settings)
+    {
+        gameModeText.text = settings.GameMode.ToString();
+        startingCurrencyText.text = DataProvider.Instance.GameModeConfig.Descriptions[settings.GameMode].BaseCurrency.ToString();
+        currencyPerRoundText.text = DataProvider.Instance.GameModeConfig.Descriptions[settings.GameMode].CurrencyAddedPerRound.ToString();
+    }
+
+    public void UpdateGameMode(int selectedGameMode)
+    {
+        InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.SetGameMode
         {
-            startingCurrencyDropdown.gameObject.SetActive(false);
-            currencyPerRoundDropdown.gameObject.SetActive(false);
-            startingCurrencyText.gameObject.SetActive(true);
-            currencyPerRoundText.gameObject.SetActive(true);
-        }
-
-        _selectedStartingCurrency = int.Parse(startingCurrencyDropdown.options[startingCurrencyDropdown.value].text);
-        _selectedCurrencyPerRound = int.Parse(currencyPerRoundDropdown.options[currencyPerRoundDropdown.value].text);
-        UpdateHostSettings();
+            GameMode = (NetGameModeID)selectedGameMode
+        });
     }
 
-    public void UpdateGameSettingsDisplay(NetLobbyBroadcasts.SetLobbySettings settings)
+    public void UpdateTeamMode(int selectedTeamMode)
     {
-        startingCurrencyText.text = settings.InitialResourceCount.ToString();
-        currencyPerRoundText.text = settings.ResourceGainPerRound.ToString();
-    }
-
-    public void OnStartingCurrencyDropdownChanged(int index)
-    {
-        _selectedStartingCurrency = int.Parse(startingCurrencyDropdown.options[index].text);
-        UpdateHostSettings();
-    }
-
-    public void OnCurrencyPerRoundDropdownChanged(int index)
-    {
-        _selectedCurrencyPerRound = int.Parse(currencyPerRoundDropdown.options[index].text);
-        UpdateHostSettings();
-    }
-
-    private void UpdateHostSettings()
-    {
-        InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.SetLobbySettings
+        InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.SetTeamMode()
         {
-            InitialResourceCount = _selectedStartingCurrency,
-            ModuleRecycleRate = 1f,
-            NumberOfRounds = 3,
-            ResourceGainPerRound = _selectedCurrencyPerRound
+            TeamMode = (NetTeamModeID)selectedTeamMode
         });
     }
 }
