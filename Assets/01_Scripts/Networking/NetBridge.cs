@@ -299,6 +299,6 @@ public class NetBridge : NetworkBehaviour
         Debug.Log($"Damage: {damage} = {impactEnergy} * ({massB} / ({massA} + {massB})) * (1 - {kineticEnergyConstant} * {Mathf.Max(dotA, 0)}");
         
         NetGameplayModule gameplayModule = localCollider.gameObject.GetComponent<NetGameplayModule>();
-        gameplayModule.S_InflictDamage(damage);
+        gameplayModule.S_InflictDamage(damage, SteamPlayer.SteamID);
     }
 }
