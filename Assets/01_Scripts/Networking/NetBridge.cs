@@ -34,7 +34,8 @@ public class NetBridge : NetworkBehaviour
 
     public void OnDestroy()
     {
-        _networkCollision2D.OnEnter -= OnEnterCollision2D;
+        if(_networkCollision2D != null)
+            _networkCollision2D.OnEnter -= OnEnterCollision2D;
     }
 
     public void S_AttachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
@@ -212,6 +213,7 @@ public class NetBridge : NetworkBehaviour
 
     private void OnEnterCollision2D(Collider2D collider)
     {
+        Debug.Log("Collision detected!");
         NetGameplayModule module = collider.gameObject.GetComponent<NetGameplayModule>();
         BaseModuleController moduleController = collider.gameObject.GetComponent<BaseModuleController>();
 
