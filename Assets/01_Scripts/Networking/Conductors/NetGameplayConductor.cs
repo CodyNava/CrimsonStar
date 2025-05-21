@@ -117,11 +117,10 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
         InputManager.EnableGameControls();
     }
     
-    [ServerRpc(RequireOwnership = false)]
-    public void S_RegisterPlayerDeath(Channel channel = Channel.Reliable, NetworkConnection conn = null)
+    public void S_RegisterPlayerDeath(NetworkConnection owner)
     {
-        _bridges.Remove(conn!);
-        _eliminatedPlayers.Add(conn);
+        _bridges.Remove(owner!);
+        _eliminatedPlayers.Add(owner);
         if (S_IsMatchComplete())
         {
             S_StopMatch();

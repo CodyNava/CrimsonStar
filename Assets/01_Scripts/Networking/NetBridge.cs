@@ -40,7 +40,7 @@ public class NetBridge : NetworkBehaviour
                 m.S_DetachModule();
             }
 
-            InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath();
+            InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath(NetworkObject.Owner);
             Despawn(NetworkObject);
         }
     }
