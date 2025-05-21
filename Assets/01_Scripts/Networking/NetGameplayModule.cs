@@ -2,6 +2,7 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class NetGameplayModule : NetworkBehaviour
 {
@@ -9,6 +10,7 @@ public class NetGameplayModule : NetworkBehaviour
     [field: SerializeField] public Transform VisualTransform { get; private set; }
 
     [SerializeField] private GameObject deathVFX;
+    [SerializeField] private VisualEffect damagedVFX;
 
     [Header("Detachment Settings")] [SerializeField]
     private float _detachmentForce;
@@ -17,7 +19,7 @@ public class NetGameplayModule : NetworkBehaviour
     private float _maxHealth;
     private readonly SyncVar<float> _health = new();
     private readonly SyncVar<NetTeamID> _playerID = new();
-    
+
     // HexCoordinate relative to attached bridge coordinate
     private readonly SyncVar<HexCoordinate> _rootCoordinate = new();
 
@@ -30,7 +32,7 @@ public class NetGameplayModule : NetworkBehaviour
     public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, HexCoordinate rootCoordinate)
     {
         var moduleData = ModuleID.GetModuleData();
-        
+
         _bridge = bridge;
         _rootCoordinate.Value = rootCoordinate;
         _bridge.S_AttachModule(this, rootCoordinate);
@@ -55,7 +57,7 @@ public class NetGameplayModule : NetworkBehaviour
         C_DestroyModuleObserver();
         Despawn(NetworkObject);
     }
-    
+
     // Occurs when an Module is only detached and not destroyed
     public void S_DetachModule()
     {
@@ -83,11 +85,13 @@ public class NetGameplayModule : NetworkBehaviour
 
         Destroy(VisualTransform.gameObject);
     }
+
     [ObserversRpc]
     public void C_DisplayDamageObserver()
     {
         float health = HealthPct;
-        
+
+        damagedVFX.SetFloat("DamageInput", 1 - health);
         //Todo: Implement VFX Here
         // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
     }
@@ -99,7 +103,7 @@ public class NetGameplayModule : NetworkBehaviour
         {
             S_DestroyModule();
         }
-        
+
         C_DisplayDamageObserver();
     }
 }
