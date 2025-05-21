@@ -20,6 +20,8 @@ namespace _01_Scripts.Ship
 
         private float _currentHPPercent = 0f;
         private float _currentHP = 0f;
+
+        public BridgeController BridgeController => _bridgeController;
         
         public void Awake()
         {
