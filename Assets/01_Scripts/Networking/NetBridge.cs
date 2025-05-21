@@ -210,6 +210,12 @@ public class NetBridge : NetworkBehaviour
         // Todo: Perhaps replace ship with non-networked copy and despawn networked version w/o playing explosions
     }
 
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log($"[Unity] Collided with {collision.collider.name}");
+        // OnEnterCollision2D(collision.collider);
+    }
+
 
     private void OnEnterCollision2D(Collider2D collider)
     {
