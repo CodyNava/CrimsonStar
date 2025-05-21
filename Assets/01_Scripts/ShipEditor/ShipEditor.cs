@@ -94,20 +94,21 @@ public class ShipEditor : MonoBehaviour
         HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
         if (_heldNetEditorModule != null)
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
                 if (CanPlaceModule(cursorHexCoord))
                 {
                     NetShipEditorData.ModuleStorage.C_AddModule(cursorHexCoord, _heldNetEditorModule.ModuleID,
                         _heldNetEditorModule.PlacedRotation);
                     PlaceModule(cursorHexCoord);
+                    if (Keyboard.current.leftShiftKey.isPressed)
+                    {
+                        SpawnPart(id);
+                    }
                     return;
                 }
-                else
-                {
-                    cantBePlacedPopUp.transform.position = mousePosWorld;
-                    StartCoroutine(CantBePlacedPopUp());
-                }
+                cantBePlacedPopUp.transform.position = mousePosWorld;
+                StartCoroutine(CantBePlacedPopUp());
             }
 
             _heldNetEditorModule.transform.position = mousePosWorld.xy0();

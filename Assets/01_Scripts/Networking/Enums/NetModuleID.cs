@@ -6,7 +6,8 @@ public enum NetModuleID
     Bridge = 1,
     Armor = 2,
     Thruster = 3,
-    Turret = 4
+    Turret = 4,
+    TurretLaser = 5
 }
 
 public static class ModuleIDExtensions

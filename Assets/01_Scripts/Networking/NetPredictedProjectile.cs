@@ -7,9 +7,13 @@ public class NetPredictedProjectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float projectileDamage;
-    [SerializeField] private float _projectileTimer;
+    [SerializeField] private float projectileTimer;
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
+    
+    public float ProjectileSpeed => projectileSpeed;
+    public float ProjectileDamage => projectileDamage;
+    public float ProjectileTimer => projectileTimer;
 
     private CSteamID _attackerID;
     private NetTeamID _netTeamID;

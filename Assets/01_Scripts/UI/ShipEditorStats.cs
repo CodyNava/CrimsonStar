@@ -4,18 +4,21 @@ using UnityEngine;
 
 public class ShipEditorStats : MonoBehaviour
 {
-    [Header("totalStats")]
-    [SerializeField] private TMP_Text totalHealth;
+    [Header("totalStats")] [SerializeField]
+    private TMP_Text totalHealth;
+
     [SerializeField] private TMP_Text hexCount;
     private float _totalHealth;
     private float _hexCount;
 
-    [Header("WeaponGroup1")]
-    [SerializeField] private TMP_Text damagePerSecond;
+    [Header("Weapon")] [SerializeField] private TMP_Text damagePerSecond;
+    [SerializeField] private TMP_Text maxRange;
+    [SerializeField] private TMP_Text minRange;
     private float _damagePerSecond;
+    private float _maxRange;
+    private float _minRange;
 
-    [Header("Speed")]
-    [SerializeField] private TMP_Text maxSpeed;
+    [Header("Speed")] [SerializeField] private TMP_Text maxSpeed;
     [SerializeField] private TMP_Text acceleration;
     [SerializeField] private TMP_Text maneuverability;
     private float _maxSpeed;
@@ -47,12 +50,28 @@ public class ShipEditorStats : MonoBehaviour
             _acceleration = netBridge.BaseMovementSpeed + _thrust / (1 + _mass);
             _maneuverablility = netBridge.MaxAngularSpeed / (1 + _mass);
 
+            if (modules is NetTurretEditorModule turretModule)
+            {
+                float projDmg = turretModule.ModuleScriptableObject.Projectile.ProjectileDamage;
+                float shootingCd = turretModule.ModuleScriptableObject.Cooldown;
+                _damagePerSecond += projDmg / shootingCd;
+                float projTimer = turretModule.ModuleScriptableObject.Projectile.ProjectileTimer;
+                float projSpeed = turretModule.ModuleScriptableObject.Projectile.ProjectileSpeed;
+                _maxRange = projSpeed * projTimer;
+                _minRange = projSpeed * projTimer;
+            }
+
+            // Example usage of specialized editor modules
+            //if (modules is NetTurretEditorModule turretModule)
+            //{
+            //    turretModule.ModuleScriptableObject.Projectile.
+            //}
         }
+
         DisplayStats();
-        // todo: write classes that inherite from netEditorModule to access-
-        // specialized scriplableobjects such as projectiles.
         // todo: make the speed calcuations more clean by getting the value directly from NetBridge
     }
+
     public void DisplayStats()
     {
         totalHealth.text = $"TotalHealth: {_totalHealth:0.0}";
@@ -61,5 +80,6 @@ public class ShipEditorStats : MonoBehaviour
         maxSpeed.text = $"MaxSpeed: {_maxSpeed:0.0}";
         acceleration.text = $"Acceleration: {_acceleration:0.0}";
         maneuverability.text = $"Maneuverablility: {_maneuverablility:0.0}";
+        maxRange.text = $"MaxRange: {_maxRange:0.0}";
     }
 }
