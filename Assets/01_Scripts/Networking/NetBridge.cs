@@ -1,7 +1,10 @@
-﻿using FishNet;
+﻿using System;
+using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
+using _01_Scripts.Ship.ModuleControllers;
+using FishNet.Component.Prediction;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -19,6 +22,20 @@ public class NetBridge : NetworkBehaviour
 
     private Dictionary<HexCoordinate, NetGameplayModule> _modules = new();
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
+
+
+    private NetworkCollision2D _networkCollision2D;
+    private void Awake()
+    {
+        _networkCollision2D = gameObject.GetComponent<NetworkCollision2D>();
+
+        _networkCollision2D.OnEnter += OnCollision2DEnter;
+    }
+
+    public void OnDestroy()
+    {
+        _networkCollision2D.OnEnter -= OnCollision2DEnter;
+    }
 
     public void S_AttachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
@@ -184,5 +201,103 @@ public class NetBridge : NetworkBehaviour
     public void S_SetDisplayName(string displayName)
     {
         _displayName.Value = displayName;
+    }
+    
+    // public void OnCollisionEnter2D(Collision2D collision)
+    // {
+    //     Debug.Log("OnCollisionEnter2D");
+    //     OnCollision2DEnter(collision.collider);
+    // }
+
+    private void OnCollision2DEnter(Collider2D collider)
+    {
+        NetGameplayModule module = collider.gameObject.GetComponent<NetGameplayModule>();
+        BaseModuleController moduleController = collider.gameObject.GetComponent<BaseModuleController>();
+
+        if (module == null && moduleController == null) return;
+        
+        if (module == null || module.Bridge != this)
+        {
+            HandleCollision(collider);
+        }
+    }
+
+    private void HandleCollision(Collider2D collider)
+    {
+        // Self perspective always ship A and other is ship B
+        // Get sum of Masses of own Ship and other Ship
+        // Get relative velocity between both ships along the collisionNormal
+        // Get facing direction of both ships relative to collisionNormal
+        // Calculate impactEnergy
+        // Calculate own impactDamage to be applied to collided own module
+
+        // TODO: Make magic number not magic anymore
+        float kineticEnergyConstant = 10f;
+        float velocityThreshold = 1f;
+
+        ContactPoint2D[] contacts = new ContactPoint2D[1];
+        if (collider.GetContacts(contacts) < 1) return;
+        
+        ContactPoint2D contactPoint = contacts[0];
+        Vector2 relVel = -contactPoint.relativeVelocity;
+
+        Debug.Log($"{relVel.magnitude}");
+        if (relVel.magnitude < velocityThreshold)
+        {
+            Debug.Log($"too slow! Sucker!!");
+            return;
+        }
+
+        float massA, massB;
+        Vector2 impactNormal;
+        float dotA, dotB;
+        float impactEnergy;
+
+        massA = BaseStats.mass;
+        impactNormal = relVel.normalized;
+        
+        Rigidbody2D localBody2D = contactPoint.rigidbody;
+        Rigidbody2D remoteBody2D = contactPoint.otherRigidbody;
+        Collider2D localCollider = contactPoint.collider;
+        Collider2D remoteCollider = contactPoint.otherCollider;
+        Debug.Log($"LocalBody: {localBody2D.gameObject.name}");
+        Debug.Log($"RemoteBody: {remoteBody2D.gameObject.name}");
+        Debug.Log($"LocalCollider: {localCollider.gameObject.name}");
+        Debug.Log($"RemoteCollider: {remoteCollider.gameObject.name}");
+
+        dotA = Vector2.Dot(localBody2D.linearVelocity, impactNormal);
+
+        Debug.Log($"RelativeVelocity: {relVel}");
+        Debug.DrawLine(contactPoint.point, contactPoint.point + impactNormal, Color.cyan, 10f);
+
+        NetGameplayModule otherGameplayModule = remoteBody2D.gameObject.GetComponent<NetGameplayModule>();
+        // In production this case shouldnt fail, only in test setup with collision of dummyEnemy
+        if (otherGameplayModule != null)
+        {
+            // We collided with a Networked player
+            
+            // For some reason we collided with ourself
+            if (otherGameplayModule.Bridge == this) return;
+            
+            massB = otherGameplayModule.Bridge.BaseStats.mass;
+        }
+        else
+        {
+            BaseModuleController moduleController = remoteBody2D.gameObject.GetComponent<BaseModuleController>();
+            massB = moduleController.ShipController.BridgeController.Mass;
+        }
+
+        // Energy calculations
+        impactEnergy = kineticEnergyConstant * (massA * massB / (massA + massB)) * relVel.sqrMagnitude;
+        Debug.Log($"ImpactEnergy: {impactEnergy}");
+        
+        // Damage calculations
+        float damage = impactEnergy * (massB / (massA + massB)) *
+                       (1 - kineticEnergyConstant * Mathf.Max(dotA, 0f));
+
+        Debug.Log($"Damage: {damage} = {impactEnergy} * ({massB} / ({massA} + {massB})) * (1 - {kineticEnergyConstant} * {Mathf.Max(dotA, 0)}");
+        
+        NetGameplayModule gameplayModule = localCollider.gameObject.GetComponent<NetGameplayModule>();
+        gameplayModule.S_InflictDamage(damage);
     }
 }

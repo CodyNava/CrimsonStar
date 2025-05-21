@@ -21,6 +21,7 @@ public class NetGameplayModule : NetworkBehaviour
     // HexCoordinate relative to attached bridge coordinate
     private readonly SyncVar<HexCoordinate> _rootCoordinate = new();
 
+    public NetBridge Bridge => _bridge;
     public float Health => _health.Value;
     public float HealthPct => Mathf.Clamp01(Health / Mathf.Max(_maxHealth, Mathf.Epsilon));
     public NetTeamID NetTeamID => _playerID.Value;
