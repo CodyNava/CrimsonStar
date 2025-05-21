@@ -160,7 +160,16 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
         _roundsPlayed++;
         if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
         {
-            StartCoroutine(EndOfMatchRoutine());
+            foreach (var (conn, bridge) in _bridges)
+            {
+                _matchStats[conn].wasAlive = true;
+                bridge.HandleEndOfRound();
+            }
+            _bridges.Clear();
+            ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult()
+            {
+                Stats = _matchStats.Values.ToArray()
+            });
         }
         else
         {
@@ -188,28 +197,6 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
         sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
         sceneData.MovedNetworkObjects =
             _editorConductor.PlayerShipEditors.Values.Select(data => data.NetworkObject).ToArray();
-        SceneUnloadData unloadData = new("NetGameplayScene");
-        SceneManager.LoadGlobalScenes(sceneData);
-        SceneManager.UnloadGlobalScenes(unloadData);
-        _isMatchConcluded.Value = false;
-    }
-
-    private IEnumerator EndOfMatchRoutine()
-    {
-        foreach (var (conn, bridge) in _bridges)
-        {
-            _matchStats[conn].wasAlive = true;
-            bridge.HandleEndOfRound();
-        }
-        _bridges.Clear();
-        ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult()
-        {
-            Stats = _matchStats.Values.ToArray()
-        });
-        yield return new WaitForSecondsRealtime(endOfRoundTime);
-        _spawnedPlayers = 0;
-        SceneLoadData sceneData = new("NetLobby");
-        sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
         SceneUnloadData unloadData = new("NetGameplayScene");
         SceneManager.LoadGlobalScenes(sceneData);
         SceneManager.UnloadGlobalScenes(unloadData);
