@@ -49,10 +49,10 @@ public class SettingsBehaviour : MonoBehaviour
     private void Start()
     {
         _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
-        //_musicBus = FMODUnity.RuntimeManager.GetBus("bus:/music");
+        _musicBus = FMODUnity.RuntimeManager.GetBus("bus:/Music");
         _sfxBus = FMODUnity.RuntimeManager.GetBus("bus:/SFX");
         _uiBus = FMODUnity.RuntimeManager.GetBus("bus:/UI");
-        //_announcerBus = FMODUnity.RuntimeManager.GetBus("bus:/Voice");
+        _announcerBus = FMODUnity.RuntimeManager.GetBus("bus:/Voice");
 
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
