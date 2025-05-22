@@ -1,7 +1,11 @@
-﻿using FishNet;
+﻿using System;
+using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
+using _01_Scripts.Ship.ModuleControllers;
+using FishNet.Component.Prediction;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -14,11 +18,16 @@ public class NetBridge : NetworkBehaviour
     [SerializeField] private GameObject deathVFX;
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
     private readonly SyncVar<string> _displayName = new();
+    private readonly SyncVar<CSteamID> _steamId = new();
     public NetModuleBaseStats BaseStats => _baseStats.Value;
     public string DisplayName => _displayName.Value;
+    public CSteamID SteamID => _steamId.Value;
 
     private Dictionary<HexCoordinate, NetGameplayModule> _modules = new();
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
+
+
+    private NetworkCollision2D _networkCollision2D;
 
     public void S_AttachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
@@ -186,9 +195,98 @@ public class NetBridge : NetworkBehaviour
         _displayName.Value = displayName;
     }
 
+    public void S_SetSteamID(CSteamID steamID)
+    {
+        _steamId.Value = steamID;
+    }
+
     [ObserversRpc(ExcludeOwner = false)]
     public void HandleEndOfRound()
     {
         // Todo: Perhaps replace ship with non-networked copy and despawn networked version w/o playing explosions
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Debug.Log($"[Unity] Collided with {collision.collider.name}");
+        OnEnterCollision2D(collision.collider);
+    }
+
+
+    private void OnEnterCollision2D(Collider2D collider)
+    {
+        // Only the server should handle collision damage
+        if (!IsServerInitialized) return;
+        
+        // Debug.Log($"==== COLLISION DETECTION ====");
+        // Debug.Log($"Collision detected for {collider.gameObject.GetInstanceID()}[{SteamPlayer.DisplayName}]");
+        NetGameplayModule module = collider.gameObject.GetComponent<NetGameplayModule>();
+        BaseModuleController moduleController = collider.gameObject.GetComponent<BaseModuleController>();
+
+        if (module == null && moduleController == null) return;
+        
+        if (module == null || module.Bridge != this)
+        {
+            S_HandleCollision(collider);
+        }
+    }
+
+    private void S_HandleCollision(Collider2D collider)
+    {
+        // Self perspective always ship A and other is ship B
+        // Get sum of Masses of own Ship and other Ship
+        // Get relative velocity between both ships along the collisionNormal
+        // Get facing direction of both ships relative to collisionNormal
+        // Calculate impactEnergy
+        // Calculate own impactDamage to be applied to collided own module
+
+        // TODO: Make magic number not magic anymore
+        float kineticEnergyConstant = 1f;
+        float velocityThreshold = 1f;
+        float impactEnergyModifier = 3.5f;
+
+        ContactPoint2D[] contacts = new ContactPoint2D[1];
+        if (collider.GetContacts(contacts) < 1) return;
+        
+        ContactPoint2D contactPoint = contacts[0];
+        Vector2 relVel = -contactPoint.relativeVelocity;
+
+        // Debug.Log($"{relVel.magnitude}");
+        if (relVel.magnitude < velocityThreshold)
+        {
+            // Debug.Log($"too slow! Sucker!!");
+            return;
+        }
+
+
+        float massA = BaseStats.mass;
+        Vector2 impactNormal = contactPoint.normal;
+        
+        Rigidbody2D localBody2D = contactPoint.rigidbody;
+        Rigidbody2D remoteBody2D = contactPoint.otherRigidbody;
+        Collider2D localCollider = contactPoint.collider;
+        
+        
+        float dotA = Mathf.Abs(Vector2.Dot(localBody2D.linearVelocity.normalized, impactNormal));
+        // Debug.Log($"LocalVel: {localBody2D.linearVelocity.normalized}; ImpactNormal: {impactNormal}; DotA: {dotA}");
+        
+
+        NetGameplayModule otherGameplayModule = remoteBody2D.gameObject.GetComponent<NetGameplayModule>();
+        if (otherGameplayModule == null || otherGameplayModule.Bridge == this) return;
+        float massB = otherGameplayModule.Bridge.BaseStats.mass;
+
+        // Energy calculations
+        float impactEnergy = impactEnergyModifier * kineticEnergyConstant * (massA * massB / (massA + massB)) * relVel.sqrMagnitude;
+        
+        // Damage calculations
+        float damage = impactEnergy * (massB / (massA + massB));
+
+        // Debug.Log($"Damage: {damage} = {impactEnergy} * ({massB} / ({massA} + {massB})) * (1 - {kineticEnergyConstant} * {Mathf.Max(dotA, 0)}");
+        
+        NetGameplayModule gameplayModule = localCollider.gameObject.GetComponent<NetGameplayModule>();
+        
+        // TODO: Currently the SteamID is always the host, as this collision method is
+        gameplayModule.S_InflictDamage(damage, SteamID);
+        
     }
 }
