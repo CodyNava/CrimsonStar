@@ -290,7 +290,7 @@ public class NetBridge : NetworkBehaviour
 
         // Debug.Log($"ImpactEnergy: {impactEnergy}");
         // Damage calculations
-        float damage = impactEnergy * (massB / (massA + massB));
+        float damage = impactEnergy * (massB / (massA + massB)) * (1 - kineticEnergyConstant * Mathf.Max(dotA, 0));
 
         Debug.Log($"Damage: {damage} = {impactEnergy} * ({massB} / ({massA} + {massB})) * (1 - {kineticEnergyConstant} * {Mathf.Max(dotA, 0)}");
         
