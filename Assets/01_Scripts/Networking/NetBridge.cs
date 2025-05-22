@@ -232,7 +232,7 @@ public class NetBridge : NetworkBehaviour
         // Calculate own impactDamage to be applied to collided own module
 
         // TODO: Make magic number not magic anymore
-        float kineticEnergyConstant = 10f;
+        float kineticEnergyConstant = 1f;
         float velocityThreshold = 1f;
 
         ContactPoint2D[] contacts = new ContactPoint2D[1];
@@ -261,8 +261,8 @@ public class NetBridge : NetworkBehaviour
         // Debug.Log($"RemoteBody: {remoteBody2D.gameObject.name}");
         // Debug.Log($"LocalCollider: {localCollider.gameObject.name}");
         // Debug.Log($"RemoteCollider: {remoteCollider.gameObject.name}");
-        float dotA = Mathf.Abs(Vector2.Dot(localBody2D.linearVelocity, -impactNormal));
-        Debug.Log($"LocalVel: {localBody2D.linearVelocity}; ImpactNormal: {impactNormal}; DotA: {dotA}");
+        float dotA = Vector2.Dot(localBody2D.linearVelocity.normalized, impactNormal);
+        Debug.Log($"LocalVel: {localBody2D.linearVelocity.normalized}; ImpactNormal: {impactNormal}; DotA: {dotA}");
 
         // Debug.Log($"RelativeVelocity: {relVel}");
         Debug.DrawLine(contactPoint.point, contactPoint.point + impactNormal, Color.cyan, 10f);
@@ -290,8 +290,7 @@ public class NetBridge : NetworkBehaviour
 
         // Debug.Log($"ImpactEnergy: {impactEnergy}");
         // Damage calculations
-        float damage = impactEnergy * (massB / (massA + massB)) *
-                       (1 - kineticEnergyConstant * Mathf.Max(dotA, 0f));
+        float damage = impactEnergy * (massB / (massA + massB));
 
         Debug.Log($"Damage: {damage} = {impactEnergy} * ({massB} / ({massA} + {massB})) * (1 - {kineticEnergyConstant} * {Mathf.Max(dotA, 0)}");
         
