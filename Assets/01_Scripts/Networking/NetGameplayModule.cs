@@ -14,6 +14,7 @@ public class NetGameplayModule : NetworkBehaviour
 
     [SerializeField] private GameObject deathVFX;
     [SerializeField] private VisualEffect damagedVFX;
+    [SerializeField] private MeshRenderer damagedMaterial;
 
     [SerializeField] private FMODUnity.EventReference damagedModuleSFXEvent;
     FMOD.Studio.EventInstance _damagedModuleSFXInstance;
@@ -98,6 +99,7 @@ public class NetGameplayModule : NetworkBehaviour
         float health = HealthPct;
 
         damagedVFX.SetFloat("DamageInput", 1 - health);
+        damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         //_damagedModuleSFXInstance = FMODUnity.RuntimeManager.CreateInstance(damagedModuleSFXEvent);
         //_damagedModuleSFXInstance.start();
         //Todo: Implement VFX Here
