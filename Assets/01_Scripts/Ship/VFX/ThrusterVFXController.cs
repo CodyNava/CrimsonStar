@@ -6,7 +6,6 @@ using UnityEngine.VFX;
 public class ThrusterVFXController : MonoBehaviour
 {
     [SerializeField] private VisualEffect thrusterEffect;
-    [SerializeField] private InputActionReference thrustInput;
     [SerializeField] private float changeSpeed = 2f;
     [SerializeField] private NetMovementController netMovementController;
     private float _currentStrength = 0f;

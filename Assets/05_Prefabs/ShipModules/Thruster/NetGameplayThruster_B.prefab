@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 1889560182786349539}
   - component: {fileID: -2040889024678824918}
   - component: {fileID: 8814180570869749153}
-  - component: {fileID: 6338998666925331149}
   m_Layer: 3
   m_Name: NetGameplayThruster_B
   m_TagString: Untagged
@@ -58,6 +57,7 @@ MonoBehaviour:
   <VisualTransform>k__BackingField: {fileID: 6908013655563695120}
   deathVFX: {fileID: 1316573703697364532, guid: 5c22353f35ed8ab479f53a6b33af00e3, type: 3}
   damagedVFX: {fileID: 7378567802264058198}
+  damagedMaterial: {fileID: 5734521643933634431}
   damagedModuleSFXEvent:
     Guid:
       Data1: 0
@@ -251,30 +251,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thrusterEffect: {fileID: 1543253697881164415}
-  thrustInput: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   changeSpeed: 0.8
   netMovementController: {fileID: 0}
---- !u!114 &6338998666925331149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8417619336110101989}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1875a9ad208de20449e32a24f7112854, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  thrusterSoundEvent:
-    Guid:
-      Data1: 570920162
-      Data2: 1296301295
-      Data3: 1131037326
-      Data4: -1152868117
-    Path: event:/ThrusterSFX
-  thrustInput: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  changeSpeed: 2
 --- !u!1001 &1255754242631433472
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -406,6 +384,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 43a07f21e07df8d4f899861f73efc975, type: 2}
     - target: {fileID: -5754084199372789682, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -429,6 +411,11 @@ PrefabInstance:
       addedObject: {fileID: 679063475240503839}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}
+--- !u!23 &5734521643933634431 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}
+  m_PrefabInstance: {fileID: 6364862448747844603}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6908013655563695120 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4ea42f9c79d4a764ea7e2fcb30342e15, type: 3}

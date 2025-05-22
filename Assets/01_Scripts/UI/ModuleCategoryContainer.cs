@@ -17,6 +17,7 @@ public class ModuleCategoryContainer : MonoBehaviour
                 continue;
             }
             NetModuleData moduleData = id.GetModuleData();
+            if (!moduleData) continue;
             if (moduleData.ModuleCategory != category)
             {
                 continue;

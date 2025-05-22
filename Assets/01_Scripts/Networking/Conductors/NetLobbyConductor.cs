@@ -32,6 +32,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         
         if (IsServerInitialized)
         {
+            SceneManager.OnClientPresenceChangeStart += S_OnSceneChange;
             ServerManager.OnRemoteConnectionState += S_OnConnectionStateChange;
             ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified, false);
             ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerTeamChangeRequested>(S_OnPlayerTeamChangeRequested, false);
@@ -39,6 +40,15 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
             ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(S_OnTeamModeChangeRequested, false);
             ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged, false);
             ServerManager.RegisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested, false);
+        }
+    }
+
+    private void S_OnSceneChange(ClientPresenceChangeEventArgs args)
+    {
+        if (args.Added)
+        {
+            S_SendLobbySettingsUpdate();
+            S_SendPlayerDataUpdate();
         }
     }
 
@@ -182,6 +192,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
         
         if (IsServerInitialized)
         {
+            SceneManager.OnClientPresenceChangeStart -= S_OnSceneChange;
             ServerManager.OnRemoteConnectionState -= S_OnConnectionStateChange;
             ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified);
             ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested);

@@ -25,14 +25,18 @@ public class NetFollowCursorLaser : NetworkBehaviour
 
 	private void Update()
 	{
-		_input = Keybinds.Actions.Player.Look.ReadValue<Vector2>();
-		
-		if (_input.magnitude > 0.2f && InputManager.Instance.IsGamepadUsed)
+		if (InputManager.Instance.IsGamepadUsed)
 		{
+			_input = Keybinds.Actions.Player.GamepadAim.ReadValue<Vector2>();
+			
+			// TODO: The stick deadzone is implemented hardcoded via magic number. Consider to use dedicated Stick deadzone preprocessor in InputActions
+			if (_input.magnitude <= 0.2f) return;
+
 			transform.up = _input.normalized;
 		}
-		else if (Gamepad.current == null)
+		else if (!InputManager.Instance.IsGamepadUsed)
 		{
+			_input = Keybinds.Actions.Player.MouseAim.ReadValue<Vector2>();
 			C_LookAtMouse();
 		}
 	}
