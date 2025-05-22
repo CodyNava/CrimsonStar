@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class ShipEditor : MonoBehaviour
@@ -92,11 +93,16 @@ public class ShipEditor : MonoBehaviour
 
     private void ModuleHolding()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
         Vector2 mousePosWorld = editCamera.ScreenToWorldPoint(Input.mousePosition).xy();
         HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
         if (_heldNetEditorModule != null)
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
                 if (CanPlaceModule(cursorHexCoord))
                 {

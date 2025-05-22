@@ -3,6 +3,8 @@ using FishNet;
 using FishNet.Transporting;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class EndResultsUI : MonoBehaviour
 {
@@ -10,6 +12,8 @@ public class EndResultsUI : MonoBehaviour
     [SerializeField] private PlayerStatsDisplay[] statsDisplays;
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private GameObject container;
+    [SerializeField] private Button backToMainButton;
+    
     private void OnEnable()
     {
         InstanceFinder.ClientManager.RegisterBroadcast<NetGameplayBroadcasts.RoundResult>(OnRoundResult);
@@ -27,6 +31,7 @@ public class EndResultsUI : MonoBehaviour
             var playerStats = msg.Stats[i];
             statsDisplays[i].SetMatchStats(playerStats);
         }
+        backToMainButton.gameObject.SetActive(true);
     }
 
     private void OnRoundResult(NetGameplayBroadcasts.RoundResult msg, Channel channel)
@@ -40,6 +45,12 @@ public class EndResultsUI : MonoBehaviour
             var playerStats = msg.Stats[i];
             statsDisplays[i].SetRoundStats(playerStats);
         }
+    }
+
+    public void OnBackToMainPressed()
+    {
+        NetSteamBootstrapper.LeaveLobby();
+        SceneManager.LoadScene("00_Scenes/MainMenu");
     }
 
     private void OnDisable()
