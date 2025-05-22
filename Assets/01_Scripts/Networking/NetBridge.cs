@@ -5,6 +5,7 @@ using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
 using _01_Scripts.Ship.ModuleControllers;
 using FishNet.Component.Prediction;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -17,8 +18,10 @@ public class NetBridge : NetworkBehaviour
     [SerializeField] private GameObject deathVFX;
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
     private readonly SyncVar<string> _displayName = new();
+    private readonly SyncVar<CSteamID> _steamId = new();
     public NetModuleBaseStats BaseStats => _baseStats.Value;
     public string DisplayName => _displayName.Value;
+    public CSteamID SteamID => _steamId.Value;
 
     private Dictionary<HexCoordinate, NetGameplayModule> _modules = new();
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
@@ -192,6 +195,11 @@ public class NetBridge : NetworkBehaviour
         _displayName.Value = displayName;
     }
 
+    public void S_SetSteamID(CSteamID steamID)
+    {
+        _steamId.Value = steamID;
+    }
+
     [ObserversRpc(ExcludeOwner = false)]
     public void HandleEndOfRound()
     {
@@ -278,7 +286,7 @@ public class NetBridge : NetworkBehaviour
         NetGameplayModule gameplayModule = localCollider.gameObject.GetComponent<NetGameplayModule>();
         
         // TODO: Currently the SteamID is always the host, as this collision method is
-        gameplayModule.S_InflictDamage(damage, SteamPlayer.SteamID);
+        gameplayModule.S_InflictDamage(damage, SteamID);
         
     }
 }
