@@ -208,7 +208,6 @@ public class NetBridge : NetworkBehaviour
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        // Debug.Log($"[Unity] Collided with {collision.collider.name}");
         OnEnterCollision2D(collision.collider);
     }
 
@@ -218,8 +217,6 @@ public class NetBridge : NetworkBehaviour
         // Only the server should handle collision damage
         if (!IsServerInitialized) return;
         
-        // Debug.Log($"==== COLLISION DETECTION ====");
-        // Debug.Log($"Collision detected for {collider.gameObject.GetInstanceID()}[{SteamPlayer.DisplayName}]");
         NetGameplayModule module = collider.gameObject.GetComponent<NetGameplayModule>();
         BaseModuleController moduleController = collider.gameObject.GetComponent<BaseModuleController>();
 
@@ -233,13 +230,6 @@ public class NetBridge : NetworkBehaviour
 
     private void S_HandleCollision(Collider2D collider)
     {
-        // Self perspective always ship A and other is ship B
-        // Get sum of Masses of own Ship and other Ship
-        // Get relative velocity between both ships along the collisionNormal
-        // Get facing direction of both ships relative to collisionNormal
-        // Calculate impactEnergy
-        // Calculate own impactDamage to be applied to collided own module
-
         // TODO: Make magic number not magic anymore
         float kineticEnergyConstant = 1f;
         float velocityThreshold = 1f;
@@ -250,13 +240,8 @@ public class NetBridge : NetworkBehaviour
         
         ContactPoint2D contactPoint = contacts[0];
         Vector2 relVel = -contactPoint.relativeVelocity;
-
-        // Debug.Log($"{relVel.magnitude}");
-        if (relVel.magnitude < velocityThreshold)
-        {
-            // Debug.Log($"too slow! Sucker!!");
-            return;
-        }
+        
+        if (relVel.magnitude < velocityThreshold) return;
 
 
         float massA = BaseStats.mass;
@@ -265,11 +250,9 @@ public class NetBridge : NetworkBehaviour
         Rigidbody2D localBody2D = contactPoint.rigidbody;
         Rigidbody2D remoteBody2D = contactPoint.otherRigidbody;
         Collider2D localCollider = contactPoint.collider;
-        
-        
-        float dotA = Mathf.Abs(Vector2.Dot(localBody2D.linearVelocity.normalized, impactNormal));
-        // Debug.Log($"LocalVel: {localBody2D.linearVelocity.normalized}; ImpactNormal: {impactNormal}; DotA: {dotA}");
-        
+
+        // Currently disabled, as the damage calculation doesnt accounts for ship alignment toward impact normal
+        // float dotA = Mathf.Abs(Vector2.Dot(localBody2D.linearVelocity.normalized, impactNormal));
 
         NetGameplayModule otherGameplayModule = remoteBody2D.gameObject.GetComponent<NetGameplayModule>();
         if (otherGameplayModule == null || otherGameplayModule.Bridge == this) return;
@@ -281,11 +264,9 @@ public class NetBridge : NetworkBehaviour
         // Damage calculations
         float damage = impactEnergy * (massB / (massA + massB));
 
-        // Debug.Log($"Damage: {damage} = {impactEnergy} * ({massB} / ({massA} + {massB})) * (1 - {kineticEnergyConstant} * {Mathf.Max(dotA, 0)}");
-        
         NetGameplayModule gameplayModule = localCollider.gameObject.GetComponent<NetGameplayModule>();
         
-        // TODO: Currently the SteamID is always the host, as this collision method is
+        // TODO: Probably causes issues on damageDealt, which causes Dealt and Received not to align
         gameplayModule.S_InflictDamage(damage, SteamID);
         
     }
