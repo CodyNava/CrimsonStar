@@ -15,10 +15,12 @@ public class InputManager : SceneSingleton<InputManager>
     public static void EnableGameControls()
     {
         Keybinds.Actions.Player.Enable();
+        Keybinds.Actions.Camera.Enable();
     }
 
     public static void DisableGameControls()
     {
         Keybinds.Actions.Player.Disable();
+        Keybinds.Actions.Camera.Disable();
     }
 }
