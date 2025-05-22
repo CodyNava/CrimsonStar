@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Rendering;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 
 public class SettingsBehaviour : MonoBehaviour
 {
-    [SerializeField] private Dropdown resolutionDropdown;
+    [SerializeField] private TMP_Dropdown resolutionDropdown;
     private Resolution[] resolutions;
 
     [SerializeField] private AudioMixer master;
@@ -50,10 +51,10 @@ public class SettingsBehaviour : MonoBehaviour
     private void Start()
     {
         _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
-        //_musicBus = FMODUnity.RuntimeManager.GetBus("bus:/music");
+        _musicBus = FMODUnity.RuntimeManager.GetBus("bus:/Music");
         _sfxBus = FMODUnity.RuntimeManager.GetBus("bus:/SFX");
         _uiBus = FMODUnity.RuntimeManager.GetBus("bus:/UI");
-        //_announcerBus = FMODUnity.RuntimeManager.GetBus("bus:/Voice");
+        _announcerBus = FMODUnity.RuntimeManager.GetBus("bus:/Voice");
 
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
@@ -105,7 +106,7 @@ public class SettingsBehaviour : MonoBehaviour
 
     public void SetVsync()
     {
-        QualitySettings.vSyncCount = QualitySettings.vSyncCount == 1 ? 0 : 1;
+        QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
         Save();
     }
 
@@ -187,6 +188,6 @@ public class SettingsBehaviour : MonoBehaviour
         gammaSlider.value = PlayerPrefs.GetFloat(gammaValue, 0.5f);
         brightnessSlider.value = PlayerPrefs.GetFloat(brightnessValue, 0.5f);
         toggle.isOn = PlayerPrefs.GetInt(vSync, 1) == 1;
-        QualitySettings.vSyncCount = QualitySettings.vSyncCount == 1 ? 0 : 1;
+        QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
     }
 }
