@@ -230,6 +230,8 @@ public class NetBridge : NetworkBehaviour
         // Get facing direction of both ships relative to collisionNormal
         // Calculate impactEnergy
         // Calculate own impactDamage to be applied to collided own module
+        
+        // TODO: Sum all contactPoint normals
 
         // TODO: Make magic number not magic anymore
         float kineticEnergyConstant = 1f;
@@ -251,21 +253,16 @@ public class NetBridge : NetworkBehaviour
 
 
         float massA = BaseStats.mass;
-        Vector2 impactNormal = relVel.normalized;
+        Vector2 impactNormal = contactPoint.normal;
         
         Rigidbody2D localBody2D = contactPoint.rigidbody;
         Rigidbody2D remoteBody2D = contactPoint.otherRigidbody;
         Collider2D localCollider = contactPoint.collider;
-
-        // Debug.Log($"LocalBody: {localBody2D.gameObject.name}");
-        // Debug.Log($"RemoteBody: {remoteBody2D.gameObject.name}");
-        // Debug.Log($"LocalCollider: {localCollider.gameObject.name}");
-        // Debug.Log($"RemoteCollider: {remoteCollider.gameObject.name}");
+        
+        
         float dotA = Vector2.Dot(localBody2D.linearVelocity.normalized, impactNormal);
         Debug.Log($"LocalVel: {localBody2D.linearVelocity.normalized}; ImpactNormal: {impactNormal}; DotA: {dotA}");
-
-        // Debug.Log($"RelativeVelocity: {relVel}");
-        Debug.DrawLine(contactPoint.point, contactPoint.point + impactNormal, Color.cyan, 10f);
+        
 
         NetGameplayModule otherGameplayModule = remoteBody2D.gameObject.GetComponent<NetGameplayModule>();
         if (otherGameplayModule == null || otherGameplayModule.Bridge == this) return;
@@ -273,8 +270,7 @@ public class NetBridge : NetworkBehaviour
 
         // Energy calculations
         float impactEnergy = impactEnergyModifier * kineticEnergyConstant * (massA * massB / (massA + massB)) * relVel.sqrMagnitude;
-
-        // Debug.Log($"ImpactEnergy: {impactEnergy}");
+        
         // Damage calculations
         float damage = impactEnergy * (massB / (massA + massB)) * (1 - kineticEnergyConstant * Mathf.Max(dotA, 0));
 
