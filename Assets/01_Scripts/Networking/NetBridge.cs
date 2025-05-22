@@ -261,7 +261,7 @@ public class NetBridge : NetworkBehaviour
         // Debug.Log($"RemoteBody: {remoteBody2D.gameObject.name}");
         // Debug.Log($"LocalCollider: {localCollider.gameObject.name}");
         // Debug.Log($"RemoteCollider: {remoteCollider.gameObject.name}");
-        float dotA = Mathf.Abs(Vector2.Dot(localBody2D.linearVelocity, impactNormal));
+        float dotA = Mathf.Abs(Vector2.Dot(localBody2D.linearVelocity, -impactNormal));
         Debug.Log($"LocalVel: {localBody2D.linearVelocity}; ImpactNormal: {impactNormal}; DotA: {dotA}");
 
         // Debug.Log($"RelativeVelocity: {relVel}");
