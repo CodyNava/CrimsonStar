@@ -278,6 +278,7 @@ public class NetBridge : NetworkBehaviour
         // Debug.Log($"RemoteCollider: {remoteCollider.gameObject.name}");
 
         dotA = Vector2.Dot(localBody2D.linearVelocity, impactNormal);
+        Debug.Log($"LocalVel: {localBody2D.linearVelocity}; ImpactNormal: {impactNormal}; DotA: {dotA}");
 
         // Debug.Log($"RelativeVelocity: {relVel}");
         Debug.DrawLine(contactPoint.point, contactPoint.point + impactNormal, Color.cyan, 10f);
