@@ -114,47 +114,27 @@ public class SettingsBehaviour : MonoBehaviour
 
     public void MasterVolume()
     {
-        var result = _masterBus.setVolume(masterSlider.value);
-        Debug.Log(result);
-        _masterBus.getVolume(out masterbusVolume);
-        Debug.Log("Volume is: " + masterbusVolume);
-        Save();
+        ApplyVolume(_masterBus, masterSlider.value);
     }
 
     public void MusicVolume()
     {
-        var result = _musicBus.setVolume(musicSlider.value);
-        Debug.Log(result);
-        _musicBus.getVolume(out musicbusVolume);
-        Debug.Log("Volume is: " + musicbusVolume);
-        Save();
+        ApplyVolume(_musicBus, musicSlider.value);
     }
 
     public void SFXVolume()
     {
-        var result = _sfxBus.setVolume(sfxSlider.value);
-        Debug.Log(result);
-        _sfxBus.getVolume(out sfxbusVolume);
-        Debug.Log("Volume is: " + sfxbusVolume);
-        Save();
+        ApplyVolume(_sfxBus, sfxSlider.value);
     }
 
     public void UIVolume()
     {
-        var result = _uiBus.setVolume(uiSlider.value);
-        Debug.Log(result);
-        _uiBus.getVolume(out uibusvolume);
-        Debug.Log("Volume is: " + uibusvolume);
-        Save();
+        ApplyVolume(_uiBus, uiSlider.value);
     }
 
     public void AnnouncerVolume()
     {
-        var result = _announcerBus.setVolume(announcerSlider.value);
-        Debug.Log(result);
-        _announcerBus.getVolume(out announcerbusvolume);
-        Debug.Log("Volume is: " + announcerbusvolume);
-        Save();
+        ApplyVolume(_announcerBus, announcerSlider.value);
     }
 
     private void ApplyVolume(Bus bus, float newVolume)
@@ -188,5 +168,10 @@ public class SettingsBehaviour : MonoBehaviour
         brightnessSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(brightnessValue, 0.5f));
         toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(vSync, 1) == 1);
         QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
+        MasterVolume();
+        MusicVolume();
+        SFXVolume();
+        UIVolume();
+        AnnouncerVolume();
     }
 }
