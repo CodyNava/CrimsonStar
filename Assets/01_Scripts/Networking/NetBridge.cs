@@ -234,6 +234,7 @@ public class NetBridge : NetworkBehaviour
         // TODO: Make magic number not magic anymore
         float kineticEnergyConstant = 1f;
         float velocityThreshold = 1f;
+        float impactEnergyModifier = 3.5f;
 
         ContactPoint2D[] contacts = new ContactPoint2D[1];
         if (collider.GetContacts(contacts) < 1) return;
@@ -286,7 +287,7 @@ public class NetBridge : NetworkBehaviour
         }
 
         // Energy calculations
-        float impactEnergy = kineticEnergyConstant * (massA * massB / (massA + massB)) * relVel.sqrMagnitude;
+        float impactEnergy = impactEnergyModifier * kineticEnergyConstant * (massA * massB / (massA + massB)) * relVel.sqrMagnitude;
 
         // Debug.Log($"ImpactEnergy: {impactEnergy}");
         // Damage calculations
