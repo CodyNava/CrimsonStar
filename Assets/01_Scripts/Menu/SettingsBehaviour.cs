@@ -106,7 +106,7 @@ public class SettingsBehaviour : MonoBehaviour
 
     public void SetVsync()
     {
-        QualitySettings.vSyncCount = QualitySettings.vSyncCount == 1 ? 0 : 1;
+        QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
         Save();
     }
 
