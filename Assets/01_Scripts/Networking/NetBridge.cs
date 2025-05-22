@@ -221,7 +221,8 @@ public class NetBridge : NetworkBehaviour
     {
         if (!IsServerInitialized) return;
         
-        Debug.Log("Collision detected!");
+        Debug.Log($"==== COLLISION DETECTION ====");
+        Debug.Log($"Collision detected for {SteamPlayer.DisplayName}[{SteamPlayer.SteamID}]");
         NetGameplayModule module = collider.gameObject.GetComponent<NetGameplayModule>();
         BaseModuleController moduleController = collider.gameObject.GetComponent<BaseModuleController>();
 
@@ -271,14 +272,14 @@ public class NetBridge : NetworkBehaviour
         Rigidbody2D remoteBody2D = contactPoint.otherRigidbody;
         Collider2D localCollider = contactPoint.collider;
         Collider2D remoteCollider = contactPoint.otherCollider;
-        Debug.Log($"LocalBody: {localBody2D.gameObject.name}");
-        Debug.Log($"RemoteBody: {remoteBody2D.gameObject.name}");
-        Debug.Log($"LocalCollider: {localCollider.gameObject.name}");
-        Debug.Log($"RemoteCollider: {remoteCollider.gameObject.name}");
+        // Debug.Log($"LocalBody: {localBody2D.gameObject.name}");
+        // Debug.Log($"RemoteBody: {remoteBody2D.gameObject.name}");
+        // Debug.Log($"LocalCollider: {localCollider.gameObject.name}");
+        // Debug.Log($"RemoteCollider: {remoteCollider.gameObject.name}");
 
         dotA = Vector2.Dot(localBody2D.linearVelocity, impactNormal);
 
-        Debug.Log($"RelativeVelocity: {relVel}");
+        // Debug.Log($"RelativeVelocity: {relVel}");
         Debug.DrawLine(contactPoint.point, contactPoint.point + impactNormal, Color.cyan, 10f);
 
         NetGameplayModule otherGameplayModule = remoteBody2D.gameObject.GetComponent<NetGameplayModule>();
@@ -300,7 +301,7 @@ public class NetBridge : NetworkBehaviour
 
         // Energy calculations
         impactEnergy = kineticEnergyConstant * (massA * massB / (massA + massB)) * relVel.sqrMagnitude;
-        Debug.Log($"ImpactEnergy: {impactEnergy}");
+        // Debug.Log($"ImpactEnergy: {impactEnergy}");
         
         // Damage calculations
         float damage = impactEnergy * (massB / (massA + massB)) *
@@ -310,5 +311,6 @@ public class NetBridge : NetworkBehaviour
         
         NetGameplayModule gameplayModule = localCollider.gameObject.GetComponent<NetGameplayModule>();
         gameplayModule.S_InflictDamage(damage, SteamPlayer.SteamID);
+        
     }
 }
