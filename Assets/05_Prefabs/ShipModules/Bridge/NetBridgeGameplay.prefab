@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 2511837122799470115}
   - component: {fileID: 8340832466762308199}
   - component: {fileID: 3651307376315669086}
-  - component: {fileID: 2064008653245272798}
+  - component: {fileID: 1825720529530502399}
   m_Layer: 3
   m_Name: NetBridgeGameplay
   m_TagString: Untagged
@@ -306,7 +306,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 8044024618627473456}
   _networkObjectCache: {fileID: 8044024618627473456}
   bridge: {fileID: 4735051456491862256}
-  thrusterSound: {fileID: 2064008653245272798}
+  thrusterSound: {fileID: 0}
 --- !u!114 &8340832466762308199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,103 +344,27 @@ MonoBehaviour:
   _targetTransform: {fileID: 2613784735972627428}
   _maxBankAngle: 30
   _bankSmoothing: 2
---- !u!82 &2064008653245272798
-AudioSource:
+--- !u!114 &1825720529530502399
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7512106822483562592}
   m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 8732666579291733472, guid: 1378e013332436242ab06aea7ba02e1e, type: 2}
-  m_audioClip: {fileID: 8300000, guid: fb2c196749ffc3b42a067673755e65c4, type: 3}
-  m_Resource: {fileID: 8300000, guid: fb2c196749ffc3b42a067673755e65c4, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 0.2
-  m_Pitch: 1
-  Loop: 1
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1875a9ad208de20449e32a24f7112854, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thrusterSoundEvent:
+    Guid:
+      Data1: 570920162
+      Data2: 1296301295
+      Data3: 1131037326
+      Data4: -1152868117
+    Path: event:/ThrusterSFX
+  thrustInput: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  changeSpeed: 2
 --- !u!1 &9038909177974191782
 GameObject:
   m_ObjectHideFlags: 0
