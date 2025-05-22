@@ -80,7 +80,7 @@ public class NetMovementController : NetworkBehaviour
     {
         if (IsOwner)
         {
-            SetInputThrust(_input.y);
+            S_SetInputThrust(_input.y);
         }
         RunInputs(CreateReplicateData());
     }
@@ -188,7 +188,7 @@ public class NetMovementController : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void SetInputThrust(float thrust)
+    public void S_SetInputThrust(float thrust)
     {
         _inputThrust.Value = thrust;
     }
