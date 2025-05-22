@@ -222,7 +222,7 @@ public class NetBridge : NetworkBehaviour
         if (!IsServerInitialized) return;
         
         Debug.Log($"==== COLLISION DETECTION ====");
-        Debug.Log($"Collision detected for {SteamPlayer.DisplayName}[{SteamPlayer.SteamID}]");
+        Debug.Log($"Collision detected for {collider.gameObject.GetInstanceID()}[{SteamPlayer.DisplayName}]");
         NetGameplayModule module = collider.gameObject.GetComponent<NetGameplayModule>();
         BaseModuleController moduleController = collider.gameObject.GetComponent<BaseModuleController>();
 
