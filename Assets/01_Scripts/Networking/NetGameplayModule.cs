@@ -2,6 +2,7 @@
 using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using FMOD.Studio;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -13,6 +14,9 @@ public class NetGameplayModule : NetworkBehaviour
 
     [SerializeField] private GameObject deathVFX;
     [SerializeField] private VisualEffect damagedVFX;
+
+    [SerializeField] private FMODUnity.EventReference damagedModuleSFXEvent;
+    FMOD.Studio.EventInstance _damagedModuleSFXInstance;
 
     [Header("Detachment Settings")] [SerializeField]
     private float _detachmentForce;
@@ -84,7 +88,8 @@ public class NetGameplayModule : NetworkBehaviour
     {
         Vector2 detachDirection = (VisualTransform.position - _bridge.transform.position).normalized;
         DetachedModuleSpawner.Instance.SpawnDetachedModule(ModuleID, VisualTransform, detachDirection * 10f);
-
+        //_damagedModuleSFXInstance.stop(STOP_MODE.IMMEDIATE);
+        //_damagedModuleSFXInstance.release();
         Destroy(VisualTransform.gameObject);
     }
 
@@ -94,6 +99,8 @@ public class NetGameplayModule : NetworkBehaviour
         float health = HealthPct;
 
         damagedVFX.SetFloat("DamageInput", 1 - health);
+        //_damagedModuleSFXInstance = FMODUnity.RuntimeManager.CreateInstance(damagedModuleSFXEvent);
+        //_damagedModuleSFXInstance.start();
         //Todo: Implement VFX Here
         // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
     }
@@ -102,9 +109,10 @@ public class NetGameplayModule : NetworkBehaviour
     {
         if (InstanceFinder.HasInstance<NetGameplayConductor>())
         {
-            InstanceFinder.GetInstance<NetGameplayConductor>().S_ReportDamageInstance(attackerID, NetworkObject.Owner, damage);
+            InstanceFinder.GetInstance<NetGameplayConductor>()
+                .S_ReportDamageInstance(attackerID, NetworkObject.Owner, damage);
         }
-        
+
         _health.Value -= damage;
         if (_health.Value <= 0)
         {

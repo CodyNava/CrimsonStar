@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class ShipEditor : MonoBehaviour
@@ -11,6 +12,8 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private HexTransform hexTransform;
     [SerializeField] private ShipEditorStats shipEditorStats;
     [SerializeField] private NetEditorModule netEditorBridgeRef;
+
+    [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
     public NetShipEditorData NetShipEditorData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
@@ -90,6 +93,11 @@ public class ShipEditor : MonoBehaviour
 
     private void ModuleHolding()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
         Vector2 mousePosWorld = editCamera.ScreenToWorldPoint(Input.mousePosition).xy();
         HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
         if (_heldNetEditorModule != null)
@@ -102,6 +110,7 @@ public class ShipEditor : MonoBehaviour
                         _heldNetEditorModule.PlacedRotation);
                     NetModuleID id = _heldNetEditorModule.ModuleID;
                     PlaceModule(cursorHexCoord);
+                    FMODUnity.RuntimeManager.PlayOneShot(modulePlacedEvent, transform.position);
                     if (Keyboard.current.leftShiftKey.isPressed)
                     {
                         SpawnPart(id);

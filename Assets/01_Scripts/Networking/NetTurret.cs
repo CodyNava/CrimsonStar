@@ -1,18 +1,19 @@
 ﻿using FishNet.Object;
 using Steamworks;
 using UnityEngine;
-using UnityEngine.VFX; 
+using UnityEngine.VFX;
+
 public class NetTurret : NetworkBehaviour
 {
     [SerializeField] private NetTurretData netTurretData;
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransformA, spawnTransformB;
     [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
-    [SerializeField] private AudioSource shootingSound;
+    [SerializeField] private FMODUnity.EventReference shotSound;
     private const float MaxPassedTime = 0.3f;
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
-    
+
 
     private float _accumulatedTime;
 
@@ -26,14 +27,15 @@ public class NetTurret : NetworkBehaviour
         _nextMuzzleFlash = muzzleFlashA;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (!IsOwner) return;
         _accumulatedTime += Time.deltaTime;
         _accumulatedTime = Mathf.Min(_accumulatedTime, netTurretData.Cooldown);
 
         if (_accumulatedTime < netTurretData.Cooldown) return;
-        if (!Keybinds.Actions.Player.Attack.IsPressed()) return;
+        
+        if (!C_IsAttacking()) return;
 
         if (_nextSpawnTransform == spawnTransformA)
         {
@@ -50,6 +52,20 @@ public class NetTurret : NetworkBehaviour
         _accumulatedTime -= netTurretData.Cooldown;
     }
 
+    private bool C_IsAttacking()
+    {
+        if (!InputManager.Instance.IsGamepadUsed)
+        {
+            return Keybinds.Actions.Player.Attack.IsPressed();
+        }
+        else
+        {
+            Vector2 input = Keybinds.Actions.Player.GamepadAim.ReadValue<Vector2>();
+            // TODO: The stick deadzone is implemented hardcoded via magic number. Consider to use dedicated Stick deadzone preprocessor in InputActions
+            return input.magnitude > 0.2f;
+        }
+    }
+
     private void C_ClientFire()
     {
         Vector3 position = _nextSpawnTransform.position;
@@ -61,7 +77,7 @@ public class NetTurret : NetworkBehaviour
         }
         S_ServerFire(position, direction, TimeManager.Tick, SteamPlayer.SteamID);
         _nextMuzzleFlash.Play();
-        shootingSound.Play();
+        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
 
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, CSteamID senderID)
@@ -87,6 +103,7 @@ public class NetTurret : NetworkBehaviour
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
         _nextMuzzleFlash.Play();
+        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
 
         if (_nextMuzzleFlash == muzzleFlashA)
         {
