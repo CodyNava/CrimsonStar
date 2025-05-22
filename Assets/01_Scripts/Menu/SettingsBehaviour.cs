@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using FMOD.Studio;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
@@ -11,8 +11,6 @@ public class SettingsBehaviour : MonoBehaviour
 {
     [SerializeField] private TMP_Dropdown resolutionDropdown;
     private Resolution[] resolutions;
-
-    [SerializeField] private AudioMixer master;
 
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider musicSlider;
@@ -118,7 +116,6 @@ public class SettingsBehaviour : MonoBehaviour
     {
         var result = _masterBus.setVolume(masterSlider.value);
         Debug.Log(result);
-        master.SetFloat(masterVolume, Mathf.Log10(masterSlider.value) * 20);
         _masterBus.getVolume(out masterbusVolume);
         Debug.Log("Volume is: " + masterbusVolume);
         Save();
@@ -128,7 +125,6 @@ public class SettingsBehaviour : MonoBehaviour
     {
         var result = _musicBus.setVolume(musicSlider.value);
         Debug.Log(result);
-        master.SetFloat(musicVolume, Mathf.Log10(musicSlider.value) * 20);
         _musicBus.getVolume(out musicbusVolume);
         Debug.Log("Volume is: " + musicbusVolume);
         Save();
@@ -138,7 +134,6 @@ public class SettingsBehaviour : MonoBehaviour
     {
         var result = _sfxBus.setVolume(sfxSlider.value);
         Debug.Log(result);
-        master.SetFloat(sfxVolume, Mathf.Log10(sfxSlider.value) * 20);
         _sfxBus.getVolume(out sfxbusVolume);
         Debug.Log("Volume is: " + sfxbusVolume);
         Save();
@@ -148,7 +143,6 @@ public class SettingsBehaviour : MonoBehaviour
     {
         var result = _uiBus.setVolume(uiSlider.value);
         Debug.Log(result);
-        master.SetFloat(uiVolume, Mathf.Log10(uiSlider.value) * 20);
         _uiBus.getVolume(out uibusvolume);
         Debug.Log("Volume is: " + uibusvolume);
         Save();
@@ -158,9 +152,14 @@ public class SettingsBehaviour : MonoBehaviour
     {
         var result = _announcerBus.setVolume(announcerSlider.value);
         Debug.Log(result);
-        master.SetFloat(announcerVolume, Mathf.Log10(announcerSlider.value) * 20);
         _announcerBus.getVolume(out announcerbusvolume);
         Debug.Log("Volume is: " + announcerbusvolume);
+        Save();
+    }
+
+    private void ApplyVolume(Bus bus, float newVolume)
+    {
+        bus.setVolume(newVolume);
         Save();
     }
 
@@ -180,14 +179,14 @@ public class SettingsBehaviour : MonoBehaviour
 
     private void Load()
     {
-        masterSlider.value = PlayerPrefs.GetFloat(masterVolume, 0.5f);
-        musicSlider.value = PlayerPrefs.GetFloat(musicVolume, 0.5f);
-        sfxSlider.value = PlayerPrefs.GetFloat(sfxVolume, 0.5f);
-        uiSlider.value = PlayerPrefs.GetFloat(uiVolume, 0.5f);
-        announcerSlider.value = PlayerPrefs.GetFloat(announcerVolume, 0.5f);
-        gammaSlider.value = PlayerPrefs.GetFloat(gammaValue, 0.5f);
-        brightnessSlider.value = PlayerPrefs.GetFloat(brightnessValue, 0.5f);
-        toggle.isOn = PlayerPrefs.GetInt(vSync, 1) == 1;
+        masterSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(masterVolume, 0.5f));
+        musicSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(musicVolume, 0.5f));
+        sfxSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(sfxVolume, 0.5f));
+        uiSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(uiVolume, 0.5f));
+        announcerSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(announcerVolume, 0.5f));
+        gammaSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(gammaValue, 0.5f));
+        brightnessSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(brightnessValue, 0.5f));
+        toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(vSync, 1) == 1);
         QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
     }
 }
