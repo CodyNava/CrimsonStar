@@ -260,7 +260,7 @@ public class NetBridge : NetworkBehaviour
         Collider2D localCollider = contactPoint.collider;
         
         
-        float dotA = Vector2.Dot(localBody2D.linearVelocity.normalized, impactNormal);
+        float dotA = Mathf.Abs(Vector2.Dot(localBody2D.linearVelocity.normalized, impactNormal));
         Debug.Log($"LocalVel: {localBody2D.linearVelocity.normalized}; ImpactNormal: {impactNormal}; DotA: {dotA}");
         
 
