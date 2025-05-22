@@ -256,7 +256,6 @@ public class NetBridge : NetworkBehaviour
         Rigidbody2D localBody2D = contactPoint.rigidbody;
         Rigidbody2D remoteBody2D = contactPoint.otherRigidbody;
         Collider2D localCollider = contactPoint.collider;
-        Collider2D remoteCollider = contactPoint.otherCollider;
 
         // Debug.Log($"LocalBody: {localBody2D.gameObject.name}");
         // Debug.Log($"RemoteBody: {remoteBody2D.gameObject.name}");
@@ -269,22 +268,8 @@ public class NetBridge : NetworkBehaviour
         Debug.DrawLine(contactPoint.point, contactPoint.point + impactNormal, Color.cyan, 10f);
 
         NetGameplayModule otherGameplayModule = remoteBody2D.gameObject.GetComponent<NetGameplayModule>();
-        float massB;
-        // In production this case shouldnt fail, only in test setup with collision of dummyEnemy
-        if (otherGameplayModule != null)
-        {
-            // We collided with a Networked player
-            
-            // For some reason we collided with ourself
-            if (otherGameplayModule.Bridge == this) return;
-            
-            massB = otherGameplayModule.Bridge.BaseStats.mass;
-        }
-        else
-        {
-            BaseModuleController moduleController = remoteBody2D.gameObject.GetComponent<BaseModuleController>();
-            massB = moduleController.ShipController.BridgeController.Mass;
-        }
+        if (otherGameplayModule == null || otherGameplayModule.Bridge == this) return;
+        float massB = otherGameplayModule.Bridge.BaseStats.mass;
 
         // Energy calculations
         float impactEnergy = impactEnergyModifier * kineticEnergyConstant * (massA * massB / (massA + massB)) * relVel.sqrMagnitude;
