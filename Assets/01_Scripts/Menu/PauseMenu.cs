@@ -1,17 +1,13 @@
-using Unity.VisualScripting;
-using UnityEngine.UI;
+using _01_Scripts.GameState.States;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using _01_Scripts.GameState.States;
-using _01_Scripts.GameState;
 
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] GameObject pauseMenuUI;
     [SerializeField] GameObject settingsMenuUI;
-    [SerializeField] GameObject bridge;
     [SerializeField] GameObject deathScreenUi;
-    
+
     [SerializeField] bool paused = false;
 
     private void Awake()
@@ -27,7 +23,7 @@ public class PauseMenu : MonoBehaviour
     }
 
     private void CombatLose_GameState_onExitState()
-    {    
+    {
         deathScreenUi.SetActive(false);
     }
 
@@ -53,15 +49,13 @@ public class PauseMenu : MonoBehaviour
 
     private void Pause()
     {
-        bridge.SetActive(false);
         paused = true;
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
     }
-       
+
     public void Resume()
     {
-        bridge.SetActive(true);
         paused = false;
         pauseMenuUI.SetActive(false);
         settingsMenuUI.SetActive(false);
@@ -71,7 +65,7 @@ public class PauseMenu : MonoBehaviour
     public void BackToMenu()
     {
         Resume();
-        GameStateController.Instance.ChangeState(new MainMenu_GameState());
+        //GameStateController.Instance.ChangeState(new MainMenu_GameState());
         SceneManager.LoadScene("MainMenu");
     }
 

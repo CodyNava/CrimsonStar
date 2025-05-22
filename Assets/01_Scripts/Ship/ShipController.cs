@@ -48,7 +48,7 @@ namespace _01_Scripts.Ship
             }
             else
             {
-                GameStateController.Instance.ChangeState(new CombatLose_GameState());
+                //GameStateController.Instance.ChangeState(new CombatLose_GameState());
             }
         }
 

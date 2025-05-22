@@ -143,7 +143,8 @@ namespace _01_Scripts.AI.SimpleAI
             // if (attachedTurrets.Count <= 0) return;
             foreach (TurretController turret in attachedTurrets)
             {
-                turret.SetTargetDestination(position);
+                if(!turret.IsUnityNull())
+                    turret.SetTargetDestination(position);
             }
         }
 

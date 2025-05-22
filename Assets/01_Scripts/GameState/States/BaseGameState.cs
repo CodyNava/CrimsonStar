@@ -23,13 +23,13 @@ namespace _01_Scripts.GameState.States
         protected GameStateController _gameStateController;
 
 #if UNITY_EDITOR
-        [InitializeOnEnterPlayMode]
-        private static void OnEnterPlayMode()
-        {
-            onEnterState = null;
-            onUpdateState = null;
-            onExitState = null;
-        }
+//        [InitializeOnEnterPlayMode]
+//        private static void OnEnterPlayMode()
+//        {
+//            onEnterState = null;
+//            onUpdateState = null;
+//            onExitState = null;
+//        }
 #endif
 
         public override void EnterState(GameStateController gsc)
