@@ -9,6 +9,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using Steamworks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -40,9 +41,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
     
     private readonly SyncVar<bool> _isMatchConcluded = new();
     private readonly SyncDictionary<NetTeamID, int> _scoreBoard = new();
-    
-    public bool IsMatchConcluded => _isMatchConcluded.Value;
-    public IEnumerable<KeyValuePair<NetTeamID, int>> GetScoreCounts() => _scoreBoard;
+    private HashSet<Transform> _spawnSet = new();
 
     private int _roundsPlayed;
 
@@ -233,6 +232,15 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
             return transform;
         }
 
-        return spawnPoints[_spawnedPlayers++];
+        if (_spawnedPlayers == 0)
+        {
+            _spawnSet.AddRange(spawnPoints);
+        }
+
+        int rng = Random.Range(0, _spawnSet.Count);
+        var spawn = _spawnSet.ElementAt(rng);
+        _spawnSet.Remove(spawn);
+        _spawnedPlayers++;
+        return spawn;
     }
 }
