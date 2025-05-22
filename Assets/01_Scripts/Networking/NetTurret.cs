@@ -1,18 +1,19 @@
 ﻿using FishNet.Object;
 using Steamworks;
 using UnityEngine;
-using UnityEngine.VFX; 
+using UnityEngine.VFX;
+
 public class NetTurret : NetworkBehaviour
 {
     [SerializeField] private NetTurretData netTurretData;
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransformA, spawnTransformB;
     [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
-    [SerializeField] private AudioSource shootingSound;
+    [SerializeField] private FMODUnity.EventReference shotSound;
     private const float MaxPassedTime = 0.3f;
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
-    
+
 
     private float _accumulatedTime;
 
@@ -61,7 +62,7 @@ public class NetTurret : NetworkBehaviour
         }
         S_ServerFire(position, direction, TimeManager.Tick, SteamPlayer.SteamID);
         _nextMuzzleFlash.Play();
-        shootingSound.Play();
+        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
 
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, CSteamID senderID)
@@ -87,6 +88,7 @@ public class NetTurret : NetworkBehaviour
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
         _nextMuzzleFlash.Play();
+        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
 
         if (_nextMuzzleFlash == muzzleFlashA)
         {
