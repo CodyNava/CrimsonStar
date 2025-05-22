@@ -27,14 +27,15 @@ public class NetTurret : NetworkBehaviour
         _nextMuzzleFlash = muzzleFlashA;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (!IsOwner) return;
         _accumulatedTime += Time.deltaTime;
         _accumulatedTime = Mathf.Min(_accumulatedTime, netTurretData.Cooldown);
 
         if (_accumulatedTime < netTurretData.Cooldown) return;
-        if (!Keybinds.Actions.Player.Attack.IsPressed()) return;
+        
+        if (!C_IsAttacking()) return;
 
         if (_nextSpawnTransform == spawnTransformA)
         {
@@ -49,6 +50,20 @@ public class NetTurret : NetworkBehaviour
 
         C_ClientFire();
         _accumulatedTime -= netTurretData.Cooldown;
+    }
+
+    private bool C_IsAttacking()
+    {
+        if (!InputManager.Instance.IsGamepadUsed)
+        {
+            return Keybinds.Actions.Player.Attack.IsPressed();
+        }
+        else
+        {
+            Vector2 input = Keybinds.Actions.Player.GamepadAim.ReadValue<Vector2>();
+            // TODO: The stick deadzone is implemented hardcoded via magic number. Consider to use dedicated Stick deadzone preprocessor in InputActions
+            return input.magnitude > 0.2f;
+        }
     }
 
     private void C_ClientFire()
