@@ -30,4 +30,13 @@ public class ThrusterSFXController : MonoBehaviour
         _currentStrength = Mathf.MoveTowards(_currentStrength, targetStrenght, changeSpeed * Time.deltaTime);
         _thrusterSound.setParameterByName("Thrust", _currentStrength);
     }
+
+    private void OnDestroy()
+    {
+        {
+            Debug.Log("Thruster OnDestroy");
+            _thrusterSound.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            _thrusterSound.release();
+        }
+    }
 }
