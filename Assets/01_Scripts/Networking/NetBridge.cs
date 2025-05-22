@@ -25,18 +25,6 @@ public class NetBridge : NetworkBehaviour
 
 
     private NetworkCollision2D _networkCollision2D;
-    private void Awake()
-    {
-         // _networkCollision2D = gameObject.GetComponent<NetworkCollision2D>();
-         //
-         // _networkCollision2D.OnEnter += OnEnterCollision2D;
-    }
-
-    public void OnDestroy()
-    {
-         // if(_networkCollision2D != null)
-         //     _networkCollision2D.OnEnter -= OnEnterCollision2D;
-    }
 
     public void S_AttachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
@@ -260,30 +248,27 @@ public class NetBridge : NetworkBehaviour
             return;
         }
 
-        float massA, massB;
-        Vector2 impactNormal;
-        float dotA, dotB;
-        float impactEnergy;
 
-        massA = BaseStats.mass;
-        impactNormal = relVel.normalized;
+        float massA = BaseStats.mass;
+        Vector2 impactNormal = relVel.normalized;
         
         Rigidbody2D localBody2D = contactPoint.rigidbody;
         Rigidbody2D remoteBody2D = contactPoint.otherRigidbody;
         Collider2D localCollider = contactPoint.collider;
         Collider2D remoteCollider = contactPoint.otherCollider;
+
         // Debug.Log($"LocalBody: {localBody2D.gameObject.name}");
         // Debug.Log($"RemoteBody: {remoteBody2D.gameObject.name}");
         // Debug.Log($"LocalCollider: {localCollider.gameObject.name}");
         // Debug.Log($"RemoteCollider: {remoteCollider.gameObject.name}");
-
-        dotA = Vector2.Dot(localBody2D.linearVelocity, impactNormal);
+        float dotA = Mathf.Abs(Vector2.Dot(impactNormal, localBody2D.linearVelocity));
         Debug.Log($"LocalVel: {localBody2D.linearVelocity}; ImpactNormal: {impactNormal}; DotA: {dotA}");
 
         // Debug.Log($"RelativeVelocity: {relVel}");
         Debug.DrawLine(contactPoint.point, contactPoint.point + impactNormal, Color.cyan, 10f);
 
         NetGameplayModule otherGameplayModule = remoteBody2D.gameObject.GetComponent<NetGameplayModule>();
+        float massB;
         // In production this case shouldnt fail, only in test setup with collision of dummyEnemy
         if (otherGameplayModule != null)
         {
@@ -301,9 +286,9 @@ public class NetBridge : NetworkBehaviour
         }
 
         // Energy calculations
-        impactEnergy = kineticEnergyConstant * (massA * massB / (massA + massB)) * relVel.sqrMagnitude;
+        float impactEnergy = kineticEnergyConstant * (massA * massB / (massA + massB)) * relVel.sqrMagnitude;
+
         // Debug.Log($"ImpactEnergy: {impactEnergy}");
-        
         // Damage calculations
         float damage = impactEnergy * (massB / (massA + massB)) *
                        (1 - kineticEnergyConstant * Mathf.Max(dotA, 0f));
