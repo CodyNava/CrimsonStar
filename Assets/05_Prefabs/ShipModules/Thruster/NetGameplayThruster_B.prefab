@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1889560182786349539}
   - component: {fileID: -2040889024678824918}
   - component: {fileID: 8814180570869749153}
+  - component: {fileID: 6338998666925331149}
   m_Layer: 3
   m_Name: NetGameplayThruster_B
   m_TagString: Untagged
@@ -57,6 +58,13 @@ MonoBehaviour:
   <VisualTransform>k__BackingField: {fileID: 6908013655563695120}
   deathVFX: {fileID: 1316573703697364532, guid: 5c22353f35ed8ab479f53a6b33af00e3, type: 3}
   damagedVFX: {fileID: 7378567802264058198}
+  damagedModuleSFXEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   _detachmentForce: 0
 --- !u!114 &660422031529683118
 MonoBehaviour:
@@ -104,7 +112,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 8
+  <PrefabId>k__BackingField: 9
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 7776896847720227253
   <SceneId>k__BackingField: 0
@@ -246,6 +254,27 @@ MonoBehaviour:
   thrustInput: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   changeSpeed: 0.8
   netMovementController: {fileID: 0}
+--- !u!114 &6338998666925331149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8417619336110101989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1875a9ad208de20449e32a24f7112854, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thrusterSoundEvent:
+    Guid:
+      Data1: 570920162
+      Data2: 1296301295
+      Data3: 1131037326
+      Data4: -1152868117
+    Path: event:/ThrusterSFX
+  thrustInput: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  changeSpeed: 2
 --- !u!1001 &1255754242631433472
 PrefabInstance:
   m_ObjectHideFlags: 0

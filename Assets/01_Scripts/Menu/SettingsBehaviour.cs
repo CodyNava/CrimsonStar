@@ -35,6 +35,13 @@ public class SettingsBehaviour : MonoBehaviour
     private const string brightnessValue = "BrightnessValue";
     private const string vSync = "VSync";
 
+    FMOD.Studio.Bus _masterBus;
+    FMOD.Studio.Bus _musicBus;
+    FMOD.Studio.Bus _sfxBus;
+    FMOD.Studio.Bus _uiBus;
+    FMOD.Studio.Bus _announcerBus;
+    float masterbusVolume, musicbusVolume, sfxbusVolume, uibusvolume, announcerbusvolume;
+
     private void Awake()
     {
         volume.profile.TryGet(out gamma);
@@ -42,6 +49,12 @@ public class SettingsBehaviour : MonoBehaviour
 
     private void Start()
     {
+        _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
+        //_musicBus = FMODUnity.RuntimeManager.GetBus("bus:/music");
+        _sfxBus = FMODUnity.RuntimeManager.GetBus("bus:/SFX");
+        _uiBus = FMODUnity.RuntimeManager.GetBus("bus:/UI");
+        //_announcerBus = FMODUnity.RuntimeManager.GetBus("bus:/Voice");
+
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
         List<string> resolutionOptions = new List<string>();
@@ -49,12 +62,14 @@ public class SettingsBehaviour : MonoBehaviour
         int currentResolutionIndex = 0;
         for (int i = 0; i < resolutions.Length; i++)
         {
-            string resolutionOption = $"{resolutions[i].width} x {resolutions[i].height} @{Mathf.RoundToInt((float)resolutions[i].refreshRateRatio.value)}";
+            string resolutionOption =
+                $"{resolutions[i].width} x {resolutions[i].height} @{Mathf.RoundToInt((float)resolutions[i].refreshRateRatio.value)}";
             resolutionOptions.Add(resolutionOption);
 
             if (resolutions[i].width == Screen.currentResolution.width &&
                 resolutions[i].height == Screen.currentResolution.height &&
-                Math.Abs(resolutions[i].refreshRateRatio.value - Screen.currentResolution.refreshRateRatio.value) < 0.0001f)
+                Math.Abs(resolutions[i].refreshRateRatio.value - Screen.currentResolution.refreshRateRatio.value) <
+                0.0001f)
             {
                 currentResolutionIndex = i;
             }
@@ -68,6 +83,7 @@ public class SettingsBehaviour : MonoBehaviour
     }
 
     #region Graphics
+
     public void SetResolution(int resolutionIndex)
     {
         Resolution resolution = resolutions[resolutionIndex];
@@ -92,38 +108,61 @@ public class SettingsBehaviour : MonoBehaviour
         QualitySettings.vSyncCount = QualitySettings.vSyncCount == 1 ? 0 : 1;
         Save();
     }
+
     #endregion
 
     #region Sound
+
     public void MasterVolume()
     {
+        var result = _masterBus.setVolume(masterSlider.value);
+        Debug.Log(result);
         master.SetFloat(masterVolume, Mathf.Log10(masterSlider.value) * 20);
+        _masterBus.getVolume(out masterbusVolume);
+        Debug.Log("Volume is: " + masterbusVolume);
         Save();
     }
 
     public void MusicVolume()
     {
+        var result = _musicBus.setVolume(musicSlider.value);
+        Debug.Log(result);
         master.SetFloat(musicVolume, Mathf.Log10(musicSlider.value) * 20);
+        _musicBus.getVolume(out musicbusVolume);
+        Debug.Log("Volume is: " + musicbusVolume);
         Save();
     }
 
     public void SFXVolume()
     {
+        var result = _sfxBus.setVolume(sfxSlider.value);
+        Debug.Log(result);
         master.SetFloat(sfxVolume, Mathf.Log10(sfxSlider.value) * 20);
+        _sfxBus.getVolume(out sfxbusVolume);
+        Debug.Log("Volume is: " + sfxbusVolume);
         Save();
     }
 
     public void UIVolume()
     {
+        var result = _uiBus.setVolume(uiSlider.value);
+        Debug.Log(result);
         master.SetFloat(uiVolume, Mathf.Log10(uiSlider.value) * 20);
+        _uiBus.getVolume(out uibusvolume);
+        Debug.Log("Volume is: " + uibusvolume);
         Save();
     }
 
     public void AnnouncerVolume()
     {
+        var result = _announcerBus.setVolume(announcerSlider.value);
+        Debug.Log(result);
         master.SetFloat(announcerVolume, Mathf.Log10(announcerSlider.value) * 20);
+        _announcerBus.getVolume(out announcerbusvolume);
+        Debug.Log("Volume is: " + announcerbusvolume);
         Save();
     }
+
     #endregion
 
     private void Save()

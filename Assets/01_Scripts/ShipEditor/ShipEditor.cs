@@ -11,6 +11,8 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private HexTransform hexTransform;
     [SerializeField] private ShipEditorStats shipEditorStats;
     [SerializeField] private NetEditorModule netEditorBridgeRef;
+
+    [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
     public NetShipEditorData NetShipEditorData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
@@ -102,6 +104,7 @@ public class ShipEditor : MonoBehaviour
                         _heldNetEditorModule.PlacedRotation);
                     NetModuleID id = _heldNetEditorModule.ModuleID;
                     PlaceModule(cursorHexCoord);
+                    FMODUnity.RuntimeManager.PlayOneShot(modulePlacedEvent, transform.position);
                     if (Keyboard.current.leftShiftKey.isPressed)
                     {
                         SpawnPart(id);

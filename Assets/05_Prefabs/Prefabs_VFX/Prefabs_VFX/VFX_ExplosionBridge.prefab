@@ -394,6 +394,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7491223077838396108}
   - component: {fileID: 624573570458932279}
+  - component: {fileID: 5909176208868380288}
   m_Layer: 0
   m_Name: VFX_ExplosionBridge
   m_TagString: Untagged
@@ -432,7 +433,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f244f524a030c6459722c6594b1e9bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delay: 3
+  _delay: 5
+--- !u!114 &5909176208868380288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316573703697364532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e12ac71f04034197c81f2c6095596, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detonateSound:
+    Guid:
+      Data1: -1500992291
+      Data2: 1190121294
+      Data3: 1564358539
+      Data4: -344815202
+    Path: event:/BridgeExplosion_SFX
 --- !u!1 &3302201052810822285
 GameObject:
   m_ObjectHideFlags: 0
