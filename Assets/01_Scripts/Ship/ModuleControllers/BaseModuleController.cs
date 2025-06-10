@@ -16,6 +16,7 @@ namespace _01_Scripts.Ship.ModuleControllers
         private float currentHp;
 
         protected ShipController _shipController;
+        public ShipController ShipController => _shipController;
 
         // TODO: Reduce OnCombatState Hooks into ShipController
         

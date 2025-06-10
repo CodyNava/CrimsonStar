@@ -93,6 +93,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
             _bridges.Add(args.Connection, bridge);
             var spawnPoint = S_GetSpawnTransform();
             bridge.S_SetDisplayName(playerData.playerDisplayName);
+            bridge.S_SetSteamID(playerData.playerSteamID);
             bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, playerData.playerTeamID, HexCoordinate.Zero);
             S_ConstructPlayerShip(args.Connection, playerData.playerTeamID, bridge, _editorConductor.PlayerShipEditors[args.Connection], args.Scene);
             ServerManager.Spawn(bridge.gameObject, args.Connection);

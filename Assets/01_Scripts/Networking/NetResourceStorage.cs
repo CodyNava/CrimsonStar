@@ -39,9 +39,9 @@ public class NetResourceStorage : NetworkBehaviour
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
         foreach ((NetCurrencyType resourceType, int cost) in moduleData.Costs)
         {
-            _resourceStorage[resourceType] -= cost;
+            int amount = _resourceStorage.GetValueOrDefault(resourceType) - cost;
+            _resourceStorage[resourceType] = amount;
         }
-        Debug.Log($"Currency left: {_resourceStorage[NetCurrencyType.Gold]}");
     }
 
     public void C_RefundModule(NetModuleID id)
@@ -58,9 +58,9 @@ public class NetResourceStorage : NetworkBehaviour
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
         foreach ((NetCurrencyType resourceType, int cost) in moduleData.Costs)
         {
-            _resourceStorage[resourceType] += cost;
+            int amount = _resourceStorage.GetValueOrDefault(resourceType) + cost;
+            _resourceStorage[resourceType] = amount;
         }
-        Debug.Log($"Currency left: {_resourceStorage[NetCurrencyType.Gold]}");
     }
 
     public int C_GetRemainingResourceCount(NetCurrencyType type)
@@ -70,6 +70,7 @@ public class NetResourceStorage : NetworkBehaviour
 
     public void S_AddResourceCount(NetCurrencyType type, int addedAmount)
     {
-        _resourceStorage[type] += addedAmount;
+        int amount = _resourceStorage.GetValueOrDefault(type) + addedAmount;
+        _resourceStorage[type] = amount;
     }
 }
