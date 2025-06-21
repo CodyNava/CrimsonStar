@@ -18,10 +18,10 @@ public class NetBridge : NetworkBehaviour
     [SerializeField] private GameObject deathVFX;
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
     private readonly SyncVar<string> _displayName = new();
-    private readonly SyncVar<CSteamID> _steamId = new();
+    private readonly SyncVar<ulong> _playerId = new();
     public NetModuleBaseStats BaseStats => _baseStats.Value;
     public string DisplayName => _displayName.Value;
-    public CSteamID SteamID => _steamId.Value;
+    public ulong PlayerID => _playerId.Value;
 
     private Dictionary<HexCoordinate, NetGameplayModule> _modules = new();
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
@@ -195,9 +195,9 @@ public class NetBridge : NetworkBehaviour
         _displayName.Value = displayName;
     }
 
-    public void S_SetSteamID(CSteamID steamID)
+    public void S_SetPlayerID(ulong playerID)
     {
-        _steamId.Value = steamID;
+        _playerId.Value = playerID;
     }
 
     [ObserversRpc(ExcludeOwner = false)]
@@ -267,7 +267,7 @@ public class NetBridge : NetworkBehaviour
         NetGameplayModule gameplayModule = localCollider.gameObject.GetComponent<NetGameplayModule>();
         
         // TODO: Probably causes issues on damageDealt, which causes Dealt and Received not to align
-        gameplayModule.S_InflictDamage(damage, SteamID);
+        gameplayModule.S_InflictDamage(damage, _playerId.Value);
         
     }
 }

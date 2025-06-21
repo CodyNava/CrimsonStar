@@ -1,5 +1,6 @@
 ﻿using FishNet;
 using FishNet.Transporting;
+using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,7 +29,7 @@ public class LobbyUI : MonoBehaviour
 
     private void OnPlayerListUpdate(NetLobbyBroadcasts.PlayerListUpdate msg, Channel channel)
     {
-        if (SteamPlayer.IsLobbyHost)
+        if (PlayerData.IsLobbyHost)
         {
             startGameButton.gameObject.SetActive(true);
         }
@@ -70,7 +71,8 @@ public class LobbyUI : MonoBehaviour
     
     public void LeaveLobby()
     {
-        NetSteamBootstrapper.LeaveLobby();
+        if (PlayerData.CurrentLobbyID != CSteamID.Nil)
+            NetGameBootstrapper.LeaveLobby();
         SceneManager.LoadScene("MainMenu");
     }
 

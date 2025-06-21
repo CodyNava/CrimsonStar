@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using FishNet;
 using FishNet.Transporting;
@@ -26,10 +27,12 @@ public class EndResultsUI : MonoBehaviour
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
         container.SetActive(true);
-        for (var i = 0; i < msg.Stats.Length; i++)
+
+        List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
+        players.Sort((a, b) => a.MatchScore.Value.CompareTo(b.MatchScore.Value));
+        for (int i = 0; i < players.Count; i++)
         {
-            var playerStats = msg.Stats[i];
-            statsDisplays[i].SetMatchStats(playerStats);
+            statsDisplays[i].SetMatchStats(players[i]);
         }
         backToMainButton.gameObject.SetActive(true);
     }
@@ -40,16 +43,18 @@ public class EndResultsUI : MonoBehaviour
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
         container.SetActive(true);
-        for (var i = 0; i < msg.Stats.Length; i++)
+        
+        List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
+        players.Sort((a, b) => a.MatchScore.Value.CompareTo(b.MatchScore.Value));
+        for (int i = 0; i < players.Count; i++)
         {
-            var playerStats = msg.Stats[i];
-            statsDisplays[i].SetRoundStats(playerStats);
+            statsDisplays[i].SetRoundStats(players[i]);
         }
     }
 
     public void OnBackToMainPressed()
     {
-        NetSteamBootstrapper.LeaveLobby();
+        NetGameBootstrapper.LeaveLobby();
         SceneManager.LoadScene("00_Scenes/MainMenu");
     }
 

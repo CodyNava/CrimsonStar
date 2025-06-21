@@ -14,18 +14,13 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private NetEditorModule netEditorBridgeRef;
 
     [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
-    public NetShipEditorData NetShipEditorData { get; private set; }
+    public NetMatchPlayer PlayerData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
     private NetEditorModule _heldNetEditorModule;
 
     private List<NetEditorModule> editorModuleList;
-
-    public void SetPlayerShipEditor(NetShipEditorData netShipEditorData)
-    {
-        NetShipEditorData = netShipEditorData;
-    }
-
+    
     private void Update()
     {
         ModuleHolding();
@@ -40,7 +35,27 @@ public class ShipEditor : MonoBehaviour
         {
             netEditorBridgeRef
         };
+        StartCoroutine(LinkPlayerRoutine());
         shipEditorStats.GetTotalStats(editorModuleList);
+    }
+
+    private IEnumerator LinkPlayerRoutine()
+    {
+        while (PlayerData == null)
+        {
+            var players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None);
+            foreach (var matchPlayer in players)
+            {
+                if (matchPlayer.IsOwner)
+                {
+                    PlayerData = matchPlayer;
+                    ReconstructShip(PlayerData.ModuleStorage.GetUniqueModules());
+                    break;
+                }
+            }
+
+            yield return null;
+        }
     }
 
     private void OnDestroy()
@@ -78,7 +93,7 @@ public class ShipEditor : MonoBehaviour
             return false;
         }
 
-        if (!NetShipEditorData.ResourceStorage.SC_HasResourcesForModule(moduleID))
+        if (!PlayerData.C_CanAffordModule(moduleID))
         {
             return false;
         }
@@ -86,7 +101,7 @@ public class ShipEditor : MonoBehaviour
         _heldNetEditorModule =
             Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
         _heldNetEditorModule.Initialize();
-        NetShipEditorData.ResourceStorage.C_PayForModule(moduleID);
+        PlayerData.C_PayForModule(moduleID);
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
         return true;
     }
@@ -106,7 +121,7 @@ public class ShipEditor : MonoBehaviour
             {
                 if (CanPlaceModule(cursorHexCoord))
                 {
-                    NetShipEditorData.ModuleStorage.C_AddModule(cursorHexCoord, _heldNetEditorModule.ModuleID,
+                    PlayerData.ModuleStorage.C_AddModule(cursorHexCoord, _heldNetEditorModule.ModuleID,
                         _heldNetEditorModule.PlacedRotation);
                     NetModuleID id = _heldNetEditorModule.ModuleID;
                     PlaceModule(cursorHexCoord);
@@ -128,7 +143,7 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule.transform.position = mousePosWorld.xy0();
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                NetShipEditorData.ResourceStorage.C_RefundModule(_heldNetEditorModule.ModuleID);
+                PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
                 _heldNetEditorModule = null;
                 return;
@@ -167,12 +182,12 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = rootCoord + localCoord;
             _editorModulesMap[coord] = _heldNetEditorModule;
 
-            if (NetShipEditorData.ModuleStorage.SC_IsCoordinateOccupied(coord))
+            if (PlayerData.ModuleStorage.SC_IsCoordinateOccupied(coord))
             {
                 return false;
             }
 
-            if (NetShipEditorData.ModuleStorage.SC_IsNeighboringModule(coord))
+            if (PlayerData.ModuleStorage.SC_IsNeighboringModule(coord))
             {
                 isAttached = true;
             }
@@ -206,21 +221,20 @@ public class ShipEditor : MonoBehaviour
             _editorModulesMap.Remove(coord);
         }
 
-        NetShipEditorData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
+        PlayerData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
         editorModuleList.Remove(_heldNetEditorModule);
         shipEditorStats.GetTotalStats(editorModuleList);
     }
 
     public void SignalReady()
     {
-        if (NetShipEditorData.SignalReady())
+        if (PlayerData.C_SignalReady())
         {
             gameObject.SetActive(false);
         }
     }
 
-    public void ReconstructShip(IEnumerable<ModulePlacementData> uniqueModules
-    )
+    public void ReconstructShip(IEnumerable<ModulePlacementData> uniqueModules)
     {
         foreach (ModulePlacementData uniqueModule in uniqueModules)
         {
