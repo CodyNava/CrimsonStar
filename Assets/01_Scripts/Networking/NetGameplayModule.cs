@@ -112,7 +112,7 @@ public class NetGameplayModule : NetworkBehaviour
         if (InstanceFinder.HasInstance<NetGameplayConductor>())
         {
             InstanceFinder.GetInstance<NetGameplayConductor>()
-                .S_ReportDamageInstance(attackerID, NetworkObject.Owner, damage);
+                .S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
         }
 
         _health.Value -= damage;

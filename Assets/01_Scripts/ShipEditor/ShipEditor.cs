@@ -50,7 +50,7 @@ public class ShipEditor : MonoBehaviour
                 {
                     PlayerData = matchPlayer;
                     ReconstructShip(PlayerData.ModuleStorage.GetUniqueModules());
-                    break;
+                    yield break;
                 }
             }
 
@@ -238,7 +238,8 @@ public class ShipEditor : MonoBehaviour
     {
         foreach (ModulePlacementData uniqueModule in uniqueModules)
         {
-            _heldNetEditorModule = Instantiate(uniqueModule.ModuleID.GetModuleData().ShipEditorPrefab);
+            _heldNetEditorModule = Instantiate(uniqueModule.ModuleID.GetModuleData().ShipEditorPrefab,
+                new InstantiateParameters {scene = gameObject.scene});
             _heldNetEditorModule.Initialize();
 
             for (int i = 0; i < uniqueModule.Rotation; i++)
