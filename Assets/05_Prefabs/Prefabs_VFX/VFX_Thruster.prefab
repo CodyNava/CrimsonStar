@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thrusterEffect: {fileID: 9095724411216837872}
-  thrustInput: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   changeSpeed: 0.8
+  netMovementController: {fileID: 0}
 --- !u!1 &8038944724445643452
 GameObject:
   m_ObjectHideFlags: 0
@@ -99,18 +99,30 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 0
+      - m_Value: 1
         m_Name: ThrusterStrength
         m_Overridden: 1
       - m_Value: 0.5
         m_Name: MinScale
         m_Overridden: 1
+      - m_Value: 0
+        m_Name: Size_Smoke
+        m_Overridden: 0
+      - m_Value: 2
+        m_Name: Size_Fire
+        m_Overridden: 0
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 2.9960785, y: 0.77610177, z: 0.29960793, w: 0}
+        m_Name: Color_Smoke
+        m_Overridden: 1
+      - m_Value: {x: 0.14980395, y: 0.8709007, z: 1.4980392, w: 0}
+        m_Name: Color_Fire
+        m_Overridden: 1
     m_Uint:
       m_Array: []
     m_Int:
@@ -120,11 +132,52 @@ VisualEffect:
     m_AnimationCurve:
       m_Array: []
     m_Gradient:
-      m_Array: []
+      m_Array:
+      - m_Value:
+          serializedVersion: 2
+          key0: {r: 0.3137254, g: 1.1764711, b: 2.9960785, a: 1}
+          key1: {r: 0.3137254, g: 0.8113816, b: 2.9960785, a: 1}
+          key2: {r: 0.015, g: 0.0031413608, b: 0.0015706801, a: 1}
+          key3: {r: 0, g: 0, b: 0, a: 0}
+          key4: {r: 0, g: 0, b: 0, a: 0}
+          key5: {r: 0, g: 0, b: 0, a: 0}
+          key6: {r: 0, g: 0, b: 0, a: 0}
+          key7: {r: 0, g: 0, b: 0, a: 0}
+          ctime0: 0
+          ctime1: 13493
+          ctime2: 25250
+          ctime3: 0
+          ctime4: 0
+          ctime5: 0
+          ctime6: 0
+          ctime7: 0
+          atime0: 0
+          atime1: 5012
+          atime2: 12336
+          atime3: 65535
+          atime4: 0
+          atime5: 0
+          atime6: 0
+          atime7: 0
+          m_Mode: 2
+          m_ColorSpace: 1
+          m_NumColorKeys: 3
+          m_NumAlphaKeys: 4
+        m_Name: ColorGradient_Fire
+        m_Overridden: 1
     m_NamedObject:
       m_Array: []
     m_Bool:
-      m_Array: []
+      m_Array:
+      - m_Value: 0
+        m_Name: Toggle_Particle
+        m_Overridden: 1
+      - m_Value: 1
+        m_Name: Toggle_Blur
+        m_Overridden: 1
+      - m_Value: 1
+        m_Name: Toggle_Turbulance_FireParticle
+        m_Overridden: 0
 --- !u!73398921 &2911725434209575395
 VFXRenderer:
   serializedVersion: 1

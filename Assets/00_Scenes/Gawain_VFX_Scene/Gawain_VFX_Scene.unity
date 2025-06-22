@@ -10419,7 +10419,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.26, z: -6}
+  m_LocalPosition: {x: -0.94, y: -0.8, z: -60}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15547,6 +15547,156 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2720221894124217001, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
   m_PrefabInstance: {fileID: 6693261750930280049}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &467794612
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 467794613}
+  - component: {fileID: 467794615}
+  - component: {fileID: 467794614}
+  m_Layer: 0
+  m_Name: VFXGraph_Explosion_Climax (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &467794613
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467794612}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1454341101}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!73398921 &467794614
+VFXRenderer:
+  serializedVersion: 1
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467794612}
+  m_Enabled: 0
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!2083052967 &467794615
+VisualEffect:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467794612}
+  m_Enabled: 1
+  m_Asset: {fileID: 8926484042661614526, guid: d8bc318c94e005c41a22a904be860c99, type: 3}
+  m_InitialEventName: OnPlay
+  m_InitialEventNameOverriden: 0
+  m_StartSeed: 0
+  m_ResetSeedOnPlay: 1
+  m_AllowInstancing: 1
+  m_ResourceVersion: 1
+  m_PropertySheet:
+    m_Float:
+      m_Array:
+      - m_Value: 3
+        m_Name: Size
+        m_Overridden: 1
+      - m_Value: 2.4
+        m_Name: Lifetime_ShockWave
+        m_Overridden: 1
+    m_Vector2f:
+      m_Array:
+      - m_Value: {x: 4.5, y: 5.5}
+        m_Name: randomSize_LensFlare
+        m_Overridden: 0
+    m_Vector3f:
+      m_Array: []
+    m_Vector4f:
+      m_Array:
+      - m_Value: {x: 0.20452157, y: 0.4828221, z: 0.9635237, w: 0}
+        m_Name: Color_Glow
+        m_Overridden: 1
+      - m_Value: {x: 0.29023013, y: 1.4213836, z: 0.39664364, w: 0}
+        m_Name: Color_ShockWave 2
+        m_Overridden: 1
+    m_Uint:
+      m_Array: []
+    m_Int:
+      m_Array: []
+    m_Matrix4x4f:
+      m_Array: []
+    m_AnimationCurve:
+      m_Array: []
+    m_Gradient:
+      m_Array: []
+    m_NamedObject:
+      m_Array: []
+    m_Bool:
+      m_Array:
+      - m_Value: 0
+        m_Name: ToggleDebriParticle
+        m_Overridden: 1
+      - m_Value: 0
+        m_Name: ToggleSlowParticle
+        m_Overridden: 1
+      - m_Value: 0
+        m_Name: ToggleGlow
+        m_Overridden: 1
+      - m_Value: 0
+        m_Name: ToggleShockWave
+        m_Overridden: 1
+      - m_Value: 1
+        m_Name: ToggleFlare
+        m_Overridden: 1
+      - m_Value: 0
+        m_Name: ToggleDenseFlare
+        m_Overridden: 1
+      - m_Value: 1
+        m_Name: ToggleLooping
+        m_Overridden: 0
 --- !u!1 &474683870
 GameObject:
   m_ObjectHideFlags: 0
@@ -25643,6 +25793,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1258780146}
     m_Modifications:
+    - target: {fileID: 660422031529683118, guid: bb7308244b7b5c94881319fcd92baec4, type: 3}
+      propertyPath: WasActiveDuringEdit
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 660422031529683118, guid: bb7308244b7b5c94881319fcd92baec4, type: 3}
       propertyPath: <SceneId>k__BackingField
       value: 4225629823
@@ -41390,6 +41544,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 467794613}
   - {fileID: 5782004790101702544}
   - {fileID: 405983057465504492}
   - {fileID: 7670477540932399708}
@@ -51248,8 +51403,12 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9095724411216837872, guid: 1bda5f2dd084b65468e61c9df9f9457a, type: 3}
-      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[1].m_Value
-      value: 0.5
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095724411216837872, guid: 1bda5f2dd084b65468e61c9df9f9457a, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Overridden
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -52196,10 +52355,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_MuzzleFlash_SingleBullet
       objectReference: {fileID: 0}
-    - target: {fileID: 889793652693028735, guid: 606f1595ae5c3674da487f7e67b07018, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4961842646528224536, guid: 606f1595ae5c3674da487f7e67b07018, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -52240,9 +52395,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5508103409958603438, guid: 606f1595ae5c3674da487f7e67b07018, type: 3}
-      propertyPath: m_Enabled
-      value: 0
+    - target: {fileID: 5198384144874076005, guid: 606f1595ae5c3674da487f7e67b07018, type: 3}
+      propertyPath: m_InitialEventNameOverriden
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -52375,6 +52530,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8577287486079304790, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8577287486079304790, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
       propertyPath: m_PropertySheet.m_Bool.m_Array.Array.data[0].m_Value
       value: 1
       objectReference: {fileID: 0}
@@ -52391,12 +52550,36 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8577287486079304790, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[7].m_Name
+      value: Velocity_FireParticle
+      objectReference: {fileID: 0}
+    - target: {fileID: 8577287486079304790, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Value
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8577287486079304790, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[6].m_Value
-      value: 1
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8577287486079304790, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[7].m_Value
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8577287486079304790, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[7].m_Overridden
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8577287486079304790, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[3].m_Value.x
+      value: 0.14150941
+      objectReference: {fileID: 0}
+    - target: {fileID: 8577287486079304790, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[3].m_Value.y
+      value: 0.07597332
+      objectReference: {fileID: 0}
+    - target: {fileID: 8577287486079304790, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[3].m_Value.z
+      value: 0.051397283
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -53012,7 +53195,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
       propertyPath: m_PropertySheet.m_Bool.m_Array.Array.data[6].m_Name
@@ -53027,6 +53210,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
+      propertyPath: m_PropertySheet.m_Bool.m_Array.Array.data[3].m_Value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
       propertyPath: m_PropertySheet.m_Bool.m_Array.Array.data[4].m_Value
       value: 0
       objectReference: {fileID: 0}
@@ -53037,6 +53224,10 @@ PrefabInstance:
     - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[0].m_Name
       value: Color_Glow
+      objectReference: {fileID: 0}
+    - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[1].m_Name
+      value: Color_ShockWave 2
       objectReference: {fileID: 0}
     - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
       propertyPath: m_PropertySheet.m_Bool.m_Array.Array.data[0].m_Overridden
@@ -53079,8 +53270,24 @@ PrefabInstance:
       value: 0.9635237
       objectReference: {fileID: 0}
     - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[1].m_Value.x
+      value: 0.29023013
+      objectReference: {fileID: 0}
+    - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[1].m_Value.y
+      value: 1.4213836
+      objectReference: {fileID: 0}
+    - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[1].m_Value.z
+      value: 0.39664364
+      objectReference: {fileID: 0}
+    - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[0].m_Overridden
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3004960814862480169, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[1].m_Overridden
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3454762284957288001, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
       propertyPath: m_Enabled
@@ -53321,6 +53528,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1454341101}
     m_Modifications:
+    - target: {fileID: 294713059508180743, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2720221894124217001, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -53361,9 +53572,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6647529780591145598, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[1].m_Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647529780591145598, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[1].m_Overridden
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647529780591145598, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[1].m_Value.x
+      value: 11.984314
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647529780591145598, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[1].m_Value.y
+      value: 5.840654
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647529780591145598, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[1].m_Value.z
+      value: 1.0039214
+      objectReference: {fileID: 0}
     - target: {fileID: 9168460078428635787, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
       propertyPath: m_Name
       value: VFX_Projectile_SingleBullet
+      objectReference: {fileID: 0}
+    - target: {fileID: 9168460078428635787, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
