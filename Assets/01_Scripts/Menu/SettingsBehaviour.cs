@@ -173,5 +173,7 @@ public class SettingsBehaviour : MonoBehaviour
         SFXVolume();
         UIVolume();
         AnnouncerVolume();
+        AdjustBrightness();
+        AdjustGamma();
     }
 }
