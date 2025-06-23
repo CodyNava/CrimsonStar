@@ -52,36 +52,36 @@ public class NetLaserTurret : NetworkBehaviour
 
         if (!IsHostInitialized)
         {
-            C_SpawnProjectile(position, direction, 0f);
+            C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
         }
-        S_ServerFire(position, direction, TimeManager.Tick);
+        S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
         muzzleFlash.Play();
         shootingSound.Play();
     }
 
-    private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime)
+    private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
         print("Spawning projectile");
         NetPredictedProjectileLaser pp = Instantiate(netLaserTurretData.Projectile, position, Quaternion.identity);
-        pp.Initialize(direction, passedTime, turretModule.NetTeamID);
+        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID);
     }
 
     [ServerRpc]
-    private void S_ServerFire(Vector3 position, Vector3 direction, uint tick)
+    private void S_ServerFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
-        C_SpawnProjectile(position, direction, passedTime);
-        C_ObserversFire(position, direction, tick);
+        C_SpawnProjectile(position, direction, passedTime, senderID);
+        C_ObserversFire(position, direction, tick, senderID);
     }
 
     [ObserversRpc(ExcludeOwner = true)]
-    private void C_ObserversFire(Vector3 position, Vector3 direction, uint tick)
+    private void C_ObserversFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
-        C_SpawnProjectile(position, direction, passedTime);
+        C_SpawnProjectile(position, direction, passedTime, senderID);
         muzzleFlash.Play();
     }
 }

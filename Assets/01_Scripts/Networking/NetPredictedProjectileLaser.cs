@@ -22,13 +22,15 @@ public class NetPredictedProjectileLaser : MonoBehaviour
 
     private HashSet<NetGameplayModule> hitModules = new HashSet<NetGameplayModule>();
     
+    private ulong _attackerID;
     private bool _fullyGrown = false;
     private float _lifetimeTimer = 0f;
     
-    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID)
+    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID)
     {
         _direction = direction.normalized;
         _netTeamID = netTeamID;
+        _attackerID = attackerID;
 
         _initialScale = transform.localScale;
         transform.rotation = Quaternion.LookRotation(Vector3.forward, _direction);
@@ -81,7 +83,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(projectileDamage);
+            module.S_InflictDamage(projectileDamage, _attackerID);
         }
         
         if (InstanceFinder.IsClientStarted)
