@@ -1,24 +1,23 @@
 ﻿using FishNet.Broadcast;
-using Steamworks;
 
 public static class NetLobbyBroadcasts
 {
     public struct PlayerIdentified : IBroadcast
     {
-        public CSteamID SteamID;
+        public ulong PlayerID;
         public string DisplayName;
         public bool IsHost;
     }
 
     public struct PlayerListUpdate : IBroadcast
     {
-        public NetPlayerData[] Players;
+        public NetLobbyData[] Players;
         public NetTeamModeID TeamMode;
     }
 
     public struct PlayerTeamChangeRequested : IBroadcast
     {
-        public CSteamID Player;
+        public ulong PlayerID;
         public NetTeamID NewTeamID;
     }
 

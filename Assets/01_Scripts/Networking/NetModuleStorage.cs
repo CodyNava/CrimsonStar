@@ -19,11 +19,10 @@ public class NetModuleStorage : NetworkBehaviour
     };
 
     private readonly SyncDictionary<HexCoordinate, ModulePlacementData> _moduleMap = new();
-    
-    public SyncDictionary<HexCoordinate, ModulePlacementData> ModuleMap => _moduleMap;
 
-    private void Awake()
+    public void Init()
     {
+        _moduleMap.Clear();
         var bridgeData = new ModulePlacementData
         {
             RootCoordinate = HexCoordinate.Zero,
@@ -36,6 +35,38 @@ public class NetModuleStorage : NetworkBehaviour
         }
     }
 
+    public void C_AddModule(HexCoordinate coord, NetModuleID id, int rotation)
+    {
+        if (IsOwner)
+        {
+            S_AddModule(coord, id, rotation);
+        }
+    }
+    
+    public void C_RemoveModule(HexCoordinate coord)
+    {
+        if (IsOwner)
+        {
+            S_RemoveModule(coord);
+        }
+    }
+    
+    public bool SC_IsCoordinateOccupied(HexCoordinate coord)
+    {
+        return _moduleMap.ContainsKey(coord);
+    }
+
+    public bool SC_IsNeighboringModule(HexCoordinate coord)
+    {
+        // The return line is the equivalent of the following code
+        // foreach (HexCoordinate neighbor in coord.Neighbors()) 
+        // {
+        //      if (IsCoordinateOccupied(neighbor)) return true;
+        // }
+        // return false;
+        return coord.Neighbors().Any(SC_IsCoordinateOccupied);
+    }
+    
     public IEnumerable<ModulePlacementData> GetUniqueModules()
     {
         HashSet<HexCoordinate> spawnedRoots = new();
@@ -46,17 +77,9 @@ public class NetModuleStorage : NetworkBehaviour
             yield return placementData;
         }
     }
-
-    public void C_AddModule(HexCoordinate coord, NetModuleID id, int rotation)
-    {
-        if (IsOwner)
-        {
-            S_AddModuleRPC(coord, id, rotation);
-        }
-    }
     
     [ServerRpc]
-    public void S_AddModuleRPC(HexCoordinate coord, NetModuleID id, int rotation)
+    private void S_AddModule(HexCoordinate coord, NetModuleID id, int rotation)
     {
         ModulePlacementData placementData = new()
         {
@@ -71,6 +94,21 @@ public class NetModuleStorage : NetworkBehaviour
         foreach (var rotatedLocalCoord in GetRotatedCoordinates(localHexCoordinates, rotation))
         {
            S_AddModuleReference(coord + rotatedLocalCoord, placementData);
+        }
+    }
+    
+    [ServerRpc]
+    private void S_RemoveModule(HexCoordinate coord)
+    {
+        if (!_moduleMap.TryGetValue(coord, out ModulePlacementData placementData))
+        {
+            Debug.LogError($"Tried remove module at Coordinate ({coord.Q}, {coord.R}, {coord.S}) which was not found.");
+            return;
+        }
+        var localHexCoordinates = placementData.ModuleID.GetModuleData().GetLocalHexCoordinates();
+        foreach (var rotatedLocalCoord in GetRotatedCoordinates(localHexCoordinates, placementData.Rotation))
+        {
+            S_RemoveModuleReference(placementData.RootCoordinate + rotatedLocalCoord);
         }
     }
 
@@ -92,64 +130,14 @@ public class NetModuleStorage : NetworkBehaviour
         _moduleMap[coord] = data;
     }
 
-    public void C_RemoveModule(HexCoordinate coord)
-    {
-        if (IsOwner)
-        {
-            S_RemoveModuleRPC(coord);
-        }
-    }
-
-    [ServerRpc]
-    public void S_RemoveModuleRPC(HexCoordinate coord)
-    {
-        if (!_moduleMap.TryGetValue(coord, out ModulePlacementData placementData))
-        {
-            Debug.LogError($"Tried remove module at Coordinate ({coord.Q}, {coord.R}, {coord.S}) which was not found.");
-            return;
-        }
-        var localHexCoordinates = placementData.ModuleID.GetModuleData().GetLocalHexCoordinates();
-        foreach (var rotatedLocalCoord in GetRotatedCoordinates(localHexCoordinates, placementData.Rotation))
-        {
-            S_RemoveModuleReference(placementData.RootCoordinate + rotatedLocalCoord);
-        }
-    }
-
     private void S_RemoveModuleReference(HexCoordinate coord)
     {
         _moduleMap.Remove(coord);
     }
-
-    public bool SC_IsCoordinateOccupied(HexCoordinate coord)
-    {
-        return _moduleMap.ContainsKey(coord);
-    }
-
-    public bool SC_IsNeighboringModule(HexCoordinate coord)
-    {
-        // The return line is the equivalent of the following code
-        // foreach (HexCoordinate neighbor in coord.Neighbors()) 
-        // {
-        //      if (IsCoordinateOccupied(neighbor)) return true;
-        // }
-        // return false;
-        return coord.Neighbors().Any(SC_IsCoordinateOccupied);
-    }
-
-    // (HexCoordinate coord, NetModuleID) is a "Value Tuple" which lets one return multiple variables from a function
-    public IEnumerable<(HexCoordinate coord, NetModuleID id)> GetNeighboringModules(HexCoordinate coord)
-    {
-        foreach (HexCoordinate neighbor in coord.Neighbors())
-        {
-            if (_moduleMap.TryGetValue(neighbor, out ModulePlacementData placementData))
-            {
-                yield return (coord, placementData.ModuleID);
-            }
-        }
-    }
-
+    
     private void OnDrawGizmos()
     {
+        if (!Application.isPlaying || !IsOwner) return;
         foreach (HexCoordinate coord in _moduleMap.Keys)
         {
             coord.DrawGizmos(Color.yellow, 2f, 0.9f);

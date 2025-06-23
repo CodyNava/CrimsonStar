@@ -13,10 +13,10 @@ public class GameSettingsHost : MonoBehaviour
 
     public void Initialize()
     {
-        gameModeDropdown.gameObject.SetActive(SteamPlayer.IsLobbyHost);
-        gameModeText.gameObject.SetActive(!SteamPlayer.IsLobbyHost);
-        teamModeDropdown.gameObject.SetActive(SteamPlayer.IsLobbyHost);
-        teamModeText.gameObject.SetActive(!SteamPlayer.IsLobbyHost);
+        gameModeDropdown.gameObject.SetActive(PlayerData.IsLobbyHost);
+        gameModeText.gameObject.SetActive(!PlayerData.IsLobbyHost);
+        teamModeDropdown.gameObject.SetActive(PlayerData.IsLobbyHost);
+        teamModeText.gameObject.SetActive(!PlayerData.IsLobbyHost);
         
         UpdateGameSettingsDisplay(new NetLobbyBroadcasts.SetGameMode
         {

@@ -9,25 +9,25 @@ public class PlayerPlateDisplay : MonoBehaviour
     [SerializeField] private TMP_Text playerName;
     [SerializeField] private TMP_Dropdown teamDropDown;
     [SerializeField] private TMP_Text teamLabel;
-    private NetPlayerData _playerData;
+    private NetLobbyData _lobbyData;
 
-    public void UpdateDisplay(NetPlayerData playerData, NetTeamModeID teamMode)
+    public void UpdateDisplay(NetLobbyData lobbyData, NetTeamModeID teamMode)
     {
-        _playerData = playerData;
-        readyImage.gameObject.SetActive(playerData.isReady);
-        playerName.text = playerData.playerDisplayName;
-        bool canEdit = playerData.playerSteamID == SteamPlayer.SteamID || SteamPlayer.IsLobbyHost;
+        _lobbyData = lobbyData;
+        readyImage.gameObject.SetActive(lobbyData.isReady);
+        playerName.text = lobbyData.playerDisplayName;
+        bool canEdit = lobbyData.playerID == PlayerData.PlayerID || PlayerData.IsLobbyHost;
         if (canEdit)
         {
             teamDropDown.gameObject.SetActive(teamMode == NetTeamModeID.TeamMode);
-            teamDropDown.SetValueWithoutNotify((int)playerData.playerTeamID);
+            teamDropDown.SetValueWithoutNotify((int)lobbyData.playerTeamID);
             teamLabel.gameObject.SetActive(false);
         }
         else
         {
             teamDropDown.gameObject.SetActive(false);
             teamLabel.gameObject.SetActive(teamMode == NetTeamModeID.TeamMode);
-            teamLabel.text = playerData.playerTeamID.ToString();
+            teamLabel.text = lobbyData.playerTeamID.ToString();
         }
     }
 
@@ -36,7 +36,7 @@ public class PlayerPlateDisplay : MonoBehaviour
         NetTeamID teamID = (NetTeamID)teamIDint;
         InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.PlayerTeamChangeRequested
         {
-            NewTeamID = teamID, Player = _playerData.playerSteamID
+            NewTeamID = teamID, PlayerID = _lobbyData.playerID
         });
     }
 

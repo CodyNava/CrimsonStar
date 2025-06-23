@@ -13,4 +13,7 @@ public class GameModeConfig : ScriptableObject
 {
     [SerializedDictionary("Game Mode", "Mode Description")] [field: SerializeField]
     public SerializedDictionary<NetGameModeID, GameModeDescription> Descriptions { get; private set; }
+
+    public int GetBaseCurrency(NetGameModeID gameModeID) => Descriptions[gameModeID].BaseCurrency;
+    public int GetCurrencyAddedPerRound(NetGameModeID gameModeID) => Descriptions[gameModeID].CurrencyAddedPerRound;
 }
