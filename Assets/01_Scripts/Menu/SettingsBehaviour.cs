@@ -172,6 +172,7 @@ public class SettingsBehaviour : MonoBehaviour
         MusicVolume();
         SFXVolume();
         UIVolume();
+        SetVsync();
         AnnouncerVolume();
         AdjustBrightness();
         AdjustGamma();
