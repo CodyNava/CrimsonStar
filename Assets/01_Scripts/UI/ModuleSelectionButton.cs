@@ -17,7 +17,7 @@ public class ModuleSelectionButton : MonoBehaviour
 
     public void Configure(NetModuleData data)
     {
-        currencyLabel.text = $"{data.Costs[NetCurrencyType.Gold]}";
+        currencyLabel.text = $"{data.Cost}";
         moduleName.text = $"{data.DisplayName}";
         sizeLabel.text = $"{data.HexagonSize}";
         moduleIcon.sprite = data.Icon;

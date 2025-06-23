@@ -1,20 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using FishNet;
 using FishNet.Connection;
-using FishNet.Managing.Scened;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
+public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
 {
-    [SerializeField] private NetGameplayConductor netGameplayConductor;
-    [SerializeField] private NetShipEditorData shipEditorDataPrefab;
-
     [SerializeField] private int minimumResourceCount;
     [SerializeField] private float shipEditorTimerDuration;
+
+    public override string ConductedSceneName => "NetShipEditor";
     
     private Dictionary<NetworkConnection, bool> _playersReady = new();
     private readonly SyncTimer _editorTimer = new();
@@ -23,55 +23,29 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
     
     public float TimeRemaining => _editorTimer.Remaining;
 
-    public Dictionary<NetworkConnection, NetShipEditorData> PlayerShipEditors { get; } = new();
 
-    public override void OnStartNetwork()
+    protected override void OnNetworkStarted()
     {
-        InstanceFinder.RegisterInstance(this);
-        
-        if (IsServerInitialized)
+        StartCoroutine(LoadDependencies());
+    }
+
+    private IEnumerator LoadDependencies()
+    {
+        if (!InstanceFinder.TryGetInstance(out _lobbyConductor))
         {
-            _lobbyConductor = InstanceFinder.GetInstance<NetLobbyConductor>();
-            SceneManager.OnClientPresenceChangeStart += S_OnSceneChange;
+            yield return null;
         }
     }
 
-    public override void OnStopNetwork()
+    public override void ProcessClientAddition(NetworkConnection connection, Scene scene)
     {
-        InstanceFinder.UnregisterInstance<NetShipEditorConductor>();
-        
-        if (IsServerInitialized)
+        if (_playersReady.Count == 0)
         {
-            SceneManager.OnClientPresenceChangeStart -= S_OnSceneChange;
+            _editorTimer.StartTimer(shipEditorTimerDuration);
+            _editorTimer.OnChange += OnTimerChange;
         }
-    }
-
-    private void S_OnSceneChange(ClientPresenceChangeEventArgs args)
-    {
-        int resourceCount = Mathf.Max(_lobbyConductor.S_GetInitialResourceCount(), minimumResourceCount);
-        
-        if (args.Scene.name == "NetShipEditor" && args.Added)
-        {
-            if (PlayerShipEditors.ContainsKey(args.Connection) == false)
-            {
-                var shipEditor = Instantiate(shipEditorDataPrefab);
-                shipEditor.S_SetResourceCount(resourceCount);
-                ServerManager.Spawn(shipEditor.gameObject, args.Connection, args.Scene);
-                PlayerShipEditors.Add(args.Connection, shipEditor);
-            }
-            else
-            {
-                PlayerShipEditors[args.Connection].Relink();
-            }
-
-            if (_playersReady.Count == 0)
-            {
-                _editorTimer.StartTimer(shipEditorTimerDuration);
-                _editorTimer.OnChange += OnTimerChange;
-            }
             
-            _playersReady.Add(args.Connection, false);
-        }
+        _playersReady.Add(connection, false);
     }
 
     private void Update()
@@ -83,7 +57,7 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
     {
         if (asServer && op == SyncTimerOperation.Finished)
         {
-            MoveToGameplayScene();
+            AdvanceToGameplayScene();
             _editorTimer.OnChange -= OnTimerChange;
         }
     }
@@ -95,25 +69,13 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
 
         if (S_AllPlayersReady())
         {
-            MoveToGameplayScene();
+            AdvanceToGameplayScene();
         }
     }
 
-    private void MoveToGameplayScene()
+    private void AdvanceToGameplayScene()
     {
-        SceneLoadData sceneData = new("NetGameplayScene");
-        sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
-        sceneData.MovedNetworkObjects = PlayerShipEditors.Values.Select(data => data.NetworkObject).ToArray();
-        SceneUnloadData unloadData = new("NetShipEditor");
-        SceneManager.LoadGlobalScenes(sceneData);
-        SceneManager.UnloadGlobalScenes(unloadData);
-
-        if (!InstanceFinder.GetInstance<NetGameplayConductor>())
-        {
-            GameObject gameConductor = Instantiate(netGameplayConductor).gameObject;
-            ServerManager.Spawn(gameConductor);
-        }
-        
+        InstanceFinder.GetInstance<NetGameplayConductor>().MoveToScene(this, _lobbyConductor.Players);
         _playersReady.Clear();
     }
 
@@ -124,10 +86,11 @@ public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
 
     public void S_SetupNewEditPhase()
     {
-        foreach (var shipEditor in PlayerShipEditors.Values)
+        int resourceAdded = _lobbyConductor.S_GetResourcePerRound();
+        
+        foreach (NetMatchPlayer matchPlayer in _lobbyConductor.PlayersByID.Values)
         {
-            shipEditor.ResourceStorage.S_AddResourceCount(NetCurrencyType.Gold,
-                _lobbyConductor.S_GetResourcePerRound());
+            matchPlayer.ResourceCount.Value += resourceAdded;
         }
     }
 }

@@ -1,12 +1,15 @@
 using FishNet;
 using FishNet.Managing;
+using FishNet.Managing.Transporting;
 using FishNet.Transporting;
+using FishNet.Transporting.Multipass;
+using FishNet.Transporting.Tugboat;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Fishy = FishySteamworks.FishySteamworks;
 
-public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
+public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
 {
     [Header("Dependencies")]
     [SerializeField] private NetworkManager networkManager;
@@ -26,12 +29,12 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
     
     private void OnEnable()
     {
-        steamTransport.OnClientConnectionState += OnConnectionState;
+        InstanceFinder.TransportManager.Transport.OnClientConnectionState += OnConnectionState;
     }
 
     private void OnDisable()
     {
-        steamTransport.OnClientConnectionState -= OnConnectionState;
+        InstanceFinder.TransportManager.Transport.OnClientConnectionState -= OnConnectionState;
     }
 
     private void OnConnectionState(ClientConnectionStateArgs args)
@@ -40,9 +43,9 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
         {
             InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.PlayerIdentified
             {
-                SteamID = SteamPlayer.SteamID,
-                DisplayName = SteamPlayer.DisplayName,
-                IsHost = SteamPlayer.IsLobbyHost
+                PlayerID = PlayerData.PlayerID,
+                DisplayName = PlayerData.DisplayName,
+                IsHost = PlayerData.IsLobbyHost
             });
         }
     }
@@ -53,8 +56,8 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
         SteamLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnSteamLobbyJoinRequested);
         SteamLobbyEnter = Callback<LobbyEnter_t>.Create(OnSteamLobbyEnter);
         
-        SteamPlayer.SetUserID(SteamUser.GetSteamID());
-        SteamPlayer.SetDisplayName(SteamFriends.GetPersonaName());
+        PlayerData.SetPlayerIDFromSteam(SteamUser.GetSteamID());
+        PlayerData.SetDisplayName(SteamFriends.GetPersonaName());
     }
 
     // Code-path for initializing the server (host only)
@@ -63,15 +66,15 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
         if (data.m_eResult != EResult.k_EResultOK)
             return;
 
-        string host = SteamPlayer.SteamID.ToString();
+        string host = PlayerData.PlayerID.ToString();
         
-        SteamPlayer.SetLobbyID(data.m_ulSteamIDLobby);
-        SteamMatchmaking.SetLobbyData(SteamPlayer.CurrentLobbyID, SteamLobby.HostKey, host);
+        PlayerData.SetLobbyID(data.m_ulSteamIDLobby);
+        SteamMatchmaking.SetLobbyData(PlayerData.CurrentLobbyID, SteamLobby.HostKey, host);
         steamTransport.SetClientAddress(host);
         steamTransport.StartConnection(true); // This starts only server on host
         var lobbyConductorGo = Instantiate(netLobbyConductor).gameObject;
         InstanceFinder.ServerManager.Spawn(lobbyConductorGo);
-        SteamPlayer.SetLobbyHost(true);
+        PlayerData.SetLobbyHost(true);
     }
 
     private void OnSteamLobbyJoinRequested(GameLobbyJoinRequested_t data)
@@ -82,9 +85,11 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
     // Code-path for initializing the client (host and other clients)
     private void OnSteamLobbyEnter(LobbyEnter_t data)
     {
-        SteamPlayer.SetLobbyID(data.m_ulSteamIDLobby);
+        PlayerData.SetLobbyID(data.m_ulSteamIDLobby);
+        Multipass mp = InstanceFinder.TransportManager.GetTransport<Multipass>();
+        mp.SetClientTransport<Fishy>();
 
-        string host = SteamMatchmaking.GetLobbyData(SteamPlayer.CurrentLobbyID, SteamLobby.HostKey);
+        string host = SteamMatchmaking.GetLobbyData(PlayerData.CurrentLobbyID, SteamLobby.HostKey);
         steamTransport.SetClientAddress(host);
         steamTransport.StartConnection(false);
         SceneManager.LoadScene("NetLobby");
@@ -97,11 +102,35 @@ public class NetSteamBootstrapper : SceneSingleton<NetSteamBootstrapper>
 
     public static void LeaveLobby()
     {
-        SteamMatchmaking.LeaveLobby(SteamPlayer.CurrentLobbyID);
-        SteamPlayer.SetLobbyID(0);
+        SteamMatchmaking.LeaveLobby(PlayerData.CurrentLobbyID);
+        PlayerData.SetLobbyID(0);
 
         Instance.steamTransport.StopConnection(false);
         if (Instance.networkManager.IsServerStarted)
             Instance.steamTransport.StopConnection(true);
+    }
+
+    public static void CreateLobbyLocal()
+    {
+        PlayerData.SetPlayerIDFromRandom();
+        PlayerData.SetLobbyHost(true);
+        InstanceFinder.TransportManager.Transport.StartConnection(true);
+        var lobbyConductorGo = Instantiate(Instance.netLobbyConductor).gameObject;
+        InstanceFinder.ServerManager.Spawn(lobbyConductorGo);
+        JoinLobbyLocal();
+    }
+
+    public static void JoinLobbyLocal()
+    {
+        if (PlayerData.PlayerID == 0)
+        {
+            PlayerData.SetPlayerIDFromRandom();
+            PlayerData.SetLobbyHost(false);
+        }
+        Multipass mp = InstanceFinder.TransportManager.GetTransport<Multipass>();
+        mp.SetClientTransport<Tugboat>();
+        PlayerData.SetDisplayName($"{PlayerData.DisplayName}#{PlayerData.PlayerID % 10000}");
+        InstanceFinder.TransportManager.Transport.StartConnection(false);
+        SceneManager.LoadScene("NetLobby");
     }
 }

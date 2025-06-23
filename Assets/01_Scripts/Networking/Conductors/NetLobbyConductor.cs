@@ -2,54 +2,60 @@
 using System.Linq;
 using FishNet;
 using FishNet.Connection;
-using FishNet.Managing.Scened;
+using FishNet.Object;
 using FishNet.Transporting;
 using Steamworks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 [System.Serializable]
-public class NetPlayerData
+public class NetLobbyData
 {
-    public CSteamID playerSteamID;
+    public ulong playerID;
     public string playerDisplayName;
     public NetTeamID playerTeamID;
     public bool isReady;
 }
 
-public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
+public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
 {
+    [SerializeField] private NetMatchPlayer matchPrefab;
     [SerializeField] private NetShipEditorConductor netShipEditorConductor;
+    [SerializeField] private NetGameplayConductor netGameplayConductor;
 
-    public Dictionary<NetworkConnection, NetPlayerData> ConnectionPlayerMap { get; } = new();
+    public NetworkObject[] Players { get; private set; }
+    public Dictionary<ulong, NetMatchPlayer> PlayersByID { get; private set; }
+    public Dictionary<NetworkConnection, NetMatchPlayer> PlayersByConnection { get; private set; }
+    
+    public Dictionary<NetworkConnection, NetLobbyData> ConnectionPlayerMap { get; } = new();
 
     private NetworkConnection _hostConnection;
     private NetGameModeID _selectedGameMode;
     private NetTeamModeID _selectedTeamMode;
 
-    public override void OnStartNetwork()
+    public override string ConductedSceneName => "NetLobby";
+
+    protected override void OnNetworkStarted()
     {
-        InstanceFinder.RegisterInstance(this);
+        var shipEditorConductor = Instantiate(netShipEditorConductor);
+        var gameplayConductor = Instantiate(netGameplayConductor);
+        ServerManager.Spawn(shipEditorConductor.gameObject);
+        ServerManager.Spawn(gameplayConductor.gameObject);
         
-        if (IsServerInitialized)
-        {
-            SceneManager.OnClientPresenceChangeStart += S_OnSceneChange;
-            ServerManager.OnRemoteConnectionState += S_OnConnectionStateChange;
-            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified, false);
-            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerTeamChangeRequested>(S_OnPlayerTeamChangeRequested, false);
-            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(S_OnGameModeChangeRequested, false);
-            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(S_OnTeamModeChangeRequested, false);
-            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged, false);
-            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested, false);
-        }
+        ServerManager.OnRemoteConnectionState += S_OnConnectionStateChange;
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified, false);
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerTeamChangeRequested>(S_OnPlayerTeamChangeRequested, false);
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(S_OnGameModeChangeRequested, false);
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(S_OnTeamModeChangeRequested, false);
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged, false);
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested, false);
     }
 
-    private void S_OnSceneChange(ClientPresenceChangeEventArgs args)
+    public override void ProcessClientAddition(NetworkConnection connection, Scene scene)
     {
-        if (args.Added)
-        {
-            S_SendLobbySettingsUpdate();
-            S_SendPlayerDataUpdate();
-        }
+        S_SendLobbySettingsUpdate();
+        S_SendPlayerDataUpdate();
     }
 
     private void S_OnTeamModeChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetTeamMode msg, Channel channel)
@@ -105,7 +111,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     {
         foreach (var (connection, data) in ConnectionPlayerMap)
         {
-            if (data.playerSteamID != msg.Player) continue;
+            if (data.playerID != msg.PlayerID) continue;
             if (conn != connection && conn != _hostConnection) return;
             data.playerTeamID = msg.NewTeamID;
             S_SendPlayerDataUpdate();
@@ -114,9 +120,9 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
 
     private void S_OnPlayerIdentified(NetworkConnection conn, NetLobbyBroadcasts.PlayerIdentified msg, Channel channel)
     {
-        ConnectionPlayerMap[conn] = new NetPlayerData
+        ConnectionPlayerMap[conn] = new NetLobbyData
         {
-            playerSteamID = msg.SteamID,
+            playerID = msg.PlayerID,
             playerDisplayName = msg.DisplayName,
             playerTeamID = NetTeamID.Team1
         };
@@ -138,7 +144,7 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     {
         if (args.ConnectionState == RemoteConnectionState.Started)
         {
-            ConnectionPlayerMap[connection] = new NetPlayerData
+            ConnectionPlayerMap[connection] = new NetLobbyData
             {
                 playerDisplayName = "Connecting..."
             };
@@ -172,40 +178,50 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
     private void S_OnGameStartRequested(NetworkConnection connection, NetLobbyBroadcasts.GameStartRequested msg, Channel channel)
     {
         if (!ConnectionPlayerMap.Values.All(player => player.isReady)) return;
-        
-        SceneLoadData sceneData = new("NetShipEditor");
-        sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
-        SceneUnloadData unloadData = new("NetLobby");
-        SceneManager.LoadGlobalScenes(sceneData);
-        SceneManager.UnloadGlobalScenes(unloadData);
-
-        if (!InstanceFinder.HasInstance<NetGameplayConductor>())
-        {
-            GameObject shipEditor = Instantiate(netShipEditorConductor).gameObject;
-            ServerManager.Spawn(shipEditor);
-        }
+        S_SetUpMatchPlayers();
+        InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(this, Players);
     }
 
-    public override void OnStopNetwork()
+    private void S_SetUpMatchPlayers()
     {
-        InstanceFinder.UnregisterInstance<NetLobbyConductor>();
-        
-        if (IsServerInitialized)
+        if (Players != null)
         {
-            SceneManager.OnClientPresenceChangeStart -= S_OnSceneChange;
-            ServerManager.OnRemoteConnectionState -= S_OnConnectionStateChange;
-            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified);
-            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested);
-            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerTeamChangeRequested>(S_OnPlayerTeamChangeRequested);
-            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetGameMode>(S_OnGameModeChangeRequested);
-            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(S_OnTeamModeChangeRequested);
-            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged);
+            foreach (NetworkObject player in Players)
+            {
+                if (player != null)
+                {
+                    ServerManager.Despawn(player.gameObject);
+                }
+            }
+        }
+        
+        Players = new NetworkObject[ConnectionPlayerMap.Count];
+        PlayersByID = new Dictionary<ulong, NetMatchPlayer>();
+        PlayersByConnection = new Dictionary<NetworkConnection, NetMatchPlayer>();
+        int count = 0;
+        foreach (var (conn, lobbyData) in ConnectionPlayerMap)
+        {
+            var player = Instantiate(matchPrefab);
+            ServerManager.Spawn(player.gameObject, conn);
+            player.S_Init(lobbyData, _selectedGameMode);
+            Players[count++] = player.NetworkObject;
+            PlayersByID.Add(player.PlayerID.Value, player);
+            PlayersByConnection.Add(conn, player);
         }
     }
 
-    public NetPlayerData S_GetPlayerData(NetworkConnection connection) => ConnectionPlayerMap[connection];
+    protected override void OnNetworkStopped()
+    {
+        ServerManager.OnRemoteConnectionState -= S_OnConnectionStateChange;
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified);
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested);
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerTeamChangeRequested>(S_OnPlayerTeamChangeRequested);
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetGameMode>(S_OnGameModeChangeRequested);
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(S_OnTeamModeChangeRequested);
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged);
+    }
     
     public int S_GetRoundCount() => 3;
-    public int S_GetResourcePerRound() => DataProvider.Instance.GameModeConfig.Descriptions[_selectedGameMode].CurrencyAddedPerRound;
-    public int S_GetInitialResourceCount() => DataProvider.Instance.GameModeConfig.Descriptions[_selectedGameMode].BaseCurrency;
+    public int S_GetResourcePerRound() => DataProvider.Instance.GameModeConfig.GetCurrencyAddedPerRound(_selectedGameMode);
+    public int S_GetInitialResourceCount() => DataProvider.Instance.GameModeConfig.GetBaseCurrency(_selectedGameMode);
 }

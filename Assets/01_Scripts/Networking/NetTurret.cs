@@ -73,21 +73,21 @@ public class NetTurret : NetworkBehaviour
 
         if (!IsHostInitialized)
         {
-            C_SpawnProjectile(position, direction, 0f, SteamPlayer.SteamID);
+            C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
         }
-        S_ServerFire(position, direction, TimeManager.Tick, SteamPlayer.SteamID);
+        S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
         _nextMuzzleFlash.Play();
         FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
 
-    private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, CSteamID senderID)
+    private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
         NetPredictedProjectile pp = Instantiate(netTurretData.Projectile, position, Quaternion.identity);
         pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID);
     }
 
     [ServerRpc]
-    private void S_ServerFire(Vector3 position, Vector3 direction, uint tick, CSteamID senderID)
+    private void S_ServerFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
@@ -97,7 +97,7 @@ public class NetTurret : NetworkBehaviour
     }
 
     [ObserversRpc(ExcludeOwner = true)]
-    private void C_ObserversFire(Vector3 position, Vector3 direction, uint tick, CSteamID senderID)
+    private void C_ObserversFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
