@@ -14,7 +14,11 @@ public struct MoveReplicateData : IReplicateData
     }
 
     private uint _tick;
-    public void Dispose() { }
+
+    public void Dispose()
+    {
+    }
+
     public uint GetTick() => _tick;
     public void SetTick(uint tick) => _tick = tick;
 }
@@ -29,7 +33,11 @@ public struct MoveReconcileData : IReconcileData
     }
 
     private uint _tick;
-    public void Dispose() { }
+
+    public void Dispose()
+    {
+    }
+
     public uint GetTick() => _tick;
     public void SetTick(uint tick) => _tick = tick;
 }
@@ -41,7 +49,7 @@ public class NetMovementController : NetworkBehaviour
     public PredictionRigidbody2D PredictionRB;
 
     private readonly SyncVar<float> _inputThrust = new();
-    
+
     public float InputThrust => _inputThrust.Value;
 
     private Vector2 _input;
@@ -81,6 +89,7 @@ public class NetMovementController : NetworkBehaviour
         {
             S_SetInputThrust(_input.y);
         }
+
         RunInputs(CreateReplicateData());
     }
 
@@ -104,8 +113,8 @@ public class NetMovementController : NetworkBehaviour
         if (Mathf.Abs(inputSteer) > 0.2f)
         {
             angularVelocity += inputSteer * bridge.ComputeRotationSpeed() * deltaTime;
-            angularVelocity = Mathf.Clamp(angularVelocity, -bridge.GetMaxAngularVelocity(), bridge.GetMaxAngularVelocity());
-
+            angularVelocity = Mathf.Clamp(angularVelocity, -bridge.GetMaxAngularVelocity(),
+                bridge.GetMaxAngularVelocity());
         }
         else
         {
@@ -129,6 +138,7 @@ public class NetMovementController : NetworkBehaviour
             {
                 dampingX *= 2f;
             }
+
             linearVelocity.x *= 1f - dampingX;
             linearVelocity.y *= 1f - dampingY;
         }
@@ -171,6 +181,10 @@ public class NetMovementController : NetworkBehaviour
         if (IsOwner)
         {
             _input = _inputAsset.Player.Move.ReadValue<Vector2>();
+            if (_input.y < 0)
+            {
+                _input *= new Vector2(1f, 0.5f);
+            }
         }
     }
 
