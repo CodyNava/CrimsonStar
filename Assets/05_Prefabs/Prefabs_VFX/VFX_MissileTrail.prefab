@@ -31,7 +31,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3435637078265904475}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -52,16 +52,43 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 0.8
+        m_Name: Lifetime_Smoke
+        m_Overridden: 1
+      - m_Value: 0.55
+        m_Name: Lifetime_SmokeEmission
+        m_Overridden: 1
+      - m_Value: 0.9
+        m_Name: Size_SmokeEmission
+        m_Overridden: 1
+      - m_Value: 1.2
+        m_Name: Size_Smoke
+        m_Overridden: 1
+      - m_Value: 40
+        m_Name: SpawnRate_Smoke
+        m_Overridden: 1
+      - m_Value: 2
+        m_Name: SpawnRate_FireParticle
+        m_Overridden: 1
+      - m_Value: 0.45
+        m_Name: Size_FireParticle
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: 0, y: 0, z: 0}
+      - m_Value: {x: -1.53, y: 1.33, z: 0}
         m_Name: GetMissilePosition_position
         m_Overridden: 1
     m_Vector4f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 4.5254836, y: 1.1372942, z: 0.47387248, w: 0}
+        m_Name: Color_SmokeEmission
+        m_Overridden: 1
+      - m_Value: {x: 0.6675088, y: 0.16775088, z: 0.069896184, w: 0}
+        m_Name: Color_FireParticle
+        m_Overridden: 1
     m_Uint:
       m_Array: []
     m_Int:
@@ -75,7 +102,10 @@ VisualEffect:
     m_NamedObject:
       m_Array: []
     m_Bool:
-      m_Array: []
+      m_Array:
+      - m_Value: 0
+        m_Name: Toggle_FireParticle
+        m_Overridden: 1
 --- !u!73398921 &7637771571459343611
 VFXRenderer:
   serializedVersion: 1
@@ -150,7 +180,7 @@ MonoBehaviour:
   Space: 1
   m_Property:
     m_Name: GetMissilePosition_position
-  Target: {fileID: 3435637078265904475}
+  Target: {fileID: 0}
 --- !u!1 &6133917442752206655
 GameObject:
   m_ObjectHideFlags: 0
@@ -161,7 +191,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3435637078265904475}
   m_Layer: 0
-  m_Name: VFX_RocketTrail
+  m_Name: VFX_MissileTrail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
