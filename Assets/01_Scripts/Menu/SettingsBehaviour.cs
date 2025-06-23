@@ -157,7 +157,7 @@ public class SettingsBehaviour : MonoBehaviour
         PlayerPrefs.SetInt(vSync, QualitySettings.vSyncCount);
     }
 
-    private void Load()
+    public void Load()
     {
         masterSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(masterVolume, 0.5f));
         musicSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(musicVolume, 0.5f));
@@ -173,5 +173,7 @@ public class SettingsBehaviour : MonoBehaviour
         SFXVolume();
         UIVolume();
         AnnouncerVolume();
+        AdjustBrightness();
+        AdjustGamma();
     }
 }
