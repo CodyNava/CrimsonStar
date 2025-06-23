@@ -96,6 +96,10 @@ public class NetBridge : NetworkBehaviour
             if (module.ModuleID == NetModuleID.Bridge) continue;
             looseModules.Add(module);
         }
+        
+        // If the Bridge isn't present anymore, everything else is a loose module
+        if (!_modules.ContainsKey(HexCoordinate.Zero)) return looseModules;
+        
 
         HashSet<HexCoordinate> handledCoordinates = new HashSet<HexCoordinate>();
         Queue<HexCoordinate> checkingCoordinates = new Queue<HexCoordinate>();
