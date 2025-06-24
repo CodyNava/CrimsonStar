@@ -1904,7 +1904,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5063642056845323971, guid: ee775c8246017df4887591c617f7f851, type: 3}
       propertyPath: m_Navigation.m_Mode
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5063642056845323971, guid: ee775c8246017df4887591c617f7f851, type: 3}
       propertyPath: m_Colors.m_NormalColor.b
@@ -1931,6 +1931,10 @@ PrefabInstance:
       value: 0.14778392
       objectReference: {fileID: 0}
     - target: {fileID: 5063642056845323971, guid: ee775c8246017df4887591c617f7f851, type: 3}
+      propertyPath: m_Navigation.m_SelectOnUp
+      value: 
+      objectReference: {fileID: 1525319522}
+    - target: {fileID: 5063642056845323971, guid: ee775c8246017df4887591c617f7f851, type: 3}
       propertyPath: m_Colors.m_SelectedColor.b
       value: 0.6509434
       objectReference: {fileID: 0}
@@ -1942,6 +1946,10 @@ PrefabInstance:
       propertyPath: m_Colors.m_SelectedColor.r
       value: 0.3531061
       objectReference: {fileID: 0}
+    - target: {fileID: 5063642056845323971, guid: ee775c8246017df4887591c617f7f851, type: 3}
+      propertyPath: m_Navigation.m_SelectOnDown
+      value: 
+      objectReference: {fileID: 1026322323}
     - target: {fileID: 5063642056845323971, guid: ee775c8246017df4887591c617f7f851, type: 3}
       propertyPath: m_Colors.m_HighlightedColor.b
       value: 0.6509804
@@ -2076,6 +2084,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5700412180257560669, guid: ee775c8246017df4887591c617f7f851, type: 3}
   m_PrefabInstance: {fileID: 882102869}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &882102871 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5063642056845323971, guid: ee775c8246017df4887591c617f7f851, type: 3}
+  m_PrefabInstance: {fileID: 882102869}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1060913206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &891337876
 GameObject:
   m_ObjectHideFlags: 0
@@ -2433,6 +2452,10 @@ PrefabInstance:
       value: 0.3531061
       objectReference: {fileID: 0}
     - target: {fileID: 5063642056845323971, guid: ee775c8246017df4887591c617f7f851, type: 3}
+      propertyPath: m_Navigation.m_SelectOnDown
+      value: 
+      objectReference: {fileID: 882102871}
+    - target: {fileID: 5063642056845323971, guid: ee775c8246017df4887591c617f7f851, type: 3}
       propertyPath: m_Colors.m_HighlightedColor.b
       value: 0.6509804
       objectReference: {fileID: 0}
@@ -2646,6 +2669,10 @@ PrefabInstance:
       propertyPath: m_Colors.m_PressedColor.r
       value: 0.14778392
       objectReference: {fileID: 0}
+    - target: {fileID: 5063642056845323971, guid: ee775c8246017df4887591c617f7f851, type: 3}
+      propertyPath: m_Navigation.m_SelectOnUp
+      value: 
+      objectReference: {fileID: 882102871}
     - target: {fileID: 5063642056845323971, guid: ee775c8246017df4887591c617f7f851, type: 3}
       propertyPath: m_Colors.m_SelectedColor.b
       value: 0.6509434
