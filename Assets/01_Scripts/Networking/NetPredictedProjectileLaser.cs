@@ -93,7 +93,9 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         
         if (hitModules.Count >= maxHits)
         {
-            Destroy(gameObject);
+            _fullyGrown = true;
+            _lifetimeTimer = lifetimeAfterFullGrow;
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
         }
     }
 
