@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using _01_Scripts.Ship.Modules;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -20,7 +23,7 @@ public class ShipEditor : MonoBehaviour
     private NetEditorModule _heldNetEditorModule;
 
     private List<NetEditorModule> editorModuleList;
-    
+
     private void Update()
     {
         ModuleHolding();
@@ -172,28 +175,64 @@ public class ShipEditor : MonoBehaviour
             }
         }
     }
-
     public bool CanPlaceModule(HexCoordinate rootCoord)
     {
         bool isAttached = false;
-
+        
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
             HexCoordinate coord = rootCoord + localCoord;
-            _editorModulesMap[coord] = _heldNetEditorModule;
-
-            if (PlayerData.ModuleStorage.SC_IsCoordinateOccupied(coord))
+            var moduleID = _heldNetEditorModule.ModuleID;
+            var condition = GetPlacementConditionForModule(moduleID);
+            if (PlayerData.ModuleStorage.SC_IsCoordinateOccupied(coord) || condition(rootCoord))
             {
                 return false;
             }
-
             if (PlayerData.ModuleStorage.SC_IsNeighboringModule(coord))
             {
                 isAttached = true;
             }
         }
-
         return isAttached;
+    }
+    private Func<HexCoordinate, bool> GetPlacementConditionForModule(NetModuleID moduleID)
+    {
+        if (moduleID == NetModuleID.Thruster)
+        {
+            return IsSomethingBelowThruster;
+        }
+        return IsThrusterAbove;
+    }
+    private bool IsThrusterAbove(HexCoordinate coord)
+    {
+        const int maxDistance = 3;
+        for (var i = 0; i < maxDistance; i++)
+        {
+            coord = HexCoordinate.Neighbor(coord, HexDirection.North);
+            if (_editorModulesMap.TryGetValue(coord, out var module))
+            {
+                if (module.ModuleID == NetModuleID.Thruster)
+                {
+                    Debug.Log("is Above" + module);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    private bool IsSomethingBelowThruster(HexCoordinate coord)
+    {
+        const int maxDistance = 3;
+        for (var i = 0; i < maxDistance; i++)
+        {
+            coord = HexCoordinate.Neighbor(coord, HexDirection.South);
+            if (_editorModulesMap.TryGetValue(coord, out var value))
+            {
+                Debug.Log("is below" + value);
+                return true;
+            }
+        }
+        return false;
     }
 
     public void PlaceModule(HexCoordinate rootCoord)
@@ -215,6 +254,7 @@ public class ShipEditor : MonoBehaviour
 
     public void RemoveModule(NetEditorModule moduleToRemove)
     {
+        Debug.Log(moduleToRemove);
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
         {
             HexCoordinate coord = moduleToRemove.PlacedLocation + localCoord;
@@ -239,7 +279,7 @@ public class ShipEditor : MonoBehaviour
         foreach (ModulePlacementData uniqueModule in uniqueModules)
         {
             _heldNetEditorModule = Instantiate(uniqueModule.ModuleID.GetModuleData().ShipEditorPrefab,
-                new InstantiateParameters {scene = gameObject.scene});
+                new InstantiateParameters { scene = gameObject.scene });
             _heldNetEditorModule.Initialize();
 
             for (int i = 0; i < uniqueModule.Rotation; i++)

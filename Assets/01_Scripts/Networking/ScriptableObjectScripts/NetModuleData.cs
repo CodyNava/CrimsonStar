@@ -1,6 +1,7 @@
 ﻿using AYellowpaper.SerializedCollections;
 using System.Collections.Generic;
 using System.Linq;
+using _01_Scripts.Ship.Modules;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NetModuleData", menuName = "Modules/Net Module Data")]
