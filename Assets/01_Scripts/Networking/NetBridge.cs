@@ -1,11 +1,9 @@
-﻿using System;
-using FishNet;
+﻿using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
 using _01_Scripts.Ship.ModuleControllers;
 using FishNet.Component.Prediction;
-using Steamworks;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -24,22 +22,21 @@ public class NetBridge : NetworkBehaviour
     public ulong PlayerID => _playerId.Value;
 
     private Dictionary<HexCoordinate, NetGameplayModule> _modules = new();
+    private Dictionary<HexCoordinate, int> _powerGrid = new();
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
-
-
+    
     private NetworkCollision2D _networkCollision2D;
 
     public void S_AttachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         _baseStats.Value = _baseStats.Value.Combine(module.ModuleID.GetModuleData().BaseStats);
-        module.ModuleID.GetModuleData().GetLocalHexCoordinates();
-        AddModuleCoordinates(module, rootCoordinate);
+        S_AddModuleCoordinates(module, rootCoordinate);
     }
 
     public void S_DetachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         _baseStats.Value = _baseStats.Value.Subtract(module.ModuleID.GetModuleData().BaseStats);
-        RemoveModuleCoordinates(module, rootCoordinate);
+        S_RemoveModuleCoordinates(module, rootCoordinate);
 
         if (module.ModuleID == NetModuleID.Bridge)
         {
@@ -63,26 +60,70 @@ public class NetBridge : NetworkBehaviour
         }
     }
 
-    private void AddModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
+    private void S_AddModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         var localHexCoordinates = module.ModuleID.GetModuleData().GetLocalHexCoordinates();
         foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
         {
-            Assert.IsFalse(_modules.ContainsKey(localHexCoordinate + rootCoordinate), "Placement check failed! Tried to add Module that overlaps already occupied HexCoordinate!");
+            HexCoordinate coordinate = localHexCoordinate + rootCoordinate;
+            Assert.IsFalse(_modules.ContainsKey(coordinate), "Placement check failed! Tried to add Module that overlaps already occupied HexCoordinate!");
             // We add each localHexCoordinate that the module occupies to the list
             // As the localHexCoordinates are only in module local space, we add the rootCoordinate as an offset
-            _modules.Add(localHexCoordinate + rootCoordinate, module);
+            _modules.Add(coordinate, module);
+        }
+
+        if (module.ModuleID == NetModuleID.Reactor)
+        {
+            foreach (var coordinate in rootCoordinate.CoordinatesInRange(2))
+            {
+                int power = _powerGrid.GetValueOrDefault(coordinate);
+                _powerGrid[coordinate] = power + 1;
+            }
+            
+            C_AddToPowerGrid(rootCoordinate);
+        }
+    }
+    
+    [ObserversRpc]
+    private void C_AddToPowerGrid(HexCoordinate rootCoordinate)
+    {
+        foreach (var coordinate in rootCoordinate.CoordinatesInRange(2))
+        {
+            int power = _powerGrid.GetValueOrDefault(coordinate);
+            _powerGrid[coordinate] = power + 1;
+        }
+    }
+    
+    private void S_RemoveModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
+    {
+        var localHexCoordinates = module.ModuleID.GetModuleData().GetLocalHexCoordinates();
+        foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
+        {
+            HexCoordinate coordinate = localHexCoordinate + rootCoordinate;
+            // We remove each localHexCoordinate that the module occupies to the list
+            // As the localHexCoordinates are only in module local space, we add the rootCoordinate as an offset
+            _modules.Remove(coordinate);
+        }
+        
+        if (module.ModuleID == NetModuleID.Reactor)
+        {
+            foreach (var coordinate in rootCoordinate.CoordinatesInRange(2))
+            {
+                int power = _powerGrid.GetValueOrDefault(coordinate);
+                _powerGrid[coordinate] = power - 1;
+            }
+            
+            C_RemovePowerFromGrid(rootCoordinate);
         }
     }
 
-    private void RemoveModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
+    [ObserversRpc]
+    private void C_RemovePowerFromGrid(HexCoordinate rootCoordinate)
     {
-        var localHexCoordinates = module.ModuleID.GetModuleData().GetLocalHexCoordinates();
-        foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
+        foreach (HexCoordinate coordinate in rootCoordinate.CoordinatesInRange(2))
         {
-            // We remove each localHexCoordinate that the module occupies to the list
-            // As the localHexCoordinates are only in module local space, we add the rootCoordinate as an offset
-            _modules.Remove(localHexCoordinate + rootCoordinate);
+            int power = _powerGrid.GetValueOrDefault(coordinate);
+            _powerGrid[coordinate] = power - 1;
         }
     }
 
@@ -96,6 +137,10 @@ public class NetBridge : NetworkBehaviour
             if (module.ModuleID == NetModuleID.Bridge) continue;
             looseModules.Add(module);
         }
+        
+        // If the Bridge isn't present anymore, everything else is a loose module
+        if (!_modules.ContainsKey(HexCoordinate.Zero)) return looseModules;
+        
 
         HashSet<HexCoordinate> handledCoordinates = new HashSet<HexCoordinate>();
         Queue<HexCoordinate> checkingCoordinates = new Queue<HexCoordinate>();
@@ -268,6 +313,11 @@ public class NetBridge : NetworkBehaviour
         
         // TODO: Probably causes issues on damageDealt, which causes Dealt and Received not to align
         gameplayModule.S_InflictDamage(damage, _playerId.Value);
-        
+    }
+
+    public bool PositionHasEnergy(Vector3 worldPosition)
+    {
+        HexCoordinate coord = HexTransform.Layout.PositionXYToHex(worldPosition.xy());
+        return _powerGrid.GetValueOrDefault(coord) > 0;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FishNet;
 using FishNet.Connection;
@@ -34,6 +35,8 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     private NetGameModeID _selectedGameMode;
     private NetTeamModeID _selectedTeamMode;
 
+    private float _updateAccumulator;
+
     public override string ConductedSceneName => "NetLobby";
 
     protected override void OnNetworkStarted()
@@ -52,10 +55,16 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         ServerManager.RegisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested, false);
     }
 
-    public override void ProcessClientAddition(NetworkConnection connection, Scene scene)
+    private void Update()
     {
-        S_SendLobbySettingsUpdate();
-        S_SendPlayerDataUpdate();
+        if (!IsServerStarted) return;
+        _updateAccumulator += Time.deltaTime;
+        if (_updateAccumulator > 0.5f)
+        {
+            S_SendLobbySettingsUpdate();
+            S_SendPlayerDataUpdate();
+            _updateAccumulator -= 0.5f;
+        }
     }
 
     private void S_OnTeamModeChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetTeamMode msg, Channel channel)
@@ -77,8 +86,6 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         }
 
         _selectedTeamMode = msg.TeamMode;
-        
-        S_SendPlayerDataUpdate();
     }
 
     private void S_SetTeamsFreeForAll()
@@ -97,14 +104,12 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         if (!ConnectionPlayerMap.TryGetValue(conn, out var playerData))
             return;
         playerData.isReady = msg.ReadyState;
-        S_SendPlayerDataUpdate();
     }
 
     private void S_OnGameModeChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetGameMode msg, Channel channel)
     {
         if (conn != _hostConnection) return;
         _selectedGameMode = msg.GameMode;
-        S_SendLobbySettingsUpdate();
     }
 
     private void S_OnPlayerTeamChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.PlayerTeamChangeRequested msg, Channel channel)
@@ -114,7 +119,6 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
             if (data.playerID != msg.PlayerID) continue;
             if (conn != connection && conn != _hostConnection) return;
             data.playerTeamID = msg.NewTeamID;
-            S_SendPlayerDataUpdate();
         }
     }
 
@@ -137,7 +141,6 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
             _hostConnection = conn;
             ConnectionPlayerMap[conn].isReady = true;
         }
-        S_SendPlayerDataUpdate();
     }
 
     private void S_OnConnectionStateChange(NetworkConnection connection, RemoteConnectionStateArgs args)
@@ -154,8 +157,6 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         {
             ConnectionPlayerMap.Remove(connection);
         }
-
-        S_SendPlayerDataUpdate();
     }
 
     private void S_SendPlayerDataUpdate()

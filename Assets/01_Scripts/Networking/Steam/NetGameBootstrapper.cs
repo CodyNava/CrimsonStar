@@ -110,6 +110,15 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
             Instance.steamTransport.StopConnection(true);
     }
 
+    public static void LeaveLobbyLocal()
+    {
+        InstanceFinder.ClientManager.StopConnection();
+        if (InstanceFinder.NetworkManager.IsServerStarted)
+        {
+            InstanceFinder.ServerManager.StopConnection(true);
+        }
+    }
+
     public static void CreateLobbyLocal()
     {
         PlayerData.SetPlayerIDFromRandom();
@@ -129,7 +138,8 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
         }
         Multipass mp = InstanceFinder.TransportManager.GetTransport<Multipass>();
         mp.SetClientTransport<Tugboat>();
-        PlayerData.SetDisplayName($"{PlayerData.DisplayName}#{PlayerData.PlayerID % 10000}");
+        if (!PlayerData.DisplayName.Contains('#'))
+            PlayerData.SetDisplayName($"{PlayerData.DisplayName}#{PlayerData.PlayerID % 10000}");
         InstanceFinder.TransportManager.Transport.StartConnection(false);
         SceneManager.LoadScene("NetLobby");
     }

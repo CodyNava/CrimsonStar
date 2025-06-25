@@ -75,6 +75,10 @@ public class LobbyUI : MonoBehaviour
     {
         if (PlayerData.CurrentLobbyID != CSteamID.Nil)
             NetGameBootstrapper.LeaveLobby();
+        else
+        {
+            NetGameBootstrapper.LeaveLobbyLocal();
+        }
         SceneManager.LoadScene("MainMenu");
     }
 
