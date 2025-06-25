@@ -59,7 +59,7 @@ Transform:
   m_GameObject: {fileID: 9073349593964022264}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.25, y: 0, z: -1.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -98,11 +98,53 @@ VisualEffect:
       - m_Value: 1
         m_Name: Size
         m_Overridden: 0
-      - m_Value: 20
+      - m_Value: 10
         m_Name: SpawnRate_Fire
         m_Overridden: 1
-      - m_Value: 0
+      - m_Value: 1
         m_Name: DamageInput
+        m_Overridden: 1
+      - m_Value: 2
+        m_Name: Velocity_FireParticle
+        m_Overridden: 0
+      - m_Value: 40
+        m_Name: SpawnRate_Sparcs
+        m_Overridden: 1
+      - m_Value: 10
+        m_Name: Velocity_Sparcs
+        m_Overridden: 1
+      - m_Value: 0.4
+        m_Name: Lifetime_Fire
+        m_Overridden: 1
+      - m_Value: 7
+        m_Name: Size_Fire
+        m_Overridden: 1
+      - m_Value: 0.5
+        m_Name: Lifetime_Sparcs
+        m_Overridden: 1
+      - m_Value: 10
+        m_Name: Size_FireParticle
+        m_Overridden: 1
+      - m_Value: 15
+        m_Name: SpawnRate_FireParticle
+        m_Overridden: 1
+      - m_Value: 0.7
+        m_Name: Lifetime_FireParticle
+        m_Overridden: 1
+      - m_Value: 10
+        m_Name: Size_Smoke
+        m_Overridden: 1
+      - m_Value: 0
+        m_Name: Velocity_Smoke
+        m_Overridden: 1
+      - m_Value: 0.5
+        m_Name: Size_Sparcs
+        m_Overridden: 1
+      - m_Value: 1
+        m_Name: ZAxisOffset_Smoke
+        m_Overridden: 1
+      - m_Value: 10
+        m_Name: SpawnRate_Smoke
         m_Overridden: 1
     m_Vector2f:
       m_Array: []
@@ -110,17 +152,20 @@ VisualEffect:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 15.999998, y: 8.62991, z: 4.0209413, w: 0}
+      - m_Value: {x: 15.999998, y: 5.022787, z: 4.0209413, w: 0}
         m_Name: Color_FireParticle
         m_Overridden: 1
       - m_Value: {x: 4, y: 1.1058288, z: 0.5999999, w: 0}
         m_Name: Color_Fire
         m_Overridden: 1
-      - m_Value: {x: 0.20942402, y: 0.47478658, z: 2, w: 0}
+      - m_Value: {x: 1.2549016, y: 2.8449957, z: 11.984314, w: 0}
         m_Name: Color_Sparcs
         m_Overridden: 1
-      - m_Value: {x: 1.8, y: 0.85882205, z: 0.54, w: 0}
+      - m_Value: {x: 1.6020944, y: 1.0317153, z: 0.9813877, w: 0}
         m_Name: Color_Smoke
+        m_Overridden: 1
+      - m_Value: {x: 0.4346614, y: 1.4267118, z: 3.9533494, w: 0}
+        m_Name: HighDamageColor_Fire
         m_Overridden: 1
     m_Uint:
       m_Array: []
