@@ -62,7 +62,8 @@ public class NetBridge : NetworkBehaviour
 
     private void S_AddModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
-        var localHexCoordinates = module.ModuleID.GetModuleData().GetLocalHexCoordinates();
+        var moduleData = module.ModuleID.GetModuleData();
+        var localHexCoordinates = moduleData.GetLocalHexCoordinates();
         foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
         {
             HexCoordinate coordinate = localHexCoordinate + rootCoordinate;
@@ -80,14 +81,14 @@ public class NetBridge : NetworkBehaviour
                 _powerGrid[coordinate] = power + 1;
             }
             
-            C_AddToPowerGrid(rootCoordinate);
+            C_AddToPowerGrid(rootCoordinate, moduleData.EffectRange);
         }
     }
     
     [ObserversRpc]
-    private void C_AddToPowerGrid(HexCoordinate rootCoordinate)
+    private void C_AddToPowerGrid(HexCoordinate rootCoordinate, int range)
     {
-        foreach (var coordinate in rootCoordinate.CoordinatesInRange(2))
+        foreach (var coordinate in rootCoordinate.CoordinatesInRange(range))
         {
             int power = _powerGrid.GetValueOrDefault(coordinate);
             _powerGrid[coordinate] = power + 1;
@@ -96,7 +97,8 @@ public class NetBridge : NetworkBehaviour
     
     private void S_RemoveModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
-        var localHexCoordinates = module.ModuleID.GetModuleData().GetLocalHexCoordinates();
+        var moduleData = module.ModuleID.GetModuleData();
+        var localHexCoordinates = moduleData.GetLocalHexCoordinates();
         foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
         {
             HexCoordinate coordinate = localHexCoordinate + rootCoordinate;
@@ -113,14 +115,14 @@ public class NetBridge : NetworkBehaviour
                 _powerGrid[coordinate] = power - 1;
             }
             
-            C_RemovePowerFromGrid(rootCoordinate);
+            C_RemovePowerFromGrid(rootCoordinate, moduleData.EffectRange);
         }
     }
 
     [ObserversRpc]
-    private void C_RemovePowerFromGrid(HexCoordinate rootCoordinate)
+    private void C_RemovePowerFromGrid(HexCoordinate rootCoordinate, int range)
     {
-        foreach (HexCoordinate coordinate in rootCoordinate.CoordinatesInRange(2))
+        foreach (HexCoordinate coordinate in rootCoordinate.CoordinatesInRange(range))
         {
             int power = _powerGrid.GetValueOrDefault(coordinate);
             _powerGrid[coordinate] = power - 1;

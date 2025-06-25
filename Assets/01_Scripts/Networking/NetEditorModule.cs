@@ -12,8 +12,10 @@ public class NetEditorModule : MonoBehaviour
     public NetModuleData ModuleData => ModuleID.GetModuleData();
     public List<HexCoordinate> LocalCoordinates { get; private set; }
     [field: SerializeField] public bool IsPowered { get; set; }
-    [field: SerializeField] public GameObject PowerMaterial { get; set; }
-
+    [field: SerializeField] public GameObject PowerMaterialGameObject { get; set; }
+    [field: SerializeField] public Material PowerMaterial { get; set; }
+    [field: SerializeField] public ShipEditor shipEditor { get; set; }
+    private Color originalColor;
     public void Initialize()
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[ModuleID];
@@ -22,6 +24,13 @@ public class NetEditorModule : MonoBehaviour
         {
             LocalCoordinates.Add(new HexCoordinate(localCoordinate.x, localCoordinate.y, localCoordinate.z));
         }
+    }
+
+    public void Awake()
+    {
+        shipEditor = FindFirstObjectByType<ShipEditor>();
+        PowerMaterial = GetComponentInChildren<MeshRenderer>().material;
+        originalColor = PowerMaterial.color;
     }
 
     public void C_RotateClockwise()
@@ -61,22 +70,26 @@ public class NetEditorModule : MonoBehaviour
         transform.rotation = Quaternion.AngleAxis(PlacedRotation * 60, Vector3.back);
     }
 
-    public void ChangeMaterial()
+    public void Update()
+    {
+        ChangeMaterialAndCheckPower();
+        if (!EnergyViewEnable() && PowerMaterial.color != originalColor)
+        {
+            PowerMaterial.color = originalColor;
+        }
+    }
+
+    public void ChangeMaterialAndCheckPower()
     {
         if (ModuleData.CanBePowered)
         {
-            var powerMat = PowerMaterial.GetComponent<Renderer>().material;
-            powerMat.color = IsPowered ? Color.green : Color.blue;
-        }
-        
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (ModuleID == NetModuleID.Reactor)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, 6);
+            IsPowered = shipEditor.CheckIfPowered(PlacedLocation);
+            if (shipEditor.inEnergyView)
+            {
+                PowerMaterial.color = IsPowered ? Color.green : Color.blue;
+            }
+            //todo implement shader change (waiting for gd to decide)
         }
     }
+    public bool EnergyViewEnable() => shipEditor.inEnergyView;
 }

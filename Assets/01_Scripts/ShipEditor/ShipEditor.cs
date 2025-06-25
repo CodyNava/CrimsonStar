@@ -1,27 +1,42 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
+using TMPro;
 using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
 public class ShipEditor : MonoBehaviour
 {
+    private static readonly int OutlineColor = Shader.PropertyToID("_OutlineColor");
+    private static readonly int _OutlineThickness = Shader.PropertyToID("_OutLineThickNess");
+    private static readonly int Thickness = Shader.PropertyToID("_OutlineThickness");
     [SerializeField] private Camera editCamera;
     [SerializeField] private GameObject noMoneyPopUp;
     [SerializeField] private GameObject cantBePlacedPopUp;
+    [SerializeField] private TextMeshProUGUI cantBePlacedText;
     [SerializeField] private HexTransform hexTransform;
     [SerializeField] private ShipEditorStats shipEditorStats;
     [SerializeField] private NetEditorModule netEditorBridgeRef;
+    [SerializeField] private Button energyViewToggleButton;
+    [SerializeField] private Material outlineShader;
+    private Color originalOutlineShaderColor;
+    private float originalOutlineShaderStrenght;
+    [SerializeField] public bool inEnergyView;
 
     [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
     public NetMatchPlayer PlayerData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
+
+    [SerializedDictionary("EnergyMap")] public SerializedDictionary<HexCoordinate, int> energyMap = new();
     private NetEditorModule _heldNetEditorModule;
 
-    private List<NetEditorModule> editorModuleList;
+    private List<NetEditorModule> _editorModuleList;
 
     private void Update()
     {
@@ -33,12 +48,15 @@ public class ShipEditor : MonoBehaviour
         editCamera ??= Camera.main;
         ModuleSelectionButton.ModuleSelected -= SpawnPart;
         ModuleSelectionButton.ModuleSelected += SpawnPart;
-        editorModuleList = new List<NetEditorModule> // collection initialization syntax uwu
+        _editorModuleList = new List<NetEditorModule> // collection initialization syntax uwu
         {
             netEditorBridgeRef
         };
         StartCoroutine(LinkPlayerRoutine());
-        shipEditorStats.GetTotalStats(editorModuleList);
+        shipEditorStats.GetTotalStats(_editorModuleList);
+        // energyViewToggleButton.onClick.AddListener(ToggleEnergyView);
+        originalOutlineShaderColor = outlineShader.GetColor(OutlineColor);
+        originalOutlineShaderStrenght = outlineShader.GetFloat("_OutlineThickness");
     }
 
     private IEnumerator LinkPlayerRoutine()
@@ -81,11 +99,26 @@ public class ShipEditor : MonoBehaviour
         noMoneyPopUp.SetActive(false);
     }
 
-    private IEnumerator CantBePlacedPopUp()
+    private IEnumerator CantBePlacedPopUp(bool cantPlaceReactor)
     {
-        cantBePlacedPopUp.SetActive(true);
-        yield return new WaitForSeconds(1f);
-        cantBePlacedPopUp.SetActive(false);
+        StartCoroutine(OutlineShaderChanger());
+        if (cantPlaceReactor)
+        {
+            cantBePlacedPopUp.SetActive(true);
+            cantBePlacedText.text =
+                $"Cant be Placed\nAnother Reactor in Range";
+            yield return new WaitForSeconds(3f);
+            cantBePlacedPopUp.SetActive(false);
+        }
+    }
+
+    private IEnumerator OutlineShaderChanger()
+    {
+        outlineShader.SetColor(OutlineColor, Color.red);
+        outlineShader.SetFloat("_OutlineThickness", originalOutlineShaderStrenght * 2.5f);
+        yield return new WaitForSeconds(0.4f);
+        outlineShader.SetColor(OutlineColor, originalOutlineShaderColor);
+        outlineShader.SetFloat("_OutlineThickness", originalOutlineShaderStrenght);
     }
 
     public bool TrySpawnPart(NetModuleID moduleID)
@@ -137,8 +170,7 @@ public class ShipEditor : MonoBehaviour
                 }
                 else
                 {
-                    cantBePlacedPopUp.transform.position = mousePosWorld;
-                    StartCoroutine(CantBePlacedPopUp());
+                    StartCoroutine(CantBePlacedPopUp(IsReactorInRangeOfReactor(cursorHexCoord)));
                 }
             }
 
@@ -178,6 +210,11 @@ public class ShipEditor : MonoBehaviour
     public bool CanPlaceModule(HexCoordinate rootCoord)
     {
         bool isAttached = false;
+        if (IsReactorInRangeOfReactor(rootCoord))
+        {
+            Debug.Log("ReactorInRange");
+            return false;
+        }
 
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
@@ -227,52 +264,35 @@ public class ShipEditor : MonoBehaviour
         return false;
     }
 
-    public void CheckPower(HexCoordinate coord, bool wasPickedUp)
+    private void AddPowerToEnergyMap(HexCoordinate coord, bool reactorPlaced, int range)
     {
-        var heldCanBePowered = _heldNetEditorModule.ModuleData.CanBePowered;
-        var heldReactor = _heldNetEditorModule.ModuleData.ModuleID == NetModuleID.Reactor;
-        if (heldCanBePowered || heldReactor)
+        foreach (HexCoordinate neighborCoord in coord.CoordinatesInRange(range))
         {
-            for (HexDirection posDirection = HexDirection.South; posDirection >= HexDirection.SouthEast; posDirection--)
-            {
-                for (HexDirection direction = HexDirection.SouthEast; direction <= HexDirection.South; direction++)
-                {
-                    if (_editorModulesMap.TryGetValue(coord, out var module))
-                    {
-                        var reactorPresent = module.ModuleData.ModuleID == NetModuleID.Reactor;
-                        var powerablePresent = module.ModuleData.CanBePowered;
-                        if (reactorPresent && !heldReactor)
-                        {
-                            _heldNetEditorModule.IsPowered = !wasPickedUp;
-                        }
-                        if (powerablePresent && heldReactor)
-                        {
-                            module.IsPowered = !wasPickedUp;
-                        }
-                        module.ChangeMaterial();
-                        _heldNetEditorModule.ChangeMaterial();
-                    }
-                    coord = HexCoordinate.Neighbor(coord, direction);
-                }
-                coord = HexCoordinate.Neighbor(coord, posDirection);
-            }
+            int power = energyMap.GetValueOrDefault(neighborCoord);
+            if (neighborCoord == coord) continue;
+            energyMap[neighborCoord] = reactorPlaced ? power + 1 : power - 1;
         }
     }
 
-    public void TotalyCheckPower(HexCoordinate coord)
+    public bool CheckIfPowered(HexCoordinate coord) => energyMap.GetValueOrDefault(coord) >= 1;
+
+    private bool IsReactorInRangeOfReactor(HexCoordinate coord)
     {
-        foreach (HexCoordinate neighborCoord in coord.Neighbors())
+        if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
         {
-            foreach (HexCoordinate neighborsNeighborCoord in neighborCoord.Neighbors())
+            foreach (HexCoordinate neighborCoord in coord.CoordinatesInRange(2))
             {
-                if (neighborsNeighborCoord == coord)
+                if (_editorModulesMap.TryGetValue(neighborCoord, out var module))
                 {
-                    continue;
-                    //todo meine fick logik jetzt hier
-                    
+                    if (module.ModuleID == NetModuleID.Reactor)
+                    {
+                        return true;
+                    }
                 }
             }
         }
+
+        return false;
     }
 
     private bool IsSomethingBelowThruster(HexCoordinate coord)
@@ -290,26 +310,42 @@ public class ShipEditor : MonoBehaviour
 
         return false;
     }
+
+    private bool IsConnectionToBridge(HexCoordinate coord)
+    {
+        return false;
+    }
+
+    public void ToggleEnergyView()
+    {
+        inEnergyView = !inEnergyView;
+    }
+
     public void PlaceModule(HexCoordinate rootCoord)
     {
+        if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
+        {
+            AddPowerToEnergyMap(rootCoord, true, _heldNetEditorModule.ModuleData.EffectRange);
+        }
+
         _heldNetEditorModule.PlacedLocation = rootCoord;
-        CheckPower(rootCoord, false);
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
             HexCoordinate coord = rootCoord + localCoord;
             _editorModulesMap[coord] = _heldNetEditorModule;
         }
-        
+
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
-        editorModuleList.Add(_heldNetEditorModule);
-        shipEditorStats.GetTotalStats(editorModuleList);
+        _editorModuleList.Add(_heldNetEditorModule);
+        shipEditorStats.GetTotalStats(_editorModuleList);
         _heldNetEditorModule = null;
     }
 
     public void RemoveModule(NetEditorModule moduleToRemove)
     {
-        CheckPower(moduleToRemove.PlacedLocation, true);
+        if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
+            AddPowerToEnergyMap(moduleToRemove.PlacedLocation, false, _heldNetEditorModule.ModuleData.EffectRange);
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
         {
             HexCoordinate coord = moduleToRemove.PlacedLocation + localCoord;
@@ -317,8 +353,8 @@ public class ShipEditor : MonoBehaviour
         }
 
         PlayerData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
-        editorModuleList.Remove(_heldNetEditorModule);
-        shipEditorStats.GetTotalStats(editorModuleList);
+        _editorModuleList.Remove(_heldNetEditorModule);
+        shipEditorStats.GetTotalStats(_editorModuleList);
     }
 
     public void SignalReady()
