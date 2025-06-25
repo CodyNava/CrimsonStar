@@ -111,7 +111,7 @@ public struct HexCoordinate : IEquatable<HexCoordinate>
             for (int r = Mathf.Max(-range, -q - range); r <= Mathf.Min(range, -q + range); r++)
             {
                 int s = -q - r;
-                yield return new HexCoordinate(q, r, s);
+                yield return this + new HexCoordinate(q, r, s);
             }
         }
     }
