@@ -74,6 +74,12 @@ public struct HexCoordinate : IEquatable<HexCoordinate>
         return new HexCoordinate(lhs.Q * rhs.Q, lhs.R * rhs.R, lhs.S * rhs.S);
     }
 
+    public static int Distance(HexCoordinate lhs, HexCoordinate rhs)
+    {
+        HexCoordinate off = lhs - rhs;
+        return (int)Mathf.Round((Mathf.Abs(off.Q) + Mathf.Abs(off.R) + Mathf.Abs(off.S)) / 2f);
+    }
+
     public static HexCoordinate Direction(HexDirection direction)
     {
         return DirectionOffsets[(int)direction];
@@ -94,6 +100,31 @@ public struct HexCoordinate : IEquatable<HexCoordinate>
         return new HexCoordinate(-S, -Q, -R);
     }
 
+    public HexDirection? ToDirection()
+    {
+        if (Distance(this, Zero) != 1) return null;
+        
+        for (int i = 0; i < DirectionOffsets.Length; i++)
+        {
+            if (this == DirectionOffsets[i]) return (HexDirection)i;
+        }
+        
+        return null;
+    }
+
+    public bool TryToDirection(out HexDirection dir)
+    {
+        var direction = ToDirection();
+        if (direction != null)
+        {
+            dir = (HexDirection)direction;
+            return true;
+        }
+
+        dir = HexDirection.SouthEast;
+        return false;
+    }
+    
     // IEnumerable<T> is a return type that lets us use foreach(T var in coord.Neighbors()) to loop through
     // all neighboring coordinates of a HexCoordinate, note the use of "yield return" instead of "return" (similar to coroutines)
     public IEnumerable<HexCoordinate> Neighbors()

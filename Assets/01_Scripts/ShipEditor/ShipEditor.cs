@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -17,10 +19,14 @@ public class ShipEditor : MonoBehaviour
     public NetMatchPlayer PlayerData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
+    public Dictionary<HexCoordinate, NetEditorModule> EditorModulesMap => _editorModulesMap;
     private NetEditorModule _heldNetEditorModule;
 
     private List<NetEditorModule> editorModuleList;
-    
+
+    public event Action<HexCoordinate, NetModuleID> OnPlacedModule;
+    public event Action<HexCoordinate, NetModuleID> OnRemovedModule; 
+
     private void Update()
     {
         ModuleHolding();
@@ -100,7 +106,7 @@ public class ShipEditor : MonoBehaviour
 
         _heldNetEditorModule =
             Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
-        _heldNetEditorModule.Initialize();
+        _heldNetEditorModule.Initialize(this);
         PlayerData.C_PayForModule(moduleID);
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
         return true;
@@ -210,6 +216,9 @@ public class ShipEditor : MonoBehaviour
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
         editorModuleList.Add(_heldNetEditorModule);
         shipEditorStats.GetTotalStats(editorModuleList);
+        
+        _heldNetEditorModule.OnPlacedDown();
+        OnPlacedModule?.Invoke(rootCoord, _heldNetEditorModule.ModuleID);
         _heldNetEditorModule = null;
     }
 
@@ -224,6 +233,9 @@ public class ShipEditor : MonoBehaviour
         PlayerData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
         editorModuleList.Remove(_heldNetEditorModule);
         shipEditorStats.GetTotalStats(editorModuleList);
+        
+        moduleToRemove.OnPickedUp();
+        OnRemovedModule?.Invoke(moduleToRemove.PlacedLocation, moduleToRemove.ModuleID);
     }
 
     public void SignalReady()
@@ -240,7 +252,7 @@ public class ShipEditor : MonoBehaviour
         {
             _heldNetEditorModule = Instantiate(uniqueModule.ModuleID.GetModuleData().ShipEditorPrefab,
                 new InstantiateParameters {scene = gameObject.scene});
-            _heldNetEditorModule.Initialize();
+            _heldNetEditorModule.Initialize(this);
 
             for (int i = 0; i < uniqueModule.Rotation; i++)
             {

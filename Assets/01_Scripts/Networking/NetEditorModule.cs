@@ -10,8 +10,12 @@ public class NetEditorModule : MonoBehaviour
     public NetModuleData ModuleData => ModuleID.GetModuleData();
     public List<HexCoordinate> LocalCoordinates { get; private set; }
 
-    public void Initialize()
+    protected ShipEditor _shipEditor;
+
+    public virtual void Initialize(ShipEditor editor)
     {
+        _shipEditor = editor;
+        
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[ModuleID];
         LocalCoordinates = new List<HexCoordinate>();
         foreach (Vector3Int localCoordinate in moduleData.LocalModuleCoordinates)
@@ -20,6 +24,10 @@ public class NetEditorModule : MonoBehaviour
         }
     }
 
+    public virtual void OnPickedUp() { }
+
+    public virtual void OnPlacedDown() { }
+    
     public void C_RotateClockwise()
     {
         for (int i = 0; i < LocalCoordinates.Count; i++)
