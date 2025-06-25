@@ -3,19 +3,19 @@
 public class HexTransform : MonoBehaviour
 {
     [SerializeField] private float scale = 1f;
+    [SerializeField, Min(1)] private int gizmosRange = 3;
+    [SerializeField] private float gizmosScale = 0.9f;
+    [SerializeField] private Color gizmosColor = Color.green;
 
     public HexLayout Layout => new(HexOrientation.Flat, Vector2.one * scale, transform.position.xy());
 
     private void OnDrawGizmos()
     {
         var layout = Layout;
-        for (int q = -3; q <= 3; q++)
+        HexCoordinate origin = HexCoordinate.Zero;
+        foreach (HexCoordinate cell in origin.CoordinatesInRange(gizmosRange))
         {
-            for (int r = -3; r <= 3; r++)
-            {
-                HexCoordinate coord = new(q, r);
-                layout.DrawGizmos(coord, Color.green);
-            }
+            layout.DrawGizmos(cell, gizmosColor, gizmosScale);
         }
     }
 }
