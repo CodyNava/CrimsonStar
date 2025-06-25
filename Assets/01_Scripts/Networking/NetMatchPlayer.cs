@@ -13,6 +13,8 @@ public class NetMatchPlayer : NetworkBehaviour
     public readonly SyncVar<float> DamageReceivedMatch = new();
     public readonly SyncVar<float> DamageDealtRound = new();
     public readonly SyncVar<float> DamageDealtMatch = new();
+    public readonly SyncVar<int> KillsRound = new();
+    public readonly SyncVar<int> KillsMatch = new();
     public readonly SyncVar<int> MatchScore = new();
     public readonly SyncVar<bool> Survived = new();
     
@@ -33,7 +35,7 @@ public class NetMatchPlayer : NetworkBehaviour
     {
         DamageReceivedRound.Value = 0;
         DamageDealtRound.Value = 0;
-        Survived.Value = false;
+        Survived.Value = true;
     }
 
     [ObserversRpc]

@@ -109,15 +109,19 @@ public class NetGameplayModule : NetworkBehaviour
 
     public void S_InflictDamage(float damage, ulong attackerID)
     {
-        if (InstanceFinder.HasInstance<NetGameplayConductor>())
+        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor))
         {
-            InstanceFinder.GetInstance<NetGameplayConductor>()
-                .S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
+            gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
         }
 
         _health.Value -= damage;
         if (_health.Value <= 0)
         {
+            if (ModuleID == NetModuleID.Bridge && gameplayConductor)
+            {
+                gameplayConductor.S_ReportKillInstance(attackerID, _bridge.PlayerID);
+            }
+            
             S_DestroyModule();
         }
 

@@ -13,6 +13,11 @@ using UnityEngine.SceneManagement;
 
 public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 {
+    private struct KillInstance
+    {
+        public ulong AttackerID;
+        public ulong DefenderID;
+    }
     private struct DamageInstance
     {
         public ulong AttackerID;
@@ -35,6 +40,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     private readonly SyncDictionary<NetTeamID, int> _scoreBoard = new();
     private HashSet<Transform> _spawnSet = new();
     private List<DamageInstance> _damageInstancesRound = new();
+    private List<KillInstance> _killInstancesRound = new();
 
     private int _roundsPlayed;
 
@@ -151,12 +157,11 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
     private IEnumerator EndOfRoundRoutine()
     {
-        foreach (var (conn, bridge) in _bridges)
+        foreach (var (_, bridge) in _bridges)
         {
-            _lobbyConductor.PlayersByConnection[conn].Survived.Value = true;
             bridge.HandleEndOfRound();
         }
-        S_CalculateRoundDamage();
+        S_CalculateRoundResults();
         _bridges.Clear();
         yield return new WaitForSecondsRealtime(0.2f);
         ServerManager.Broadcast(new NetGameplayBroadcasts.RoundResult());
@@ -189,8 +194,17 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             DamageTaken = damageTaken
         });
     }
+    
+    public void S_ReportKillInstance(ulong attackerID, ulong defenderID)
+    {
+        _killInstancesRound.Add(new KillInstance
+        {
+            AttackerID = attackerID,
+            DefenderID = defenderID
+        });
+    }
 
-    private void S_CalculateRoundDamage()
+    private void S_CalculateRoundResults()
     {
         foreach (var damageInstance in _damageInstancesRound)
         {
@@ -201,7 +215,18 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             defender.DamageReceivedRound.Value += damageInstance.DamageTaken;
             defender.DamageReceivedMatch.Value += damageInstance.DamageTaken;
         }
+
+        foreach (var killInstance in _killInstancesRound)
+        {
+            var attacker = _lobbyConductor.PlayersByID[killInstance.AttackerID];
+            var defender = _lobbyConductor.PlayersByID[killInstance.DefenderID];
+            attacker.KillsRound.Value += 1;
+            attacker.KillsMatch.Value += 1;
+            defender.Survived.Value = false;
+        }
+        
         _damageInstancesRound.Clear();
+        _killInstancesRound.Clear();
     }
 
     private Transform S_GetSpawnTransform()
