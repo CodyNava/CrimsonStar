@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
 using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,6 +20,8 @@ public class ShipEditor : MonoBehaviour
     public NetMatchPlayer PlayerData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
+
+    [SerializedDictionary("EnergyMap")] public SerializedDictionary<HexCoordinate, int> energyMap = new();
     private NetEditorModule _heldNetEditorModule;
 
     private List<NetEditorModule> editorModuleList;
@@ -223,57 +226,21 @@ public class ShipEditor : MonoBehaviour
                 }
             }
         }
-
         return false;
     }
-
-    public void CheckPower(HexCoordinate coord, bool wasPickedUp)
+    private void AddPowerToEnergyMap(HexCoordinate coord, bool reactorPlaced)
     {
-        var heldCanBePowered = _heldNetEditorModule.ModuleData.CanBePowered;
-        var heldReactor = _heldNetEditorModule.ModuleData.ModuleID == NetModuleID.Reactor;
-        if (heldCanBePowered || heldReactor)
+        foreach (HexCoordinate neighborCoord in coord.CoordinatesInRange(2))
         {
-            for (HexDirection posDirection = HexDirection.South; posDirection >= HexDirection.SouthEast; posDirection--)
-            {
-                for (HexDirection direction = HexDirection.SouthEast; direction <= HexDirection.South; direction++)
-                {
-                    if (_editorModulesMap.TryGetValue(coord, out var module))
-                    {
-                        var reactorPresent = module.ModuleData.ModuleID == NetModuleID.Reactor;
-                        var powerablePresent = module.ModuleData.CanBePowered;
-                        if (reactorPresent && !heldReactor)
-                        {
-                            _heldNetEditorModule.IsPowered = !wasPickedUp;
-                        }
-                        if (powerablePresent && heldReactor)
-                        {
-                            module.IsPowered = !wasPickedUp;
-                        }
-                        module.ChangeMaterial();
-                        _heldNetEditorModule.ChangeMaterial();
-                    }
-                    coord = HexCoordinate.Neighbor(coord, direction);
-                }
-                coord = HexCoordinate.Neighbor(coord, posDirection);
-            }
+            int power = energyMap.GetValueOrDefault(neighborCoord);
+            if (neighborCoord == coord) continue;
+            int addPower = power + 1;
+            int subtractPower = power - 1;
+            energyMap[neighborCoord] = reactorPlaced ? addPower : subtractPower;
         }
     }
 
-    public void TotalyCheckPower(HexCoordinate coord)
-    {
-        foreach (HexCoordinate neighborCoord in coord.Neighbors())
-        {
-            foreach (HexCoordinate neighborsNeighborCoord in neighborCoord.Neighbors())
-            {
-                if (neighborsNeighborCoord == coord)
-                {
-                    continue;
-                    //todo meine fick logik jetzt hier
-                    
-                }
-            }
-        }
-    }
+    public bool CheckIfPowered(HexCoordinate coord) => energyMap.GetValueOrDefault(coord) >= 1;
 
     private bool IsSomethingBelowThruster(HexCoordinate coord)
     {
@@ -290,16 +257,17 @@ public class ShipEditor : MonoBehaviour
 
         return false;
     }
+
     public void PlaceModule(HexCoordinate rootCoord)
     {
         _heldNetEditorModule.PlacedLocation = rootCoord;
-        CheckPower(rootCoord, false);
+        if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
+            AddPowerToEnergyMap(rootCoord, true);
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
             HexCoordinate coord = rootCoord + localCoord;
             _editorModulesMap[coord] = _heldNetEditorModule;
         }
-        
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
         editorModuleList.Add(_heldNetEditorModule);
@@ -309,7 +277,8 @@ public class ShipEditor : MonoBehaviour
 
     public void RemoveModule(NetEditorModule moduleToRemove)
     {
-        CheckPower(moduleToRemove.PlacedLocation, true);
+        if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
+            AddPowerToEnergyMap(moduleToRemove.PlacedLocation, false);
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
         {
             HexCoordinate coord = moduleToRemove.PlacedLocation + localCoord;

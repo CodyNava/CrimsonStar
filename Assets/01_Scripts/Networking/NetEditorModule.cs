@@ -12,7 +12,9 @@ public class NetEditorModule : MonoBehaviour
     public NetModuleData ModuleData => ModuleID.GetModuleData();
     public List<HexCoordinate> LocalCoordinates { get; private set; }
     [field: SerializeField] public bool IsPowered { get; set; }
-    [field: SerializeField] public GameObject PowerMaterial { get; set; }
+    [field: SerializeField] public GameObject PowerMaterialGameObject { get; set; }
+    [field: SerializeField] public Material PowerMaterial { get; set; }
+    [field: SerializeField] public ShipEditor shipEditor { get; set; }
 
     public void Initialize()
     {
@@ -22,6 +24,12 @@ public class NetEditorModule : MonoBehaviour
         {
             LocalCoordinates.Add(new HexCoordinate(localCoordinate.x, localCoordinate.y, localCoordinate.z));
         }
+    }
+
+    public void Awake()
+    {
+        shipEditor = FindFirstObjectByType<ShipEditor>();
+        PowerMaterial = GetComponentInChildren<MeshRenderer>().material;
     }
 
     public void C_RotateClockwise()
@@ -61,14 +69,17 @@ public class NetEditorModule : MonoBehaviour
         transform.rotation = Quaternion.AngleAxis(PlacedRotation * 60, Vector3.back);
     }
 
-    public void ChangeMaterial()
+    public void Update()
+    {
+        ChangeMaterialAndCheckPower();
+    }
+    public void ChangeMaterialAndCheckPower()
     {
         if (ModuleData.CanBePowered)
         {
-            var powerMat = PowerMaterial.GetComponent<Renderer>().material;
-            powerMat.color = IsPowered ? Color.green : Color.blue;
+            IsPowered = shipEditor.CheckIfPowered(PlacedLocation);
+            PowerMaterial.color = IsPowered ? Color.green : Color.blue;
         }
-        
     }
 
     private void OnDrawGizmos()
