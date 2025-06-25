@@ -428,6 +428,24 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwapTabRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""fc60c245-2581-4ff5-9584-36016862fcde"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwapTabLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""e58957f7-48fd-4af5-829b-e4c0f2fb153c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -848,6 +866,28 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""action"": ""TrackedDeviceOrientation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0c2d075c-372f-4d65-b9c0-e445e2cafb10"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""SwapTabRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5d8e5a93-9cd3-4ce1-a8da-effdb43b5c7c"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""SwapTabLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -903,6 +943,8 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
+        m_UI_SwapTabRight = m_UI.FindAction("SwapTabRight", throwIfNotFound: true);
+        m_UI_SwapTabLeft = m_UI.FindAction("SwapTabLeft", throwIfNotFound: true);
     }
 
     ~@GameActions()
@@ -1220,6 +1262,8 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_ScrollWheel;
     private readonly InputAction m_UI_TrackedDevicePosition;
     private readonly InputAction m_UI_TrackedDeviceOrientation;
+    private readonly InputAction m_UI_SwapTabRight;
+    private readonly InputAction m_UI_SwapTabLeft;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -1271,6 +1315,14 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "UI/TrackedDeviceOrientation".
         /// </summary>
         public InputAction @TrackedDeviceOrientation => m_Wrapper.m_UI_TrackedDeviceOrientation;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/SwapTabRight".
+        /// </summary>
+        public InputAction @SwapTabRight => m_Wrapper.m_UI_SwapTabRight;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/SwapTabLeft".
+        /// </summary>
+        public InputAction @SwapTabLeft => m_Wrapper.m_UI_SwapTabLeft;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1327,6 +1379,12 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @TrackedDeviceOrientation.started += instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.performed += instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.canceled += instance.OnTrackedDeviceOrientation;
+            @SwapTabRight.started += instance.OnSwapTabRight;
+            @SwapTabRight.performed += instance.OnSwapTabRight;
+            @SwapTabRight.canceled += instance.OnSwapTabRight;
+            @SwapTabLeft.started += instance.OnSwapTabLeft;
+            @SwapTabLeft.performed += instance.OnSwapTabLeft;
+            @SwapTabLeft.canceled += instance.OnSwapTabLeft;
         }
 
         /// <summary>
@@ -1368,6 +1426,12 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @TrackedDeviceOrientation.started -= instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.performed -= instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.canceled -= instance.OnTrackedDeviceOrientation;
+            @SwapTabRight.started -= instance.OnSwapTabRight;
+            @SwapTabRight.performed -= instance.OnSwapTabRight;
+            @SwapTabRight.canceled -= instance.OnSwapTabRight;
+            @SwapTabLeft.started -= instance.OnSwapTabLeft;
+            @SwapTabLeft.performed -= instance.OnSwapTabLeft;
+            @SwapTabLeft.canceled -= instance.OnSwapTabLeft;
         }
 
         /// <summary>
@@ -1555,5 +1619,19 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SwapTabRight" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSwapTabRight(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SwapTabLeft" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSwapTabLeft(InputAction.CallbackContext context);
     }
 }

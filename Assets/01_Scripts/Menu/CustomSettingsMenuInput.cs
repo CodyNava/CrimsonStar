@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -7,6 +8,8 @@ public class CustomSettingsMenuInput : MonoBehaviour
 {
     [SerializeField] private GameObject settingsCanvas;
     [SerializeField] private EventSystem eventSystem;
+
+    [SerializeField] private TMP_Dropdown graphicsDropdown;
     
     [SerializeField] private Button audioButton;
     [SerializeField] private Button graphicsButton;
@@ -22,22 +25,24 @@ public class CustomSettingsMenuInput : MonoBehaviour
     {
         if (settingsCanvas.activeSelf)
         {
-            if (Gamepad.current.rightShoulder.isPressed)
+            if (Keybinds.Actions.UI.SwapTabRight.WasPressedThisFrame())
             {
                 audioButton.onClick.Invoke();
                 eventSystem.SetSelectedGameObject(audioButton.gameObject);
             }
 
-            if (Gamepad.current.leftShoulder.isPressed)
+            if (Keybinds.Actions.UI.SwapTabLeft.WasPressedThisFrame())
             {
                 graphicsButton.onClick.Invoke();
                 eventSystem.SetSelectedGameObject(graphicsButton.gameObject);
             }
 
-            if (Gamepad.current.buttonEast.isPressed)
+            if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame() && !graphicsDropdown.IsExpanded)
+            //if (Gamepad.current.buttonEast.wasPressedThisFrame && !graphicsDropdown.IsExpanded)
             {
                 backButton.onClick.Invoke();
             }
+            
         }
     }
 }

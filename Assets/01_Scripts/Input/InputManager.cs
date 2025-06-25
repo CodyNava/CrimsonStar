@@ -10,6 +10,7 @@ public class InputManager : SceneSingleton<InputManager>
     protected override void Init()
     {
         playerInput.actions = Keybinds.Actions.asset;
+        Keybinds.Actions.UI.Enable();
     }
 
     public static void EnableGameControls()
