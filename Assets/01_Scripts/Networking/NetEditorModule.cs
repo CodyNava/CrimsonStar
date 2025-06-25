@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class NetEditorModule : MonoBehaviour
@@ -9,6 +11,8 @@ public class NetEditorModule : MonoBehaviour
     public int PlacedRotation { get; set; }
     public NetModuleData ModuleData => ModuleID.GetModuleData();
     public List<HexCoordinate> LocalCoordinates { get; private set; }
+    [field: SerializeField] public bool IsPowered { get; set; }
+    [field: SerializeField] public GameObject PowerMaterial { get; set; }
 
     public void Initialize()
     {
@@ -55,5 +59,24 @@ public class NetEditorModule : MonoBehaviour
     private void C_UpdateRotation()
     {
         transform.rotation = Quaternion.AngleAxis(PlacedRotation * 60, Vector3.back);
+    }
+
+    public void ChangeMaterial()
+    {
+        if (ModuleData.CanBePowered)
+        {
+            var powerMat = PowerMaterial.GetComponent<Renderer>().material;
+            powerMat.color = IsPowered ? Color.green : Color.blue;
+        }
+        
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (ModuleID == NetModuleID.Reactor)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, 6);
+        }
     }
 }
