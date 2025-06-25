@@ -113,12 +113,12 @@ public class NetBridge : NetworkBehaviour
                 _powerGrid[coordinate] = power - 1;
             }
             
-            C_RemoveModuleCoordinates(rootCoordinate);
+            C_RemovePowerFromGrid(rootCoordinate);
         }
     }
 
     [ObserversRpc]
-    private void C_RemoveModuleCoordinates(HexCoordinate rootCoordinate)
+    private void C_RemovePowerFromGrid(HexCoordinate rootCoordinate)
     {
         foreach (HexCoordinate coordinate in rootCoordinate.CoordinatesInRange(2))
         {
