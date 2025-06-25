@@ -15,7 +15,7 @@ public class NetEditorModule : MonoBehaviour
     [field: SerializeField] public GameObject PowerMaterialGameObject { get; set; }
     [field: SerializeField] public Material PowerMaterial { get; set; }
     [field: SerializeField] public ShipEditor shipEditor { get; set; }
-
+    private Color originalColor;
     public void Initialize()
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[ModuleID];
@@ -30,6 +30,7 @@ public class NetEditorModule : MonoBehaviour
     {
         shipEditor = FindFirstObjectByType<ShipEditor>();
         PowerMaterial = GetComponentInChildren<MeshRenderer>().material;
+        originalColor = PowerMaterial.color;
     }
 
     public void C_RotateClockwise()
@@ -72,22 +73,23 @@ public class NetEditorModule : MonoBehaviour
     public void Update()
     {
         ChangeMaterialAndCheckPower();
+        if (!EnergyViewEnable() && PowerMaterial.color != originalColor)
+        {
+            PowerMaterial.color = originalColor;
+        }
     }
+
     public void ChangeMaterialAndCheckPower()
     {
         if (ModuleData.CanBePowered)
         {
             IsPowered = shipEditor.CheckIfPowered(PlacedLocation);
-            PowerMaterial.color = IsPowered ? Color.green : Color.blue;
+            if (shipEditor.inEnergyView)
+            {
+                PowerMaterial.color = IsPowered ? Color.green : Color.blue;
+            }
+            //todo implement shader change (waiting for gd to decide)
         }
     }
-
-    private void OnDrawGizmos()
-    {
-        if (ModuleID == NetModuleID.Reactor)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, 6);
-        }
-    }
+    public bool EnergyViewEnable() => shipEditor.inEnergyView;
 }
