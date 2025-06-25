@@ -15,10 +15,13 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Image brightness;
 
     private bool _ready;
-    
-    private void OnEnable()
+
+    private void Awake()
     {
         brightness.color = new Color(0f, 0f, 0f, PlayerPrefs.GetFloat("BrightnessValue"));
+    }
+    private void OnEnable()
+    {
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
         hostSettings.Initialize();
