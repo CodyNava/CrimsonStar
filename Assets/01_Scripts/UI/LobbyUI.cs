@@ -12,11 +12,13 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private GameSettingsHost hostSettings;
     [SerializeField] private Button startGameButton, readyButton;
     [SerializeField] private TMP_Text readyButtonText;
+    [SerializeField] private Image brightness;
 
     private bool _ready;
     
     private void OnEnable()
     {
+        brightness.color = new Color(0f, 0f, 0f, PlayerPrefs.GetFloat("BrightnessValue"));
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
         hostSettings.Initialize();

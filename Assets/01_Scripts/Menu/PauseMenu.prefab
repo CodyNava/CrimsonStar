@@ -1203,6 +1203,7 @@ GameObject:
   - component: {fileID: 7874273011261535943}
   - component: {fileID: 867852461517475980}
   - component: {fileID: 7200196419962890378}
+  - component: {fileID: 7766353130794315116}
   m_Layer: 5
   m_Name: '"Brightness"'
   m_TagString: Untagged
@@ -1267,6 +1268,29 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!223 &7766353130794315116
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1243888535112462739}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &1555944728753830198
 GameObject:
   m_ObjectHideFlags: 0
@@ -4170,6 +4194,7 @@ MonoBehaviour:
   pauseMenuUI: {fileID: 759973953007481852}
   settingsMenuUI: {fileID: 8295497436703328967}
   deathScreenUi: {fileID: 7059304669897732581}
+  brightness: {fileID: 7200196419962890378}
   paused: 0
 --- !u!1 &4192167584830761428
 GameObject:
@@ -5938,7 +5963,7 @@ MonoBehaviour:
   m_FillRect: {fileID: 3222962334182454365}
   m_HandleRect: {fileID: 7760530255518648598}
   m_Direction: 1
-  m_MinValue: 0
+  m_MinValue: 0.0001
   m_MaxValue: 0.9
   m_WholeNumbers: 0
   m_Value: 0.5
@@ -7439,7 +7464,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 7800941189801355688}
   m_Direction: 0
   m_MinValue: 0.0001
-  m_MaxValue: 5
+  m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 0.0001
   m_OnValueChanged:
@@ -8000,7 +8025,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resolutionDropdown: {fileID: 5566478435672344058}
-  master: {fileID: 24100000, guid: 1378e013332436242ab06aea7ba02e1e, type: 2}
   masterSlider: {fileID: 2346171671452930202}
   musicSlider: {fileID: 5126896835070781220}
   sfxSlider: {fileID: 207842613604053238}
