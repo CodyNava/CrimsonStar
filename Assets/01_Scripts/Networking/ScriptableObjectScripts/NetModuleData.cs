@@ -21,6 +21,7 @@ public class NetModuleData : ScriptableObject
     [field: SerializeField] public bool CanRotate { get; private set; }
     
     [field: SerializeField] public bool CanBePowered { get; private set; }
+    [field: SerializeField, Min(0)] public int EffectRange { get; private set; }
 
     [field: SerializeField] public NetEditorModule ShipEditorPrefab { get; private set; }
     [field: SerializeField] public NetGameplayModule GameplayPrefab { get; private set; }
