@@ -22,13 +22,28 @@ public class NetModuleData : ScriptableObject
 
     [field: SerializeField] public NetEditorModule ShipEditorPrefab { get; private set; }
     [field: SerializeField] public NetGameplayModule GameplayPrefab { get; private set; }
+    [field: SerializeField] public GameObject VisualModelPrefab { get; private set; }
+    
     [Header("UI")]
     [field: SerializeField] public Sprite Icon { get; private set; }
     [field: SerializeField] public string DisplayName { get; private set; }
     [field: SerializeField] public float HexagonSize { get; private set; }
 
 
-
+    
     public IEnumerable<HexCoordinate> GetLocalHexCoordinates() =>
         LocalModuleCoordinates.Select(vec => new HexCoordinate(vec));
+
+    // TODO: Provide ability to define connectionEdges/valid connection neighbours or inverse
+    public IEnumerable<HexCoordinate> GetLocalNeighbourCoordinates()
+    {
+        HashSet<HexCoordinate> neighbourCoordinates = new HashSet<HexCoordinate>();
+        foreach (HexCoordinate localHexCoordinate in GetLocalHexCoordinates())
+        {
+            neighbourCoordinates.UnionWith(localHexCoordinate.Neighbors());
+        }
+        neighbourCoordinates.ExceptWith(GetLocalHexCoordinates());
+
+        return neighbourCoordinates;
+    }
 }

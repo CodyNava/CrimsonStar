@@ -21,7 +21,7 @@ public class ShipEditorCurrencyDisplay : MonoBehaviour
         {
             NetCurrencyType currencyType = (NetCurrencyType)currencyNumber;
             int count = netShipEditorData.ResourceStorage.C_GetRemainingResourceCount(currencyType);
-            stringBuilder.AppendLine($"{count} {currencyType}");
+            stringBuilder.AppendLine($"{count}");
         }
         currency.text = stringBuilder.ToString();
     }

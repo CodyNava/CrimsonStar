@@ -17,6 +17,7 @@ public class ModuleCategoryContainer : MonoBehaviour
                 continue;
             }
             NetModuleData moduleData = id.GetModuleData();
+            if (!moduleData) continue;
             if (moduleData.ModuleCategory != category)
             {
                 continue;
@@ -29,9 +30,9 @@ public class ModuleCategoryContainer : MonoBehaviour
     public void ClearButtons()
     {
         int containerChildren = container.transform.childCount;
-        for (int i = 0; i < containerChildren; i++)
+        for (int i = containerChildren - 1; i >= 0; i--)
         {
-            Destroy(container.transform.GetChild(0).gameObject);
+            Destroy(container.transform.GetChild(i).gameObject);
         }
     }
 }

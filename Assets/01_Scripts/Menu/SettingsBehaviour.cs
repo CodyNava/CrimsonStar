@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
+using FMOD.Studio;
+using TMPro;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class SettingsBehaviour : MonoBehaviour
 {
-    [SerializeField] private Dropdown resolutionDropdown;
+    [SerializeField] private TMP_Dropdown resolutionDropdown;
     private Resolution[] resolutions;
-
-    [SerializeField] private AudioMixer master;
 
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider musicSlider;
@@ -35,6 +34,13 @@ public class SettingsBehaviour : MonoBehaviour
     private const string brightnessValue = "BrightnessValue";
     private const string vSync = "VSync";
 
+    FMOD.Studio.Bus _masterBus;
+    FMOD.Studio.Bus _musicBus;
+    FMOD.Studio.Bus _sfxBus;
+    FMOD.Studio.Bus _uiBus;
+    FMOD.Studio.Bus _announcerBus;
+    float masterbusVolume, musicbusVolume, sfxbusVolume, uibusvolume, announcerbusvolume;
+
     private void Awake()
     {
         volume.profile.TryGet(out gamma);
@@ -42,6 +48,12 @@ public class SettingsBehaviour : MonoBehaviour
 
     private void Start()
     {
+        _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
+        _musicBus = FMODUnity.RuntimeManager.GetBus("bus:/Music");
+        _sfxBus = FMODUnity.RuntimeManager.GetBus("bus:/SFX");
+        _uiBus = FMODUnity.RuntimeManager.GetBus("bus:/UI");
+        _announcerBus = FMODUnity.RuntimeManager.GetBus("bus:/Voice");
+
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
         List<string> resolutionOptions = new List<string>();
@@ -49,12 +61,14 @@ public class SettingsBehaviour : MonoBehaviour
         int currentResolutionIndex = 0;
         for (int i = 0; i < resolutions.Length; i++)
         {
-            string resolutionOption = $"{resolutions[i].width} x {resolutions[i].height} @{Mathf.RoundToInt((float)resolutions[i].refreshRateRatio.value)}";
+            string resolutionOption =
+                $"{resolutions[i].width} x {resolutions[i].height} @{Mathf.RoundToInt((float)resolutions[i].refreshRateRatio.value)}";
             resolutionOptions.Add(resolutionOption);
 
             if (resolutions[i].width == Screen.currentResolution.width &&
                 resolutions[i].height == Screen.currentResolution.height &&
-                Math.Abs(resolutions[i].refreshRateRatio.value - Screen.currentResolution.refreshRateRatio.value) < 0.0001f)
+                Math.Abs(resolutions[i].refreshRateRatio.value - Screen.currentResolution.refreshRateRatio.value) <
+                0.0001f)
             {
                 currentResolutionIndex = i;
             }
@@ -68,6 +82,7 @@ public class SettingsBehaviour : MonoBehaviour
     }
 
     #region Graphics
+
     public void SetResolution(int resolutionIndex)
     {
         Resolution resolution = resolutions[resolutionIndex];
@@ -89,41 +104,45 @@ public class SettingsBehaviour : MonoBehaviour
 
     public void SetVsync()
     {
-        QualitySettings.vSyncCount = QualitySettings.vSyncCount == 1 ? 0 : 1;
+        QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
         Save();
     }
+
     #endregion
 
     #region Sound
+
     public void MasterVolume()
     {
-        master.SetFloat(masterVolume, Mathf.Log10(masterSlider.value) * 20);
-        Save();
+        ApplyVolume(_masterBus, masterSlider.value);
     }
 
     public void MusicVolume()
     {
-        master.SetFloat(musicVolume, Mathf.Log10(musicSlider.value) * 20);
-        Save();
+        ApplyVolume(_musicBus, musicSlider.value);
     }
 
     public void SFXVolume()
     {
-        master.SetFloat(sfxVolume, Mathf.Log10(sfxSlider.value) * 20);
-        Save();
+        ApplyVolume(_sfxBus, sfxSlider.value);
     }
 
     public void UIVolume()
     {
-        master.SetFloat(uiVolume, Mathf.Log10(uiSlider.value) * 20);
-        Save();
+        ApplyVolume(_uiBus, uiSlider.value);
     }
 
     public void AnnouncerVolume()
     {
-        master.SetFloat(announcerVolume, Mathf.Log10(announcerSlider.value) * 20);
+        ApplyVolume(_announcerBus, announcerSlider.value);
+    }
+
+    private void ApplyVolume(Bus bus, float newVolume)
+    {
+        bus.setVolume(newVolume);
         Save();
     }
+
     #endregion
 
     private void Save()
@@ -140,13 +159,19 @@ public class SettingsBehaviour : MonoBehaviour
 
     private void Load()
     {
-        masterSlider.value = PlayerPrefs.GetFloat(masterVolume, 0.5f);
-        musicSlider.value = PlayerPrefs.GetFloat(musicVolume, 0.5f);
-        sfxSlider.value = PlayerPrefs.GetFloat(sfxVolume, 0.5f);
-        uiSlider.value = PlayerPrefs.GetFloat(uiVolume, 0.5f);
-        announcerSlider.value = PlayerPrefs.GetFloat(announcerVolume, 0.5f);
-        gammaSlider.value = PlayerPrefs.GetFloat(gammaValue, 0.5f);
-        brightnessSlider.value = PlayerPrefs.GetFloat(brightnessValue, 0.5f);
-        toggle.isOn = PlayerPrefs.GetInt(vSync, 1) == 1;
+        masterSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(masterVolume, 0.5f));
+        musicSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(musicVolume, 0.5f));
+        sfxSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(sfxVolume, 0.5f));
+        uiSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(uiVolume, 0.5f));
+        announcerSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(announcerVolume, 0.5f));
+        gammaSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(gammaValue, 0.5f));
+        brightnessSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(brightnessValue, 0.5f));
+        toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(vSync, 1) == 1);
+        QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
+        MasterVolume();
+        MusicVolume();
+        SFXVolume();
+        UIVolume();
+        AnnouncerVolume();
     }
 }

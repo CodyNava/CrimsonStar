@@ -7,13 +7,10 @@ public class NetResourceStorage : NetworkBehaviour
 {
     private readonly SyncDictionary<NetCurrencyType, int> _resourceStorage = new();
 
-    public void S_SetResourceCounts(Dictionary<NetCurrencyType, int> resourceCounts)
+    public void S_SetResourceCount(int count)
     {
         _resourceStorage.Clear();
-        foreach ((NetCurrencyType resource, int count) in resourceCounts)
-        {
-            _resourceStorage[resource] = count;
-        }
+        _resourceStorage[NetCurrencyType.Gold] = count;
     }
     
     public bool SC_HasResourcesForModule(NetModuleID moduleID)
@@ -42,9 +39,9 @@ public class NetResourceStorage : NetworkBehaviour
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
         foreach ((NetCurrencyType resourceType, int cost) in moduleData.Costs)
         {
-            _resourceStorage[resourceType] -= cost;
+            int amount = _resourceStorage.GetValueOrDefault(resourceType) - cost;
+            _resourceStorage[resourceType] = amount;
         }
-        Debug.Log($"Currency left: {_resourceStorage[NetCurrencyType.Gold]}");
     }
 
     public void C_RefundModule(NetModuleID id)
@@ -61,13 +58,19 @@ public class NetResourceStorage : NetworkBehaviour
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[moduleID];
         foreach ((NetCurrencyType resourceType, int cost) in moduleData.Costs)
         {
-            _resourceStorage[resourceType] += cost;
+            int amount = _resourceStorage.GetValueOrDefault(resourceType) + cost;
+            _resourceStorage[resourceType] = amount;
         }
-        Debug.Log($"Currency left: {_resourceStorage[NetCurrencyType.Gold]}");
     }
 
     public int C_GetRemainingResourceCount(NetCurrencyType type)
     {
         return _resourceStorage.GetValueOrDefault(type, 0);
+    }
+
+    public void S_AddResourceCount(NetCurrencyType type, int addedAmount)
+    {
+        int amount = _resourceStorage.GetValueOrDefault(type) + addedAmount;
+        _resourceStorage[type] = amount;
     }
 }

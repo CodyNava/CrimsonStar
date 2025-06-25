@@ -1,21 +1,49 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using AYellowpaper.SerializedCollections;
 using FishNet;
 using FishNet.Connection;
 using FishNet.Managing.Scened;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
+using Steamworks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+[System.Serializable]
+public class NetPlayerMatchStats
+{
+    public NetPlayerData player;
+    public float damageReceivedRound;
+    public float damageReceivedMatch;
+    public float damageDealtRound;
+    public float damageDealtMatch;
+    public int score;
+    public bool wasAlive;
+}
 
 public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
 {
     [SerializeField] private NetBridge bridgePrefab;
+    [SerializeField] private float endOfRoundTime;
+    
     [SerializeField, SerializedDictionary] 
     private SerializedDictionary<int, Transform[]> spawnTransforms;
 
+    private NetLobbyConductor _lobbyConductor;
     private NetShipEditorConductor _editorConductor;
     private List<NetworkConnection> _eliminatedPlayers = new();
+    private Dictionary<NetworkConnection, NetBridge> _bridges = new();
+    private Dictionary<NetworkConnection, NetPlayerMatchStats> _matchStats = new();
+    
+    private readonly SyncVar<bool> _isMatchConcluded = new();
+    private readonly SyncDictionary<NetTeamID, int> _scoreBoard = new();
+    private HashSet<Transform> _spawnSet = new();
+
+    private int _roundsPlayed;
 
     private int PlayerCount => _editorConductor.PlayerShipEditors.Count;
     private int _spawnedPlayers = 0;
@@ -26,6 +54,7 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
         
         if (IsServerInitialized)
         {
+            _lobbyConductor = InstanceFinder.GetInstance<NetLobbyConductor>();
             _editorConductor = InstanceFinder.GetInstance<NetShipEditorConductor>();
             SceneManager.OnClientPresenceChangeStart += S_OnSceneChange;
         }
@@ -45,11 +74,28 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
     {
         if (args.Scene.name == "NetGameplayScene" && args.Added)
         {
-            NetPlayerID id = (NetPlayerID) _spawnedPlayers + 1;
+            NetPlayerData playerData = _lobbyConductor.S_GetPlayerData(args.Connection);
+
+            if (!_matchStats.TryGetValue(args.Connection, out var stats))
+            {
+                stats = new NetPlayerMatchStats
+                {
+                    player = playerData
+                };
+                _matchStats[args.Connection] = stats;
+            }
+
+            stats.damageReceivedRound = 0;
+            stats.damageDealtRound = 0;
+            stats.wasAlive = false;
+            
             var bridge = Instantiate(bridgePrefab);
+            _bridges.Add(args.Connection, bridge);
             var spawnPoint = S_GetSpawnTransform();
-            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, id);
-            S_ConstructPlayerShip(args.Connection, id, bridge, _editorConductor.PlayerShipEditors[args.Connection], args.Scene);
+            bridge.S_SetDisplayName(playerData.playerDisplayName);
+            bridge.S_SetSteamID(playerData.playerSteamID);
+            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, playerData.playerTeamID, HexCoordinate.Zero);
+            S_ConstructPlayerShip(args.Connection, playerData.playerTeamID, bridge, _editorConductor.PlayerShipEditors[args.Connection], args.Scene);
             ServerManager.Spawn(bridge.gameObject, args.Connection);
             bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
 
@@ -62,38 +108,122 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
 
     private void S_StartMatch()
     {
-        Debug.Log("Imagine the game would start right now! Wow!");
+        C_OnMatchStart();
+    }
+
+    [ObserversRpc]
+    public void C_OnMatchStart()
+    {
+        InputManager.EnableGameControls();
     }
     
-    [ServerRpc(RequireOwnership = false)]
-    public void S_RegisterPlayerDeath(Channel channel = Channel.Reliable, NetworkConnection conn = null)
+    public void S_RegisterPlayerDeath(NetworkConnection owner)
     {
-        _eliminatedPlayers.Add(conn);
-        if (_eliminatedPlayers.Count == PlayerCount - 1)
+        _bridges.Remove(owner!);
+        _eliminatedPlayers.Add(owner);
+        if (S_IsMatchComplete())
         {
             S_StopMatch();
         }
     }
 
-    private void S_StopMatch()
+    private bool S_IsMatchComplete()
     {
-        Debug.Log("Imagine the game would end right now! Wow!");
+        HashSet<NetTeamID> teamIDs = new HashSet<NetTeamID>();
+        
+        foreach (var (conn, _) in _bridges)
+        {
+            var teamID = _matchStats[conn].player.playerTeamID;
+            if (teamID == NetTeamID.Observer) continue;
+            teamIDs.Add(teamID);
+        }
+
+        if (teamIDs.Count > 1) return false;
+
+        NetTeamID winnerID = teamIDs.First();
+
+        int score = _scoreBoard.GetValueOrDefault(winnerID) + 1;
+        _scoreBoard[winnerID] = score;
+
+        foreach (var stats in _matchStats.Values)
+        {
+            if (stats.player.playerTeamID == winnerID)
+            {
+                stats.score = score;
+            }
+        }
+        return true;
     }
 
-    private void S_ConstructPlayerShip(NetworkConnection conn, NetPlayerID id, NetBridge bridge, NetShipEditorData editorData, Scene scene)
+    private void S_StopMatch()
     {
-        HashSet<HexCoordinate> spawnedRoots = new HashSet<HexCoordinate>();
-        foreach (var placementData in editorData.ModuleStorage.ModuleMap.Values)
+        _roundsPlayed++;
+        if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
         {
-            if (!spawnedRoots.Add(placementData.RootCoordinate)) continue;
-            if (placementData.ModuleID <= NetModuleID.Bridge) continue;
+            foreach (var (conn, bridge) in _bridges)
+            {
+                _matchStats[conn].wasAlive = true;
+                bridge.HandleEndOfRound();
+            }
+            _bridges.Clear();
+            ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult()
+            {
+                Stats = _matchStats.Values.ToArray()
+            });
+        }
+        else
+        {
+            _isMatchConcluded.Value = true;
+            StartCoroutine(EndOfRoundRoutine());
+        }
+    }
+
+    private IEnumerator EndOfRoundRoutine()
+    {
+        foreach (var (conn, bridge) in _bridges)
+        {
+            _matchStats[conn].wasAlive = true;
+            bridge.HandleEndOfRound();
+        }
+        _bridges.Clear();
+        ServerManager.Broadcast(new NetGameplayBroadcasts.RoundResult
+        {
+            Stats = _matchStats.Values.ToArray()
+        });
+        yield return new WaitForSecondsRealtime(endOfRoundTime);
+        _spawnedPlayers = 0;
+        _editorConductor.S_SetupNewEditPhase();
+        SceneLoadData sceneData = new("NetShipEditor");
+        sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
+        sceneData.MovedNetworkObjects =
+            _editorConductor.PlayerShipEditors.Values.Select(data => data.NetworkObject).ToArray();
+        SceneUnloadData unloadData = new("NetGameplayScene");
+        SceneManager.LoadGlobalScenes(sceneData);
+        SceneManager.UnloadGlobalScenes(unloadData);
+        _isMatchConcluded.Value = false;
+    }
+
+    private void S_ConstructPlayerShip(NetworkConnection conn, NetTeamID id, NetBridge bridge, NetShipEditorData editorData, Scene scene)
+    {
+        foreach (var placementData in editorData.ModuleStorage.GetUniqueModules())
+        {
             Quaternion moduleRotation = Quaternion.AngleAxis(placementData.Rotation * 60, Vector3.back);
             Vector3 modulePos = bridge.HexTransform.Layout.HexToPositionXY(placementData.RootCoordinate);
             NetGameplayModule module = Instantiate(placementData.ModuleID.GetModuleData().GameplayPrefab);
             module.NetworkObject.SetParent(bridge);
             module.transform.SetLocalPositionAndRotation(bridge.transform.InverseTransformPoint(modulePos), moduleRotation);
-            module.S_ServerInit(bridge, id);
+            module.S_ServerInit(bridge, id, placementData.RootCoordinate);
         }
+    }
+    
+    public void S_ReportDamageInstance(CSteamID attacker, NetworkConnection defender, float damageTaken)
+    {
+        var attackerStats = _matchStats.First(x => x.Value.player.playerSteamID == attacker).Value;
+        attackerStats.damageDealtRound += damageTaken;
+        attackerStats.damageDealtMatch += damageTaken;
+        var defenderStats = _matchStats[defender];
+        defenderStats.damageReceivedRound += damageTaken;
+        defenderStats.damageReceivedMatch += damageTaken;
     }
 
     private Transform S_GetSpawnTransform()
@@ -103,6 +233,15 @@ public class NetGameplayConductor : NetworkSingleton<NetGameplayConductor>
             return transform;
         }
 
-        return spawnPoints[_spawnedPlayers++];
+        if (_spawnedPlayers == 0)
+        {
+            _spawnSet.AddRange(spawnPoints);
+        }
+
+        int rng = Random.Range(0, _spawnSet.Count);
+        var spawn = _spawnSet.ElementAt(rng);
+        _spawnSet.Remove(spawn);
+        _spawnedPlayers++;
+        return spawn;
     }
 }

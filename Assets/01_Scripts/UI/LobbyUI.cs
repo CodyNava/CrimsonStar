@@ -7,12 +7,23 @@ using UnityEngine.UI;
 
 public class LobbyUI : MonoBehaviour
 {
-    [SerializeField] private TMP_Text[] nameList;
-    [SerializeField] private Button startGameButton;
+    [SerializeField] private PlayerPlateDisplay[] playerPlates;
+    [SerializeField] private GameSettingsHost hostSettings;
+    [SerializeField] private Button startGameButton, readyButton;
+    [SerializeField] private TMP_Text readyButtonText;
+
+    private bool _ready;
     
     private void OnEnable()
     {
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
+        InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
+        hostSettings.Initialize();
+    }
+    
+    private void OnGameModeChanged(NetLobbyBroadcasts.SetGameMode msg, Channel channel)
+    {
+        hostSettings.UpdateGameSettingsDisplay(msg);
     }
 
     private void OnPlayerListUpdate(NetLobbyBroadcasts.PlayerListUpdate msg, Channel channel)
@@ -21,20 +32,34 @@ public class LobbyUI : MonoBehaviour
         {
             startGameButton.gameObject.SetActive(true);
         }
+        else
+        {
+            readyButton.gameObject.SetActive(true);
+        }
         
         ClearNames();
 
         for (int i = 0; i < msg.Players.Length; i++)
         {
-            nameList[i].text = msg.Players[i].playerDisplayName;
+            playerPlates[i].UpdateDisplay(msg.Players[i], msg.TeamMode);
         }
+    }
+
+    public void ToggleReady()
+    {
+        _ready = !_ready;
+        readyButtonText.text = _ready ? "Unready" : "Ready";
+        InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.SetReadyState
+        {
+            ReadyState = _ready
+        });
     }
 
     private void ClearNames()
     {
-        foreach (TMP_Text label in nameList)
+        foreach (PlayerPlateDisplay display in playerPlates)
         {
-            label.text = string.Empty;
+            display.ResetDisplay();
         }
     }
 
@@ -52,5 +77,6 @@ public class LobbyUI : MonoBehaviour
     private void OnDisable()
     {
         InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
     }
 }

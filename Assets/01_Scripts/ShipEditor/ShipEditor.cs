@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class ShipEditor : MonoBehaviour
@@ -9,12 +10,16 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private GameObject noMoneyPopUp;
     [SerializeField] private GameObject cantBePlacedPopUp;
     [SerializeField] private HexTransform hexTransform;
+    [SerializeField] private ShipEditorStats shipEditorStats;
+    [SerializeField] private NetEditorModule netEditorBridgeRef;
 
+    [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
     public NetShipEditorData NetShipEditorData { get; private set; }
 
-    private Dictionary<HexCoordinate, NetEditorModule> _editorModules = new();
+    private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
     private NetEditorModule _heldNetEditorModule;
-    private int _turretCount;
+
+    private List<NetEditorModule> editorModuleList;
 
     public void SetPlayerShipEditor(NetShipEditorData netShipEditorData)
     {
@@ -31,7 +36,13 @@ public class ShipEditor : MonoBehaviour
         editCamera ??= Camera.main;
         ModuleSelectionButton.ModuleSelected -= SpawnPart;
         ModuleSelectionButton.ModuleSelected += SpawnPart;
+        editorModuleList = new List<NetEditorModule> // collection initialization syntax uwu
+        {
+            netEditorBridgeRef
+        };
+        shipEditorStats.GetTotalStats(editorModuleList);
     }
+
     private void OnDestroy()
     {
         ModuleSelectionButton.ModuleSelected -= SpawnPart;
@@ -52,6 +63,7 @@ public class ShipEditor : MonoBehaviour
         yield return new WaitForSeconds(1f);
         noMoneyPopUp.SetActive(false);
     }
+
     private IEnumerator CantBePlacedPopUp()
     {
         cantBePlacedPopUp.SetActive(true);
@@ -71,7 +83,9 @@ public class ShipEditor : MonoBehaviour
             return false;
         }
 
-        _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
+        _heldNetEditorModule =
+            Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
+        _heldNetEditorModule.Initialize();
         NetShipEditorData.ResourceStorage.C_PayForModule(moduleID);
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
         return true;
@@ -79,15 +93,29 @@ public class ShipEditor : MonoBehaviour
 
     private void ModuleHolding()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
         Vector2 mousePosWorld = editCamera.ScreenToWorldPoint(Input.mousePosition).xy();
         HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
         if (_heldNetEditorModule != null)
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
                 if (CanPlaceModule(cursorHexCoord))
                 {
+                    NetShipEditorData.ModuleStorage.C_AddModule(cursorHexCoord, _heldNetEditorModule.ModuleID,
+                        _heldNetEditorModule.PlacedRotation);
+                    NetModuleID id = _heldNetEditorModule.ModuleID;
                     PlaceModule(cursorHexCoord);
+                    FMODUnity.RuntimeManager.PlayOneShot(modulePlacedEvent, transform.position);
+                    if (Keyboard.current.leftShiftKey.isPressed)
+                    {
+                        SpawnPart(id);
+                    }
+
                     return;
                 }
                 else
@@ -96,6 +124,7 @@ public class ShipEditor : MonoBehaviour
                     StartCoroutine(CantBePlacedPopUp());
                 }
             }
+
             _heldNetEditorModule.transform.position = mousePosWorld.xy0();
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
@@ -104,18 +133,23 @@ public class ShipEditor : MonoBehaviour
                 _heldNetEditorModule = null;
                 return;
             }
-            if (Keyboard.current.eKey.wasPressedThisFrame && DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
+
+            if (Keyboard.current.eKey.wasPressedThisFrame &&
+                DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
             {
                 _heldNetEditorModule.C_RotateClockwise();
             }
-            if (Keyboard.current.qKey.wasPressedThisFrame && DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
+
+            if (Keyboard.current.qKey.wasPressedThisFrame &&
+                DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
             {
                 _heldNetEditorModule.C_RotateCounterclockwise();
             }
         }
         else
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame && _editorModules.TryGetValue(cursorHexCoord, out NetEditorModule placedModule))
+            if (Mouse.current.leftButton.wasPressedThisFrame &&
+                _editorModulesMap.TryGetValue(cursorHexCoord, out NetEditorModule placedModule))
             {
                 _heldNetEditorModule = placedModule;
                 RemoveModule(placedModule);
@@ -131,17 +165,19 @@ public class ShipEditor : MonoBehaviour
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
             HexCoordinate coord = rootCoord + localCoord;
-            _editorModules[coord] = _heldNetEditorModule;
+            _editorModulesMap[coord] = _heldNetEditorModule;
 
             if (NetShipEditorData.ModuleStorage.SC_IsCoordinateOccupied(coord))
             {
                 return false;
             }
+
             if (NetShipEditorData.ModuleStorage.SC_IsNeighboringModule(coord))
             {
                 isAttached = true;
             }
         }
+
         return isAttached;
     }
 
@@ -151,11 +187,14 @@ public class ShipEditor : MonoBehaviour
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
             HexCoordinate coord = rootCoord + localCoord;
-            _editorModules[coord] = _heldNetEditorModule;
+            _editorModulesMap[coord] = _heldNetEditorModule;
         }
-        NetShipEditorData.ModuleStorage.C_AddModule(rootCoord, _heldNetEditorModule.ModuleID, _heldNetEditorModule.PlacedRotation);
+
+
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
+        editorModuleList.Add(_heldNetEditorModule);
+        shipEditorStats.GetTotalStats(editorModuleList);
         _heldNetEditorModule = null;
     }
 
@@ -164,9 +203,12 @@ public class ShipEditor : MonoBehaviour
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
         {
             HexCoordinate coord = moduleToRemove.PlacedLocation + localCoord;
-            _editorModules.Remove(coord);
+            _editorModulesMap.Remove(coord);
         }
+
         NetShipEditorData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
+        editorModuleList.Remove(_heldNetEditorModule);
+        shipEditorStats.GetTotalStats(editorModuleList);
     }
 
     public void SignalReady()
@@ -174,6 +216,23 @@ public class ShipEditor : MonoBehaviour
         if (NetShipEditorData.SignalReady())
         {
             gameObject.SetActive(false);
+        }
+    }
+
+    public void ReconstructShip(IEnumerable<ModulePlacementData> uniqueModules
+    )
+    {
+        foreach (ModulePlacementData uniqueModule in uniqueModules)
+        {
+            _heldNetEditorModule = Instantiate(uniqueModule.ModuleID.GetModuleData().ShipEditorPrefab);
+            _heldNetEditorModule.Initialize();
+
+            for (int i = 0; i < uniqueModule.Rotation; i++)
+            {
+                _heldNetEditorModule.C_RotateClockwise();
+            }
+
+            PlaceModule(uniqueModule.RootCoordinate);
         }
     }
 }
