@@ -352,7 +352,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""name"": ""Submit"",
                     ""type"": ""Button"",
                     ""id"": ""7607c7b6-cd76-4816-beef-bd0341cfe950"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -361,7 +361,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""name"": ""Cancel"",
                     ""type"": ""Button"",
                     ""id"": ""15cef263-9014-4fd5-94d9-4e4a6234a6ef"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -890,6 +890,220 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""ShipEditor"",
+            ""id"": ""a1748d7e-3a56-43ea-aa10-9a4890b66cf5"",
+            ""actions"": [
+                {
+                    ""name"": ""ModulePickOrDrop"",
+                    ""type"": ""Button"",
+                    ""id"": ""9e6caf9b-ecbd-40bb-88ca-069c43ce50ae"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ModuleSell"",
+                    ""type"": ""Button"",
+                    ""id"": ""5d3935d3-93d9-42aa-851b-4e5ca856a455"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateModuleLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""df5fc70e-69e0-4481-b445-0684b58d0051"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateModuleRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""a2c1e9da-bb7a-46c1-b46f-6150480282e7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EnergyOverview"",
+                    ""type"": ""Button"",
+                    ""id"": ""735cbaad-9150-4afd-97fe-da9ed19d0b24"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""HealthOverview"",
+                    ""type"": ""Button"",
+                    ""id"": ""0350fedd-e867-4421-8201-417f4a752046"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MoveModule"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""7b5a934f-e479-44fe-bddd-1704fd722f5b"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""d31d6626-8dc7-43b9-8f0b-77aaa7ceae2a"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""ModulePickOrDrop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2d5dc87d-ca0f-4a97-8c5d-86be2518ca99"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ModulePickOrDrop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""99a2203b-f7e2-4060-a647-ab29e4c0505f"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""ModuleSell"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e6caa5b2-dd1e-42e6-8786-f1d91a41e85c"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ModuleSell"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0bee16d5-6fab-4e0c-8536-ce41ab1c7bc5"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""RotateModuleLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e27ae903-1782-43d5-901e-e160e8015ae4"",
+                    ""path"": ""<Keyboard>/#(Q)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""RotateModuleLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2d504c2d-2ddf-4dba-9751-e7d4bed1ec83"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""RotateModuleRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ab8f5238-8a90-4844-ad58-c0ac6eca74f6"",
+                    ""path"": ""<Keyboard>/#(E)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""RotateModuleRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""876b2734-cb07-4b2f-97b4-7ae7bd585f0f"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EnergyOverview"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""081e641c-48df-4739-8fc8-a6bdaadc459c"",
+                    ""path"": ""<Keyboard>/#(C)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EnergyOverview"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a9e09050-fb22-4e10-8f11-311d3817f624"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HealthOverview"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0d3216bd-f410-4f5d-b18e-08f82396b153"",
+                    ""path"": ""<Keyboard>/#(V)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HealthOverview"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""995e71cf-b2af-4fc5-b887-a92c3b1ce49d"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MoveModule"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -945,6 +1159,15 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         m_UI_SwapTabRight = m_UI.FindAction("SwapTabRight", throwIfNotFound: true);
         m_UI_SwapTabLeft = m_UI.FindAction("SwapTabLeft", throwIfNotFound: true);
+        // ShipEditor
+        m_ShipEditor = asset.FindActionMap("ShipEditor", throwIfNotFound: true);
+        m_ShipEditor_ModulePickOrDrop = m_ShipEditor.FindAction("ModulePickOrDrop", throwIfNotFound: true);
+        m_ShipEditor_ModuleSell = m_ShipEditor.FindAction("ModuleSell", throwIfNotFound: true);
+        m_ShipEditor_RotateModuleLeft = m_ShipEditor.FindAction("RotateModuleLeft", throwIfNotFound: true);
+        m_ShipEditor_RotateModuleRight = m_ShipEditor.FindAction("RotateModuleRight", throwIfNotFound: true);
+        m_ShipEditor_EnergyOverview = m_ShipEditor.FindAction("EnergyOverview", throwIfNotFound: true);
+        m_ShipEditor_HealthOverview = m_ShipEditor.FindAction("HealthOverview", throwIfNotFound: true);
+        m_ShipEditor_MoveModule = m_ShipEditor.FindAction("MoveModule", throwIfNotFound: true);
     }
 
     ~@GameActions()
@@ -952,6 +1175,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Camera.enabled, "This will cause a leak and performance issues, GameActions.Camera.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, GameActions.Player.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, GameActions.UI.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_ShipEditor.enabled, "This will cause a leak and performance issues, GameActions.ShipEditor.Disable() has not been called.");
     }
 
     /// <summary>
@@ -1465,6 +1689,168 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="UIActions" /> instance referencing this action map.
     /// </summary>
     public UIActions @UI => new UIActions(this);
+
+    // ShipEditor
+    private readonly InputActionMap m_ShipEditor;
+    private List<IShipEditorActions> m_ShipEditorActionsCallbackInterfaces = new List<IShipEditorActions>();
+    private readonly InputAction m_ShipEditor_ModulePickOrDrop;
+    private readonly InputAction m_ShipEditor_ModuleSell;
+    private readonly InputAction m_ShipEditor_RotateModuleLeft;
+    private readonly InputAction m_ShipEditor_RotateModuleRight;
+    private readonly InputAction m_ShipEditor_EnergyOverview;
+    private readonly InputAction m_ShipEditor_HealthOverview;
+    private readonly InputAction m_ShipEditor_MoveModule;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "ShipEditor".
+    /// </summary>
+    public struct ShipEditorActions
+    {
+        private @GameActions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public ShipEditorActions(@GameActions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/ModulePickOrDrop".
+        /// </summary>
+        public InputAction @ModulePickOrDrop => m_Wrapper.m_ShipEditor_ModulePickOrDrop;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/ModuleSell".
+        /// </summary>
+        public InputAction @ModuleSell => m_Wrapper.m_ShipEditor_ModuleSell;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/RotateModuleLeft".
+        /// </summary>
+        public InputAction @RotateModuleLeft => m_Wrapper.m_ShipEditor_RotateModuleLeft;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/RotateModuleRight".
+        /// </summary>
+        public InputAction @RotateModuleRight => m_Wrapper.m_ShipEditor_RotateModuleRight;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/EnergyOverview".
+        /// </summary>
+        public InputAction @EnergyOverview => m_Wrapper.m_ShipEditor_EnergyOverview;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/HealthOverview".
+        /// </summary>
+        public InputAction @HealthOverview => m_Wrapper.m_ShipEditor_HealthOverview;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/MoveModule".
+        /// </summary>
+        public InputAction @MoveModule => m_Wrapper.m_ShipEditor_MoveModule;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_ShipEditor; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="ShipEditorActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(ShipEditorActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="ShipEditorActions" />
+        public void AddCallbacks(IShipEditorActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ShipEditorActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ShipEditorActionsCallbackInterfaces.Add(instance);
+            @ModulePickOrDrop.started += instance.OnModulePickOrDrop;
+            @ModulePickOrDrop.performed += instance.OnModulePickOrDrop;
+            @ModulePickOrDrop.canceled += instance.OnModulePickOrDrop;
+            @ModuleSell.started += instance.OnModuleSell;
+            @ModuleSell.performed += instance.OnModuleSell;
+            @ModuleSell.canceled += instance.OnModuleSell;
+            @RotateModuleLeft.started += instance.OnRotateModuleLeft;
+            @RotateModuleLeft.performed += instance.OnRotateModuleLeft;
+            @RotateModuleLeft.canceled += instance.OnRotateModuleLeft;
+            @RotateModuleRight.started += instance.OnRotateModuleRight;
+            @RotateModuleRight.performed += instance.OnRotateModuleRight;
+            @RotateModuleRight.canceled += instance.OnRotateModuleRight;
+            @EnergyOverview.started += instance.OnEnergyOverview;
+            @EnergyOverview.performed += instance.OnEnergyOverview;
+            @EnergyOverview.canceled += instance.OnEnergyOverview;
+            @HealthOverview.started += instance.OnHealthOverview;
+            @HealthOverview.performed += instance.OnHealthOverview;
+            @HealthOverview.canceled += instance.OnHealthOverview;
+            @MoveModule.started += instance.OnMoveModule;
+            @MoveModule.performed += instance.OnMoveModule;
+            @MoveModule.canceled += instance.OnMoveModule;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="ShipEditorActions" />
+        private void UnregisterCallbacks(IShipEditorActions instance)
+        {
+            @ModulePickOrDrop.started -= instance.OnModulePickOrDrop;
+            @ModulePickOrDrop.performed -= instance.OnModulePickOrDrop;
+            @ModulePickOrDrop.canceled -= instance.OnModulePickOrDrop;
+            @ModuleSell.started -= instance.OnModuleSell;
+            @ModuleSell.performed -= instance.OnModuleSell;
+            @ModuleSell.canceled -= instance.OnModuleSell;
+            @RotateModuleLeft.started -= instance.OnRotateModuleLeft;
+            @RotateModuleLeft.performed -= instance.OnRotateModuleLeft;
+            @RotateModuleLeft.canceled -= instance.OnRotateModuleLeft;
+            @RotateModuleRight.started -= instance.OnRotateModuleRight;
+            @RotateModuleRight.performed -= instance.OnRotateModuleRight;
+            @RotateModuleRight.canceled -= instance.OnRotateModuleRight;
+            @EnergyOverview.started -= instance.OnEnergyOverview;
+            @EnergyOverview.performed -= instance.OnEnergyOverview;
+            @EnergyOverview.canceled -= instance.OnEnergyOverview;
+            @HealthOverview.started -= instance.OnHealthOverview;
+            @HealthOverview.performed -= instance.OnHealthOverview;
+            @HealthOverview.canceled -= instance.OnHealthOverview;
+            @MoveModule.started -= instance.OnMoveModule;
+            @MoveModule.performed -= instance.OnMoveModule;
+            @MoveModule.canceled -= instance.OnMoveModule;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="ShipEditorActions.UnregisterCallbacks(IShipEditorActions)" />.
+        /// </summary>
+        /// <seealso cref="ShipEditorActions.UnregisterCallbacks(IShipEditorActions)" />
+        public void RemoveCallbacks(IShipEditorActions instance)
+        {
+            if (m_Wrapper.m_ShipEditorActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="ShipEditorActions.AddCallbacks(IShipEditorActions)" />
+        /// <seealso cref="ShipEditorActions.RemoveCallbacks(IShipEditorActions)" />
+        /// <seealso cref="ShipEditorActions.UnregisterCallbacks(IShipEditorActions)" />
+        public void SetCallbacks(IShipEditorActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ShipEditorActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ShipEditorActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="ShipEditorActions" /> instance referencing this action map.
+    /// </summary>
+    public ShipEditorActions @ShipEditor => new ShipEditorActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -1633,5 +2019,62 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSwapTabLeft(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ShipEditor" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="ShipEditorActions.AddCallbacks(IShipEditorActions)" />
+    /// <seealso cref="ShipEditorActions.RemoveCallbacks(IShipEditorActions)" />
+    public interface IShipEditorActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "ModulePickOrDrop" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnModulePickOrDrop(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ModuleSell" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnModuleSell(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "RotateModuleLeft" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRotateModuleLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "RotateModuleRight" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRotateModuleRight(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "EnergyOverview" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnEnergyOverview(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "HealthOverview" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnHealthOverview(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MoveModule" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMoveModule(InputAction.CallbackContext context);
     }
 }

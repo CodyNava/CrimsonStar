@@ -11,6 +11,7 @@ public class InputManager : SceneSingleton<InputManager>
     {
         playerInput.actions = Keybinds.Actions.asset;
         Keybinds.Actions.UI.Enable();
+        Keybinds.Actions.ShipEditor.Enable();
     }
 
     public static void EnableGameControls()
