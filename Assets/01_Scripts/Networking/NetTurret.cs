@@ -13,8 +13,6 @@ public class NetTurret : NetworkBehaviour
     private const float MaxPassedTime = 0.3f;
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
-
-
     private float _accumulatedTime;
 
     public override void OnStartClient()
@@ -27,6 +25,11 @@ public class NetTurret : NetworkBehaviour
         _nextMuzzleFlash = muzzleFlashA;
     }
 
+    private bool CanFire()
+    {
+        return turretModule.Bridge.PositionHasEnergy(transform.position);
+    }
+
     private void LateUpdate()
     {
         if (!IsOwner) return;
@@ -36,6 +39,7 @@ public class NetTurret : NetworkBehaviour
         if (_accumulatedTime < netTurretData.Cooldown) return;
         
         if (!C_IsAttacking()) return;
+        if (!CanFire()) return;
 
         if (_nextSpawnTransform == spawnTransformA)
         {
