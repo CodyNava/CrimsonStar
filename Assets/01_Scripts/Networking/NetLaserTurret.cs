@@ -1,4 +1,5 @@
-﻿using FishNet.Object;
+﻿using System.Collections.Generic;
+using FishNet.Object;
 using UnityEngine;
 using UnityEngine.VFX; 
 public class NetLaserTurret : NetworkBehaviour
@@ -18,6 +19,16 @@ public class NetLaserTurret : NetworkBehaviour
     private bool _justShot;
     
 
+    private bool CanFire()
+    {
+        Debug.Log($"PowerGrid: {turretModule.Bridge.PowerGrid.Count}");
+        foreach (KeyValuePair<HexCoordinate,int> gridEntry in turretModule.Bridge.PowerGrid)
+        {
+            Debug.Log($"PoweredCoords: [{gridEntry.Key.Q},{gridEntry.Key.R},{gridEntry.Key.S}]: {gridEntry.Value}");
+        }
+        Debug.Log($"TurretCoords: [{turretModule.RootCoordinate.Q},{turretModule.RootCoordinate.R},{turretModule.RootCoordinate.S}]");
+        return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
+    }
    
     private void Update()
     {
@@ -27,6 +38,7 @@ public class NetLaserTurret : NetworkBehaviour
         
 
         if (_cooldownTime < netLaserTurretData.Cooldown) return;
+        if (!CanFire()) return;
        // if (!C_IsAttacking()) return;
         
         if (Keybinds.Actions.Player.Attack.IsPressed())

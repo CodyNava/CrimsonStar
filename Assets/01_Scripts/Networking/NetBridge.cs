@@ -23,6 +23,7 @@ public class NetBridge : NetworkBehaviour
 
     private Dictionary<HexCoordinate, NetGameplayModule> _modules = new();
     private Dictionary<HexCoordinate, int> _powerGrid = new();
+    public Dictionary<HexCoordinate, int> PowerGrid => _powerGrid;
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
     
     private NetworkCollision2D _networkCollision2D;
