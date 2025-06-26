@@ -40,7 +40,14 @@ public class ShipEditor : MonoBehaviour
 
     private void Update()
     {
-        ModuleHolding();
+        if (InputManager.Instance.IsGamepadUsed)
+        {
+            ModueHoldingGamePad();
+        }
+        else
+        {
+            ModuleHoldingKeyboard();
+        }
     }
 
     private void Start()
@@ -141,7 +148,13 @@ public class ShipEditor : MonoBehaviour
         return true;
     }
 
-    private void ModuleHolding()
+    private void ModueHoldingGamePad()
+    {
+        
+        
+    }
+
+    private void ModuleHoldingKeyboard()
     {
         if (EventSystem.current.IsPointerOverGameObject())
         {
@@ -152,7 +165,7 @@ public class ShipEditor : MonoBehaviour
         HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
         if (_heldNetEditorModule != null)
         {
-            if (Mouse.current.leftButton.wasReleasedThisFrame)
+            if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasPerformedThisFrame())
             {
                 if (CanPlaceModule(cursorHexCoord))
                 {
@@ -175,7 +188,7 @@ public class ShipEditor : MonoBehaviour
             }
 
             _heldNetEditorModule.transform.position = mousePosWorld.xy0();
-            if (Input.GetKeyDown(KeyCode.Mouse1))
+            if (Keybinds.Actions.ShipEditor.ModuleSell.WasPerformedThisFrame())
             {
                 PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
@@ -183,13 +196,13 @@ public class ShipEditor : MonoBehaviour
                 return;
             }
 
-            if (Keyboard.current.eKey.wasPressedThisFrame &&
+            if (Keybinds.Actions.ShipEditor.RotateModuleRight.WasPerformedThisFrame() &&
                 DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
             {
                 _heldNetEditorModule.C_RotateClockwise();
             }
 
-            if (Keyboard.current.qKey.wasPressedThisFrame &&
+            if (Keybinds.Actions.ShipEditor.RotateModuleLeft.WasPerformedThisFrame() &&
                 DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
             {
                 _heldNetEditorModule.C_RotateCounterclockwise();
@@ -197,7 +210,7 @@ public class ShipEditor : MonoBehaviour
         }
         else
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame &&
+            if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasPerformedThisFrame() &&
                 _editorModulesMap.TryGetValue(cursorHexCoord, out NetEditorModule placedModule))
             {
                 _heldNetEditorModule = placedModule;

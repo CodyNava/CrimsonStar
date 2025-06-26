@@ -27,7 +27,7 @@ public class NetTurret : NetworkBehaviour
 
     private bool CanFire()
     {
-        return turretModule.Bridge.PositionHasEnergy(transform.position);
+        return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
     }
 
     private void LateUpdate()
