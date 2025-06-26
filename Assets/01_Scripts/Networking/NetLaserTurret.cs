@@ -30,7 +30,7 @@ public class NetLaserTurret : NetworkBehaviour
         
 
         if (_cooldownTime < netLaserTurretData.Cooldown) return;
-        if (!C_IsAttacking()) return;
+       // if (!C_IsAttacking()) return;
         if (!CanFire())
         {
             //todo here vfx/shader for "noEnergy"
