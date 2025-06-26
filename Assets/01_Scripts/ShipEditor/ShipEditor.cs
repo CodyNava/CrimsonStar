@@ -24,6 +24,10 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private NetEditorModule netEditorBridgeRef;
     [SerializeField] private Button energyViewToggleButton;
     [SerializeField] private Material outlineShader;
+    [SerializeField] private Vector2 moveInput;
+    [SerializeField] private GameObject lastSelected;
+    [SerializeField] private float moduleMoveSpeedGP;
+
     private Color originalOutlineShaderColor;
     private float originalOutlineShaderStrenght;
     [SerializeField] public bool inEnergyView;
@@ -140,19 +144,84 @@ public class ShipEditor : MonoBehaviour
             return false;
         }
 
-        _heldNetEditorModule =
-            Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position, transform.rotation);
+        lastSelected = EventSystem.current.currentSelectedGameObject;
+        if (InputManager.Instance.IsGamepadUsed)
+        {
+            Vector3 spawnVec = new Vector3(0f, 0f, 0f);
+            _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, spawnVec, transform.rotation);
+        }
+        else
+        {
+            _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position,
+                transform.rotation);
+        }
+
         _heldNetEditorModule.Initialize();
         PlayerData.C_PayForModule(moduleID);
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
         return true;
     }
 
-    private void ModueHoldingGamePad()
+    private void ModueHoldingGamePad() // Important for radial menu
     {
-        
-        
+        var t = Time.deltaTime;
+        var v = moduleMoveSpeedGP;
+        moveInput = Keybinds.Actions.ShipEditor.MoveModule.ReadValue<Vector2>();
+        moveInput.Normalize();
+        // Vector2 mousePosWorld = editCamera.ScreenToWorldPoint(Input.mousePosition).xy();
+        Debug.Log(moveInput);
+        HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(_heldNetEditorModule.transform.position);
+
+        if (_heldNetEditorModule != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            _heldNetEditorModule.transform.Translate(moveInput.x * v * t, moveInput.y * v * t, 0f, Space.World);
+            if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasPerformedThisFrame())
+            {
+                if (CanPlaceModule(cursorHexCoord))
+                {
+                    PlayerData.ModuleStorage.C_AddModule(cursorHexCoord, _heldNetEditorModule.ModuleID,
+                        _heldNetEditorModule.PlacedRotation);
+                    NetModuleID id = _heldNetEditorModule.ModuleID;
+                    PlaceModule(cursorHexCoord);
+                    FMODUnity.RuntimeManager.PlayOneShot(modulePlacedEvent, transform.position);
+                    if (Keyboard.current.leftShiftKey.isPressed)
+                    {
+                        SpawnPart(id);
+                    }
+
+                    return;
+                }
+                else
+                {
+                    StartCoroutine(CantBePlacedPopUp(IsReactorInRangeOfReactor(cursorHexCoord)));
+                }
+            }
+
+            //_heldNetEditorModule.transform.position = moveInput.xy0();
+            if (Keybinds.Actions.ShipEditor.ModuleSell.WasPerformedThisFrame())
+            {
+                PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
+                Destroy(_heldNetEditorModule.gameObject);
+                _heldNetEditorModule = null;
+                EventSystem.current.SetSelectedGameObject(lastSelected);
+                return;
+            }
+
+            if (Keybinds.Actions.ShipEditor.RotateModuleRight.WasPerformedThisFrame() &&
+                DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
+            {
+                _heldNetEditorModule.C_RotateClockwise();
+            }
+
+            if (Keybinds.Actions.ShipEditor.RotateModuleLeft.WasPerformedThisFrame() &&
+                DataProvider.Instance.ModuleDB.ModuleData[_heldNetEditorModule.ModuleID].CanRotate)
+            {
+                _heldNetEditorModule.C_RotateCounterclockwise();
+            }
+        }
     }
+
 
     private void ModuleHoldingKeyboard()
     {
@@ -353,10 +422,16 @@ public class ShipEditor : MonoBehaviour
         _editorModuleList.Add(_heldNetEditorModule);
         shipEditorStats.GetTotalStats(_editorModuleList);
         _heldNetEditorModule = null;
+        EventSystem.current.SetSelectedGameObject(lastSelected);
     }
 
     public void RemoveModule(NetEditorModule moduleToRemove)
     {
+        if (InputManager.Instance.IsGamepadUsed)
+        {
+            _heldNetEditorModule = moduleToRemove;
+        }
+
         if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
             AddPowerToEnergyMap(moduleToRemove.PlacedLocation, false, _heldNetEditorModule.ModuleData.EffectRange);
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
