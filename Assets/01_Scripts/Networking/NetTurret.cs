@@ -1,4 +1,5 @@
-﻿using FishNet.Object;
+﻿using System.Collections.Generic;
+using FishNet.Object;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -25,10 +26,15 @@ public class NetTurret : NetworkBehaviour
         _nextMuzzleFlash = muzzleFlashA;
     }
 
-   // private bool CanFire()
-  //  {
-   //     return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
-    //}
+    private bool CanFire()
+    {
+        Debug.Log($"PowerGrid: {turretModule.Bridge.PowerGrid.Count}");
+        foreach (KeyValuePair<HexCoordinate,int> gridEntry in turretModule.Bridge.PowerGrid)
+        {
+            Debug.Log($"PoweredCoords: [{gridEntry.Key.Q},{gridEntry.Key.R},{gridEntry.Key.S}]: {gridEntry.Value}");
+        }
+        return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
+    }
 
     private void LateUpdate()
     {
@@ -39,7 +45,7 @@ public class NetTurret : NetworkBehaviour
         if (_accumulatedTime < netTurretData.Cooldown) return;
         
         if (!C_IsAttacking()) return;
-       // if (!CanFire()) return;
+       if (!CanFire()) return;
 
         if (_nextSpawnTransform == spawnTransformA)
         {
