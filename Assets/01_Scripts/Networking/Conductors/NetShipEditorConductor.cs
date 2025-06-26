@@ -76,7 +76,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     public IEnumerator PlayIntroSound()
     {
         intro.Play();
-        yield return new WaitForSecondsRealtime(7f);
+        yield return new WaitForSecondsRealtime(6.5f);
         AdvanceToGameplayScene();
     }
 
