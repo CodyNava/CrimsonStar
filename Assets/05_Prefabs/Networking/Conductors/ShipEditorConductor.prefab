@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7311457724714896298}
   - component: {fileID: 505200247359620666}
   - component: {fileID: 2144009910062883374}
+  - component: {fileID: -6577252655251274879}
   m_Layer: 0
   m_Name: ShipEditorConductor
   m_TagString: Untagged
@@ -48,10 +49,9 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 2144009910062883374}
   _networkObjectCache: {fileID: 2144009910062883374}
-  netGameplayConductor: {fileID: 6680581375134339915, guid: 33c7ec8e18daee24e8b32f2499eb4ee7, type: 3}
-  shipEditorDataPrefab: {fileID: 717885967007016320, guid: d31477ac24c39a84da77ef5d0c635e71, type: 3}
   minimumResourceCount: 150
   shipEditorTimerDuration: 120
+  intro: {fileID: -6577252655251274879}
 --- !u!114 &2144009910062883374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,3 +105,36 @@ MonoBehaviour:
     Rotation: {x: 0, y: 0, z: 0, w: 1}
     Scale: {x: 1, y: 1, z: 1}
     IsValid: 1
+--- !u!114 &-6577252655251274879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2546334515143093412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -648999247
+      Data2: 1338260416
+      Data3: 173133733
+      Data4: 97490231
+    Path: event:/Voice/Announcer_Time
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 1
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Announcer-time-steps
+    Value: 0
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20

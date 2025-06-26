@@ -16,6 +16,7 @@ public class NetGameplayModule : NetworkBehaviour
     [SerializeField] private VisualEffect damagedVFX;
     [SerializeField] private MeshRenderer damagedMaterial;
 
+    [SerializeField] private FMODUnity.EventReference hitFeedbackSFX;
     [SerializeField] private FMODUnity.EventReference damagedModuleSFXEvent;
     FMOD.Studio.EventInstance _damagedModuleSFXInstance;
 
@@ -110,6 +111,7 @@ public class NetGameplayModule : NetworkBehaviour
 
         damagedVFX.SetFloat("DamageInput", 1 - health);
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
+        FMODUnity.RuntimeManager.PlayOneShot(hitFeedbackSFX, transform.position);
         //_damagedModuleSFXInstance = FMODUnity.RuntimeManager.CreateInstance(damagedModuleSFXEvent);
         //_damagedModuleSFXInstance.start();
         //Todo: Implement VFX Here
@@ -131,7 +133,7 @@ public class NetGameplayModule : NetworkBehaviour
             {
                 gameplayConductor.S_ReportKillInstance(attackerID, _bridge.PlayerID);
             }
-            
+
             S_DestroyModule();
         }
 
