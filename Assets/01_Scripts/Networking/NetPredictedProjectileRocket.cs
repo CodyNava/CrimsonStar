@@ -60,7 +60,7 @@ public class NetPredictedProjectileRocket : MonoBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(projectileDamage, _attackerID);
+            // Spawn Explosion here
         }
         Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
         Destroy(gameObject);
