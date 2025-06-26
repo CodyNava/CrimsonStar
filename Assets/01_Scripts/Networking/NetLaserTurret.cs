@@ -18,10 +18,7 @@ public class NetLaserTurret : NetworkBehaviour
     private bool _justShot;
     
 
-    private bool CanFire()
-    {
-        return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
-    }
+   
     private void Update()
     {
         if (!IsOwner) return;
@@ -31,11 +28,7 @@ public class NetLaserTurret : NetworkBehaviour
 
         if (_cooldownTime < netLaserTurretData.Cooldown) return;
        // if (!C_IsAttacking()) return;
-        if (!CanFire())
-        {
-            //todo here vfx/shader for "noEnergy"
-            return;
-        }
+        
         if (Keybinds.Actions.Player.Attack.IsPressed())
         {
             _chargeTime += Time.deltaTime;
