@@ -89,6 +89,7 @@ public class NetBridge : NetworkBehaviour
     [ObserversRpc]
     private void C_AddToPowerGrid(HexCoordinate rootCoordinate, int range)
     {
+        Debug.Log($"Added to PowerGrid");
         foreach (var coordinate in rootCoordinate.CoordinatesInRange(range))
         {
             int power = _powerGrid.GetValueOrDefault(coordinate);
