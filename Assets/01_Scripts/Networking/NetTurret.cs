@@ -45,7 +45,6 @@ public class NetTurret : NetworkBehaviour
         if (_accumulatedTime < netTurretData.Cooldown) return;
         
         if (!C_IsAttacking()) return;
-       if (!CanFire()) return;
 
         if (_nextSpawnTransform == spawnTransformA)
         {
