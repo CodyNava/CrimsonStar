@@ -4,6 +4,8 @@ using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
 using _01_Scripts.Ship.ModuleControllers;
 using FishNet.Component.Prediction;
+using FishNet.Connection;
+using FishNet.Transporting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -27,13 +29,15 @@ public class NetBridge : NetworkBehaviour
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
     
     private NetworkCollision2D _networkCollision2D;
-
+    
+    [Server]
     public void S_AttachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         _baseStats.Value = _baseStats.Value.Combine(module.ModuleID.GetModuleData().BaseStats);
         S_AddModuleCoordinates(module, rootCoordinate);
     }
 
+    [Server]
     public void S_DetachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         _baseStats.Value = _baseStats.Value.Subtract(module.ModuleID.GetModuleData().BaseStats);
@@ -52,6 +56,7 @@ public class NetBridge : NetworkBehaviour
         }
     }
 
+    [Server]
     public void S_DetachLooseModules()
     {
         var looseModules = GetLooseModules();
@@ -60,9 +65,11 @@ public class NetBridge : NetworkBehaviour
             looseModule.S_DetachModule();
         }
     }
-
+    
+    [Server]
     private void S_AddModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
+        
         var moduleData = module.ModuleID.GetModuleData();
         var localHexCoordinates = moduleData.GetLocalHexCoordinates();
         foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
@@ -76,20 +83,19 @@ public class NetBridge : NetworkBehaviour
 
         if (module.ModuleID == NetModuleID.Reactor)
         {
-            foreach (var coordinate in rootCoordinate.CoordinatesInRange(2))
+            foreach (var coordinate in rootCoordinate.CoordinatesInRange(moduleData.EffectRange))
             {
                 int power = _powerGrid.GetValueOrDefault(coordinate);
                 _powerGrid[coordinate] = power + 1;
             }
-            
-            C_AddToPowerGrid(rootCoordinate, 2);
+
+            C_AddToPowerGrid(rootCoordinate, moduleData.EffectRange);
         }
     }
     
-    [ObserversRpc]
+    [ObserversRpc][Client]
     private void C_AddToPowerGrid(HexCoordinate rootCoordinate, int range)
     {
-        Debug.Log($"Added to PowerGrid");
         foreach (var coordinate in rootCoordinate.CoordinatesInRange(range))
         {
             int power = _powerGrid.GetValueOrDefault(coordinate);
@@ -97,6 +103,7 @@ public class NetBridge : NetworkBehaviour
         }
     }
     
+    [Server]
     private void S_RemoveModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         var moduleData = module.ModuleID.GetModuleData();
@@ -121,7 +128,7 @@ public class NetBridge : NetworkBehaviour
         }
     }
 
-    [ObserversRpc]
+    [ObserversRpc][Client]
     private void C_RemovePowerFromGrid(HexCoordinate rootCoordinate, int range)
     {
         foreach (HexCoordinate coordinate in rootCoordinate.CoordinatesInRange(range))
@@ -239,11 +246,13 @@ public class NetBridge : NetworkBehaviour
         return BridgeConfig.MaxAngularSpeed / (1 + _baseStats.Value.mass);
     }
 
+    [Server]
     public void S_SetDisplayName(string displayName)
     {
         _displayName.Value = displayName;
     }
 
+    [Server]
     public void S_SetPlayerID(ulong playerID)
     {
         _playerId.Value = playerID;
@@ -277,6 +286,7 @@ public class NetBridge : NetworkBehaviour
         }
     }
 
+    [Server]
     private void S_HandleCollision(Collider2D collider)
     {
         // TODO: Make magic number not magic anymore

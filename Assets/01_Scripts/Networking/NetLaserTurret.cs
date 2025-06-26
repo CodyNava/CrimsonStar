@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using FishNet.Connection;
 using FishNet.Object;
 using UnityEngine;
 using UnityEngine.VFX; 
@@ -11,22 +13,14 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private AudioSource shootingSound;
     private const float MaxPassedTime = 0.3f;
 
-    
-
     private float _accumulatedTime;
     private float _cooldownTime;
     private float _chargeTime;
     private bool _justShot;
-    
+
 
     private bool CanFire()
     {
-        Debug.Log($"PowerGrid: {turretModule.Bridge.PowerGrid.Count}");
-        foreach (KeyValuePair<HexCoordinate,int> gridEntry in turretModule.Bridge.PowerGrid)
-        {
-            Debug.Log($"PoweredCoords: [{gridEntry.Key.Q},{gridEntry.Key.R},{gridEntry.Key.S}]: {gridEntry.Value}");
-        }
-        Debug.Log($"TurretCoords: [{turretModule.RootCoordinate.Q},{turretModule.RootCoordinate.R},{turretModule.RootCoordinate.S}]");
         return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
     }
    
