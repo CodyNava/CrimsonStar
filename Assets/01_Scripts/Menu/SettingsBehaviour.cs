@@ -66,13 +66,11 @@ public class SettingsBehaviour : MonoBehaviour
         for (int i = 0; i < resolutions.Length; i++)
         {
             string resolutionOption =
-                $"{resolutions[i].width} x {resolutions[i].height} @{Mathf.RoundToInt((float)resolutions[i].refreshRateRatio.value)}";
+                $"{resolutions[i].width} x {resolutions[i].height}";
             resolutionOptions.Add(resolutionOption);
 
             if (resolutions[i].width == Screen.currentResolution.width &&
-                resolutions[i].height == Screen.currentResolution.height &&
-                Math.Abs(resolutions[i].refreshRateRatio.value - Screen.currentResolution.refreshRateRatio.value) <
-                0.0001f)
+                resolutions[i].height == Screen.currentResolution.height)
             {
                 currentResolutionIndex = i;
             }
