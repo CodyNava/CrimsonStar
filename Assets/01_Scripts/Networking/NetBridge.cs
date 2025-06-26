@@ -317,9 +317,8 @@ public class NetBridge : NetworkBehaviour
         gameplayModule.S_InflictDamage(damage, _playerId.Value);
     }
 
-    public bool PositionHasEnergy(Vector3 worldPosition)
+    public bool PositionHasEnergy(HexCoordinate coord)
     {
-        HexCoordinate coord = HexTransform.Layout.PositionXYToHex(worldPosition.xy());
         return _powerGrid.GetValueOrDefault(coord) > 0;
     }
 }
