@@ -2,5 +2,6 @@
 {
     DefaultMode,
     EasyMode,
-    HardcoreMode
+    HardcoreMode,
+    TestingMode
 }
