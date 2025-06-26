@@ -81,22 +81,28 @@ VisualEffect:
       - m_Value: 1
         m_Name: Lifetime_Flares
         m_Overridden: 1
-      - m_Value: 0.14
+      - m_Value: 0.18
         m_Name: Delay
+        m_Overridden: 1
+      - m_Value: 0
+        m_Name: Drag
         m_Overridden: 1
     m_Vector2f:
       m_Array:
-      - m_Value: {x: 15, y: 17}
+      - m_Value: {x: 10, y: 11.333333}
         m_Name: randomSize_Glow
         m_Overridden: 1
-      - m_Value: {x: 9.333333, y: 10.666667}
+      - m_Value: {x: 11.5, y: 12.5}
         m_Name: randomSize_ShockWave
+        m_Overridden: 1
+      - m_Value: {x: 0.35, y: 0.45}
+        m_Name: randomSize_DebriParticle
         m_Overridden: 1
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 1.4213836, y: 0.56631297, z: 0.29023013, w: 0}
+      - m_Value: {x: 2.1185474, y: 0.84407955, z: 0.43258289, w: 0}
         m_Name: Color_ShockWave 2
         m_Overridden: 1
     m_Uint:
@@ -116,13 +122,13 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggleDebriParticle
         m_Overridden: 0
-      - m_Value: 1
+      - m_Value: 0
         m_Name: ToggleSlowParticle
-        m_Overridden: 0
+        m_Overridden: 1
       - m_Value: 0
         m_Name: ToggleGlow
         m_Overridden: 0
-      - m_Value: 0
+      - m_Value: 1
         m_Name: ToggleShockWave
         m_Overridden: 1
       - m_Value: 0
@@ -130,7 +136,7 @@ VisualEffect:
         m_Overridden: 1
       - m_Value: 0
         m_Name: ToggleDenseFlare
-        m_Overridden: 0
+        m_Overridden: 1
 --- !u!73398921 &7581114035186873605
 VFXRenderer:
   serializedVersion: 1
@@ -225,7 +231,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 0.75
+      - m_Value: 0.6
         m_Name: Size
         m_Overridden: 1
       - m_Value: 10
@@ -329,7 +335,7 @@ GameObject:
   - component: {fileID: 6431193197934670072}
   - component: {fileID: 499211687323158369}
   m_Layer: 0
-  m_Name: VFX_SubExplosion
+  m_Name: VFX_ModuleExplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -421,13 +427,13 @@ VisualEffect:
       - m_Value: 1
         m_Name: Size
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 1.3
         m_Name: Lifetime_Emission
         m_Overridden: 1
       - m_Value: 1.5
         m_Name: Lifetime_Smoke
         m_Overridden: 1
-      - m_Value: 0.14
+      - m_Value: 0.18
         m_Name: Delay
         m_Overridden: 1
     m_Vector2f:
@@ -585,29 +591,47 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 0.1
+      - m_Value: 0.2
         m_Name: Size_BurstParticle
         m_Overridden: 1
-      - m_Value: 1.25
+      - m_Value: 1.6
         m_Name: Size
         m_Overridden: 1
       - m_Value: 20
         m_Name: Size_ImpactShockWave
         m_Overridden: 1
-      - m_Value: 15
+      - m_Value: 8
         m_Name: SpawnRate_BurstParticle
         m_Overridden: 1
       - m_Value: 0.1
         m_Name: Delay
         m_Overridden: 1
+      - m_Value: 0.2
+        m_Name: Lifetime_BurstParticle
+        m_Overridden: 1
+      - m_Value: 5
+        m_Name: Size_ImpactParticle
+        m_Overridden: 1
+      - m_Value: 0.2
+        m_Name: Lifetime_FlashImpact
+        m_Overridden: 1
     m_Vector2f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 2, y: 3}
+        m_Name: Velocity_BurstParticle
+        m_Overridden: 1
+      - m_Value: {x: 2, y: 10}
+        m_Name: Size2D_BurstParticle
+        m_Overridden: 1
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
       - m_Value: {x: 2.1185474, y: 0.77085423, z: 0.22183736, w: 0}
         m_Name: Color_ShockWave
+        m_Overridden: 1
+      - m_Value: {x: 0.16078429, y: 0.2894966, z: 0.8, w: 0}
+        m_Name: Color_FlashImpact
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -620,17 +644,23 @@ VisualEffect:
     m_Gradient:
       m_Array: []
     m_NamedObject:
-      m_Array: []
+      m_Array:
+      - m_Value: {fileID: 2800000, guid: e7d1095eb14947244893b9fdb25a8965, type: 3}
+        m_Name: Texture_FlashImpact
+        m_Overridden: 1
     m_Bool:
       m_Array:
       - m_Value: 0
         m_Name: ToggleLooping
         m_Overridden: 1
-      - m_Value: 0
+      - m_Value: 1
         m_Name: ToggleFlashImpact
         m_Overridden: 1
       - m_Value: 0
         m_Name: ToggleShockWave
+        m_Overridden: 1
+      - m_Value: 0
+        m_Name: ToggleDenseFlare
         m_Overridden: 1
 --- !u!73398921 &7880683666989354921
 VFXRenderer:
