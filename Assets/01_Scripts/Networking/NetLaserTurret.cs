@@ -1,4 +1,5 @@
-﻿using FishNet.Object;
+﻿using System.Collections.Generic;
+using FishNet.Object;
 using UnityEngine;
 using UnityEngine.VFX; 
 public class NetLaserTurret : NetworkBehaviour
@@ -18,6 +19,17 @@ public class NetLaserTurret : NetworkBehaviour
     private bool _justShot;
     
 
+    private bool CanFire()
+    {
+        Debug.Log($"PowerGrid: {turretModule.Bridge.PowerGrid.Count}");
+        foreach (KeyValuePair<HexCoordinate,int> gridEntry in turretModule.Bridge.PowerGrid)
+        {
+            Debug.Log($"PoweredCoords: [{gridEntry.Key.Q},{gridEntry.Key.R},{gridEntry.Key.S}]: {gridEntry.Value}");
+        }
+        Debug.Log($"TurretCoords: [{turretModule.RootCoordinate.Q},{turretModule.RootCoordinate.R},{turretModule.RootCoordinate.S}]");
+        return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
+    }
+   
     private void Update()
     {
         if (!IsOwner) return;
@@ -26,7 +38,9 @@ public class NetLaserTurret : NetworkBehaviour
         
 
         if (_cooldownTime < netLaserTurretData.Cooldown) return;
-
+        if (!CanFire()) return;
+       // if (!C_IsAttacking()) return;
+        
         if (Keybinds.Actions.Player.Attack.IsPressed())
         {
             _chargeTime += Time.deltaTime;
@@ -45,6 +59,19 @@ public class NetLaserTurret : NetworkBehaviour
         }
     }
 
+    private bool C_IsAttacking()
+    {
+        if (!InputManager.Instance.IsGamepadUsed)
+        {
+            return Keybinds.Actions.Player.Attack.IsPressed();
+        }
+        else
+        {
+            Vector2 input = Keybinds.Actions.Player.GamepadAim.ReadValue<Vector2>();
+            // TODO: The stick deadzone is implemented hardcoded via magic number. Consider to use dedicated Stick deadzone preprocessor in InputActions
+            return input.magnitude > 0.2f;
+        }
+    }
     private void C_ClientFire()
     {
         Vector3 position = spawnTransform.position;

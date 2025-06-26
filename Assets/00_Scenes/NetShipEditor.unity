@@ -2382,6 +2382,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4486367170447044340, guid: 9a48f429ce890be489551d32fc0627b1, type: 3}
   m_PrefabInstance: {fileID: 261896185}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &261950259 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1867122683000838351, guid: f00e7402640878a46868702d41f18b7c, type: 3}
+  m_PrefabInstance: {fileID: 2002627779}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &266859757
 GameObject:
   m_ObjectHideFlags: 0
@@ -13732,6 +13737,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1492587840606830359, guid: f00e7402640878a46868702d41f18b7c, type: 3}
+      propertyPath: volume
+      value: 
+      objectReference: {fileID: 1895696611}
     - target: {fileID: 1575995678527465010, guid: f00e7402640878a46868702d41f18b7c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -13776,6 +13785,10 @@ PrefabInstance:
       propertyPath: paused
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4037638846270217354, guid: f00e7402640878a46868702d41f18b7c, type: 3}
+      propertyPath: settingsMenuUI
+      value: 
+      objectReference: {fileID: 261950259}
     - target: {fileID: 4138563296555762708, guid: f00e7402640878a46868702d41f18b7c, type: 3}
       propertyPath: m_Name
       value: PauseMenu
@@ -13804,6 +13817,10 @@ PrefabInstance:
       propertyPath: m_OverrideSorting
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5579433983234176951, guid: f00e7402640878a46868702d41f18b7c, type: 3}
+      propertyPath: eventSystem
+      value: 
+      objectReference: {fileID: 191142853}
     - target: {fileID: 5999494305921130428, guid: f00e7402640878a46868702d41f18b7c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -13964,8 +13981,17 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9059778299016488505, guid: f00e7402640878a46868702d41f18b7c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 261950259}
+    - target: {fileID: 9059778299016488505, guid: f00e7402640878a46868702d41f18b7c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetActive
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8295497436703328967, guid: f00e7402640878a46868702d41f18b7c, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f00e7402640878a46868702d41f18b7c, type: 3}

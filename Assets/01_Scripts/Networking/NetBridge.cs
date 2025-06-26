@@ -23,6 +23,7 @@ public class NetBridge : NetworkBehaviour
 
     private Dictionary<HexCoordinate, NetGameplayModule> _modules = new();
     private Dictionary<HexCoordinate, int> _powerGrid = new();
+    public Dictionary<HexCoordinate, int> PowerGrid => _powerGrid;
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
     
     private NetworkCollision2D _networkCollision2D;
@@ -81,13 +82,14 @@ public class NetBridge : NetworkBehaviour
                 _powerGrid[coordinate] = power + 1;
             }
             
-            C_AddToPowerGrid(rootCoordinate, moduleData.EffectRange);
+            C_AddToPowerGrid(rootCoordinate, 2);
         }
     }
     
     [ObserversRpc]
     private void C_AddToPowerGrid(HexCoordinate rootCoordinate, int range)
     {
+        Debug.Log($"Added to PowerGrid");
         foreach (var coordinate in rootCoordinate.CoordinatesInRange(range))
         {
             int power = _powerGrid.GetValueOrDefault(coordinate);

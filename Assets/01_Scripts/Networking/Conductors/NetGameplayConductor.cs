@@ -163,7 +163,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         }
         S_CalculateRoundResults();
         _bridges.Clear();
-        yield return new WaitForSecondsRealtime(0.2f);
+        yield return new WaitForSecondsRealtime(3f);
         ServerManager.Broadcast(new NetGameplayBroadcasts.RoundResult());
         yield return new WaitForSecondsRealtime(endOfRoundTime);
         _spawnedPlayers = 0;
