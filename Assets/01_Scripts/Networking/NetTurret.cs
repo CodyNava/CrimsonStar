@@ -25,10 +25,10 @@ public class NetTurret : NetworkBehaviour
         _nextMuzzleFlash = muzzleFlashA;
     }
 
-    private bool CanFire()
-    {
-        return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
-    }
+   // private bool CanFire()
+  //  {
+   //     return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
+    //}
 
     private void LateUpdate()
     {
@@ -39,7 +39,7 @@ public class NetTurret : NetworkBehaviour
         if (_accumulatedTime < netTurretData.Cooldown) return;
         
         if (!C_IsAttacking()) return;
-        if (!CanFire()) return;
+       // if (!CanFire()) return;
 
         if (_nextSpawnTransform == spawnTransformA)
         {
