@@ -82,7 +82,7 @@ public class NetBridge : NetworkBehaviour
                 _powerGrid[coordinate] = power + 1;
             }
             
-            C_AddToPowerGrid(rootCoordinate, moduleData.EffectRange);
+            C_AddToPowerGrid(rootCoordinate, 2);
         }
     }
     
