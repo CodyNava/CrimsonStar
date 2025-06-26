@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class NetEditorModule : MonoBehaviour
 {
@@ -15,6 +17,7 @@ public class NetEditorModule : MonoBehaviour
     [field: SerializeField] public GameObject PowerMaterialGameObject { get; set; }
     [field: SerializeField] public Material PowerMaterial { get; set; }
     [field: SerializeField] public ShipEditor shipEditor { get; set; }
+    [field: SerializeField] public bool isSelected { get; set; }
     private Color originalColor;
     public void Initialize()
     {
@@ -31,8 +34,18 @@ public class NetEditorModule : MonoBehaviour
         shipEditor = FindFirstObjectByType<ShipEditor>();
         PowerMaterial = GetComponentInChildren<MeshRenderer>().material;
         originalColor = PowerMaterial.color;
+        
     }
 
+    public void PickUpModule()
+    {
+        shipEditor.RemoveModule(this);
+    }
+
+    public void ModuleSelected()
+    {
+        VisualTransform.gameObject.layer = isSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
+    }
     public void C_RotateClockwise()
     {
         for (int i = 0; i < LocalCoordinates.Count; i++)

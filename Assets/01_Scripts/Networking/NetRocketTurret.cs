@@ -1,56 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using FishNet.Connection;
-using FishNet.Object;
+﻿using FishNet.Object;
 using UnityEngine;
 using UnityEngine.VFX; 
-public class NetLaserTurret : NetworkBehaviour
+public class NetRocketTurret : NetworkBehaviour
 {
-    [SerializeField] private NetLaserTurretData netLaserTurretData;
+    [SerializeField] private NetRocketTurretData netRocketTurretData;
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private VisualEffect muzzleFlash;
-    [SerializeField] private AudioSource shootingSound;
+    [SerializeField] private FMODUnity.EventReference shotSound;
     private const float MaxPassedTime = 0.3f;
 
+   
     private float _accumulatedTime;
     private float _cooldownTime;
-    private float _chargeTime;
-    private bool _justShot;
 
-
-    private bool CanFire()
-    {
-        return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
-    }
-   
     private void Update()
     {
         if (!IsOwner) return;
         _accumulatedTime += Time.deltaTime;
-        _cooldownTime = Mathf.Min(_accumulatedTime, netLaserTurretData.Cooldown);
-        
+        _cooldownTime = Mathf.Min(_accumulatedTime, netRocketTurretData.Cooldown);
 
-        if (_cooldownTime < netLaserTurretData.Cooldown) return;
-        if (!CanFire()) return;
-       // if (!C_IsAttacking()) return;
+        if (_cooldownTime < netRocketTurretData.Cooldown) return;
+
+        if (!C_IsAttacking()) return;
         
-        if (Keybinds.Actions.Player.Attack.IsPressed())
-        {
-            _chargeTime += Time.deltaTime;
-            print(_chargeTime);
-            if (_chargeTime >= netLaserTurretData.ChargeTime)
-            {
-                _accumulatedTime = 0;
-                _chargeTime = 0;
-                _cooldownTime = 0f;
-                C_ClientFire();
-            }
-        }
-        else
-        {
-            _chargeTime = 0;
-        }
+        C_ClientFire();
+        
+        _accumulatedTime = 0f;
     }
 
     private bool C_IsAttacking()
@@ -66,6 +42,7 @@ public class NetLaserTurret : NetworkBehaviour
             return input.magnitude > 0.2f;
         }
     }
+    
     private void C_ClientFire()
     {
         Vector3 position = spawnTransform.position;
@@ -76,14 +53,14 @@ public class NetLaserTurret : NetworkBehaviour
             C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
         }
         S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
-        muzzleFlash.Play();
-        shootingSound.Play();
+        // muzzleFlash.Play();
+        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
 
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
         print("Spawning projectile");
-        NetPredictedProjectileLaser pp = Instantiate(netLaserTurretData.Projectile, position, Quaternion.identity);
+        NetPredictedProjectileRocket pp = Instantiate(netRocketTurretData.Projectile, position, Quaternion.identity);
         pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID);
     }
 
@@ -104,5 +81,6 @@ public class NetLaserTurret : NetworkBehaviour
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
         muzzleFlash.Play();
+        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
 }
