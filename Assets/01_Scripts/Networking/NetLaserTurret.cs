@@ -26,6 +26,7 @@ public class NetLaserTurret : NetworkBehaviour
         {
             Debug.Log($"PoweredCoords: [{gridEntry.Key.Q},{gridEntry.Key.R},{gridEntry.Key.S}]: {gridEntry.Value}");
         }
+        Debug.Log($"TurretCoords: [{turretModule.RootCoordinate.Q},{turretModule.RootCoordinate.R},{turretModule.RootCoordinate.S}]");
         return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
     }
    
