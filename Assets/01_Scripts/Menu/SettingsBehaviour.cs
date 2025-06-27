@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using FMOD.Studio;
 using TMPro;
@@ -10,8 +9,16 @@ using UnityEngine.UI;
 
 public class SettingsBehaviour : MonoBehaviour
 {
-    [SerializeField] private TMP_Dropdown resolutionDropdown;
-    private Resolution[] resolutions;
+    [SerializeField] private TMP_Text resolutionText;
+    private List<string> _resolutionOptions;
+    private List<Resolution> _uniqueResolution;
+    private Resolution[] _resolutions;
+    private Resolution _resolution;
+    private int _currentResolutionIndex;
+    private int _uniqueResolutionIndex;
+
+    private int[] _frameCap = {30, 60, 90, 120, 144, 180, -1};
+    private int _frameCapIndex;
 
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider musicSlider;
@@ -25,9 +32,8 @@ public class SettingsBehaviour : MonoBehaviour
     [SerializeField] private Slider brightnessSlider;
     [SerializeField] private Image brightness;
     [SerializeField] private Toggle toggle;
-    [SerializeField] private Slider frameRateSlider;
     [SerializeField] private TMP_Text frameCounter;
-
+    
     private const string masterVolume = "MasterVolume";
     private const string musicVolume = "MusicVolume";
     private const string sfxVolume = "SFXVolume";
@@ -36,14 +42,13 @@ public class SettingsBehaviour : MonoBehaviour
     private const string gammaValue = "GammaValue";
     private const string brightnessValue = "BrightnessValue";
     private const string vSync = "VSync";
-    private const string frameRate = "FrameRate";
 
-    FMOD.Studio.Bus _masterBus;
-    FMOD.Studio.Bus _musicBus;
-    FMOD.Studio.Bus _sfxBus;
-    FMOD.Studio.Bus _uiBus;
-    FMOD.Studio.Bus _announcerBus;
-    float masterbusVolume, musicbusVolume, sfxbusVolume, uibusvolume, announcerbusvolume;
+    Bus _masterBus;
+    Bus _musicBus;
+    Bus _sfxBus;
+    Bus _uiBus;
+    Bus _announcerBus;
+    float _masterBusVolume, _musicBusVolume, _sfxBusVolume, _uiBusVolume, _announcerBusVolume;
 
     private void Awake()
     {
@@ -58,43 +63,96 @@ public class SettingsBehaviour : MonoBehaviour
         _uiBus = FMODUnity.RuntimeManager.GetBus("bus:/UI");
         _announcerBus = FMODUnity.RuntimeManager.GetBus("bus:/Voice");
 
-        resolutions = Screen.resolutions;
-        resolutionDropdown.ClearOptions();
-        List<string> resolutionOptions = new List<string>();
-
-        int currentResolutionIndex = 0;
-        for (int i = 0; i < resolutions.Length; i++)
+        _resolutions = Screen.resolutions;
+        _resolutionOptions = new List<string>();
+        _uniqueResolution = new List<Resolution>();
+        _uniqueResolutionIndex = 0;
+        _currentResolutionIndex = 0;
+        
+        for (int i = 0; i < _resolutions.Length; i++)
         {
-            string resolutionOption =
-                $"{resolutions[i].width} x {resolutions[i].height}";
-            resolutionOptions.Add(resolutionOption);
-
-            if (resolutions[i].width == Screen.currentResolution.width &&
-                resolutions[i].height == Screen.currentResolution.height)
+            if (_resolution.IsUnityNull())
             {
-                currentResolutionIndex = i;
+                _resolution = Screen.currentResolution;
             }
+            string resolutionOption =
+                $"{_resolutions[i].width} x {_resolutions[i].height}";
+            if (_resolutionOptions.Contains(resolutionOption))
+            {
+                continue;
+            }
+            _resolutionOptions.Add(resolutionOption);
+            _uniqueResolution.Add(_resolutions[i]);
+            
+            if (_resolutions[i].width == Screen.currentResolution.width &&
+                _resolutions[i].height == Screen.currentResolution.height)
+            {
+                _currentResolutionIndex = _uniqueResolutionIndex;
+            }
+            _uniqueResolutionIndex++;
         }
 
-        resolutionDropdown.AddOptions(resolutionOptions);
-        resolutionDropdown.value = currentResolutionIndex;
-        resolutionDropdown.RefreshShownValue();
+        _resolution = Screen.currentResolution;
+        resolutionText.text = _resolutionOptions[_currentResolutionIndex];
+        frameCounter.text = _frameCap[_frameCapIndex].ToString();
 
         Load();
     }
 
-    private void Update()
+    public void Apply()
     {
-        frameCounter.text = frameRateSlider.value.ToString();
+        Screen.SetResolution(_resolution.width, _resolution.height,Screen.fullScreen);
+        Application.targetFrameRate = _frameCap[_frameCapIndex];
+        Save();
     }
 
     #region Graphics
 
-    public void SetResolution(int resolutionIndex)
+    public void IncreaseResolution()
     {
-        Resolution resolution = resolutions[resolutionIndex];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-        //Application.targetFrameRate = (int)resolution.refreshRateRatio.value;
+        _currentResolutionIndex++;
+        _currentResolutionIndex %= _uniqueResolution.Count;
+
+        _resolution = _uniqueResolution[_currentResolutionIndex];
+        resolutionText.text = _resolutionOptions[_currentResolutionIndex];
+    }
+
+    public void DecreaseResolution()
+    {
+        if (_currentResolutionIndex == 0)
+        {
+            _currentResolutionIndex = _uniqueResolution.Count - 1;
+        }
+        else
+            _currentResolutionIndex--;
+
+        _resolution = _uniqueResolution[_currentResolutionIndex];
+        resolutionText.text = _resolutionOptions[_currentResolutionIndex];
+    }
+
+    public void IncreaseFrameCap()
+    {
+        _frameCapIndex++;
+        _frameCapIndex %= _frameCap.Length;
+
+        if (_frameCap[_frameCapIndex].Equals(-1))
+            frameCounter.text = "Unlimited";
+        else
+            frameCounter.text = _frameCap[_frameCapIndex].ToString();
+    }
+
+    public void DecreaseFrameCap()
+    {
+        if (_frameCapIndex == 0)
+        {
+            _frameCapIndex = _frameCap.Length - 1;
+            frameCounter.text = "Unlimited";
+        }
+        else
+        {
+            _frameCapIndex--;
+            frameCounter.text = _frameCap[_frameCapIndex].ToString();
+        }
     }
 
     public void AdjustBrightness()
@@ -112,14 +170,13 @@ public class SettingsBehaviour : MonoBehaviour
     public void SetVsync()
     {
         QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
+        if (QualitySettings.vSyncCount == 0)
+        {
+            Application.targetFrameRate = _frameCap[_frameCapIndex];
+        }
         Save();
     }
-
-    public void SetFramerateCap()
-    {
-        Application.targetFrameRate = (int)frameRateSlider.value;
-        Save();
-    }
+    
 
     #endregion
 
@@ -168,10 +225,9 @@ public class SettingsBehaviour : MonoBehaviour
         PlayerPrefs.SetFloat(gammaValue, gammaSlider.value);
         PlayerPrefs.SetFloat(brightnessValue, brightnessSlider.value);
         PlayerPrefs.SetInt(vSync, QualitySettings.vSyncCount);
-        PlayerPrefs.SetInt(frameRate, (int)frameRateSlider.value);
     }
 
-    public void Load()
+    private void Load()
     {
         masterSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(masterVolume, 0.5f));
         musicSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(musicVolume, 0.5f));
@@ -181,7 +237,6 @@ public class SettingsBehaviour : MonoBehaviour
         gammaSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(gammaValue, 0.5f));
         brightnessSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(brightnessValue, 0.5f));
         toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(vSync, 1) == 1);
-        frameRateSlider.SetValueWithoutNotify(PlayerPrefs.GetInt(frameRate, 60));
         QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
         MasterVolume();
         MusicVolume();
@@ -191,6 +246,5 @@ public class SettingsBehaviour : MonoBehaviour
         AnnouncerVolume();
         AdjustBrightness();
         AdjustGamma();
-        SetFramerateCap();
     }
 }

@@ -8,8 +8,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
 {
     [SerializeField] private GameObject settingsCanvas;
     [SerializeField] private EventSystem eventSystem;
-
-    [SerializeField] private TMP_Dropdown graphicsDropdown;
+    
     
     [SerializeField] private Button audioButton;
     [SerializeField] private Button graphicsButton;
@@ -37,8 +36,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 eventSystem.SetSelectedGameObject(graphicsButton.gameObject);
             }
 
-            if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame() && !graphicsDropdown.IsExpanded)
-            //if (Gamepad.current.buttonEast.wasPressedThisFrame && !graphicsDropdown.IsExpanded)
+            if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
             {
                 backButton.onClick.Invoke();
             }
