@@ -28,6 +28,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
     
     public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID)
     {
+        bulletVFX.Play();
         _direction = direction.normalized;
         _netTeamID = netTeamID;
         _attackerID = attackerID;
@@ -88,7 +89,8 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         
         if (InstanceFinder.IsClientStarted)
         {
-            Instantiate(hitFeedbackVFX, other.transform.position, Quaternion.identity);
+            var spawnPos = new Vector3(other.transform.position.x, other.transform.position.y, other.transform.position.z - 2.5f);
+            Instantiate(hitFeedbackVFX, spawnPos, Quaternion.identity);
         }
         
         if (hitModules.Count >= maxHits)
