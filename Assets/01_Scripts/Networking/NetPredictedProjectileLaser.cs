@@ -89,7 +89,8 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         
         if (InstanceFinder.IsClientStarted)
         {
-            Instantiate(hitFeedbackVFX, other.transform.position, Quaternion.identity);
+            var spawnPos = new Vector3(other.transform.position.x, other.transform.position.y, other.transform.position.z - 2.5f);
+            Instantiate(hitFeedbackVFX, spawnPos, Quaternion.identity);
         }
         
         if (hitModules.Count >= maxHits)
