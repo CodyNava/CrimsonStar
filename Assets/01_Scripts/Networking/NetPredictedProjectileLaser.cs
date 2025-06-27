@@ -73,12 +73,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         if (hitModules.Contains(module)) return;
 
         hitModules.Add(module);
-
-        if (InstanceFinder.IsClientStarted)
-        {
-            // Visual and Audio
-        }
-
+        
         if (InstanceFinder.IsServerStarted)
         {
             module.S_InflictDamage(laserProjectileObject.ProjectileDamage, _attackerID);

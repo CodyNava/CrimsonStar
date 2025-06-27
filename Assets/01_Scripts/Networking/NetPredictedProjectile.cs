@@ -55,14 +55,14 @@ public class NetPredictedProjectile : MonoBehaviour
 
         if (InstanceFinder.IsClientStarted)
         {
-            // Visual and Audio
+            Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
         }
 
         if (InstanceFinder.IsServerStarted)
         {
             module.S_InflictDamage(baseProjectileObject.ProjectileDamage, _attackerID);
         }
-        Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
+        
         Destroy(gameObject);
     }
 }
