@@ -1,6 +1,7 @@
 ﻿using AYellowpaper.SerializedCollections;
 using System.Collections.Generic;
 using System.Linq;
+using _01_Scripts.Ship.Modules;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NetModuleData", menuName = "Modules/Net Module Data")]
@@ -15,10 +16,12 @@ public class NetModuleData : ScriptableObject
         new Vector3Int(0, 0, 0)
     };
 
-    [SerializedDictionary("Resource Type", "Cost")]
-    [field: SerializeField] public SerializedDictionary<NetCurrencyType, int> Costs { get; private set; }
+    [field: SerializeField] public int Cost { get; private set; }
     [field: SerializeField] public NetModuleBaseStats BaseStats { get; private set; }
     [field: SerializeField] public bool CanRotate { get; private set; }
+    
+    [field: SerializeField] public bool CanBePowered { get; private set; }
+    [field: SerializeField, Min(0)] public int EffectRange { get; private set; }
 
     [field: SerializeField] public NetEditorModule ShipEditorPrefab { get; private set; }
     [field: SerializeField] public NetGameplayModule GameplayPrefab { get; private set; }
@@ -28,8 +31,7 @@ public class NetModuleData : ScriptableObject
     [field: SerializeField] public Sprite Icon { get; private set; }
     [field: SerializeField] public string DisplayName { get; private set; }
     [field: SerializeField] public float HexagonSize { get; private set; }
-
-
+    
     
     public IEnumerable<HexCoordinate> GetLocalHexCoordinates() =>
         LocalModuleCoordinates.Select(vec => new HexCoordinate(vec));

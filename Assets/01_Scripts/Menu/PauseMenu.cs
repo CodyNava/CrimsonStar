@@ -1,17 +1,20 @@
 using _01_Scripts.GameState.States;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] GameObject pauseMenuUI;
     [SerializeField] GameObject settingsMenuUI;
     [SerializeField] GameObject deathScreenUi;
+    [SerializeField] Image brightness;
 
     [SerializeField] bool paused = false;
 
     private void Awake()
     {
+        brightness.color = new Color(0f, 0f, 0f, PlayerPrefs.GetFloat("BrightnessValue"));
         CombatLose_GameState.onEnterState += CombatLose_GameState_onEnterState;
         CombatLose_GameState.onExitState += CombatLose_GameState_onExitState;
     }
@@ -34,7 +37,7 @@ public class PauseMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (!paused)
             {

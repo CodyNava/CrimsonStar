@@ -31,7 +31,6 @@ namespace _01_Scripts.Ship
         public void Update()
         {
             float scrollValue = -Keybinds.Actions.Camera.CameraZoom.ReadValue<float>();
-            Debug.Log($"ScrollVal: {scrollValue}");
             if (Mathf.Abs(scrollValue) <= 0.01f) return;
             OnCameraZoomPerformed(scrollValue);
         }

@@ -15,12 +15,12 @@ public class NetPredictedProjectile : MonoBehaviour
     public float ProjectileDamage => projectileDamage;
     public float ProjectileTimer => projectileTimer;
 
-    private CSteamID _attackerID;
+    private ulong _attackerID;
     private NetTeamID _netTeamID;
     private Vector3 _direction;
     private float _passedTime = 0f;
 
-    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, CSteamID attackerID)
+    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID)
     {
         _direction = direction;
         _passedTime = passedTime;

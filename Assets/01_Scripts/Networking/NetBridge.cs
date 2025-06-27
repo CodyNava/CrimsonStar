@@ -1,11 +1,11 @@
-﻿using System;
-using FishNet;
+﻿using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
 using _01_Scripts.Ship.ModuleControllers;
 using FishNet.Component.Prediction;
-using Steamworks;
+using FishNet.Connection;
+using FishNet.Transporting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -18,28 +18,30 @@ public class NetBridge : NetworkBehaviour
     [SerializeField] private GameObject deathVFX;
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
     private readonly SyncVar<string> _displayName = new();
-    private readonly SyncVar<CSteamID> _steamId = new();
+    private readonly SyncVar<ulong> _playerId = new();
     public NetModuleBaseStats BaseStats => _baseStats.Value;
     public string DisplayName => _displayName.Value;
-    public CSteamID SteamID => _steamId.Value;
+    public ulong PlayerID => _playerId.Value;
 
     private Dictionary<HexCoordinate, NetGameplayModule> _modules = new();
+    private Dictionary<HexCoordinate, int> _powerGrid = new();
+    public Dictionary<HexCoordinate, int> PowerGrid => _powerGrid;
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
-
-
+    
     private NetworkCollision2D _networkCollision2D;
-
+    
+    [Server]
     public void S_AttachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         _baseStats.Value = _baseStats.Value.Combine(module.ModuleID.GetModuleData().BaseStats);
-        module.ModuleID.GetModuleData().GetLocalHexCoordinates();
-        AddModuleCoordinates(module, rootCoordinate);
+        S_AddModuleCoordinates(module, rootCoordinate);
     }
 
+    [Server]
     public void S_DetachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         _baseStats.Value = _baseStats.Value.Subtract(module.ModuleID.GetModuleData().BaseStats);
-        RemoveModuleCoordinates(module, rootCoordinate);
+        S_RemoveModuleCoordinates(module, rootCoordinate);
 
         if (module.ModuleID == NetModuleID.Bridge)
         {
@@ -54,6 +56,7 @@ public class NetBridge : NetworkBehaviour
         }
     }
 
+    [Server]
     public void S_DetachLooseModules()
     {
         var looseModules = GetLooseModules();
@@ -62,27 +65,76 @@ public class NetBridge : NetworkBehaviour
             looseModule.S_DetachModule();
         }
     }
-
-    private void AddModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
+    
+    [Server]
+    private void S_AddModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
-        var localHexCoordinates = module.ModuleID.GetModuleData().GetLocalHexCoordinates();
+        
+        var moduleData = module.ModuleID.GetModuleData();
+        var localHexCoordinates = moduleData.GetLocalHexCoordinates();
         foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
         {
-            Assert.IsFalse(_modules.ContainsKey(localHexCoordinate + rootCoordinate), "Placement check failed! Tried to add Module that overlaps already occupied HexCoordinate!");
+            HexCoordinate coordinate = localHexCoordinate + rootCoordinate;
+            Assert.IsFalse(_modules.ContainsKey(coordinate), "Placement check failed! Tried to add Module that overlaps already occupied HexCoordinate!");
             // We add each localHexCoordinate that the module occupies to the list
             // As the localHexCoordinates are only in module local space, we add the rootCoordinate as an offset
-            _modules.Add(localHexCoordinate + rootCoordinate, module);
+            _modules.Add(coordinate, module);
+        }
+
+        if (module.ModuleID == NetModuleID.Reactor)
+        {
+            foreach (var coordinate in rootCoordinate.CoordinatesInRange(moduleData.EffectRange))
+            {
+                int power = _powerGrid.GetValueOrDefault(coordinate);
+                _powerGrid[coordinate] = power + 1;
+            }
+
+            C_AddToPowerGrid(rootCoordinate, moduleData.EffectRange);
+        }
+    }
+    
+    [ObserversRpc][Client]
+    private void C_AddToPowerGrid(HexCoordinate rootCoordinate, int range)
+    {
+        foreach (var coordinate in rootCoordinate.CoordinatesInRange(range))
+        {
+            int power = _powerGrid.GetValueOrDefault(coordinate);
+            _powerGrid[coordinate] = power + 1;
+        }
+    }
+    
+    [Server]
+    private void S_RemoveModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
+    {
+        var moduleData = module.ModuleID.GetModuleData();
+        var localHexCoordinates = moduleData.GetLocalHexCoordinates();
+        foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
+        {
+            HexCoordinate coordinate = localHexCoordinate + rootCoordinate;
+            // We remove each localHexCoordinate that the module occupies to the list
+            // As the localHexCoordinates are only in module local space, we add the rootCoordinate as an offset
+            _modules.Remove(coordinate);
+        }
+        
+        if (module.ModuleID == NetModuleID.Reactor)
+        {
+            foreach (var coordinate in rootCoordinate.CoordinatesInRange(2))
+            {
+                int power = _powerGrid.GetValueOrDefault(coordinate);
+                _powerGrid[coordinate] = power - 1;
+            }
+            
+            C_RemovePowerFromGrid(rootCoordinate, moduleData.EffectRange);
         }
     }
 
-    private void RemoveModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
+    [ObserversRpc][Client]
+    private void C_RemovePowerFromGrid(HexCoordinate rootCoordinate, int range)
     {
-        var localHexCoordinates = module.ModuleID.GetModuleData().GetLocalHexCoordinates();
-        foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
+        foreach (HexCoordinate coordinate in rootCoordinate.CoordinatesInRange(range))
         {
-            // We remove each localHexCoordinate that the module occupies to the list
-            // As the localHexCoordinates are only in module local space, we add the rootCoordinate as an offset
-            _modules.Remove(localHexCoordinate + rootCoordinate);
+            int power = _powerGrid.GetValueOrDefault(coordinate);
+            _powerGrid[coordinate] = power - 1;
         }
     }
 
@@ -96,6 +148,10 @@ public class NetBridge : NetworkBehaviour
             if (module.ModuleID == NetModuleID.Bridge) continue;
             looseModules.Add(module);
         }
+        
+        // If the Bridge isn't present anymore, everything else is a loose module
+        if (!_modules.ContainsKey(HexCoordinate.Zero)) return looseModules;
+        
 
         HashSet<HexCoordinate> handledCoordinates = new HashSet<HexCoordinate>();
         Queue<HexCoordinate> checkingCoordinates = new Queue<HexCoordinate>();
@@ -190,14 +246,16 @@ public class NetBridge : NetworkBehaviour
         return BridgeConfig.MaxAngularSpeed / (1 + _baseStats.Value.mass);
     }
 
+    [Server]
     public void S_SetDisplayName(string displayName)
     {
         _displayName.Value = displayName;
     }
 
-    public void S_SetSteamID(CSteamID steamID)
+    [Server]
+    public void S_SetPlayerID(ulong playerID)
     {
-        _steamId.Value = steamID;
+        _playerId.Value = playerID;
     }
 
     [ObserversRpc(ExcludeOwner = false)]
@@ -228,6 +286,7 @@ public class NetBridge : NetworkBehaviour
         }
     }
 
+    [Server]
     private void S_HandleCollision(Collider2D collider)
     {
         // TODO: Make magic number not magic anymore
@@ -267,7 +326,11 @@ public class NetBridge : NetworkBehaviour
         NetGameplayModule gameplayModule = localCollider.gameObject.GetComponent<NetGameplayModule>();
         
         // TODO: Probably causes issues on damageDealt, which causes Dealt and Received not to align
-        gameplayModule.S_InflictDamage(damage, SteamID);
-        
+        gameplayModule.S_InflictDamage(damage, _playerId.Value);
+    }
+
+    public bool PositionHasEnergy(HexCoordinate coord)
+    {
+        return _powerGrid.GetValueOrDefault(coord) > 0;
     }
 }

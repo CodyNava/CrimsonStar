@@ -16,6 +16,7 @@ public class NetGameplayModule : NetworkBehaviour
     [SerializeField] private VisualEffect damagedVFX;
     [SerializeField] private MeshRenderer damagedMaterial;
 
+    [SerializeField] private FMODUnity.EventReference hitFeedbackSFX;
     [SerializeField] private FMODUnity.EventReference damagedModuleSFXEvent;
     FMOD.Studio.EventInstance _damagedModuleSFXInstance;
 
@@ -35,28 +36,36 @@ public class NetGameplayModule : NetworkBehaviour
     public float HealthPct => Mathf.Clamp01(Health / Mathf.Max(_maxHealth, Mathf.Epsilon));
     public NetTeamID NetTeamID => _playerID.Value;
     public HexCoordinate RootCoordinate => _rootCoordinate.Value;
-
+    
+    [Server]
     public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, HexCoordinate rootCoordinate)
     {
         var moduleData = ModuleID.GetModuleData();
 
         _bridge = bridge;
         _rootCoordinate.Value = rootCoordinate;
-        _bridge.S_AttachModule(this, rootCoordinate);
         _health.Value = moduleData.BaseStats.health;
         _maxHealth = _health.Value;
         _playerID.Value = netTeamID;
+        _bridge.S_AttachModule(this, rootCoordinate);
+    }
+
+    public void C_ClientInit()
+    {
+        
     }
 
     public override void OnStartClient()
     {
         _bridge = ModuleID == NetModuleID.Bridge ? GetComponent<NetBridge>() : GetComponentInParent<NetBridge>();
+        Debug.Log($"IsClient: {IsClientStarted}, PlayerID: {_playerID.Value}, Module: {ModuleID}, Bridge: {_bridge}");
         var moduleData = ModuleID.GetModuleData();
         _maxHealth = moduleData.BaseStats.health;
         VisualTransform.SetParent(_bridge.VisualRootTransform);
     }
 
     // Occurs when a module gets destroyed
+    [Server]
     private void S_DestroyModule()
     {
         _bridge.S_DetachModule(this, _rootCoordinate.Value);
@@ -66,6 +75,7 @@ public class NetGameplayModule : NetworkBehaviour
     }
 
     // Occurs when an Module is only detached and not destroyed
+    [Server]
     public void S_DetachModule()
     {
         _bridge.S_DetachModule(this, _rootCoordinate.Value);
@@ -73,7 +83,7 @@ public class NetGameplayModule : NetworkBehaviour
         Despawn(NetworkObject);
     }
 
-    [ObserversRpc]
+    [ObserversRpc][Client]
     public void C_DestroyModuleObserver()
     {
         if (deathVFX != null)
@@ -84,7 +94,7 @@ public class NetGameplayModule : NetworkBehaviour
         Destroy(VisualTransform.gameObject);
     }
 
-    [ObserversRpc]
+    [ObserversRpc][Client]
     public void C_DetachModuleObserver()
     {
         Vector2 detachDirection = (VisualTransform.position - _bridge.transform.position).normalized;
@@ -94,30 +104,36 @@ public class NetGameplayModule : NetworkBehaviour
         Destroy(VisualTransform.gameObject);
     }
 
-    [ObserversRpc]
+    [ObserversRpc][Client]
     public void C_DisplayDamageObserver()
     {
         float health = HealthPct;
 
         damagedVFX.SetFloat("DamageInput", 1 - health);
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
+        FMODUnity.RuntimeManager.PlayOneShot(hitFeedbackSFX, transform.position);
         //_damagedModuleSFXInstance = FMODUnity.RuntimeManager.CreateInstance(damagedModuleSFXEvent);
         //_damagedModuleSFXInstance.start();
         //Todo: Implement VFX Here
         // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
     }
 
-    public void S_InflictDamage(float damage, CSteamID attackerID)
+    [Server][ServerRpc(RequireOwnership = false)]
+    public void S_InflictDamage(float damage, ulong attackerID)
     {
-        if (InstanceFinder.HasInstance<NetGameplayConductor>())
+        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor))
         {
-            InstanceFinder.GetInstance<NetGameplayConductor>()
-                .S_ReportDamageInstance(attackerID, NetworkObject.Owner, damage);
+            gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
         }
 
         _health.Value -= damage;
         if (_health.Value <= 0)
         {
+            if (ModuleID == NetModuleID.Bridge && gameplayConductor)
+            {
+                gameplayConductor.S_ReportKillInstance(attackerID, _bridge.PlayerID);
+            }
+
             S_DestroyModule();
         }
 

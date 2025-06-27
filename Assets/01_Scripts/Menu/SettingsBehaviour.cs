@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using FMOD.Studio;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -24,6 +25,8 @@ public class SettingsBehaviour : MonoBehaviour
     [SerializeField] private Slider brightnessSlider;
     [SerializeField] private Image brightness;
     [SerializeField] private Toggle toggle;
+    [SerializeField] private Slider frameRateSlider;
+    [SerializeField] private TMP_Text frameCounter;
 
     private const string masterVolume = "MasterVolume";
     private const string musicVolume = "MusicVolume";
@@ -33,6 +36,7 @@ public class SettingsBehaviour : MonoBehaviour
     private const string gammaValue = "GammaValue";
     private const string brightnessValue = "BrightnessValue";
     private const string vSync = "VSync";
+    private const string frameRate = "FrameRate";
 
     FMOD.Studio.Bus _masterBus;
     FMOD.Studio.Bus _musicBus;
@@ -81,6 +85,11 @@ public class SettingsBehaviour : MonoBehaviour
         Load();
     }
 
+    private void Update()
+    {
+        frameCounter.text = frameRateSlider.value.ToString();
+    }
+
     #region Graphics
 
     public void SetResolution(int resolutionIndex)
@@ -105,6 +114,12 @@ public class SettingsBehaviour : MonoBehaviour
     public void SetVsync()
     {
         QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
+        Save();
+    }
+
+    public void SetFramerateCap()
+    {
+        Application.targetFrameRate = (int)frameRateSlider.value;
         Save();
     }
 
@@ -155,9 +170,10 @@ public class SettingsBehaviour : MonoBehaviour
         PlayerPrefs.SetFloat(gammaValue, gammaSlider.value);
         PlayerPrefs.SetFloat(brightnessValue, brightnessSlider.value);
         PlayerPrefs.SetInt(vSync, QualitySettings.vSyncCount);
+        PlayerPrefs.SetInt(frameRate, (int)frameRateSlider.value);
     }
 
-    private void Load()
+    public void Load()
     {
         masterSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(masterVolume, 0.5f));
         musicSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(musicVolume, 0.5f));
@@ -167,11 +183,16 @@ public class SettingsBehaviour : MonoBehaviour
         gammaSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(gammaValue, 0.5f));
         brightnessSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(brightnessValue, 0.5f));
         toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(vSync, 1) == 1);
+        frameRateSlider.SetValueWithoutNotify(PlayerPrefs.GetInt(frameRate, 60));
         QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
         MasterVolume();
         MusicVolume();
         SFXVolume();
         UIVolume();
+        SetVsync();
         AnnouncerVolume();
+        AdjustBrightness();
+        AdjustGamma();
+        SetFramerateCap();
     }
 }

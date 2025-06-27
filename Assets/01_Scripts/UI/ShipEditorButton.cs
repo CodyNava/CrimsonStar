@@ -15,16 +15,7 @@ public class ShipEditorButton : MonoBehaviour
 
     private void OnEnable()
     {
-        StringBuilder sb = new StringBuilder();
-        NetModuleData netModuleData = netModuleID.GetModuleData();
-        foreach ((NetCurrencyType currency, int cost) in netModuleData.Costs)
-        {
-            sb.Append($"{cost} {DataProvider.Instance.CurrencyConfig.CurrencyDisplayInfos[currency].abbreviation}, ");
-        }
-        if (sb.Length > 0)
-        {
-            sb.Remove(sb.Length - 2, 2);
-        }
-        costText.text = sb.ToString();
+        int cost = DataProvider.GetModuleCost(netModuleID);
+        costText.text = $"{cost} Currency";
     }
 }

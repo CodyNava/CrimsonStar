@@ -3,22 +3,24 @@ using UnityEngine;
 
 public class PlayerStatsDisplay : MonoBehaviour
 {
-    [SerializeField] private TMP_Text playerNameText, dmgDealt, dmgReceived, roundsWon, status;
-    public void SetRoundStats(NetPlayerMatchStats playerStats)
+    [SerializeField] private TMP_Text playerNameText, dmgDealt, dmgReceived, frags, roundsWon, status;
+    public void SetRoundStats(NetMatchPlayer player)
     {
-        playerNameText.text = playerStats.player.playerDisplayName;
-        dmgDealt.text = playerStats.damageDealtRound.ToString("F0");
-        dmgReceived.text = playerStats.damageReceivedRound.ToString("F0");
-        roundsWon.text = playerStats.score.ToString("F0");
-        status.text = playerStats.wasAlive ? "Survived" : "Defeated";
+        playerNameText.text = player.DisplayName.Value;
+        dmgDealt.text = player.DamageDealtRound.Value.ToString("F0");
+        dmgReceived.text = player.DamageReceivedRound.Value.ToString("F0");
+        frags.text = player.KillsRound.Value.ToString("F0");
+        roundsWon.text = player.MatchScore.Value.ToString("F0");
+        status.text = player.Survived.Value ? "Survived" : "Defeated";
     }
 
-    public void SetMatchStats(NetPlayerMatchStats playerStats)
+    public void SetMatchStats(NetMatchPlayer player)
     {
-        playerNameText.text = playerStats.player.playerDisplayName;
-        dmgDealt.text = playerStats.damageDealtMatch.ToString("F0");
-        dmgReceived.text = playerStats.damageReceivedMatch.ToString("F0");
-        roundsWon.text = playerStats.score.ToString("F0");
-        status.text = playerStats.wasAlive ? "Survived" : "Defeated";
+        playerNameText.text = player.DisplayName.Value;
+        dmgDealt.text = player.DamageDealtMatch.Value.ToString("F0");
+        dmgReceived.text = player.DamageReceivedMatch.Value.ToString("F0");
+        frags.text = player.KillsMatch.Value.ToString("F0");
+        roundsWon.text = player.MatchScore.Value.ToString("F0");
+        status.text = player.Survived.Value ? "Survived" : "Defeated";
     }
 }

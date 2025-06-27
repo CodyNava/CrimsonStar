@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class NetEditorModule : MonoBehaviour
 {
@@ -9,7 +13,12 @@ public class NetEditorModule : MonoBehaviour
     public int PlacedRotation { get; set; }
     public NetModuleData ModuleData => ModuleID.GetModuleData();
     public List<HexCoordinate> LocalCoordinates { get; private set; }
-
+    [field: SerializeField] public bool IsPowered { get; set; }
+    [field: SerializeField] public GameObject PowerMaterialGameObject { get; set; }
+    [field: SerializeField] public Material PowerMaterial { get; set; }
+    [field: SerializeField] public ShipEditor shipEditor { get; set; }
+    [field: SerializeField] public bool isSelected { get; set; }
+    private Color originalColor;
     public void Initialize()
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[ModuleID];
@@ -20,6 +29,23 @@ public class NetEditorModule : MonoBehaviour
         }
     }
 
+    public void Awake()
+    {
+        shipEditor = FindFirstObjectByType<ShipEditor>();
+        PowerMaterial = GetComponentInChildren<MeshRenderer>().material;
+        originalColor = PowerMaterial.color;
+        
+    }
+
+    public void PickUpModule()
+    {
+        shipEditor.RemoveModule(this);
+    }
+
+    public void ModuleSelected()
+    {
+        VisualTransform.gameObject.layer = isSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
+    }
     public void C_RotateClockwise()
     {
         for (int i = 0; i < LocalCoordinates.Count; i++)
@@ -56,4 +82,27 @@ public class NetEditorModule : MonoBehaviour
     {
         transform.rotation = Quaternion.AngleAxis(PlacedRotation * 60, Vector3.back);
     }
+
+    public void Update()
+    {
+        ChangeMaterialAndCheckPower();
+        if (!EnergyViewEnable() && PowerMaterial.color != originalColor)
+        {
+            PowerMaterial.color = originalColor;
+        }
+    }
+
+    public void ChangeMaterialAndCheckPower()
+    {
+        if (ModuleData.CanBePowered)
+        {
+            IsPowered = shipEditor.CheckIfPowered(PlacedLocation);
+            if (shipEditor.inEnergyView)
+            {
+                PowerMaterial.color = IsPowered ? Color.green : Color.blue;
+            }
+            //todo implement shader change (waiting for gd to decide)
+        }
+    }
+    public bool EnergyViewEnable() => shipEditor.inEnergyView;
 }

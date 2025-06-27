@@ -1,5 +1,6 @@
 ﻿using FishNet;
 using FishNet.Transporting;
+using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,9 +12,14 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private GameSettingsHost hostSettings;
     [SerializeField] private Button startGameButton, readyButton;
     [SerializeField] private TMP_Text readyButtonText;
+    [SerializeField] private Image brightness;
 
     private bool _ready;
-    
+
+    private void Awake()
+    {
+        brightness.color = new Color(0f, 0f, 0f, PlayerPrefs.GetFloat("BrightnessValue"));
+    }
     private void OnEnable()
     {
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
@@ -28,7 +34,7 @@ public class LobbyUI : MonoBehaviour
 
     private void OnPlayerListUpdate(NetLobbyBroadcasts.PlayerListUpdate msg, Channel channel)
     {
-        if (SteamPlayer.IsLobbyHost)
+        if (PlayerData.IsLobbyHost)
         {
             startGameButton.gameObject.SetActive(true);
         }
@@ -70,7 +76,12 @@ public class LobbyUI : MonoBehaviour
     
     public void LeaveLobby()
     {
-        NetSteamBootstrapper.LeaveLobby();
+        if (PlayerData.CurrentLobbyID != CSteamID.Nil)
+            NetGameBootstrapper.LeaveLobby();
+        else
+        {
+            NetGameBootstrapper.LeaveLobbyLocal();
+        }
         SceneManager.LoadScene("MainMenu");
     }
 
