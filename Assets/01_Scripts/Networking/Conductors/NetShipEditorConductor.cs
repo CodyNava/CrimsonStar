@@ -57,7 +57,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     {
         if (asServer && op == SyncTimerOperation.Finished)
         {
-            StartCoroutine(PlayIntroSound());
+            S_TriggerIntoSound();
             _editorTimer.OnChange -= OnTimerChange;
         }
     }
@@ -69,8 +69,22 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
 
         if (S_AllPlayersReady())
         {
-            StartCoroutine(PlayIntroSound());
+            S_TriggerIntoSound();
         }
+    }
+    
+    [ServerRpc][Server]
+    private void S_TriggerIntoSound()
+    {
+        foreach (KeyValuePair<NetworkConnection,NetMatchPlayer> player in _lobbyConductor.PlayersByConnection)
+        {
+            TriggerIntroSound(player.Key);
+        }
+    }
+
+    private void TriggerIntroSound(NetworkConnection conn)
+    {
+        StartCoroutine(PlayIntroSound());
     }
 
     public IEnumerator PlayIntroSound()
