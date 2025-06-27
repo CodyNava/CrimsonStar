@@ -192,46 +192,13 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614866}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661615040}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614868}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614872}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614887}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614890}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661615043}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661615033}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661615357}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614922}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614924}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614932}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661615017}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661615024}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614928}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661615465}
@@ -276,10 +243,10 @@ MonoBehaviour:
   - title: ImpactLensFlare
     position:
       serializedVersion: 2
-      x: -1224
+      x: -1219
       y: -205
-      width: 817
-      height: 577
+      width: 812
+      height: 637
     contents:
     - model: {fileID: 8926484042661615740}
       id: 0
@@ -305,6 +272,12 @@ MonoBehaviour:
     - model: {fileID: 8926484042661615902}
       id: 0
       isStickyNote: 0
+    - model: {fileID: 8926484042661615904}
+      id: 0
+      isStickyNote: 0
+    - model: {fileID: 8926484042661615921}
+      id: 0
+      isStickyNote: 0
   stickyNoteInfos: []
   categories:
   - name: ToggleSubgraphs
@@ -316,20 +289,20 @@ MonoBehaviour:
   - name: Size
     collapsed: 1
   - name: Lifetime
-    collapsed: 1
+    collapsed: 0
   - name: Veloctiy
     collapsed: 1
   - name: SpawnRate
     collapsed: 0
   - name: Specific
-    collapsed: 1
+    collapsed: 0
   - name: Textures
     collapsed: 0
   uiBounds:
     serializedVersion: 2
-    x: -1224
+    x: -1219
     y: -1538
-    width: 5023
+    width: 5018
     height: 3632
 --- !u!114 &114350483966674976
 MonoBehaviour:
@@ -409,6 +382,8 @@ MonoBehaviour:
   - {fileID: 8926484042661615894}
   - {fileID: 8926484042661615900}
   - {fileID: 8926484042661615902}
+  - {fileID: 8926484042661615904}
+  - {fileID: 8926484042661615921}
   m_UIPosition: {x: 0, y: 0}
   m_UICollapsed: 1
   m_UISuperCollapsed: 0
@@ -794,6 +769,22 @@ MonoBehaviour:
     max: Infinity
     enumValues: []
     descendantCount: 0
+  - name: Lifetime_LensFlare
+    path: Lifetime_LensFlare
+    tooltip: 
+    space: -1
+    spaceable: 0
+    sheetType: m_Float
+    realType: Single
+    defaultValue:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 0.3
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
   - name: Lifetime_Fire
     path: Lifetime_Fire
     tooltip: 
@@ -1092,6 +1083,22 @@ MonoBehaviour:
         m_SerializableType: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
       m_SerializableObject: '{"x":0.0,"y":-0.18000000715255738}'
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
+  - name: Pivot_Flare
+    path: Pivot_Flare
+    tooltip: 
+    space: -1
+    spaceable: 0
+    sheetType: m_Vector2f
+    realType: Vector2
+    defaultValue:
+      m_Type:
+        m_SerializableType: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      m_SerializableObject: '{"x":0.0,"y":0.0}'
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -2794,6 +2801,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614833}
   - {fileID: 8926484042661614855}
   - {fileID: 8926484042661614980}
+  - {fileID: 8926484042661615908}
   m_UIPosition: {x: 676, y: 186}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
@@ -4165,6 +4173,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615017}
   - {fileID: 8926484042661615024}
   - {fileID: 8926484042661614928}
+  - {fileID: 8926484042661615914}
   m_UIPosition: {x: 1956, y: 207}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
@@ -5991,7 +6000,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615188}
   m_ExposedName: Velocity_FireParticle
   m_Exposed: 1
-  m_Order: 24
+  m_Order: 29
   m_Category: Veloctiy
   m_Min:
     m_Type:
@@ -6072,7 +6081,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615190}
   m_ExposedName: Size_FireParticle
   m_Exposed: 1
-  m_Order: 21
+  m_Order: 26
   m_Category: Size
   m_Min:
     m_Type:
@@ -8598,7 +8607,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615466}
   m_ExposedName: Lifetime_Fire
   m_Exposed: 1
-  m_Order: 4
+  m_Order: 9
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -8688,7 +8697,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615468}
   m_ExposedName: Size_FireA
   m_Exposed: 1
-  m_Order: 8
+  m_Order: 13
   m_Category: Size
   m_Min:
     m_Type:
@@ -8804,7 +8813,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615472}
   m_ExposedName: Lifetime_FireParticle
   m_Exposed: 1
-  m_Order: 14
+  m_Order: 19
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -8885,7 +8894,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615474}
   m_ExposedName: 2DScale_FireA
   m_Exposed: 1
-  m_Order: 15
+  m_Order: 20
   m_Category: Size
   m_Min:
     m_Type:
@@ -9516,7 +9525,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615494}
   m_ExposedName: Size_FireB
   m_Exposed: 1
-  m_Order: 17
+  m_Order: 22
   m_Category: Size
   m_Min:
     m_Type:
@@ -9597,7 +9606,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615498}
   m_ExposedName: 2DScale_FireB
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 24
   m_Category: Size
   m_Min:
     m_Type:
@@ -10230,7 +10239,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615520}
   m_ExposedName: Lifetime_Smoke
   m_Exposed: 1
-  m_Order: 20
+  m_Order: 25
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -10450,7 +10459,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615526}
   m_ExposedName: Size_Smoke
   m_Exposed: 1
-  m_Order: 23
+  m_Order: 28
   m_Category: Size
   m_Min:
     m_Type:
@@ -10670,7 +10679,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615540}
   m_ExposedName: Velocity_Smoke
   m_Exposed: 1
-  m_Order: 25
+  m_Order: 30
   m_Category: Veloctiy
   m_Min:
     m_Type:
@@ -11130,7 +11139,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615610}
   m_ExposedName: Toggle_Smoke
   m_Exposed: 1
-  m_Order: 26
+  m_Order: 31
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -11211,7 +11220,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615612}
   m_ExposedName: Toggle_FireA
   m_Exposed: 1
-  m_Order: 10
+  m_Order: 15
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -11292,7 +11301,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615614}
   m_ExposedName: Toggle_FireParticle
   m_Exposed: 1
-  m_Order: 12
+  m_Order: 17
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -11544,7 +11553,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615626}
   m_ExposedName: Color_FireParticle
   m_Exposed: 1
-  m_Order: 16
+  m_Order: 21
   m_Category: Color
   m_Min:
     m_Type:
@@ -11761,7 +11770,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615632}
   m_ExposedName: Color_FireA
   m_Exposed: 1
-  m_Order: 13
+  m_Order: 18
   m_Category: Color
   m_Min:
     m_Type:
@@ -12177,7 +12186,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615644}
   m_ExposedName: Color_Smoke
   m_Exposed: 1
-  m_Order: 18
+  m_Order: 23
   m_Category: Color
   m_Min:
     m_Type:
@@ -12394,7 +12403,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615650}
   m_ExposedName: SpawnRate_Smoke
   m_Exposed: 1
-  m_Order: 5
+  m_Order: 10
   m_Category: SpawnRate
   m_Min:
     m_Type:
@@ -12475,7 +12484,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615652}
   m_ExposedName: 2DScale_FireParticle
   m_Exposed: 1
-  m_Order: 22
+  m_Order: 27
   m_Category: Size
   m_Min:
     m_Type:
@@ -12628,7 +12637,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615656}
   m_ExposedName: Texture_Fire_A
   m_Exposed: 1
-  m_Order: 27
+  m_Order: 32
   m_Category: Textures
   m_Min:
     m_Type:
@@ -12709,7 +12718,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615658}
   m_ExposedName: Texture_Fire_B
   m_Exposed: 1
-  m_Order: 6
+  m_Order: 11
   m_Category: Textures
   m_Min:
     m_Type:
@@ -13070,7 +13079,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615669}
   m_ExposedName: Toggle_FireB
   m_Exposed: 1
-  m_Order: 7
+  m_Order: 12
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -13151,7 +13160,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615673}
   m_ExposedName: Pivot_FireB
   m_Exposed: 1
-  m_Order: 11
+  m_Order: 16
   m_Category: Specific
   m_Min:
     m_Type:
@@ -13304,7 +13313,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615677}
   m_ExposedName: Pivot_FireA
   m_Exposed: 1
-  m_Order: 9
+  m_Order: 14
   m_Category: Specific
   m_Min:
     m_Type:
@@ -13453,8 +13462,7 @@ MonoBehaviour:
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
-  - {fileID: 8926484042661615686}
-  - {fileID: 8926484042661615687}
+  - {fileID: 8926484042661615920}
   m_OutputSlots: []
   m_Disabled: 0
   m_ActivationSlot: {fileID: 8926484042661615684}
@@ -13464,7 +13472,7 @@ MonoBehaviour:
   SampleMode: 0
   Mode: 1
   ColorMode: 3
-  channels: 3
+  channels: 0
 --- !u!114 &8926484042661615684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13490,81 +13498,13 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: False
+      m_SerializableObject: True
     m_Space: -1
   m_Property:
     name: _vfx_enabled
     m_serializedType:
       m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
-  m_Direction: 0
-  m_LinkedSlots: []
---- !u!114 &8926484042661615686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c117b74c5c58db542bffe25c78fe92db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UIIgnoredErrors: []
-  m_Parent: {fileID: 0}
-  m_Children: []
-  m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
-  m_UISuperCollapsed: 0
-  m_MasterSlot: {fileID: 8926484042661615686}
-  m_MasterData:
-    m_Owner: {fileID: 8926484042661615680}
-    m_Value:
-      m_Type:
-        m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
-          Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"frames":[{"time":-0.001201629638671875,"value":0.30000001192092898,"inTangent":-2.268279790878296,"outTangent":-2.268279790878296,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":0.30000001192092898,"value":1.0,"inTangent":6.053825378417969,"outTangent":6.053825378417969,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
-    m_Space: -1
-  m_Property:
-    name: Scale_x
-    m_serializedType:
-      m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-  m_Direction: 0
-  m_LinkedSlots: []
---- !u!114 &8926484042661615687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c117b74c5c58db542bffe25c78fe92db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UIIgnoredErrors: []
-  m_Parent: {fileID: 0}
-  m_Children: []
-  m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
-  m_UISuperCollapsed: 0
-  m_MasterSlot: {fileID: 8926484042661615687}
-  m_MasterData:
-    m_Owner: {fileID: 8926484042661615680}
-    m_Value:
-      m_Type:
-        m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
-          Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"frames":[{"time":-0.001201629638671875,"value":0.30000001192092898,"inTangent":-2.268279790878296,"outTangent":-2.268279790878296,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":0.30000001192092898,"value":1.0,"inTangent":6.053825378417969,"outTangent":6.053825378417969,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
-    m_Space: -1
-  m_Property:
-    name: Scale_y
-    m_serializedType:
-      m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
   m_Direction: 0
   m_LinkedSlots: []
 --- !u!114 &8926484042661615688
@@ -13590,7 +13530,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615689}
   m_ExposedName: Velocity_FireA
   m_Exposed: 1
-  m_Order: 28
+  m_Order: 33
   m_Category: Veloctiy
   m_Min:
     m_Type:
@@ -13671,7 +13611,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615691}
   m_ExposedName: ToggleLoop
   m_Exposed: 1
-  m_Order: 29
+  m_Order: 34
   m_Category: General
   m_Min:
     m_Type:
@@ -13722,7 +13662,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661615691}
       inputSlot: {fileID: 8926484042661615762}
-    position: {x: -1152, y: 221}
+    position: {x: -1150, y: 316}
     expandedSlots: []
     expanded: 1
     supecollapsed: 1
@@ -14593,7 +14533,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615721}
   m_ExposedName: ConstantSpawnRate_Fire
   m_Exposed: 1
-  m_Order: 3
+  m_Order: 8
   m_Category: SpawnRate
   m_Min:
     m_Type:
@@ -14683,7 +14623,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615732}
   m_ExposedName: SpawnRate_FireParticle
   m_Exposed: 1
-  m_Order: 30
+  m_Order: 35
   m_Category: SpawnRate
   m_Min:
     m_Type:
@@ -15093,7 +15033,8 @@ MonoBehaviour:
       m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 8926484042661615922}
 --- !u!114 &8926484042661615743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15250,7 +15191,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615749}
   - {fileID: 8926484042661615750}
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
+  m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_MasterSlot: {fileID: 8926484042661615747}
   m_MasterData:
@@ -15300,7 +15241,8 @@ MonoBehaviour:
       m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 8926484042661615906}
 --- !u!114 &8926484042661615749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15333,7 +15275,8 @@ MonoBehaviour:
       m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 8926484042661615907}
 --- !u!114 &8926484042661615750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15905,7 +15848,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615779}
   m_ExposedName: Texture_Smoke
   m_Exposed: 1
-  m_Order: 31
+  m_Order: 36
   m_Category: Textures
   m_Min:
     m_Type:
@@ -15986,7 +15929,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615790}
   m_ExposedName: VeloctiyOffset_Smoke
   m_Exposed: 1
-  m_Order: 32
+  m_Order: 37
   m_Category: Veloctiy
   m_Min:
     m_Type:
@@ -16199,14 +16142,14 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 0
+  m_UICollapsed: 1
   m_UISuperCollapsed: 0
   m_InputSlots: []
   m_OutputSlots:
   - {fileID: 8926484042661615798}
   m_ExposedName: Pivot_Smoke
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 7
   m_Category: Specific
   m_Min:
     m_Type:
@@ -16359,7 +16302,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615842}
   m_ExposedName: Color_FireB
   m_Exposed: 1
-  m_Order: 1
+  m_Order: 6
   m_Category: Color
   m_Min:
     m_Type:
@@ -16576,7 +16519,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615874}
   m_ExposedName: Delay
   m_Exposed: 1
-  m_Order: 33
+  m_Order: 38
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -16619,7 +16562,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661615874}
       inputSlot: {fileID: 8926484042661615753}
-    position: {x: -1199, y: 105}
+    position: {x: -1194, y: 217}
     expandedSlots: []
     expanded: 1
     supecollapsed: 1
@@ -16931,7 +16874,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615884}
   m_ExposedName: Toggle_LensFlare
   m_Exposed: 1
-  m_Order: 0
+  m_Order: 1
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -16950,7 +16893,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661615884}
       inputSlot: {fileID: 8926484042661615763}
-    position: {x: -1160, y: 266}
+    position: {x: -1158, y: 361}
     expandedSlots: []
     expanded: 1
     supecollapsed: 1
@@ -17012,7 +16955,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615893}
   m_ExposedName: SpawnRate_LensFlare
   m_Exposed: 1
-  m_Order: 0
+  m_Order: 2
   m_Category: SpawnRate
   m_Min:
     m_Type:
@@ -17031,7 +16974,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661615893}
       inputSlot: {fileID: 8926484042661615741}
-    position: {x: -1171, y: -39}
+    position: {x: -1176, y: -87}
     expandedSlots: []
     expanded: 1
     supecollapsed: 1
@@ -17093,7 +17036,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615895}
   m_ExposedName: Color_LensFlare
   m_Exposed: 1
-  m_Order: 0
+  m_Order: 3
   m_Category: Color
   m_Min:
     m_Type:
@@ -17112,7 +17055,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661615895}
       inputSlot: {fileID: 8926484042661615755}
-    position: {x: -1157, y: 170}
+    position: {x: -1155, y: 265}
     expandedSlots: []
     expanded: 1
     supecollapsed: 1
@@ -17310,7 +17253,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615901}
   m_ExposedName: Size_LensFlare
   m_Exposed: 1
-  m_Order: 0
+  m_Order: 4
   m_Category: Size
   m_Min:
     m_Type:
@@ -17329,7 +17272,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661615901}
       inputSlot: {fileID: 8926484042661615743}
-    position: {x: -1166, y: 14}
+    position: {x: -1169, y: 61}
     expandedSlots: []
     expanded: 1
     supecollapsed: 1
@@ -17391,7 +17334,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615903}
   m_ExposedName: Texture_LesnFlare
   m_Exposed: 1
-  m_Order: 0
+  m_Order: 5
   m_Category: Textures
   m_Min:
     m_Type:
@@ -17410,7 +17353,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661615903}
       inputSlot: {fileID: 8926484042661615751}
-    position: {x: -1179.6129, y: 58.901947}
+    position: {x: -1175, y: 171}
     expandedSlots: []
     expanded: 1
     supecollapsed: 1
@@ -17449,3 +17392,467 @@ MonoBehaviour:
   m_Direction: 1
   m_LinkedSlots:
   - {fileID: 8926484042661615751}
+--- !u!114 &8926484042661615904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 330e0fca1717dde4aaa144f48232aa64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 114350483966674976}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_InputSlots: []
+  m_OutputSlots:
+  - {fileID: 8926484042661615905}
+  m_ExposedName: Pivot_Flare
+  m_Exposed: 1
+  m_Order: 39
+  m_Category: Specific
+  m_Min:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_Max:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_IsOutput: 0
+  m_EnumValues: []
+  m_ValueFilter: 0
+  m_Tooltip: 
+  m_Nodes:
+  - m_Id: 0
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661615906}
+      inputSlot: {fileID: 8926484042661615748}
+    - outputSlot: {fileID: 8926484042661615907}
+      inputSlot: {fileID: 8926484042661615749}
+    position: {x: -1128, y: 116}
+    expandedSlots:
+    - {fileID: 8926484042661615905}
+    expanded: 1
+    supecollapsed: 1
+--- !u!114 &8926484042661615905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b2b751071c7fc14f9fa503163991826, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children:
+  - {fileID: 8926484042661615906}
+  - {fileID: 8926484042661615907}
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615905}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615904}
+    m_Value:
+      m_Type:
+        m_SerializableType: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      m_SerializableObject: '{"x":0.0,"y":0.0}'
+    m_Space: -1
+  m_Property:
+    name: o
+    m_serializedType:
+      m_SerializableType: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  m_Direction: 1
+  m_LinkedSlots: []
+--- !u!114 &8926484042661615906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 8926484042661615905}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615905}
+  m_MasterData:
+    m_Owner: {fileID: 0}
+    m_Value:
+      m_Type:
+        m_SerializableType: 
+      m_SerializableObject: 
+    m_Space: -1
+  m_Property:
+    name: x
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
+  m_LinkedSlots:
+  - {fileID: 8926484042661615748}
+--- !u!114 &8926484042661615907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 8926484042661615905}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615905}
+  m_MasterData:
+    m_Owner: {fileID: 0}
+    m_Value:
+      m_Type:
+        m_SerializableType: 
+      m_SerializableObject: 
+    m_Space: -1
+  m_Property:
+    name: y
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
+  m_LinkedSlots:
+  - {fileID: 8926484042661615749}
+--- !u!114 &8926484042661615908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ec2c1930009b04ea08905b47262415, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 8926484042661614825}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 0
+  m_UISuperCollapsed: 0
+  m_InputSlots:
+  - {fileID: 8926484042661615913}
+  m_OutputSlots: []
+  m_Disabled: 0
+  m_ActivationSlot: {fileID: 8926484042661615912}
+  attribute: scale
+  Composition: 0
+  AlphaComposition: 0
+  SampleMode: 0
+  Mode: 1
+  ColorMode: 3
+  channels: 0
+--- !u!114 &8926484042661615912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c11ff25089a324daf359f4b0629b33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615912}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615908}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: False
+    m_Space: -1
+  m_Property:
+    name: _vfx_enabled
+    m_serializedType:
+      m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 0
+  m_LinkedSlots: []
+--- !u!114 &8926484042661615913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c117b74c5c58db542bffe25c78fe92db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615913}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615908}
+    m_Value:
+      m_Type:
+        m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      m_SerializableObject: '{"frames":[{"time":0.0,"value":1.0,"inTangent":-2.0,"outTangent":-2.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":1.0,"value":0.0,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
+    m_Space: -1
+  m_Property:
+    name: Scale
+    m_serializedType:
+      m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  m_Direction: 0
+  m_LinkedSlots: []
+--- !u!114 &8926484042661615914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ec2c1930009b04ea08905b47262415, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 8926484042661614924}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 0
+  m_UISuperCollapsed: 0
+  m_InputSlots:
+  - {fileID: 8926484042661615915}
+  m_OutputSlots: []
+  m_Disabled: 0
+  m_ActivationSlot: {fileID: 8926484042661615916}
+  attribute: scale
+  Composition: 2
+  AlphaComposition: 0
+  SampleMode: 0
+  Mode: 1
+  ColorMode: 3
+  channels: 0
+--- !u!114 &8926484042661615915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c117b74c5c58db542bffe25c78fe92db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615915}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615914}
+    m_Value:
+      m_Type:
+        m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      m_SerializableObject: '{"frames":[{"time":0.0,"value":1.0,"inTangent":1.7218481302261353,"outTangent":1.7218481302261353,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":1.0,"value":0.0,"inTangent":-2.0,"outTangent":-2.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
+    m_Space: -1
+  m_Property:
+    name: Scale
+    m_serializedType:
+      m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  m_Direction: 0
+  m_LinkedSlots: []
+--- !u!114 &8926484042661615916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c11ff25089a324daf359f4b0629b33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615916}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615914}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: True
+    m_Space: -1
+  m_Property:
+    name: _vfx_enabled
+    m_serializedType:
+      m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 0
+  m_LinkedSlots: []
+--- !u!114 &8926484042661615920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c117b74c5c58db542bffe25c78fe92db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615920}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615680}
+    m_Value:
+      m_Type:
+        m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      m_SerializableObject: '{"frames":[{"time":0.0,"value":1.0,"inTangent":1.7218481302261353,"outTangent":1.7218481302261353,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":1.0,"value":0.0,"inTangent":-2.0,"outTangent":-2.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
+    m_Space: -1
+  m_Property:
+    name: Scale
+    m_serializedType:
+      m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  m_Direction: 0
+  m_LinkedSlots: []
+--- !u!114 &8926484042661615921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 330e0fca1717dde4aaa144f48232aa64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 114350483966674976}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_InputSlots: []
+  m_OutputSlots:
+  - {fileID: 8926484042661615922}
+  m_ExposedName: Lifetime_LensFlare
+  m_Exposed: 1
+  m_Order: 0
+  m_Category: Lifetime
+  m_Min:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_Max:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_IsOutput: 0
+  m_EnumValues: []
+  m_ValueFilter: 0
+  m_Tooltip: 
+  m_Nodes:
+  - m_Id: 0
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661615922}
+      inputSlot: {fileID: 8926484042661615742}
+    position: {x: -1165, y: -10}
+    expandedSlots: []
+    expanded: 1
+    supecollapsed: 1
+--- !u!114 &8926484042661615922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615922}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615921}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 0.3
+    m_Space: -1
+  m_Property:
+    name: o
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
+  m_LinkedSlots:
+  - {fileID: 8926484042661615742}

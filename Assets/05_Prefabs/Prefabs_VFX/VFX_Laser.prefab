@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0.03, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6439586436413867179}
@@ -51,7 +51,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 0.25
+      - m_Value: 1.1
         m_Name: Delay
         m_Overridden: 1
       - m_Value: 1.5
@@ -69,6 +69,12 @@ VisualEffect:
       - m_Value: 6
         m_Name: Lenght_Laser
         m_Overridden: 1
+      - m_Value: 2
+        m_Name: Size_BackgroundLaser
+        m_Overridden: 1
+      - m_Value: 0.2
+        m_Name: Wight
+        m_Overridden: 1
     m_Vector2f:
       m_Array:
       - m_Value: {x: -5, y: 0}
@@ -80,7 +86,16 @@ VisualEffect:
     m_Vector3f:
       m_Array: []
     m_Vector4f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 1.6393639, y: 11.984313, z: 9.735412, w: 0}
+        m_Name: Color_Laser
+        m_Overridden: 1
+      - m_Value: {x: 0.20905341, y: 0.11961552, z: 1.2075472, w: 0}
+        m_Name: Color_BackgroundLaser
+        m_Overridden: 1
+      - m_Value: {x: 11.271762, y: 10.039213, z: 95.87451, w: 0}
+        m_Name: Color_Lightning
+        m_Overridden: 1
     m_Uint:
       m_Array: []
     m_Int:
@@ -92,7 +107,13 @@ VisualEffect:
     m_Gradient:
       m_Array: []
     m_NamedObject:
-      m_Array: []
+      m_Array:
+      - m_Value: {fileID: 2800000, guid: 5091032b0acacdc48baee559df6055ff, type: 3}
+        m_Name: Texture_Laser
+        m_Overridden: 1
+      - m_Value: {fileID: 2800000, guid: 5091032b0acacdc48baee559df6055ff, type: 3}
+        m_Name: Texture_BackgroundLaser
+        m_Overridden: 1
     m_Bool:
       m_Array:
       - m_Value: 1
@@ -101,7 +122,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggleLooping
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0
         m_Name: ToggleSubgraph_BackgroundLaser
         m_Overridden: 1
       - m_Value: 1
@@ -174,7 +195,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3640024387264491550}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.52, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
