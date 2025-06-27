@@ -73,7 +73,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
         }
     }
     
-    [ServerRpc][Server]
+    [Server]
     private void S_TriggerIntoSound()
     {
         foreach (KeyValuePair<NetworkConnection,NetMatchPlayer> player in _lobbyConductor.PlayersByConnection)
