@@ -2,16 +2,13 @@
 using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections.Generic;
+using _01_Scripts.Projectiles;
 
 public class NetPredictedProjectileLaser : MonoBehaviour
 {
-    [SerializeField] private float maxLength = 10f;
-    [SerializeField] private float growSpeed = 2f;   
-    [SerializeField] private float lifetimeAfterFullGrow = 2f;
-    [SerializeField] private int maxHits = 3;
-    [SerializeField] private float projectileDamage;
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
+    [SerializeField] private LaserProjectileObject laserProjectileObject;
 
     private NetTeamID _netTeamID;
     private Vector3 _direction;
@@ -48,15 +45,15 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         
         if (!_fullyGrown)
         {
-            _growProgress += growSpeed * dt;
+            _growProgress += laserProjectileObject.GrowSpeed * dt;
             _growProgress = Mathf.Clamp01(_growProgress);
-            _currentLength = Mathf.Lerp(0f, maxLength, _growProgress);
+            _currentLength = Mathf.Lerp(0f, laserProjectileObject.MaxLength, _growProgress);
             transform.localScale = new Vector3(_initialScale.x, _currentLength, _initialScale.z);
 
             if (_growProgress >= 1f)
             {
                 _fullyGrown = true;
-                _lifetimeTimer = lifetimeAfterFullGrow;
+                _lifetimeTimer = laserProjectileObject.LifetimeAfterFullGrown;
             }
         }
         else
@@ -84,7 +81,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(projectileDamage, _attackerID);
+            module.S_InflictDamage(laserProjectileObject.ProjectileDamage, _attackerID);
         }
         
         if (InstanceFinder.IsClientStarted)
@@ -93,10 +90,10 @@ public class NetPredictedProjectileLaser : MonoBehaviour
             Instantiate(hitFeedbackVFX, spawnPos, Quaternion.identity);
         }
         
-        if (hitModules.Count >= maxHits)
+        if (hitModules.Count >= laserProjectileObject.MaxHits)
         {
             _fullyGrown = true;
-            _lifetimeTimer = lifetimeAfterFullGrow;
+            _lifetimeTimer = laserProjectileObject.LifetimeAfterFullGrown;
             gameObject.GetComponent<BoxCollider2D>().enabled = false;
         }
     }

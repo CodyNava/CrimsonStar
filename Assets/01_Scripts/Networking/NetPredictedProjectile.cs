@@ -1,32 +1,34 @@
-﻿using FishNet;
+﻿using _01_Scripts.Projectiles;
+using FishNet;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.VFX;
 
 public class NetPredictedProjectile : MonoBehaviour
 {
-    [SerializeField] private float projectileSpeed;
-    [SerializeField] private float projectileDamage;
-    [SerializeField] private float projectileTimer;
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
+    [SerializeField] private BaseProjectileObject baseProjectileObject;
     
-    public float ProjectileSpeed => projectileSpeed;
-    public float ProjectileDamage => projectileDamage;
-    public float ProjectileTimer => projectileTimer;
+    
+//! Has to be removed and reworked to access the scriptable object instead of getting it from here
+    public float ProjectileSpeed => baseProjectileObject.ProjectileSpeed;
+    public float ProjectileDamage => baseProjectileObject.ProjectileDamage;
+    public float ProjectileTimer => baseProjectileObject.ProjectileTimer;
+//! --------------------------------------------------------------------------
 
+    
     private ulong _attackerID;
     private NetTeamID _netTeamID;
     private Vector3 _direction;
     private float _passedTime = 0f;
-
     public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID)
     {
         _direction = direction;
         _passedTime = passedTime;
         _netTeamID = netTeamID;
         _attackerID = attackerID;
-        Destroy(gameObject, projectileTimer);
+        Destroy(gameObject, baseProjectileObject.ProjectileTimer);
         if (bulletVFX.HasVector3("DirectionVector_position"))
         {
             bulletVFX.SetVector3("DirectionVector_position", _direction);
@@ -52,7 +54,7 @@ public class NetPredictedProjectile : MonoBehaviour
             passedDt = step;
         }
 
-        transform.position += _direction * (projectileSpeed * (dt + passedDt));
+        transform.position += _direction * (baseProjectileObject.ProjectileSpeed * (dt + passedDt));
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -66,7 +68,7 @@ public class NetPredictedProjectile : MonoBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(projectileDamage, _attackerID);
+            module.S_InflictDamage(baseProjectileObject.ProjectileDamage, _attackerID);
         }
         Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
         Destroy(gameObject);
