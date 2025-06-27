@@ -9,7 +9,7 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private NetLaserTurretData netLaserTurretData;
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
-    [SerializeField] private VisualEffect muzzleFlash, muzzleFlash2;
+    [SerializeField] private VisualEffect muzzleCharge, muzzleImpact;
     [SerializeField] private AudioSource shootingSound;
     [SerializeField] private bool isCharging;
     
@@ -25,7 +25,12 @@ public class NetLaserTurret : NetworkBehaviour
     {
         return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
     }
-   
+
+    private void Start()
+    {
+        muzzleCharge.SetFloat("Get_ChargeTime", netLaserTurretData.ChargeTime);
+        muzzleImpact.SetFloat("Delay", netLaserTurretData.ChargeTime);
+    }
     private void Update()
     {
         if (!IsOwner) return;
@@ -42,8 +47,8 @@ public class NetLaserTurret : NetworkBehaviour
             isCharging = true;
             _chargeTime += Time.deltaTime;
             print(_chargeTime);
-            muzzleFlash.Play();
-            muzzleFlash2.Play();
+            muzzleCharge.Play();
+            muzzleImpact.Play();
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
                 _accumulatedTime = 0;
@@ -105,6 +110,6 @@ public class NetLaserTurret : NetworkBehaviour
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
-        muzzleFlash.Play();
+        muzzleCharge.Play();
     }
 }
