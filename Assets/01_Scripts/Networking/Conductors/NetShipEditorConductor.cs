@@ -82,6 +82,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
         }
     }
 
+    [TargetRpc]
     private void TriggerIntroSound(NetworkConnection conn)
     {
         StartCoroutine(PlayIntroSound());
