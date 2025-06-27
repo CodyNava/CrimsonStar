@@ -40,7 +40,7 @@ public class NetLaserTurret : NetworkBehaviour
 
         if (_cooldownTime < netLaserTurretData.Cooldown) return;
         if (!CanFire()) return;
-       // if (!C_IsAttacking()) return;
+        if (!C_IsAttacking()) return;
         
         if (Keybinds.Actions.Player.Attack.IsPressed() || isCharging)
         {
