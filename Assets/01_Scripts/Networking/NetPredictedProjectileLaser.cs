@@ -8,7 +8,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
 {
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
-    [SerializeField] private LaserProjectileObject laserProjectileObject;
+    [SerializeField] public LaserProjectileObject laserProjectileObject;
 
     private NetTeamID _netTeamID;
     private Vector3 _direction;

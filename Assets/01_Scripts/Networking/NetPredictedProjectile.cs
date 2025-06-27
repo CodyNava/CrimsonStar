@@ -8,15 +8,7 @@ public class NetPredictedProjectile : MonoBehaviour
 {
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
-    [SerializeField] private BaseProjectileObject baseProjectileObject;
-    
-    
-//! Has to be removed and reworked to access the scriptable object instead of getting it from here
-    public float ProjectileSpeed => baseProjectileObject.ProjectileSpeed;
-    public float ProjectileDamage => baseProjectileObject.ProjectileDamage;
-    public float ProjectileTimer => baseProjectileObject.ProjectileTimer;
-//! --------------------------------------------------------------------------
-
+    [SerializeField] public BaseProjectileObject baseProjectileObject;
     
     private ulong _attackerID;
     private NetTeamID _netTeamID;

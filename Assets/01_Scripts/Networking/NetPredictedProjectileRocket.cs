@@ -8,7 +8,7 @@ public class NetPredictedProjectileRocket : MonoBehaviour
 {
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
-    [SerializeField] private RocketProjectileObject rocketProjectileObject;
+    [SerializeField] public RocketProjectileObject rocketProjectileObject;
 
 
     private ulong _attackerID;
