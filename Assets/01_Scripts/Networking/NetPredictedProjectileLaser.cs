@@ -28,6 +28,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
     
     public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID)
     {
+        bulletVFX.Play();
         _direction = direction.normalized;
         _netTeamID = netTeamID;
         _attackerID = attackerID;

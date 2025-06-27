@@ -9,8 +9,10 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private NetLaserTurretData netLaserTurretData;
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
-    [SerializeField] private VisualEffect muzzleFlash;
+    [SerializeField] private VisualEffect muzzleFlash, muzzleFlash2;
     [SerializeField] private AudioSource shootingSound;
+    [SerializeField] private bool isCharging;
+    
     private const float MaxPassedTime = 0.3f;
 
     private float _accumulatedTime;
@@ -35,22 +37,23 @@ public class NetLaserTurret : NetworkBehaviour
         if (!CanFire()) return;
        // if (!C_IsAttacking()) return;
         
-        if (Keybinds.Actions.Player.Attack.IsPressed())
+        if (Keybinds.Actions.Player.Attack.IsPressed() || isCharging)
         {
+            isCharging = true;
             _chargeTime += Time.deltaTime;
             print(_chargeTime);
+            muzzleFlash.Play();
+            muzzleFlash2.Play();
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
                 _accumulatedTime = 0;
                 _chargeTime = 0;
                 _cooldownTime = 0f;
+                isCharging = false;
                 C_ClientFire();
             }
         }
-        else
-        {
-            _chargeTime = 0;
-        }
+        
     }
 
     private bool C_IsAttacking()
@@ -76,7 +79,6 @@ public class NetLaserTurret : NetworkBehaviour
             C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
         }
         S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
-        muzzleFlash.Play();
         shootingSound.Play();
     }
 
