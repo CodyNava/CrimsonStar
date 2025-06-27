@@ -53,7 +53,7 @@ public class NetRocketTurret : NetworkBehaviour
             C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
         }
         S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
-        // muzzleFlash.Play();
+        muzzleFlash.Play();
         FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
 
