@@ -90,7 +90,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     {
         intro.Play();
         yield return new WaitForSecondsRealtime(6.5f);
-        AdvanceToGameplayScene();
+        if(IsServerStarted) AdvanceToGameplayScene();
     }
 
     private void AdvanceToGameplayScene()
