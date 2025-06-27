@@ -2,35 +2,28 @@
 using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections.Generic;
+using _01_Scripts.Projectiles;
 
 public class NetPredictedProjectileRocket : MonoBehaviour
 {
-    [SerializeField] private float projectileAcceleration;
-    [SerializeField] private float projectileMaxSpeed;
-    [SerializeField] private float projectileDamage;
-    [SerializeField] private float projectileTimer;
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
-    
-    
-    public float ProjectileAcceleration=> projectileAcceleration;
-    public float ProjectileMaxSpeed => projectileMaxSpeed;
-    public float ProjectileDamage => projectileDamage;
-    public float ProjectileTimer => projectileTimer;
+    [SerializeField] public RocketProjectileObject rocketProjectileObject;
+
 
     private ulong _attackerID;
     private NetTeamID _netTeamID;
     private Vector3 _direction;
-    
+
     private Vector3 velocity = Vector3.zero;
-    
-    
+
+
     public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID)
     {
         _direction = direction;
         _netTeamID = netTeamID;
         _attackerID = attackerID;
-        Destroy(gameObject, projectileTimer);
+        Destroy(gameObject, rocketProjectileObject.ProjectileTimer);
         if (bulletVFX.HasVector3("DirectionVector_position"))
         {
             bulletVFX.SetVector3("DirectionVector_position", _direction);
@@ -41,12 +34,12 @@ public class NetPredictedProjectileRocket : MonoBehaviour
     {
         float dt = Time.deltaTime;
 
-        Vector3 accVector = _direction.normalized * projectileAcceleration;
-         velocity += accVector * dt;
-         if (velocity.magnitude > projectileMaxSpeed)
-             velocity = velocity.normalized * projectileMaxSpeed;
+        Vector3 accVector = _direction.normalized * rocketProjectileObject.ProjectileAcceleration;
+        velocity += accVector * dt;
+        if (velocity.magnitude > rocketProjectileObject.ProjectileMaxSpeed)
+            velocity = velocity.normalized * rocketProjectileObject.ProjectileMaxSpeed;
 
-         transform.position += velocity * dt;
+        transform.position += velocity * dt;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -55,15 +48,14 @@ public class NetPredictedProjectileRocket : MonoBehaviour
 
         if (InstanceFinder.IsClientStarted)
         {
-            // Visual and Audio
+            Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
         }
 
         if (InstanceFinder.IsServerStarted)
         {
-            // Spawn Explosion here
+            module.S_InflictDamage(rocketProjectileObject.ProjectileDamage, _attackerID);
         }
-        Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
+        
         Destroy(gameObject);
     }
-
 }
