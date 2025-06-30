@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FishNet.Object;
+using FMODUnity;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -11,6 +13,7 @@ public class NetTurret : NetworkBehaviour
     [SerializeField] private Transform spawnTransformA, spawnTransformB;
     [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
     [SerializeField] private FMODUnity.EventReference shotSound;
+    private FMOD.Studio.EventInstance _shotSoundInstance;
     private const float MaxPassedTime = 0.3f;
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
@@ -26,13 +29,32 @@ public class NetTurret : NetworkBehaviour
         _nextMuzzleFlash = muzzleFlashA;
     }
 
+    private void Start()
+    {
+        _shotSoundInstance = FMODUnity.RuntimeManager.CreateInstance(shotSound);
+        _shotSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject));
+        _shotSoundInstance.start();
+    }
+
+    private void Update()
+    {
+        _shotSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject));
+    }
+
+    private void OnDestroy()
+    {
+        _shotSoundInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        _shotSoundInstance.release();
+    }
+
     private bool CanFire()
     {
         Debug.Log($"PowerGrid: {turretModule.Bridge.PowerGrid.Count}");
-        foreach (KeyValuePair<HexCoordinate,int> gridEntry in turretModule.Bridge.PowerGrid)
+        foreach (KeyValuePair<HexCoordinate, int> gridEntry in turretModule.Bridge.PowerGrid)
         {
             Debug.Log($"PoweredCoords: [{gridEntry.Key.Q},{gridEntry.Key.R},{gridEntry.Key.S}]: {gridEntry.Value}");
         }
+
         return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
     }
 
@@ -43,7 +65,7 @@ public class NetTurret : NetworkBehaviour
         _accumulatedTime = Mathf.Min(_accumulatedTime, netTurretData.Cooldown);
 
         if (_accumulatedTime < netTurretData.Cooldown) return;
-        
+
         if (!C_IsAttacking()) return;
 
         if (_nextSpawnTransform == spawnTransformA)
@@ -84,6 +106,7 @@ public class NetTurret : NetworkBehaviour
         {
             C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
         }
+
         S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
         _nextMuzzleFlash.Play();
         FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);

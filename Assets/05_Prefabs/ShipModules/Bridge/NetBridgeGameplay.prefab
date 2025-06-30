@@ -256,6 +256,7 @@ GameObject:
   - component: {fileID: 3651307376315669086}
   - component: {fileID: 1825720529530502399}
   - component: {fileID: 2985914052665589206}
+  - component: {fileID: -4323517859218442446}
   m_Layer: 3
   m_Name: NetBridgeGameplay
   m_TagString: Untagged
@@ -327,7 +328,7 @@ MonoBehaviour:
       Data2: 1326065546
       Data3: 36086663
       Data4: 611758014
-    Path: event:/SFX/hit_feedback
+    Path: event:/SFX/GetDamage_SFX
   damagedModuleSFXEvent:
     Guid:
       Data1: 1791405448
@@ -401,7 +402,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 11
+  <PrefabId>k__BackingField: 13
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 11199547117643051825
   <SceneId>k__BackingField: 0
@@ -626,6 +627,20 @@ MonoBehaviour:
   _overrideType: 2
   _updateHostVisibility: 1
   _observerConditions: []
+--- !u!114 &-4323517859218442446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7512106822483562592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1 &9038909177974191782
 GameObject:
   m_ObjectHideFlags: 0
