@@ -1,19 +1,27 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class CustomSettingsMenuInput : MonoBehaviour
 {
     [SerializeField] private GameObject settingsCanvas;
     [SerializeField] private EventSystem eventSystem;
-
-    [SerializeField] private TMP_Dropdown graphicsDropdown;
     
     [SerializeField] private Button audioButton;
     [SerializeField] private Button graphicsButton;
     [SerializeField] private Button backButton;
+
+    [SerializeField] private GameObject resolution;
+    [SerializeField] private GameObject frameCap;
+    [SerializeField] private GameObject vSync;
+    
+    [SerializeField] private Button increaseResolution;
+    [SerializeField] private Button decreaseResolution;
+    [SerializeField] private Button increaseFrameCap;
+    [SerializeField] private Button decreaseFrameCap;
+    [SerializeField] private Button increaseVsync;
+    [SerializeField] private Button decreaseVsync;
+    
 
     private void Awake()
     {
@@ -37,12 +45,45 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 eventSystem.SetSelectedGameObject(graphicsButton.gameObject);
             }
 
-            if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame() && !graphicsDropdown.IsExpanded)
-            //if (Gamepad.current.buttonEast.wasPressedThisFrame && !graphicsDropdown.IsExpanded)
+            if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
             {
                 backButton.onClick.Invoke();
             }
-            
+
+            if (Keybinds.Actions.UI.Decrease.WasPressedThisFrame())
+            {
+                if (eventSystem.currentSelectedGameObject.Equals(resolution))
+                {
+                    decreaseResolution.onClick.Invoke();
+                }
+
+                if (eventSystem.currentSelectedGameObject.Equals(frameCap))
+                {
+                    decreaseFrameCap.onClick.Invoke();
+                }
+                if (eventSystem.currentSelectedGameObject.Equals(vSync))
+                {
+                    decreaseVsync.onClick.Invoke();
+                }
+            }
+
+            if (Keybinds.Actions.UI.Increase.WasPressedThisFrame())
+            {
+                if (eventSystem.currentSelectedGameObject.Equals(resolution))
+                {
+                    increaseResolution.onClick.Invoke();
+                }
+
+                if (eventSystem.currentSelectedGameObject.Equals(frameCap))
+                {
+                    increaseFrameCap.onClick.Invoke();
+                }
+
+                if (eventSystem.currentSelectedGameObject.Equals(vSync))
+                {
+                    increaseVsync.onClick.Invoke();
+                }
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] GameObject pauseMenuUI;
+    [SerializeField] private GameObject panel;
     [SerializeField] GameObject settingsMenuUI;
     [SerializeField] GameObject deathScreenUi;
     [SerializeField] Image brightness;
@@ -53,8 +54,8 @@ public class PauseMenu : MonoBehaviour
     private void Pause()
     {
         paused = true;
+        panel.SetActive(true);
         pauseMenuUI.SetActive(true);
-        Time.timeScale = 0f;
     }
 
     public void Resume()
@@ -62,7 +63,6 @@ public class PauseMenu : MonoBehaviour
         paused = false;
         pauseMenuUI.SetActive(false);
         settingsMenuUI.SetActive(false);
-        Time.timeScale = 1.0f;
     }
 
     public void BackToMenu()

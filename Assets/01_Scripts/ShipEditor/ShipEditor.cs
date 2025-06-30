@@ -25,10 +25,11 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private Vector2 moveInput;
     [SerializeField] private GameObject lastSelected;
     [SerializeField] private float moduleMoveSpeedGP;
+    [SerializeField] public bool inEnergyView;
+    [SerializeField] public bool moduleSpawnedInGP;
 
     private Color originalOutlineShaderColor;
     private float originalOutlineShaderStrenght;
-    [SerializeField] public bool inEnergyView;
 
     [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
     public NetMatchPlayer PlayerData { get; private set; }
@@ -44,6 +45,12 @@ public class ShipEditor : MonoBehaviour
     {
         if (InputManager.Instance.IsGamepadUsed)
         {
+            if (moduleSpawnedInGP)
+            {
+                moduleSpawnedInGP = false;
+                return;
+            }
+
             ModueHoldingGamePad();
         }
         else
@@ -145,12 +152,14 @@ public class ShipEditor : MonoBehaviour
         lastSelected = EventSystem.current.currentSelectedGameObject;
         if (InputManager.Instance.IsGamepadUsed)
         {
+            moduleSpawnedInGP = true;
             Vector3 spawnVec = new Vector3(0f, 0f, 0f);
             _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, spawnVec, transform.rotation);
         }
         else
         {
-            _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, transform.position,
+            _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab,
+                editCamera.ScreenToWorldPoint(Input.mousePosition).xy(),
                 transform.rotation);
         }
 
@@ -166,7 +175,6 @@ public class ShipEditor : MonoBehaviour
         var v = moduleMoveSpeedGP;
         moveInput = Keybinds.Actions.ShipEditor.MoveModule.ReadValue<Vector2>();
         moveInput.Normalize();
-        // Vector2 mousePosWorld = editCamera.ScreenToWorldPoint(Input.mousePosition).xy();
         Debug.Log(moveInput);
         HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(_heldNetEditorModule.transform.position);
 
@@ -232,7 +240,7 @@ public class ShipEditor : MonoBehaviour
         HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
         if (_heldNetEditorModule != null)
         {
-            if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasPerformedThisFrame())
+            if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasReleasedThisFrame())
             {
                 if (CanPlaceModule(cursorHexCoord))
                 {
@@ -301,7 +309,7 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = rootCoord + localCoord;
             var moduleID = _heldNetEditorModule.ModuleID;
             var condition = GetPlacementConditionForModule(moduleID);
-            if (PlayerData.ModuleStorage.SC_IsCoordinateOccupied(coord) || condition(rootCoord))
+            if (PlayerData.ModuleStorage.SC_IsCoordinateOccupied(coord) || condition(rootCoord) || IsThrusterAbove(coord))
             {
                 return false;
             }
@@ -321,7 +329,7 @@ public class ShipEditor : MonoBehaviour
         {
             return IsSomethingBelowThruster;
         }
-
+        
         return IsThrusterAbove;
     }
 
@@ -335,6 +343,7 @@ public class ShipEditor : MonoBehaviour
             {
                 if (module.ModuleID == NetModuleID.Thruster)
                 {
+                    
                     Debug.Log("is Above" + module);
                     return true;
                 }
@@ -344,6 +353,21 @@ public class ShipEditor : MonoBehaviour
         return false;
     }
 
+    private bool IsSomethingBelowThruster(HexCoordinate coord)
+    {
+        const int maxDistance = 3;
+        for (var i = 0; i < maxDistance; i++)
+        {
+            coord = HexCoordinate.Neighbor(coord, HexDirection.South);
+            if (_editorModulesMap.TryGetValue(coord, out var value))
+            {
+                Debug.Log("is below" + value);
+                return true;
+            }
+        }
+
+        return false;
+    }
     private void AddPowerToEnergyMap(HexCoordinate coord, bool reactorPlaced, int range)
     {
         foreach (HexCoordinate neighborCoord in coord.CoordinatesInRange(range))
@@ -375,21 +399,6 @@ public class ShipEditor : MonoBehaviour
         return false;
     }
 
-    private bool IsSomethingBelowThruster(HexCoordinate coord)
-    {
-        const int maxDistance = 3;
-        for (var i = 0; i < maxDistance; i++)
-        {
-            coord = HexCoordinate.Neighbor(coord, HexDirection.South);
-            if (_editorModulesMap.TryGetValue(coord, out var value))
-            {
-                Debug.Log("is below" + value);
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     private bool IsConnectionToBridge(HexCoordinate coord)
     {
