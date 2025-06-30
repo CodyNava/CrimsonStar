@@ -19,6 +19,7 @@ public class NetEditorModule : MonoBehaviour
     [field: SerializeField] public ShipEditor shipEditor { get; set; }
     [field: SerializeField] public bool isSelected { get; set; }
     private Color originalColor;
+
     public void Initialize()
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[ModuleID];
@@ -34,7 +35,6 @@ public class NetEditorModule : MonoBehaviour
         shipEditor = FindFirstObjectByType<ShipEditor>();
         PowerMaterial = GetComponentInChildren<MeshRenderer>().material;
         originalColor = PowerMaterial.color;
-        
     }
 
     public void PickUpModule()
@@ -44,8 +44,10 @@ public class NetEditorModule : MonoBehaviour
 
     public void ModuleSelected()
     {
-        VisualTransform.gameObject.layer = isSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
+        VisualTransform.gameObject.layer =
+            isSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
     }
+
     public void C_RotateClockwise()
     {
         for (int i = 0; i < LocalCoordinates.Count; i++)
@@ -85,24 +87,28 @@ public class NetEditorModule : MonoBehaviour
 
     public void Update()
     {
-        ChangeMaterialAndCheckPower();
-        if (!EnergyViewEnable() && PowerMaterial.color != originalColor)
-        {
-            PowerMaterial.color = originalColor;
-        }
+        ChangeMaterialAndCheckPowerAlways();
     }
 
-    public void ChangeMaterialAndCheckPower()
+    public void ChangeMaterialAndCheckPowerAlways()
     {
-        if (ModuleData.CanBePowered)
+        if (EnergyViewEnable())
         {
-            IsPowered = shipEditor.CheckIfPowered(PlacedLocation);
-            if (shipEditor.inEnergyView)
+            if (ModuleData.CanBePowered)
             {
                 PowerMaterial.color = IsPowered ? Color.green : Color.blue;
             }
-            //todo implement shader change (waiting for gd to decide)
         }
+        else if (PowerMaterial.color != originalColor)
+        {
+            PowerMaterial.color = originalColor;
+        }
+
+        IsPowered = Powered();
     }
+
     public bool EnergyViewEnable() => shipEditor.inEnergyView;
+
+    //public bool ReactorNearby() => shipEditor.IsPowereableInRangeOfReactor();
+    public bool Powered() => shipEditor.CheckIfPowered(PlacedLocation);
 }
