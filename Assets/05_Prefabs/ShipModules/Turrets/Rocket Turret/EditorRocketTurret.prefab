@@ -148,7 +148,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5607217600802395003}
-  - component: {fileID: -5134891462633063695}
+  - component: {fileID: -5448809279823019268}
   - component: {fileID: 4929964870533882151}
   - component: {fileID: 628221217549178608}
   m_Layer: 3
@@ -174,7 +174,7 @@ Transform:
   - {fileID: 5016803788315297660}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-5134891462633063695
+--- !u!114 &-5448809279823019268
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -183,16 +183,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 6107309012093280526}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9aa258c132d643d0a70716993710857e, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c993ab0eed6bed4ca1ecd3925da44d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <ModuleID>k__BackingField: 7
   <VisualTransform>k__BackingField: {fileID: 5016803788315297660}
   <IsPowered>k__BackingField: 0
-  <PowerMaterialGameObject>k__BackingField: {fileID: 5680328700570000838}
+  <PowerMaterialGameObject>k__BackingField: {fileID: 0}
   <PowerMaterial>k__BackingField: {fileID: 0}
   <shipEditor>k__BackingField: {fileID: 0}
   <isSelected>k__BackingField: 0
+  <ModuleScriptableObject>k__BackingField: {fileID: 11400000, guid: a866d6d368d9820469d1706b4b84e8eb, type: 2}
 --- !u!114 &4929964870533882151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,7 +211,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: -5134891462633063695}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: NetEditorModule, Assembly-CSharp
           m_MethodName: PickUpModule
           m_Mode: 1
@@ -226,7 +227,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: -5134891462633063695}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: NetEditorModule, Assembly-CSharp
           m_MethodName: set_isSelected
           m_Mode: 6
@@ -238,7 +239,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-        - m_Target: {fileID: -5134891462633063695}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: NetEditorModule, Assembly-CSharp
           m_MethodName: ModuleSelected
           m_Mode: 1
@@ -254,7 +255,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: -5134891462633063695}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: NetEditorModule, Assembly-CSharp
           m_MethodName: set_isSelected
           m_Mode: 6
@@ -266,7 +267,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: -5134891462633063695}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: NetEditorModule, Assembly-CSharp
           m_MethodName: ModuleSelected
           m_Mode: 1
@@ -516,10 +517,5 @@ PrefabInstance:
 --- !u!4 &5016803788315297660 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c7a6346d9c463254692731dcafbdb24c, type: 3}
-  m_PrefabInstance: {fileID: 4761990402031181975}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &5680328700570000838 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c7a6346d9c463254692731dcafbdb24c, type: 3}
   m_PrefabInstance: {fileID: 4761990402031181975}
   m_PrefabAsset: {fileID: 0}
