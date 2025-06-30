@@ -5,12 +5,12 @@ using UnityEngine.UI;
 public class CustomSettingsMenuInput : MonoBehaviour
 {
     [SerializeField] private GameObject settingsCanvas;
-    [SerializeField] private EventSystem eventSystem;
+    private EventSystem _eventSystem;
     
     [SerializeField] private Button audioButton;
     [SerializeField] private Button graphicsButton;
     [SerializeField] private Button backButton;
-
+    
     [SerializeField] private GameObject resolution;
     [SerializeField] private GameObject frameCap;
     [SerializeField] private GameObject vSync;
@@ -26,7 +26,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
     private void Awake()
     {
         settingsCanvas = GameObject.Find("SettingsCanvas");
-        eventSystem = FindFirstObjectByType<EventSystem>();
+        _eventSystem = FindFirstObjectByType<EventSystem>();
     }
 
     private void Update()
@@ -36,13 +36,13 @@ public class CustomSettingsMenuInput : MonoBehaviour
             if (Keybinds.Actions.UI.SwapTabRight.WasPressedThisFrame())
             {
                 audioButton.onClick.Invoke();
-                eventSystem.SetSelectedGameObject(audioButton.gameObject);
+                _eventSystem.SetSelectedGameObject(audioButton.gameObject);
             }
 
             if (Keybinds.Actions.UI.SwapTabLeft.WasPressedThisFrame())
             {
                 graphicsButton.onClick.Invoke();
-                eventSystem.SetSelectedGameObject(graphicsButton.gameObject);
+                _eventSystem.SetSelectedGameObject(graphicsButton.gameObject);
             }
 
             if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
@@ -52,16 +52,16 @@ public class CustomSettingsMenuInput : MonoBehaviour
 
             if (Keybinds.Actions.UI.Decrease.WasPressedThisFrame())
             {
-                if (eventSystem.currentSelectedGameObject.Equals(resolution))
+                if (_eventSystem.currentSelectedGameObject.Equals(resolution))
                 {
                     decreaseResolution.onClick.Invoke();
                 }
 
-                if (eventSystem.currentSelectedGameObject.Equals(frameCap))
+                if (_eventSystem.currentSelectedGameObject.Equals(frameCap))
                 {
                     decreaseFrameCap.onClick.Invoke();
                 }
-                if (eventSystem.currentSelectedGameObject.Equals(vSync))
+                if (_eventSystem.currentSelectedGameObject.Equals(vSync))
                 {
                     decreaseVsync.onClick.Invoke();
                 }
@@ -69,17 +69,17 @@ public class CustomSettingsMenuInput : MonoBehaviour
 
             if (Keybinds.Actions.UI.Increase.WasPressedThisFrame())
             {
-                if (eventSystem.currentSelectedGameObject.Equals(resolution))
+                if (_eventSystem.currentSelectedGameObject.Equals(resolution))
                 {
                     increaseResolution.onClick.Invoke();
                 }
 
-                if (eventSystem.currentSelectedGameObject.Equals(frameCap))
+                if (_eventSystem.currentSelectedGameObject.Equals(frameCap))
                 {
                     increaseFrameCap.onClick.Invoke();
                 }
 
-                if (eventSystem.currentSelectedGameObject.Equals(vSync))
+                if (_eventSystem.currentSelectedGameObject.Equals(vSync))
                 {
                     increaseVsync.onClick.Invoke();
                 }
