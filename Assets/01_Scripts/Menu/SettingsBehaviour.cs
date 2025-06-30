@@ -103,8 +103,6 @@ public class SettingsBehaviour : MonoBehaviour
         Load();
     }
 
-    
-
     #region Graphics
 
     public void IncreaseResolution()
@@ -175,18 +173,36 @@ public class SettingsBehaviour : MonoBehaviour
         Save();
     }
 
-    
-
     public void AdjustBrightness()
     {
         brightness.color = new Color(0f, 0f, 0f, brightnessSlider.value);
         Save();
+    }
+    
+    public void IncreaseBrightness()
+    {
+        brightnessSlider.value -= 0.05f;
+    }
+    
+    public void DecreaseBrightness()
+    {
+        brightnessSlider.value += 0.05f;
     }
 
     public void AdjustGamma()
     {
         _gamma.gamma.value = new Vector4(1f, 1f, 1f, gammaSlider.value);
         Save();
+    }
+
+    public void IncreaseGamma()
+    {
+        gammaSlider.value += 0.05f;
+    }
+    
+    public void DecreaseGamma()
+    {
+        gammaSlider.value -= 0.05f;
     }
 
     public void Apply()
@@ -209,14 +225,44 @@ public class SettingsBehaviour : MonoBehaviour
         ApplyVolume(_masterBus, masterSlider.value);
     }
 
+    public void IncreaseMaster()
+    {
+        masterSlider.value += 0.05f;
+    }
+
+    public void DecreaseMaster()
+    {
+        masterSlider.value -= 0.05f;
+    }
+
     public void MusicVolume()
     {
         ApplyVolume(_musicBus, musicSlider.value);
+    }
+    
+    public void IncreaseMusic()
+    {
+        musicSlider.value += 0.05f;
+    }
+
+    public void DecreaseMusic()
+    {
+        musicSlider.value -= 0.05f;
     }
 
     public void SFXVolume()
     {
         ApplyVolume(_sfxBus, sfxSlider.value);
+    }
+    
+    public void IncreaseSfx()
+    {
+        sfxSlider.value += 0.05f;
+    }
+
+    public void DecreaseSfx()
+    {
+        sfxSlider.value -= 0.05f;
     }
 
     public void UIVolume()
@@ -224,9 +270,29 @@ public class SettingsBehaviour : MonoBehaviour
         ApplyVolume(_uiBus, uiSlider.value);
     }
 
+    public void IncreaseUI()
+    {
+        uiSlider.value += 0.05f;
+    }
+
+    public void DecreaseUI()
+    {
+        uiSlider.value -= 0.05f;
+    }
+    
     public void AnnouncerVolume()
     {
         ApplyVolume(_announcerBus, announcerSlider.value);
+    }
+    
+    public void IncreaseAnnouncer()
+    {
+        announcerSlider.value += 0.05f;
+    }
+
+    public void DecreaseAnnouncer()
+    {
+        announcerSlider.value -= 0.05f;
     }
 
     private void ApplyVolume(Bus bus, float newVolume)
