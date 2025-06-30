@@ -446,6 +446,24 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Increase"",
+                    ""type"": ""Button"",
+                    ""id"": ""0f522f14-b10e-411e-9893-7a447df2ea2f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Decrease"",
+                    ""type"": ""Button"",
+                    ""id"": ""0e292cd5-c279-4d26-b249-5ad1a2ded952"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -888,6 +906,28 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""action"": ""SwapTabLeft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4b7500f0-ea86-4a5b-80bb-3755722ad79c"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Increase"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e8c52057-d88e-4e56-a941-c8865c7af817"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Decrease"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1159,6 +1199,8 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         m_UI_SwapTabRight = m_UI.FindAction("SwapTabRight", throwIfNotFound: true);
         m_UI_SwapTabLeft = m_UI.FindAction("SwapTabLeft", throwIfNotFound: true);
+        m_UI_Increase = m_UI.FindAction("Increase", throwIfNotFound: true);
+        m_UI_Decrease = m_UI.FindAction("Decrease", throwIfNotFound: true);
         // ShipEditor
         m_ShipEditor = asset.FindActionMap("ShipEditor", throwIfNotFound: true);
         m_ShipEditor_ModulePickOrDrop = m_ShipEditor.FindAction("ModulePickOrDrop", throwIfNotFound: true);
@@ -1488,6 +1530,8 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_TrackedDeviceOrientation;
     private readonly InputAction m_UI_SwapTabRight;
     private readonly InputAction m_UI_SwapTabLeft;
+    private readonly InputAction m_UI_Increase;
+    private readonly InputAction m_UI_Decrease;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -1547,6 +1591,14 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "UI/SwapTabLeft".
         /// </summary>
         public InputAction @SwapTabLeft => m_Wrapper.m_UI_SwapTabLeft;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/Increase".
+        /// </summary>
+        public InputAction @Increase => m_Wrapper.m_UI_Increase;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/Decrease".
+        /// </summary>
+        public InputAction @Decrease => m_Wrapper.m_UI_Decrease;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1609,6 +1661,12 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @SwapTabLeft.started += instance.OnSwapTabLeft;
             @SwapTabLeft.performed += instance.OnSwapTabLeft;
             @SwapTabLeft.canceled += instance.OnSwapTabLeft;
+            @Increase.started += instance.OnIncrease;
+            @Increase.performed += instance.OnIncrease;
+            @Increase.canceled += instance.OnIncrease;
+            @Decrease.started += instance.OnDecrease;
+            @Decrease.performed += instance.OnDecrease;
+            @Decrease.canceled += instance.OnDecrease;
         }
 
         /// <summary>
@@ -1656,6 +1714,12 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @SwapTabLeft.started -= instance.OnSwapTabLeft;
             @SwapTabLeft.performed -= instance.OnSwapTabLeft;
             @SwapTabLeft.canceled -= instance.OnSwapTabLeft;
+            @Increase.started -= instance.OnIncrease;
+            @Increase.performed -= instance.OnIncrease;
+            @Increase.canceled -= instance.OnIncrease;
+            @Decrease.started -= instance.OnDecrease;
+            @Decrease.performed -= instance.OnDecrease;
+            @Decrease.canceled -= instance.OnDecrease;
         }
 
         /// <summary>
@@ -2019,6 +2083,20 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSwapTabLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Increase" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnIncrease(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Decrease" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDecrease(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ShipEditor" which allows adding and removing callbacks.

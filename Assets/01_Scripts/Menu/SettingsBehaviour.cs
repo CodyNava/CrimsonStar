@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class SettingsBehaviour : MonoBehaviour
 {
+    
     [SerializeField] private TMP_Text resolutionText;
     private List<string> _resolutionOptions;
     private List<Resolution> _uniqueResolution;
@@ -17,8 +18,13 @@ public class SettingsBehaviour : MonoBehaviour
     private int _currentResolutionIndex;
     private int _uniqueResolutionIndex;
 
+    [SerializeField] private TMP_Text frameCounter;
     private int[] _frameCap = {30, 60, 90, 120, 144, 180, -1};
     private int _frameCapIndex;
+
+    [SerializeField] private TMP_Text vSyncMode;
+    private string[] _vSync = {"Off", "On"};
+    private int _vSyncIndex;
 
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider musicSlider;
@@ -31,8 +37,6 @@ public class SettingsBehaviour : MonoBehaviour
     [SerializeField] private Slider gammaSlider;
     [SerializeField] private Slider brightnessSlider;
     [SerializeField] private Image brightness;
-    [SerializeField] private Toggle toggle;
-    [SerializeField] private TMP_Text frameCounter;
     
     private const string masterVolume = "MasterVolume";
     private const string musicVolume = "MusicVolume";
@@ -42,6 +46,8 @@ public class SettingsBehaviour : MonoBehaviour
     private const string gammaValue = "GammaValue";
     private const string brightnessValue = "BrightnessValue";
     private const string vSync = "VSync";
+    private const string frameCap = "FrameCap";
+    private const string resolution = "Resolution";
 
     Bus _masterBus;
     Bus _musicBus;
@@ -95,6 +101,7 @@ public class SettingsBehaviour : MonoBehaviour
         _resolution = Screen.currentResolution;
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
         frameCounter.text = _frameCap[_frameCapIndex].ToString();
+        vSyncMode.text = _vSync[_vSyncIndex];
 
         Load();
     }
@@ -103,6 +110,9 @@ public class SettingsBehaviour : MonoBehaviour
     {
         Screen.SetResolution(_resolution.width, _resolution.height,Screen.fullScreen);
         Application.targetFrameRate = _frameCap[_frameCapIndex];
+        frameCounter.text = _frameCap[_frameCapIndex].Equals(-1) ? "Unlimited" : _frameCap[_frameCapIndex].ToString();
+        QualitySettings.vSyncCount = _vSyncIndex;
+        vSyncMode.text = _vSync[_vSyncIndex];
         Save();
     }
 
@@ -115,6 +125,7 @@ public class SettingsBehaviour : MonoBehaviour
 
         _resolution = _uniqueResolution[_currentResolutionIndex];
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
+        Save();
     }
 
     public void DecreaseResolution()
@@ -128,6 +139,7 @@ public class SettingsBehaviour : MonoBehaviour
 
         _resolution = _uniqueResolution[_currentResolutionIndex];
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
+        Save();
     }
 
     public void IncreaseFrameCap()
@@ -139,6 +151,7 @@ public class SettingsBehaviour : MonoBehaviour
             frameCounter.text = "Unlimited";
         else
             frameCounter.text = _frameCap[_frameCapIndex].ToString();
+        Save();
     }
 
     public void DecreaseFrameCap()
@@ -153,7 +166,30 @@ public class SettingsBehaviour : MonoBehaviour
             _frameCapIndex--;
             frameCounter.text = _frameCap[_frameCapIndex].ToString();
         }
+        Save();
     }
+    
+    public void IncreaseVsync()
+    {
+        if (_vSyncIndex == 1)
+            _vSyncIndex = 0;
+        else
+            _vSyncIndex++;
+        vSyncMode.text = _vSync[_vSyncIndex];
+        Save();
+    }
+    
+    public void DecreaseVsync()
+    {
+        if (_vSyncIndex == 0)
+            _vSyncIndex = _vSync.Length - 1;
+        else
+            _vSyncIndex--;
+        vSyncMode.text = _vSync[_vSyncIndex];
+        Save();
+    }
+
+    
 
     public void AdjustBrightness()
     {
@@ -166,17 +202,6 @@ public class SettingsBehaviour : MonoBehaviour
         gamma.gamma.value = new Vector4(1f, 1f, 1f, gammaSlider.value);
         Save();
     }
-
-    public void SetVsync()
-    {
-        QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
-        if (QualitySettings.vSyncCount == 0)
-        {
-            Application.targetFrameRate = _frameCap[_frameCapIndex];
-        }
-        Save();
-    }
-    
 
     #endregion
 
@@ -224,7 +249,9 @@ public class SettingsBehaviour : MonoBehaviour
         PlayerPrefs.SetFloat(announcerVolume, announcerSlider.value);
         PlayerPrefs.SetFloat(gammaValue, gammaSlider.value);
         PlayerPrefs.SetFloat(brightnessValue, brightnessSlider.value);
-        PlayerPrefs.SetInt(vSync, QualitySettings.vSyncCount);
+        PlayerPrefs.SetInt(vSync, _vSyncIndex);
+        PlayerPrefs.SetInt(frameCap, _frameCapIndex);
+        PlayerPrefs.SetInt(resolution, _currentResolutionIndex);
     }
 
     private void Load()
@@ -236,15 +263,16 @@ public class SettingsBehaviour : MonoBehaviour
         announcerSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(announcerVolume, 0.5f));
         gammaSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(gammaValue, 0.5f));
         brightnessSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(brightnessValue, 0.5f));
-        toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(vSync, 1) == 1);
-        QualitySettings.vSyncCount = toggle.isOn ? 1 : 0;
+        _vSyncIndex = PlayerPrefs.GetInt(vSync, 1);
+        _frameCapIndex = PlayerPrefs.GetInt(frameCap, 1);
+        _currentResolutionIndex = PlayerPrefs.GetInt(resolution, _uniqueResolution.Count - 1);
         MasterVolume();
         MusicVolume();
         SFXVolume();
         UIVolume();
-        SetVsync();
         AnnouncerVolume();
         AdjustBrightness();
         AdjustGamma();
+        Apply();
     }
 }
