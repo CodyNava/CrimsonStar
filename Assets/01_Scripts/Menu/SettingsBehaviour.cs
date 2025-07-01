@@ -19,11 +19,11 @@ public class SettingsBehaviour : MonoBehaviour
     private int _uniqueResolutionIndex;
 
     [SerializeField] private TMP_Text frameCounter;
-    private int[] _frameCap = {30, 60, 90, 120, 144, 180, -1};
+    private readonly int[] _frameCap = {30, 60, 90, 120, 144, 180, -1};
     private int _frameCapIndex;
 
     [SerializeField] private TMP_Text vSyncMode;
-    private string[] _vSync = {"Off", "On"};
+    private readonly string[] _vSync = {"Off", "On"};
     private int _vSyncIndex;
     
     [SerializeField] private Volume volume;
@@ -250,7 +250,7 @@ public class SettingsBehaviour : MonoBehaviour
         musicSlider.value -= 0.05f;
     }
 
-    public void SFXVolume()
+    public void SfxVolume()
     {
         ApplyVolume(_sfxBus, sfxSlider.value);
     }
@@ -331,7 +331,7 @@ public class SettingsBehaviour : MonoBehaviour
         _currentResolutionIndex = PlayerPrefs.GetInt(ResolutionPref, _uniqueResolution.Count - 1);
         MasterVolume();
         MusicVolume();
-        SFXVolume();
+        SfxVolume();
         UIVolume();
         AnnouncerVolume();
         AdjustBrightness();
