@@ -221,8 +221,8 @@ public class ShipEditor : MonoBehaviour
             //_heldNetEditorModule.transform.position = moveInput.xy0();
             if (Keybinds.Actions.ShipEditor.ModuleSell.WasPerformedThisFrame())
             {
-                PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
                 FMODUnity.RuntimeManager.PlayOneShot(moduleRefundEvent, _heldNetEditorModule.transform.position);
+                PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
                 _heldNetEditorModule = null;
                 EventSystem.current.SetSelectedGameObject(lastSelected);
@@ -280,6 +280,7 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule.transform.position = mousePosWorld.xy0();
             if (Keybinds.Actions.ShipEditor.ModuleSell.WasPerformedThisFrame())
             {
+                FMODUnity.RuntimeManager.PlayOneShot(moduleRefundEvent, _heldNetEditorModule.transform.position);
                 PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
                 _heldNetEditorModule = null;
