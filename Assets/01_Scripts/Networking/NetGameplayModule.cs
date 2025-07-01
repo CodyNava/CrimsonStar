@@ -7,6 +7,7 @@ using FMODUnity;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.VFX;
+using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 public class NetGameplayModule : NetworkBehaviour
 {
@@ -120,9 +121,12 @@ public class NetGameplayModule : NetworkBehaviour
         if (IsOwner)
         {
             RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
-            if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.75f)
+            if (lowHealthAlarmSFX.IsNull == false)
             {
-                _lowHealthAlarmInstance.start();
+                if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.75f)
+                {
+                    _lowHealthAlarmInstance.start();
+                }
             }
         }
         else
@@ -145,8 +149,11 @@ public class NetGameplayModule : NetworkBehaviour
         _health.Value -= damage;
         if (_health.Value <= 0)
         {
-             _lowHealthAlarmInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-             _lowHealthAlarmInstance.release();
+            if (lowHealthAlarmSFX.IsNull == false)
+            {
+                _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
+                _lowHealthAlarmInstance.release();
+            }
 
             if (ModuleID == NetModuleID.Bridge && gameplayConductor)
             {
