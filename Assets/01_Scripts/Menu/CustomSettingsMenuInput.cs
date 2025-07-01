@@ -1,9 +1,14 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CustomSettingsMenuInput : MonoBehaviour
 {
+    private bool _cooldownStarted;
+    [Tooltip("Scroll Speed in SECONDS. Use values smaller than 1. PLEASE I BEG YOU.")]
+    [SerializeField] private float scrollSpeedSeconds;
+    
     [SerializeField] private GameObject settingsCanvas;
     private EventSystem _eventSystem;
     
@@ -74,7 +79,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 backButton.onClick.Invoke();
             }
 
-            if (Keybinds.Actions.UI.Decrease.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.Decrease.IsPressed() && !_cooldownStarted)
             {
                 if (_eventSystem.currentSelectedGameObject.Equals(resolution))
                 {
@@ -125,9 +130,11 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 {
                     decreaseUi.onClick.Invoke();
                 }
+
+                StartCoroutine(HoldCooldown());
             }
 
-            if (Keybinds.Actions.UI.Increase.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.Increase.IsPressed() && !_cooldownStarted)
             {
                 if (_eventSystem.currentSelectedGameObject.Equals(resolution))
                 {
@@ -178,7 +185,16 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 {
                     increaseUi.onClick.Invoke();
                 }
+                StartCoroutine(HoldCooldown());
             }
         }
+    }
+
+
+    private IEnumerator HoldCooldown()
+    {
+        _cooldownStarted = true;
+        yield return new WaitForSeconds(scrollSpeedSeconds);
+        _cooldownStarted = false;
     }
 }
