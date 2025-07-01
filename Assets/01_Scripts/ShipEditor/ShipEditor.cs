@@ -46,6 +46,7 @@ public class ShipEditor : MonoBehaviour
     private NetEditorModule _heldNetEditorModule;
 
     private List<NetEditorModule> _editorModuleList;
+    public IReadOnlyList<NetEditorModule> EditorModuleList => _editorModuleList;
 
     private void Update()
     {
@@ -242,6 +243,7 @@ public class ShipEditor : MonoBehaviour
             }
         }
     }
+
     private void ModuleHoldingKeyboard()
     {
         if (EventSystem.current.IsPointerOverGameObject())
@@ -369,6 +371,11 @@ public class ShipEditor : MonoBehaviour
         return false;
     }
 
+
+    public void ChangeLayerOnEachModule()
+    {
+        
+    }
     private bool IsSomethingBelowThruster(HexCoordinate coord)
     {
         const int maxDistance = 3;
@@ -385,7 +392,7 @@ public class ShipEditor : MonoBehaviour
         return false;
     }
 
-    
+
     private void AddPowerToEnergyMap(HexCoordinate coord, bool reactorPlaced, int range)
     {
         foreach (HexCoordinate neighborCoord in coord.CoordinatesInRange(range))
@@ -479,6 +486,7 @@ public class ShipEditor : MonoBehaviour
         {
             AddPowerToEnergyMap(rootCoord, true, _heldNetEditorModule.ModuleData.EffectRange);
         }
+
         weaponGroupManager.AddModuleToWeaponGroup(_heldNetEditorModule);
         ToggleOffEnergyViewBasedOnMudule();
         _heldNetEditorModule.PlacedLocation = rootCoord;
@@ -489,7 +497,10 @@ public class ShipEditor : MonoBehaviour
         }
 
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
-        _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
+        if (_heldNetEditorModule.ModuleData.ModuleCategory != NetModuleCategory.Weapons)
+        {
+            _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
+        }
         _editorModuleList.Add(_heldNetEditorModule);
         shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
         _heldNetEditorModule = null;
@@ -502,6 +513,7 @@ public class ShipEditor : MonoBehaviour
         {
             _heldNetEditorModule = moduleToRemove;
         }
+
         weaponGroupManager.RemoveModuleFromWeaponGroup(_heldNetEditorModule);
         if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
             AddPowerToEnergyMap(moduleToRemove.PlacedLocation, false, _heldNetEditorModule.ModuleData.EffectRange);

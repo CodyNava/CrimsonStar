@@ -66,7 +66,6 @@ public class ShipEditorWeaponGroupButton : MonoBehaviour
         rectTransform.sizeDelta = rectVector * SizeIncrease;
         buttonImageColorRef.color = SelectedColor;
         shipWeaponGroupManager.SetWeaponGroup(buttonID);
-        shipWeaponGroupManager.ChangeMaskForEachGroup(buttonID);
     }
 
     public void ChangeToUnselected()
