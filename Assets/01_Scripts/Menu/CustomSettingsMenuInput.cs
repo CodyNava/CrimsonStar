@@ -7,6 +7,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
 {
     private bool _cooldownStarted;
     [Tooltip("Scroll Speed in SECONDS. Use values smaller than 1. PLEASE I BEG YOU.")]
+    [Range(0, 1)]
     [SerializeField] private float scrollSpeedSeconds;
     
     [SerializeField] private GameObject settingsCanvas;
@@ -189,8 +190,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
             }
         }
     }
-
-
+    
     private IEnumerator HoldCooldown()
     {
         _cooldownStarted = true;
