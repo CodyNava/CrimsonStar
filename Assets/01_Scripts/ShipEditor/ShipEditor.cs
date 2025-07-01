@@ -20,6 +20,7 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private HexTransform hexTransform;
     [SerializeField] private ShipEditorStats shipEditorStats;
     [SerializeField] private NetEditorModule netEditorBridgeRef;
+    [SerializeField] private ShipEditorWeaponGroups weaponGroupManager;
     [SerializeField] private Button energyViewToggleButton;
     [SerializeField] private Material outlineShader;
     [SerializeField] private Vector2 moveInput;
@@ -35,6 +36,8 @@ public class ShipEditor : MonoBehaviour
     private float originalOutlineShaderStrenght;
 
     [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
+    [SerializeField] private FMODUnity.EventReference moduleRefundEvent;
+    [SerializeField] private FMODUnity.EventReference moduleBuyEvent;
     public NetMatchPlayer PlayerData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
@@ -171,6 +174,7 @@ public class ShipEditor : MonoBehaviour
                 transform.rotation);
         }
 
+        FMODUnity.RuntimeManager.PlayOneShot(moduleBuyEvent, _heldNetEditorModule.transform.position);
         _heldNetEditorModule.Initialize();
         PlayerData.C_PayForModule(moduleID);
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
@@ -218,6 +222,7 @@ public class ShipEditor : MonoBehaviour
             if (Keybinds.Actions.ShipEditor.ModuleSell.WasPerformedThisFrame())
             {
                 PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
+                FMODUnity.RuntimeManager.PlayOneShot(moduleRefundEvent, _heldNetEditorModule.transform.position);
                 Destroy(_heldNetEditorModule.gameObject);
                 _heldNetEditorModule = null;
                 EventSystem.current.SetSelectedGameObject(lastSelected);
@@ -379,6 +384,7 @@ public class ShipEditor : MonoBehaviour
         return false;
     }
 
+    
     private void AddPowerToEnergyMap(HexCoordinate coord, bool reactorPlaced, int range)
     {
         foreach (HexCoordinate neighborCoord in coord.CoordinatesInRange(range))
@@ -472,7 +478,7 @@ public class ShipEditor : MonoBehaviour
         {
             AddPowerToEnergyMap(rootCoord, true, _heldNetEditorModule.ModuleData.EffectRange);
         }
-
+        weaponGroupManager.AddModuleToWeaponGroup(_heldNetEditorModule);
         ToggleOffEnergyViewBasedOnMudule();
         _heldNetEditorModule.PlacedLocation = rootCoord;
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
@@ -495,7 +501,7 @@ public class ShipEditor : MonoBehaviour
         {
             _heldNetEditorModule = moduleToRemove;
         }
-
+        weaponGroupManager.RemoveModuleFromWeaponGroup(_heldNetEditorModule);
         if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
             AddPowerToEnergyMap(moduleToRemove.PlacedLocation, false, _heldNetEditorModule.ModuleData.EffectRange);
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)

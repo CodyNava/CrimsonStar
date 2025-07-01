@@ -997,6 +997,15 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""WeaponGroupSelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""0b795027-94d1-4ec5-88ff-bc5c451e0fe2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -1142,6 +1151,39 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""action"": ""MoveModule"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""41330d1d-becc-4513-92ce-7750bade445d"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponGroupSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5ae9836b-925e-4dcf-abbd-8a4d6440ee35"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponGroupSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5b7a7140-d967-49e3-a2fe-ce7f38d4f2e4"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponGroupSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1210,6 +1252,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_ShipEditor_EnergyOverview = m_ShipEditor.FindAction("EnergyOverview", throwIfNotFound: true);
         m_ShipEditor_HealthOverview = m_ShipEditor.FindAction("HealthOverview", throwIfNotFound: true);
         m_ShipEditor_MoveModule = m_ShipEditor.FindAction("MoveModule", throwIfNotFound: true);
+        m_ShipEditor_WeaponGroupSelect = m_ShipEditor.FindAction("WeaponGroupSelect", throwIfNotFound: true);
     }
 
     ~@GameActions()
@@ -1764,6 +1807,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_ShipEditor_EnergyOverview;
     private readonly InputAction m_ShipEditor_HealthOverview;
     private readonly InputAction m_ShipEditor_MoveModule;
+    private readonly InputAction m_ShipEditor_WeaponGroupSelect;
     /// <summary>
     /// Provides access to input actions defined in input action map "ShipEditor".
     /// </summary>
@@ -1803,6 +1847,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "ShipEditor/MoveModule".
         /// </summary>
         public InputAction @MoveModule => m_Wrapper.m_ShipEditor_MoveModule;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/WeaponGroupSelect".
+        /// </summary>
+        public InputAction @WeaponGroupSelect => m_Wrapper.m_ShipEditor_WeaponGroupSelect;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1850,6 +1898,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @MoveModule.started += instance.OnMoveModule;
             @MoveModule.performed += instance.OnMoveModule;
             @MoveModule.canceled += instance.OnMoveModule;
+            @WeaponGroupSelect.started += instance.OnWeaponGroupSelect;
+            @WeaponGroupSelect.performed += instance.OnWeaponGroupSelect;
+            @WeaponGroupSelect.canceled += instance.OnWeaponGroupSelect;
         }
 
         /// <summary>
@@ -1882,6 +1933,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @MoveModule.started -= instance.OnMoveModule;
             @MoveModule.performed -= instance.OnMoveModule;
             @MoveModule.canceled -= instance.OnMoveModule;
+            @WeaponGroupSelect.started -= instance.OnWeaponGroupSelect;
+            @WeaponGroupSelect.performed -= instance.OnWeaponGroupSelect;
+            @WeaponGroupSelect.canceled -= instance.OnWeaponGroupSelect;
         }
 
         /// <summary>
@@ -2154,5 +2208,12 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMoveModule(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "WeaponGroupSelect" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnWeaponGroupSelect(InputAction.CallbackContext context);
     }
 }
