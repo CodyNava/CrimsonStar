@@ -10,6 +10,7 @@ public class ShipEditorWeaponGroups : MonoBehaviour
     [SerializeField] public float buttonSelectedSizeIncrease;
     [SerializeField] public Color selectedColor;
     [SerializeField] public Color deSelectedColor;
+    [SerializeField] private Camera mainCamera;
     [HideInInspector] public List<ShipEditorWeaponGroupButton> weaponGroupButtons =
         new List<ShipEditorWeaponGroupButton>();
 
@@ -39,6 +40,32 @@ public class ShipEditorWeaponGroups : MonoBehaviour
         currentGroup = id;
     }
 
+    public void ChangeMaskForEachGroup(int groupID)
+    {
+        var weaponGroupOneLayer = LayerMask.NameToLayer("WeaponGroupOne");
+        var weaponGroupTwoLayer = LayerMask.NameToLayer("WeaponGroupTwo");
+        var weaponGroupThreeLayer = LayerMask.NameToLayer("WeaponGroupThree");
+        
+        switch (currentGroup)
+        {
+            case 1:
+                mainCamera.cullingMask += weaponGroupOneLayer;
+                mainCamera.cullingMask -= weaponGroupTwoLayer;
+                mainCamera.cullingMask -= weaponGroupThreeLayer;
+                break;
+            case 2:
+                mainCamera.cullingMask -= weaponGroupOneLayer;
+                mainCamera.cullingMask += weaponGroupTwoLayer;
+                mainCamera.cullingMask -= weaponGroupThreeLayer;
+                break;
+            case 3:
+                mainCamera.cullingMask -= weaponGroupOneLayer;
+                mainCamera.cullingMask -= weaponGroupTwoLayer;
+                mainCamera.cullingMask += weaponGroupThreeLayer;
+                break;
+        }
+    }
+    
     public void AddModuleToWeaponGroup(NetEditorModule module)
     {
         if (module.ModuleData.ModuleCategory != NetModuleCategory.Weapons) return;
@@ -46,12 +73,15 @@ public class ShipEditorWeaponGroups : MonoBehaviour
         {
             case 1:
                 weaponGroupOne.Add(module);
+                module.gameObject.layer = LayerMask.NameToLayer("WeaponGroupOne");
                 break;
             case 2:
                 weaponGroupTwo.Add(module);
+                module.gameObject.layer = LayerMask.NameToLayer("WeaponGroupTwo");
                 break;
             case 3:
                 weaponGroupThree.Add(module);
+                module.gameObject.layer = LayerMask.NameToLayer("WeaponGroupThree");
                 break;
         }
     }
@@ -59,17 +89,10 @@ public class ShipEditorWeaponGroups : MonoBehaviour
     public void RemoveModuleFromWeaponGroup(NetEditorModule module)
     {
         if (module.ModuleData.ModuleCategory != NetModuleCategory.Weapons) return;
-        switch (currentGroup)
-        {
-            case 1:
-                weaponGroupOne.Remove(module);
-                break;
-            case 2:
-                weaponGroupTwo.Remove(module);
-                break;
-            case 3:
-                weaponGroupThree.Remove(module);
-                break;
-        }
+        weaponGroupOne.Remove(module);
+        weaponGroupTwo.Remove(module);
+        weaponGroupThree.Remove(module);
+        module.gameObject.layer = LayerMask.NameToLayer("Outline");
+
     }
 }

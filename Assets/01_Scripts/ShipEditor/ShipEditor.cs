@@ -80,7 +80,7 @@ public class ShipEditor : MonoBehaviour
             netEditorBridgeRef
         };
         StartCoroutine(LinkPlayerRoutine());
-        shipEditorStats.GetTotalStats(_editorModuleList);
+        shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
         // energyViewToggleButton.onClick.AddListener(ToggleEnergyView);
         originalOutlineShaderColor = outlineShader.GetColor(OutlineColor);
         originalOutlineShaderStrenght = outlineShader.GetFloat("_OutlineThickness");
@@ -491,7 +491,7 @@ public class ShipEditor : MonoBehaviour
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
         _editorModuleList.Add(_heldNetEditorModule);
-        shipEditorStats.GetTotalStats(_editorModuleList);
+        shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
         _heldNetEditorModule = null;
         EventSystem.current.SetSelectedGameObject(lastSelected);
     }
@@ -514,7 +514,7 @@ public class ShipEditor : MonoBehaviour
 
         PlayerData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
         _editorModuleList.Remove(_heldNetEditorModule);
-        shipEditorStats.GetTotalStats(_editorModuleList);
+        shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
     }
 
     public void SignalReady()

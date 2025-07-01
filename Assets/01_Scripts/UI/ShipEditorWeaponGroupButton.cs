@@ -21,7 +21,7 @@ public class ShipEditorWeaponGroupButton : MonoBehaviour
         buttonImageColorRef.color = DeselectedColor;
         rectTransform = gameObject.GetComponent<RectTransform>();
         rectVector = new Vector2(rectTransform.sizeDelta.x, rectTransform.sizeDelta.y);
-        ChangeToSelected(1);
+        if (buttonToggle) ChangeToSelected();
     }
     public void OnEnable()
     {
@@ -53,18 +53,20 @@ public class ShipEditorWeaponGroupButton : MonoBehaviour
 
             if (buttonID == keyValue)
             {
-                ChangeToSelected(buttonID);
+                ChangeToSelected();
+                
             }
         }
     }
 
-    private void ChangeToSelected(int id)
+    private void ChangeToSelected()
     {
         shipWeaponGroupManager.DeselectButtonsExcept(this);
         buttonToggle = true;
         rectTransform.sizeDelta = rectVector * SizeIncrease;
         buttonImageColorRef.color = SelectedColor;
         shipWeaponGroupManager.SetWeaponGroup(buttonID);
+        shipWeaponGroupManager.ChangeMaskForEachGroup(buttonID);
     }
 
     public void ChangeToUnselected()
