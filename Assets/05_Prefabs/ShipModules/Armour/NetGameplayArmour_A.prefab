@@ -55,16 +55,23 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 1349169098673917716}
   <ModuleID>k__BackingField: 2
   <VisualTransform>k__BackingField: {fileID: 1444197679776078048}
-  deathVFX: {fileID: 1316573703697364532, guid: 5c22353f35ed8ab479f53a6b33af00e3, type: 3}
+  deathVFX: {fileID: 3855630418371909128, guid: a48c47118e70ca4408d122c10549bf2e, type: 3}
   damagedVFX: {fileID: 6509340592068427856}
   damagedMaterial: {fileID: 306806624908010383}
-  damagedModuleSFXEvent:
+  hitFeedbackSFX:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: -1123778214
+      Data2: 1199229707
+      Data3: 1083911852
+      Data4: -821422648
+    Path: event:/SFX/HitEnemyFeedback_SFX
+  gotHitFeedbackSFX:
+    Guid:
+      Data1: 1507108982
+      Data2: 1326065546
+      Data3: 36086663
+      Data4: 611758014
+    Path: event:/SFX/GetDamage_SFX
   _detachmentForce: 0
 --- !u!114 &1349169098673917716
 MonoBehaviour:
@@ -112,7 +119,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 4
+  <PrefabId>k__BackingField: 3
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 3904968592281302734
   <SceneId>k__BackingField: 0
@@ -339,7 +346,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1729894039049434911, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 1729894039049434911, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
       propertyPath: m_LocalRotation.w

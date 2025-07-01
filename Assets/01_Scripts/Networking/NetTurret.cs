@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FishNet.Object;
+using FMODUnity;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -10,7 +12,7 @@ public class NetTurret : NetworkBehaviour
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransformA, spawnTransformB;
     [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
-    [SerializeField] private FMODUnity.EventReference shotSound;
+    [SerializeField] private EventReference shotSound;
     private const float MaxPassedTime = 0.3f;
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
@@ -29,10 +31,11 @@ public class NetTurret : NetworkBehaviour
     private bool CanFire()
     {
         Debug.Log($"PowerGrid: {turretModule.Bridge.PowerGrid.Count}");
-        foreach (KeyValuePair<HexCoordinate,int> gridEntry in turretModule.Bridge.PowerGrid)
+        foreach (KeyValuePair<HexCoordinate, int> gridEntry in turretModule.Bridge.PowerGrid)
         {
             Debug.Log($"PoweredCoords: [{gridEntry.Key.Q},{gridEntry.Key.R},{gridEntry.Key.S}]: {gridEntry.Value}");
         }
+
         return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
     }
 
@@ -43,9 +46,8 @@ public class NetTurret : NetworkBehaviour
         _accumulatedTime = Mathf.Min(_accumulatedTime, netTurretData.Cooldown);
 
         if (_accumulatedTime < netTurretData.Cooldown) return;
-        
+
         if (!C_IsAttacking()) return;
-       if (!CanFire()) return;
 
         if (_nextSpawnTransform == spawnTransformA)
         {
@@ -85,9 +87,10 @@ public class NetTurret : NetworkBehaviour
         {
             C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
         }
+
         S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
         _nextMuzzleFlash.Play();
-        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
+        RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
 
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
@@ -113,8 +116,7 @@ public class NetTurret : NetworkBehaviour
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
         _nextMuzzleFlash.Play();
-        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
-
+        RuntimeManager.PlayOneShot(shotSound, transform.position);
         if (_nextMuzzleFlash == muzzleFlashA)
         {
             _nextMuzzleFlash = muzzleFlashB;

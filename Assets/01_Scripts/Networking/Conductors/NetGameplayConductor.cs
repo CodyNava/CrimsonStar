@@ -74,13 +74,13 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         matchPlayer.S_ResetRoundStats();
         
         var bridge = Instantiate(bridgePrefab);
+        ServerManager.Spawn(bridge.gameObject, connection);
         _bridges.Add(connection, bridge);
-        var spawnPoint = S_GetSpawnTransform();
         bridge.S_SetDisplayName(matchPlayer.DisplayName.Value);
         bridge.S_SetPlayerID(matchPlayer.PlayerID.Value);
         bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, matchPlayer.Team.Value, HexCoordinate.Zero);
         S_ConstructPlayerShip(connection, matchPlayer.Team.Value, bridge, matchPlayer.ModuleStorage, scene);
-        ServerManager.Spawn(bridge.gameObject, connection);
+        var spawnPoint = S_GetSpawnTransform();
         bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
 
         if (_spawnedPlayers == PlayerCount)
@@ -100,6 +100,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         InputManager.EnableGameControls();
     }
     
+    [Server]
     public void S_RegisterPlayerDeath(NetworkConnection owner)
     {
         _bridges.Remove(owner);
@@ -110,6 +111,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         }
     }
 
+    [Server]
     private bool S_IsMatchComplete()
     {
         HashSet<NetTeamID> teamIDs = new HashSet<NetTeamID>();
@@ -135,6 +137,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         return true;
     }
 
+    [Server]
     private void S_StopMatch()
     {
         _roundsPlayed++;
@@ -172,6 +175,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _isMatchConcluded.Value = false;
     }
 
+    [Server]
     private void S_ConstructPlayerShip(NetworkConnection conn, NetTeamID id, NetBridge bridge, NetModuleStorage editorData, Scene scene)
     {
         foreach (var placementData in editorData.GetUniqueModules())
@@ -181,10 +185,12 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             NetGameplayModule module = Instantiate(placementData.ModuleID.GetModuleData().GameplayPrefab);
             module.NetworkObject.SetParent(bridge);
             module.transform.SetLocalPositionAndRotation(bridge.transform.InverseTransformPoint(modulePos), moduleRotation);
+            ServerManager.Spawn(module.gameObject, conn);
             module.S_ServerInit(bridge, id, placementData.RootCoordinate);
         }
     }
     
+    [Server]
     public void S_ReportDamageInstance(ulong attacker, ulong defender, float damageTaken)
     {
         _damageInstancesRound.Add(new DamageInstance
@@ -195,6 +201,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         });
     }
     
+    [Server]
     public void S_ReportKillInstance(ulong attackerID, ulong defenderID)
     {
         _killInstancesRound.Add(new KillInstance
@@ -204,6 +211,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         });
     }
 
+    [Server]
     private void S_CalculateRoundResults()
     {
         foreach (var damageInstance in _damageInstancesRound)
@@ -229,6 +237,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _killInstancesRound.Clear();
     }
 
+    [Server]
     private Transform S_GetSpawnTransform()
     {
         if (!spawnTransforms.TryGetValue(PlayerCount, out Transform[] spawnPoints))

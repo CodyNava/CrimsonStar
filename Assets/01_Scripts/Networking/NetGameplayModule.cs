@@ -3,9 +3,11 @@ using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FMOD.Studio;
+using FMODUnity;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.VFX;
+using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 public class NetGameplayModule : NetworkBehaviour
 {
@@ -16,8 +18,10 @@ public class NetGameplayModule : NetworkBehaviour
     [SerializeField] private VisualEffect damagedVFX;
     [SerializeField] private MeshRenderer damagedMaterial;
 
-    [SerializeField] private FMODUnity.EventReference damagedModuleSFXEvent;
-    FMOD.Studio.EventInstance _damagedModuleSFXInstance;
+    [SerializeField] private EventReference hitFeedbackSFX;
+    [SerializeField] private EventReference gotHitFeedbackSFX;
+    [SerializeField] private EventReference lowHealthAlarmSFX;
+    private EventInstance _lowHealthAlarmInstance;
 
     [Header("Detachment Settings")] [SerializeField]
     private float _detachmentForce;
@@ -36,27 +40,38 @@ public class NetGameplayModule : NetworkBehaviour
     public NetTeamID NetTeamID => _playerID.Value;
     public HexCoordinate RootCoordinate => _rootCoordinate.Value;
 
+    [Server]
     public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, HexCoordinate rootCoordinate)
     {
         var moduleData = ModuleID.GetModuleData();
 
         _bridge = bridge;
         _rootCoordinate.Value = rootCoordinate;
-        _bridge.S_AttachModule(this, rootCoordinate);
         _health.Value = moduleData.BaseStats.health;
         _maxHealth = _health.Value;
         _playerID.Value = netTeamID;
+        _bridge.S_AttachModule(this, rootCoordinate);
+    }
+
+    public void C_ClientInit()
+    {
     }
 
     public override void OnStartClient()
     {
         _bridge = ModuleID == NetModuleID.Bridge ? GetComponent<NetBridge>() : GetComponentInParent<NetBridge>();
+        Debug.Log($"IsClient: {IsClientStarted}, PlayerID: {_playerID.Value}, Module: {ModuleID}, Bridge: {_bridge}");
         var moduleData = ModuleID.GetModuleData();
         _maxHealth = moduleData.BaseStats.health;
         VisualTransform.SetParent(_bridge.VisualRootTransform);
+        if (lowHealthAlarmSFX.IsNull == false)
+        {
+            _lowHealthAlarmInstance = RuntimeManager.CreateInstance(lowHealthAlarmSFX);
+        }
     }
 
     // Occurs when a module gets destroyed
+    [Server]
     private void S_DestroyModule()
     {
         _bridge.S_DetachModule(this, _rootCoordinate.Value);
@@ -66,6 +81,7 @@ public class NetGameplayModule : NetworkBehaviour
     }
 
     // Occurs when an Module is only detached and not destroyed
+    [Server]
     public void S_DetachModule()
     {
         _bridge.S_DetachModule(this, _rootCoordinate.Value);
@@ -74,6 +90,7 @@ public class NetGameplayModule : NetworkBehaviour
     }
 
     [ObserversRpc]
+    [Client]
     public void C_DestroyModuleObserver()
     {
         if (deathVFX != null)
@@ -85,28 +102,43 @@ public class NetGameplayModule : NetworkBehaviour
     }
 
     [ObserversRpc]
+    [Client]
     public void C_DetachModuleObserver()
     {
         Vector2 detachDirection = (VisualTransform.position - _bridge.transform.position).normalized;
         DetachedModuleSpawner.Instance.SpawnDetachedModule(ModuleID, VisualTransform, detachDirection * 10f);
-        //_damagedModuleSFXInstance.stop(STOP_MODE.IMMEDIATE);
-        //_damagedModuleSFXInstance.release();
         Destroy(VisualTransform.gameObject);
     }
 
     [ObserversRpc]
+    [Client]
     public void C_DisplayDamageObserver()
     {
         float health = HealthPct;
 
         damagedVFX.SetFloat("DamageInput", 1 - health);
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
-        //_damagedModuleSFXInstance = FMODUnity.RuntimeManager.CreateInstance(damagedModuleSFXEvent);
-        //_damagedModuleSFXInstance.start();
+        if (IsOwner)
+        {
+            RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
+            if (lowHealthAlarmSFX.IsNull == false)
+            {
+                if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.75f)
+                {
+                    _lowHealthAlarmInstance.start();
+                }
+            }
+        }
+        else
+        {
+            RuntimeManager.PlayOneShot(hitFeedbackSFX, transform.position);
+        }
         //Todo: Implement VFX Here
         // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
     }
 
+    [Server]
+    [ServerRpc(RequireOwnership = false)]
     public void S_InflictDamage(float damage, ulong attackerID)
     {
         if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor))
@@ -117,11 +149,17 @@ public class NetGameplayModule : NetworkBehaviour
         _health.Value -= damage;
         if (_health.Value <= 0)
         {
+            if (lowHealthAlarmSFX.IsNull == false)
+            {
+                _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
+                _lowHealthAlarmInstance.release();
+            }
+
             if (ModuleID == NetModuleID.Bridge && gameplayConductor)
             {
                 gameplayConductor.S_ReportKillInstance(attackerID, _bridge.PlayerID);
             }
-            
+
             S_DestroyModule();
         }
 
