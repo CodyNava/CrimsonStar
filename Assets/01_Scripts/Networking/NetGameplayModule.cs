@@ -17,8 +17,7 @@ public class NetGameplayModule : NetworkBehaviour
     [SerializeField] private MeshRenderer damagedMaterial;
 
     [SerializeField] private FMODUnity.EventReference hitFeedbackSFX;
-    [SerializeField] private FMODUnity.EventReference damagedModuleSFXEvent;
-    FMOD.Studio.EventInstance _damagedModuleSFXInstance;
+    [SerializeField] private FMODUnity.EventReference gotHitFeedbackSFX;
 
     [Header("Detachment Settings")] [SerializeField]
     private float _detachmentForce;
@@ -36,7 +35,7 @@ public class NetGameplayModule : NetworkBehaviour
     public float HealthPct => Mathf.Clamp01(Health / Mathf.Max(_maxHealth, Mathf.Epsilon));
     public NetTeamID NetTeamID => _playerID.Value;
     public HexCoordinate RootCoordinate => _rootCoordinate.Value;
-    
+
     [Server]
     public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, HexCoordinate rootCoordinate)
     {
@@ -52,7 +51,6 @@ public class NetGameplayModule : NetworkBehaviour
 
     public void C_ClientInit()
     {
-        
     }
 
     public override void OnStartClient()
@@ -99,8 +97,6 @@ public class NetGameplayModule : NetworkBehaviour
     {
         Vector2 detachDirection = (VisualTransform.position - _bridge.transform.position).normalized;
         DetachedModuleSpawner.Instance.SpawnDetachedModule(ModuleID, VisualTransform, detachDirection * 10f);
-        //_damagedModuleSFXInstance.stop(STOP_MODE.IMMEDIATE);
-        //_damagedModuleSFXInstance.release();
         Destroy(VisualTransform.gameObject);
     }
 
@@ -111,14 +107,20 @@ public class NetGameplayModule : NetworkBehaviour
 
         damagedVFX.SetFloat("DamageInput", 1 - health);
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
-        FMODUnity.RuntimeManager.PlayOneShot(hitFeedbackSFX, transform.position);
-        //_damagedModuleSFXInstance = FMODUnity.RuntimeManager.CreateInstance(damagedModuleSFXEvent);
-        //_damagedModuleSFXInstance.start();
+        if (IsOwner)
+        {
+            FMODUnity.RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
+        }
+        else
+        {
+            FMODUnity.RuntimeManager.PlayOneShot(hitFeedbackSFX, transform.position);
+        }
         //Todo: Implement VFX Here
         // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
     }
 
-    [Server][ServerRpc(RequireOwnership = false)]
+    [Server]
+    [ServerRpc(RequireOwnership = false)]
     public void S_InflictDamage(float damage, ulong attackerID)
     {
         if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor))
