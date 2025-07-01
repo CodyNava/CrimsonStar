@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2930334855206222997}
   - component: {fileID: 4956743959161177916}
   - component: {fileID: 984766205097239825}
+  - component: {fileID: 3423324459333866054}
+  - component: {fileID: 3950203426401314336}
   m_Layer: 0
   m_Name: VFXGraph_M_Laser
   m_TagString: Untagged
@@ -28,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.03, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6439586436413867179}
@@ -75,6 +77,12 @@ VisualEffect:
       - m_Value: 0.2
         m_Name: Wight
         m_Overridden: 1
+      - m_Value: 1
+        m_Name: Get_Length_Laser
+        m_Overridden: 1
+      - m_Value: 4
+        m_Name: Set_Length_BoudningBox
+        m_Overridden: 1
     m_Vector2f:
       m_Array:
       - m_Value: {x: -5, y: 0}
@@ -84,16 +92,25 @@ VisualEffect:
         m_Name: TexSpeed_Laser
         m_Overridden: 0
     m_Vector3f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: -0, y: 0, z: 0}
+        m_Name: SetTransform_BoundingBox_angles
+        m_Overridden: 1
+      - m_Value: {x: 0, y: -0.52, z: 0}
+        m_Name: SetTransform_BoundingBox_position
+        m_Overridden: 1
+      - m_Value: {x: 1, y: 1, z: 1}
+        m_Name: SetTransform_BoundingBox_scale
+        m_Overridden: 1
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 1.6393639, y: 11.984313, z: 9.735412, w: 0}
+      - m_Value: {x: 11.984314, y: 1.6941174, z: 3.7865365, w: 0}
         m_Name: Color_Laser
         m_Overridden: 1
       - m_Value: {x: 0.20905341, y: 0.11961552, z: 1.2075472, w: 0}
         m_Name: Color_BackgroundLaser
         m_Overridden: 1
-      - m_Value: {x: 11.271762, y: 10.039213, z: 95.87451, w: 0}
+      - m_Value: {x: 2.8179405, y: 2.5098033, z: 23.968628, w: 0}
         m_Name: Color_Lightning
         m_Overridden: 1
     m_Uint:
@@ -128,6 +145,9 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggleSubgraph_Laser
         m_Overridden: 1
+      - m_Value: 1
+        m_Name: ToggleMask_Laser
+        m_Overridden: 0
 --- !u!73398921 &984766205097239825
 VFXRenderer:
   serializedVersion: 1
@@ -171,6 +191,38 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &3423324459333866054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1843412431716043568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdafc37f32b176349b1684c4455b98e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ExecuteInEditor: 1
+  m_Bindings:
+  - {fileID: 3950203426401314336}
+  m_VisualEffect: {fileID: 4956743959161177916}
+--- !u!114 &3950203426401314336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1843412431716043568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fdfea1f838247c40921a07afedde962, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Space: 0
+  m_Property:
+    m_Name: SetTransform_BoundingBox
+  Target: {fileID: 9113743782805865405, guid: 768adeae67e354b47849e4614d4a77a9, type: 3}
 --- !u!1 &3640024387264491550
 GameObject:
   m_ObjectHideFlags: 0
