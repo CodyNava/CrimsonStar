@@ -12,8 +12,7 @@ public class NetTurret : NetworkBehaviour
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransformA, spawnTransformB;
     [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
-    [SerializeField] private FMODUnity.EventReference shotSound;
-    private FMOD.Studio.EventInstance _shotSoundInstance;
+    [SerializeField] private EventReference shotSound;
     private const float MaxPassedTime = 0.3f;
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
@@ -27,24 +26,6 @@ public class NetTurret : NetworkBehaviour
         }
 
         _nextMuzzleFlash = muzzleFlashA;
-    }
-
-    private void Start()
-    {
-        _shotSoundInstance = FMODUnity.RuntimeManager.CreateInstance(shotSound);
-        _shotSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject));
-        _shotSoundInstance.start();
-    }
-
-    private void Update()
-    {
-        _shotSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject));
-    }
-
-    private void OnDestroy()
-    {
-        _shotSoundInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        _shotSoundInstance.release();
     }
 
     private bool CanFire()
@@ -109,7 +90,7 @@ public class NetTurret : NetworkBehaviour
 
         S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
         _nextMuzzleFlash.Play();
-        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
+        RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
 
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
@@ -135,8 +116,7 @@ public class NetTurret : NetworkBehaviour
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
         _nextMuzzleFlash.Play();
-        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
-
+        RuntimeManager.PlayOneShot(shotSound, transform.position);
         if (_nextMuzzleFlash == muzzleFlashA)
         {
             _nextMuzzleFlash = muzzleFlashB;
