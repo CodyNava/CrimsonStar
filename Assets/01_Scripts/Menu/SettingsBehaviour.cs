@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class SettingsBehaviour : MonoBehaviour
 {
-    
+    [Header("Graphics")]
     [SerializeField] private TMP_Text resolutionText;
     private List<string> _resolutionOptions;
     private List<Resolution> _uniqueResolution;
@@ -19,46 +19,46 @@ public class SettingsBehaviour : MonoBehaviour
     private int _uniqueResolutionIndex;
 
     [SerializeField] private TMP_Text frameCounter;
-    private int[] _frameCap = {30, 60, 90, 120, 144, 180, -1};
+    private readonly int[] _frameCap = {30, 60, 90, 120, 144, 180, -1};
     private int _frameCapIndex;
 
     [SerializeField] private TMP_Text vSyncMode;
-    private string[] _vSync = {"Off", "On"};
+    private readonly string[] _vSync = {"Off", "On"};
     private int _vSyncIndex;
-
+    
+    [SerializeField] private Volume volume;
+    private LiftGammaGain _gamma;
+    [SerializeField] private Slider gammaSlider;
+    [SerializeField] private Slider brightnessSlider;
+    [SerializeField] private Image brightness;
+    
+    [Header("Sound")]
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
     [SerializeField] private Slider uiSlider;
     [SerializeField] private Slider announcerSlider;
-
-    [SerializeField] private Volume volume;
-    [SerializeField] private LiftGammaGain gamma;
-    [SerializeField] private Slider gammaSlider;
-    [SerializeField] private Slider brightnessSlider;
-    [SerializeField] private Image brightness;
     
-    private const string masterVolume = "MasterVolume";
-    private const string musicVolume = "MusicVolume";
-    private const string sfxVolume = "SFXVolume";
-    private const string uiVolume = "UIVolume";
-    private const string announcerVolume = "AnnouncerVolume";
-    private const string gammaValue = "GammaValue";
-    private const string brightnessValue = "BrightnessValue";
-    private const string vSync = "VSync";
-    private const string frameCap = "FrameCap";
-    private const string resolution = "Resolution";
+    private const string MasterVolumePref = "MasterVolume";
+    private const string MusicVolumePref = "MusicVolume";
+    private const string SfxVolumePref = "SFXVolume";
+    private const string UiVolumePref = "UIVolume";
+    private const string VoiceVolumePref = "AnnouncerVolume";
+    private const string GammaValuePref = "GammaValue";
+    private const string BrightnessValuePref = "BrightnessValue";
+    private const string VSyncPref = "VSync";
+    private const string FrameCapPref = "FrameCap";
+    private const string ResolutionPref = "Resolution";
 
-    Bus _masterBus;
-    Bus _musicBus;
-    Bus _sfxBus;
-    Bus _uiBus;
-    Bus _announcerBus;
-    float _masterBusVolume, _musicBusVolume, _sfxBusVolume, _uiBusVolume, _announcerBusVolume;
+    private Bus _masterBus;
+    private Bus _musicBus;
+    private Bus _sfxBus;
+    private Bus _uiBus;
+    private Bus _announcerBus;
 
     private void Awake()
     {
-        volume.profile.TryGet(out gamma);
+        volume.profile.TryGet(out _gamma);
     }
 
     private void Start()
@@ -99,21 +99,8 @@ public class SettingsBehaviour : MonoBehaviour
         }
 
         _resolution = Screen.currentResolution;
-        resolutionText.text = _resolutionOptions[_currentResolutionIndex];
-        frameCounter.text = _frameCap[_frameCapIndex].ToString();
-        vSyncMode.text = _vSync[_vSyncIndex];
 
         Load();
-    }
-
-    public void Apply()
-    {
-        Screen.SetResolution(_resolution.width, _resolution.height,Screen.fullScreen);
-        Application.targetFrameRate = _frameCap[_frameCapIndex];
-        frameCounter.text = _frameCap[_frameCapIndex].Equals(-1) ? "Unlimited" : _frameCap[_frameCapIndex].ToString();
-        QualitySettings.vSyncCount = _vSyncIndex;
-        vSyncMode.text = _vSync[_vSyncIndex];
-        Save();
     }
 
     #region Graphics
@@ -147,10 +134,7 @@ public class SettingsBehaviour : MonoBehaviour
         _frameCapIndex++;
         _frameCapIndex %= _frameCap.Length;
 
-        if (_frameCap[_frameCapIndex].Equals(-1))
-            frameCounter.text = "Unlimited";
-        else
-            frameCounter.text = _frameCap[_frameCapIndex].ToString();
+        frameCounter.text = _frameCap[_frameCapIndex].Equals(-1) ? "Unlimited" : _frameCap[_frameCapIndex].ToString();
         Save();
     }
 
@@ -189,20 +173,49 @@ public class SettingsBehaviour : MonoBehaviour
         Save();
     }
 
-    
-
     public void AdjustBrightness()
     {
         brightness.color = new Color(0f, 0f, 0f, brightnessSlider.value);
         Save();
     }
+    
+    public void IncreaseBrightness()
+    {
+        brightnessSlider.value -= 0.05f;
+    }
+    
+    public void DecreaseBrightness()
+    {
+        brightnessSlider.value += 0.05f;
+    }
 
     public void AdjustGamma()
     {
-        gamma.gamma.value = new Vector4(1f, 1f, 1f, gammaSlider.value);
+        _gamma.gamma.value = new Vector4(1f, 1f, 1f, gammaSlider.value);
         Save();
     }
 
+    public void IncreaseGamma()
+    {
+        gammaSlider.value += 0.05f;
+    }
+    
+    public void DecreaseGamma()
+    {
+        gammaSlider.value -= 0.05f;
+    }
+
+    public void Apply()
+    {
+        Screen.SetResolution(_resolution.width, _resolution.height,Screen.fullScreen);
+        resolutionText.text = _resolutionOptions[_currentResolutionIndex];
+        Application.targetFrameRate = _frameCap[_frameCapIndex];
+        frameCounter.text = _frameCap[_frameCapIndex].Equals(-1) ? "Unlimited" : _frameCap[_frameCapIndex].ToString();
+        QualitySettings.vSyncCount = _vSyncIndex;
+        vSyncMode.text = _vSync[_vSyncIndex];
+        Save();
+    }
+    
     #endregion
 
     #region Sound
@@ -212,14 +225,44 @@ public class SettingsBehaviour : MonoBehaviour
         ApplyVolume(_masterBus, masterSlider.value);
     }
 
+    public void IncreaseMaster()
+    {
+        masterSlider.value += 0.05f;
+    }
+
+    public void DecreaseMaster()
+    {
+        masterSlider.value -= 0.05f;
+    }
+
     public void MusicVolume()
     {
         ApplyVolume(_musicBus, musicSlider.value);
     }
+    
+    public void IncreaseMusic()
+    {
+        musicSlider.value += 0.05f;
+    }
 
-    public void SFXVolume()
+    public void DecreaseMusic()
+    {
+        musicSlider.value -= 0.05f;
+    }
+
+    public void SfxVolume()
     {
         ApplyVolume(_sfxBus, sfxSlider.value);
+    }
+    
+    public void IncreaseSfx()
+    {
+        sfxSlider.value += 0.05f;
+    }
+
+    public void DecreaseSfx()
+    {
+        sfxSlider.value -= 0.05f;
     }
 
     public void UIVolume()
@@ -227,9 +270,29 @@ public class SettingsBehaviour : MonoBehaviour
         ApplyVolume(_uiBus, uiSlider.value);
     }
 
+    public void IncreaseUI()
+    {
+        uiSlider.value += 0.05f;
+    }
+
+    public void DecreaseUI()
+    {
+        uiSlider.value -= 0.05f;
+    }
+    
     public void AnnouncerVolume()
     {
         ApplyVolume(_announcerBus, announcerSlider.value);
+    }
+    
+    public void IncreaseAnnouncer()
+    {
+        announcerSlider.value += 0.05f;
+    }
+
+    public void DecreaseAnnouncer()
+    {
+        announcerSlider.value -= 0.05f;
     }
 
     private void ApplyVolume(Bus bus, float newVolume)
@@ -242,33 +305,33 @@ public class SettingsBehaviour : MonoBehaviour
 
     private void Save()
     {
-        PlayerPrefs.SetFloat(masterVolume, masterSlider.value);
-        PlayerPrefs.SetFloat(musicVolume, musicSlider.value);
-        PlayerPrefs.SetFloat(sfxVolume, sfxSlider.value);
-        PlayerPrefs.SetFloat(uiVolume, uiSlider.value);
-        PlayerPrefs.SetFloat(announcerVolume, announcerSlider.value);
-        PlayerPrefs.SetFloat(gammaValue, gammaSlider.value);
-        PlayerPrefs.SetFloat(brightnessValue, brightnessSlider.value);
-        PlayerPrefs.SetInt(vSync, _vSyncIndex);
-        PlayerPrefs.SetInt(frameCap, _frameCapIndex);
-        PlayerPrefs.SetInt(resolution, _currentResolutionIndex);
+        PlayerPrefs.SetFloat(MasterVolumePref, masterSlider.value);
+        PlayerPrefs.SetFloat(MusicVolumePref, musicSlider.value);
+        PlayerPrefs.SetFloat(SfxVolumePref, sfxSlider.value);
+        PlayerPrefs.SetFloat(UiVolumePref, uiSlider.value);
+        PlayerPrefs.SetFloat(VoiceVolumePref, announcerSlider.value);
+        PlayerPrefs.SetFloat(GammaValuePref, gammaSlider.value);
+        PlayerPrefs.SetFloat(BrightnessValuePref, brightnessSlider.value);
+        PlayerPrefs.SetInt(VSyncPref, _vSyncIndex);
+        PlayerPrefs.SetInt(FrameCapPref, _frameCapIndex);
+        PlayerPrefs.SetInt(ResolutionPref, _currentResolutionIndex);
     }
 
     private void Load()
     {
-        masterSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(masterVolume, 0.5f));
-        musicSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(musicVolume, 0.5f));
-        sfxSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(sfxVolume, 0.5f));
-        uiSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(uiVolume, 0.5f));
-        announcerSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(announcerVolume, 0.5f));
-        gammaSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(gammaValue, 0.5f));
-        brightnessSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(brightnessValue, 0.5f));
-        _vSyncIndex = PlayerPrefs.GetInt(vSync, 1);
-        _frameCapIndex = PlayerPrefs.GetInt(frameCap, 1);
-        _currentResolutionIndex = PlayerPrefs.GetInt(resolution, _uniqueResolution.Count - 1);
+        masterSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(MasterVolumePref, 0.5f));
+        musicSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(MusicVolumePref, 0.5f));
+        sfxSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(SfxVolumePref, 0.5f));
+        uiSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(UiVolumePref, 0.5f));
+        announcerSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(VoiceVolumePref, 0.5f));
+        gammaSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(GammaValuePref, 0.5f));
+        brightnessSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(BrightnessValuePref, 0.5f));
+        _vSyncIndex = PlayerPrefs.GetInt(VSyncPref, 1);
+        _frameCapIndex = PlayerPrefs.GetInt(FrameCapPref, 1);
+        _currentResolutionIndex = PlayerPrefs.GetInt(ResolutionPref, _uniqueResolution.Count - 1);
         MasterVolume();
         MusicVolume();
-        SFXVolume();
+        SfxVolume();
         UIVolume();
         AnnouncerVolume();
         AdjustBrightness();
