@@ -108,6 +108,12 @@ MonoBehaviour:
     - model: {fileID: 8926484042661615248}
       id: 0
       isStickyNote: 0
+    - model: {fileID: 8926484042661615319}
+      id: 0
+      isStickyNote: 0
+    - model: {fileID: 8926484042661615321}
+      id: 0
+      isStickyNote: 0
   - title: Lightnings
     position:
       serializedVersion: 2
@@ -218,13 +224,16 @@ MonoBehaviour:
     - model: {fileID: 8926484042661615310}
       id: 0
       isStickyNote: 0
+    - model: {fileID: 8926484042661615325}
+      id: 0
+      isStickyNote: 0
   - title: BackgroundLaser
     position:
       serializedVersion: 2
       x: 2743
       y: 1131
       width: 1233
-      height: 2076
+      height: 2075
     contents:
     - model: {fileID: 8926484042661614754}
       id: 0
@@ -313,6 +322,12 @@ MonoBehaviour:
     - model: {fileID: 8926484042661615252}
       id: 0
       isStickyNote: 0
+    - model: {fileID: 8926484042661615313}
+      id: 0
+      isStickyNote: 0
+    - model: {fileID: 8926484042661615315}
+      id: 0
+      isStickyNote: 0
   stickyNoteInfos: []
   categories:
   - name: ToggleSubgraphs
@@ -324,7 +339,7 @@ MonoBehaviour:
   - name: Velocity
     collapsed: 1
   - name: Size
-    collapsed: 1
+    collapsed: 0
   - name: SpawnRate
     collapsed: 1
   - name: General
@@ -332,17 +347,17 @@ MonoBehaviour:
   - name: Texture
     collapsed: 1
   - name: TextureMask
-    collapsed: 0
+    collapsed: 1
   - name: ScriptControlled
-    collapsed: 0
+    collapsed: 1
   - name: BoundingBox
-    collapsed: 0
+    collapsed: 1
   uiBounds:
     serializedVersion: 2
     x: 1
     y: -1036
     width: 3975
-    height: 4243
+    height: 4242
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -438,6 +453,11 @@ MonoBehaviour:
   - {fileID: 8926484042661615292}
   - {fileID: 8926484042661615306}
   - {fileID: 8926484042661615310}
+  - {fileID: 8926484042661615313}
+  - {fileID: 8926484042661615315}
+  - {fileID: 8926484042661615319}
+  - {fileID: 8926484042661615321}
+  - {fileID: 8926484042661615325}
   m_UIPosition: {x: 0, y: 0}
   m_UICollapsed: 1
   m_UISuperCollapsed: 0
@@ -730,8 +750,24 @@ MonoBehaviour:
     max: Infinity
     enumValues: []
     descendantCount: 0
-  - name: Wight
-    path: Wight
+  - name: Width
+    path: Width
+    tooltip: affect all particles
+    space: -1
+    spaceable: 0
+    sheetType: m_Float
+    realType: Single
+    defaultValue:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 1
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
+  - name: Width_Laser
+    path: Width_Laser
     tooltip: affect all particles
     space: -1
     spaceable: 0
@@ -742,6 +778,38 @@ MonoBehaviour:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
       m_SerializableObject: 0.3
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
+  - name: Width_Lightning
+    path: Width_Lightning
+    tooltip: affect all particles
+    space: -1
+    spaceable: 0
+    sheetType: m_Float
+    realType: Single
+    defaultValue:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 20
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
+  - name: Width_BackgroundLaser
+    path: Width_BackgroundLaser
+    tooltip: affect all particles
+    space: -1
+    spaceable: 0
+    sheetType: m_Float
+    realType: Single
+    defaultValue:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 1
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -1254,7 +1322,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614545}
   m_ExposedName: Size_Laser
   m_Exposed: 1
-  m_Order: 13
+  m_Order: 10
   m_Category: Size
   m_Min:
     m_Type:
@@ -1416,7 +1484,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614551}
   m_ExposedName: ToggleSubgraph_BackgroundLaser
   m_Exposed: 1
-  m_Order: 29
+  m_Order: 32
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -1497,7 +1565,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614553}
   m_ExposedName: ToggleSubgraph_Lightning
   m_Exposed: 1
-  m_Order: 31
+  m_Order: 34
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -1578,7 +1646,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614575}
   m_ExposedName: SpawnRate_Laser
   m_Exposed: 1
-  m_Order: 8
+  m_Order: 15
   m_Category: SpawnRate
   m_Min:
     m_Type:
@@ -1659,7 +1727,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614583}
   m_ExposedName: ToggleLooping
   m_Exposed: 1
-  m_Order: 30
+  m_Order: 33
   m_Category: General
   m_Min:
     m_Type:
@@ -5528,7 +5596,7 @@ MonoBehaviour:
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
-  m_UIPosition: {x: 3516, y: 2778}
+  m_UIPosition: {x: 3517, y: 2777}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
@@ -5598,10 +5666,14 @@ MonoBehaviour:
         shaderGraph: {fileID: 4333940904281232215, guid: bee66884b633e964588b73c208957498, type: 3}
         materialSettings:
           m_PropertyNames:
+          - _QueueControl
+          - _QueueOffset
           - _ZTest
           m_PropertyValues:
+          - 0
+          - -1
           - 4
-          renderQueue: 3000
+          renderQueue: 2999
 --- !u!114 &8926484042661614795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6537,7 +6609,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614850}
   m_ExposedName: Delay
   m_Exposed: 1
-  m_Order: 15
+  m_Order: 20
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -8105,7 +8177,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614974}
   m_ExposedName: Color_Laser
   m_Exposed: 1
-  m_Order: 17
+  m_Order: 22
   m_Category: Color
   m_Min:
     m_Type:
@@ -8322,7 +8394,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614980}
   m_ExposedName: Color_Lightning
   m_Exposed: 1
-  m_Order: 25
+  m_Order: 28
   m_Category: Color
   m_Min:
     m_Type:
@@ -8539,7 +8611,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614986}
   m_ExposedName: Color_BackgroundLaser
   m_Exposed: 1
-  m_Order: 21
+  m_Order: 24
   m_Category: Color
   m_Min:
     m_Type:
@@ -8756,7 +8828,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614992}
   m_ExposedName: TexSpeed_Laser
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 23
   m_Category: Velocity
   m_Min:
     m_Type:
@@ -8914,7 +8986,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614996}
   m_ExposedName: TexSpeed_Lightning
   m_Exposed: 1
-  m_Order: 22
+  m_Order: 25
   m_Category: Velocity
   m_Min:
     m_Type:
@@ -9166,7 +9238,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615006}
   m_ExposedName: Size_Lightning
   m_Exposed: 1
-  m_Order: 20
+  m_Order: 13
   m_Category: Size
   m_Min:
     m_Type:
@@ -9247,7 +9319,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615008}
   m_ExposedName: Size_BackgroundLaser
   m_Exposed: 1
-  m_Order: 18
+  m_Order: 11
   m_Category: Size
   m_Min:
     m_Type:
@@ -9328,7 +9400,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615010}
   m_ExposedName: Size
   m_Exposed: 1
-  m_Order: 5
+  m_Order: 1
   m_Category: Size
   m_Min:
     m_Type:
@@ -9838,7 +9910,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615024}
   m_ExposedName: SpawnRate_Lightning
   m_Exposed: 1
-  m_Order: 26
+  m_Order: 29
   m_Category: SpawnRate
   m_Min:
     m_Type:
@@ -9919,7 +9991,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615026}
   m_ExposedName: SpawnRate_BackgroundLaser
   m_Exposed: 1
-  m_Order: 23
+  m_Order: 26
   m_Category: SpawnRate
   m_Min:
     m_Type:
@@ -10358,7 +10430,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615042}
   m_ExposedName: Lifetime_Laser
   m_Exposed: 1
-  m_Order: 24
+  m_Order: 27
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -10570,7 +10642,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615048}
   m_ExposedName: Lifetime_Lightning
   m_Exposed: 1
-  m_Order: 28
+  m_Order: 31
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -10651,7 +10723,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615050}
   m_ExposedName: Lifetime_BackgroundLaser
   m_Exposed: 1
-  m_Order: 27
+  m_Order: 30
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -13456,7 +13528,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615140}
   m_ExposedName: Texture_Laser
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 4
   m_Category: Texture
   m_Min:
     m_Type:
@@ -13537,7 +13609,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615142}
   m_ExposedName: Texture_Lightning
   m_Exposed: 1
-  m_Order: 9
+  m_Order: 16
   m_Category: Texture
   m_Min:
     m_Type:
@@ -13618,7 +13690,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615144}
   m_ExposedName: Texture_BackgroundLaser
   m_Exposed: 1
-  m_Order: 6
+  m_Order: 12
   m_Category: Texture
   m_Min:
     m_Type:
@@ -13734,7 +13806,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615148}
   m_ExposedName: Get_Length_Laser
   m_Exposed: 1
-  m_Order: 3
+  m_Order: 6
   m_Category: ScriptControlled
   m_Min:
     m_Type:
@@ -13833,7 +13905,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615162}
   m_ExposedName: ToggleScaleOverLife
   m_Exposed: 1
-  m_Order: 32
+  m_Order: 35
   m_Category: General
   m_Min:
     m_Type:
@@ -14040,7 +14112,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661615190}
+  - {fileID: 8926484042661615324}
 --- !u!114 &8926484042661615183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14200,7 +14272,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661615190}
+  - {fileID: 8926484042661615318}
 --- !u!114 &8926484042661615188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14256,9 +14328,9 @@ MonoBehaviour:
   m_InputSlots: []
   m_OutputSlots:
   - {fileID: 8926484042661615190}
-  m_ExposedName: Wight
+  m_ExposedName: Width
   m_Exposed: 1
-  m_Order: 11
+  m_Order: 2
   m_Category: Size
   m_Min:
     m_Type:
@@ -14276,8 +14348,8 @@ MonoBehaviour:
   - m_Id: 0
     linkedSlots:
     - outputSlot: {fileID: 8926484042661615190}
-      inputSlot: {fileID: 8926484042661615187}
-    position: {x: 3303, y: 2241}
+      inputSlot: {fileID: 8926484042661615316}
+    position: {x: 3148, y: 2123}
     expandedSlots: []
     expanded: 1
     supecollapsed: 1
@@ -14285,15 +14357,15 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661615190}
       inputSlot: {fileID: 8926484042661615192}
-    position: {x: 1800, y: 926}
+    position: {x: 1799, y: 841}
     expandedSlots: []
     expanded: 1
     supecollapsed: 1
   - m_Id: 2
     linkedSlots:
     - outputSlot: {fileID: 8926484042661615190}
-      inputSlot: {fileID: 8926484042661615182}
-    position: {x: 499, y: 73}
+      inputSlot: {fileID: 8926484042661615322}
+    position: {x: 339, y: -20}
     expandedSlots: []
     expanded: 1
     supecollapsed: 1
@@ -14322,7 +14394,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0.3
+      m_SerializableObject: 1
     m_Space: -1
   m_Property:
     name: o
@@ -14331,9 +14403,9 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 1
   m_LinkedSlots:
-  - {fileID: 8926484042661615187}
-  - {fileID: 8926484042661615182}
   - {fileID: 8926484042661615192}
+  - {fileID: 8926484042661615316}
+  - {fileID: 8926484042661615322}
 --- !u!114 &8926484042661615191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14434,7 +14506,8 @@ MonoBehaviour:
       m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 8926484042661615326}
 --- !u!114 &8926484042661615194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15109,7 +15182,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615243}
   m_ExposedName: MaskTexture_Laser
   m_Exposed: 1
-  m_Order: 12
+  m_Order: 18
   m_Category: TextureMask
   m_Min:
     m_Type:
@@ -15190,7 +15263,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615245}
   m_ExposedName: MaskTexture_Lightning
   m_Exposed: 1
-  m_Order: 16
+  m_Order: 21
   m_Category: TextureMask
   m_Min:
     m_Type:
@@ -15271,7 +15344,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615247}
   m_ExposedName: MaskTexture_BackgroundLaser
   m_Exposed: 1
-  m_Order: 14
+  m_Order: 19
   m_Category: TextureMask
   m_Min:
     m_Type:
@@ -15352,7 +15425,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615249}
   m_ExposedName: ToggleMask_Laser
   m_Exposed: 1
-  m_Order: 4
+  m_Order: 8
   m_Category: TextureMask
   m_Min:
     m_Type:
@@ -15433,7 +15506,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615251}
   m_ExposedName: ToggleMask_Lightning
   m_Exposed: 1
-  m_Order: 10
+  m_Order: 17
   m_Category: TextureMask
   m_Min:
     m_Type:
@@ -15514,7 +15587,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615253}
   m_ExposedName: ToggleMask_BackgroundLaser
   m_Exposed: 1
-  m_Order: 7
+  m_Order: 14
   m_Category: TextureMask
   m_Min:
     m_Type:
@@ -15665,7 +15738,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615293}
   m_ExposedName: SetTransform_BoundingBox
   m_Exposed: 1
-  m_Order: 1
+  m_Order: 3
   m_Category: BoundingBox
   m_Min:
     m_Type:
@@ -16258,7 +16331,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615311}
   m_ExposedName: Y_Scale_Multiplier
   m_Exposed: 1
-  m_Order: 33
+  m_Order: 36
   m_Category: BoundingBox
   m_Min:
     m_Type:
@@ -16351,3 +16424,520 @@ MonoBehaviour:
   m_Direction: 0
   m_LinkedSlots:
   - {fileID: 8926484042661615311}
+--- !u!114 &8926484042661615313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 330e0fca1717dde4aaa144f48232aa64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 114350483966674976}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_InputSlots: []
+  m_OutputSlots:
+  - {fileID: 8926484042661615314}
+  m_ExposedName: Width_BackgroundLaser
+  m_Exposed: 1
+  m_Order: 9
+  m_Category: Size
+  m_Min:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_Max:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_IsOutput: 0
+  m_EnumValues: []
+  m_ValueFilter: 0
+  m_Tooltip: affect all particles
+  m_Nodes:
+  - m_Id: 0
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661615314}
+      inputSlot: {fileID: 8926484042661615317}
+    position: {x: 3100, y: 2186}
+    expandedSlots: []
+    expanded: 1
+    supecollapsed: 1
+--- !u!114 &8926484042661615314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615314}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615313}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 1
+    m_Space: -1
+  m_Property:
+    name: o
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
+  m_LinkedSlots:
+  - {fileID: 8926484042661615317}
+--- !u!114 &8926484042661615315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ee8a7543fa09e42a7c8616f60d2ad7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 114350483966674976}
+  m_Children: []
+  m_UIPosition: {x: 3330, y: 2108}
+  m_UICollapsed: 0
+  m_UISuperCollapsed: 0
+  m_InputSlots:
+  - {fileID: 8926484042661615316}
+  - {fileID: 8926484042661615317}
+  m_OutputSlots:
+  - {fileID: 8926484042661615318}
+  m_Operands:
+  - name: a
+    type:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  - name: b
+    type:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+--- !u!114 &8926484042661615316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615316}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615315}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 1
+    m_Space: -1
+  m_Property:
+    name: a
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 0
+  m_LinkedSlots:
+  - {fileID: 8926484042661615190}
+--- !u!114 &8926484042661615317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615317}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615315}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 1
+    m_Space: -1
+  m_Property:
+    name: b
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 0
+  m_LinkedSlots:
+  - {fileID: 8926484042661615314}
+--- !u!114 &8926484042661615318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615318}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615315}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 
+    m_Space: -1
+  m_Property:
+    name: 
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
+  m_LinkedSlots:
+  - {fileID: 8926484042661615187}
+--- !u!114 &8926484042661615319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 330e0fca1717dde4aaa144f48232aa64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 114350483966674976}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_InputSlots: []
+  m_OutputSlots:
+  - {fileID: 8926484042661615320}
+  m_ExposedName: Width_Laser
+  m_Exposed: 1
+  m_Order: 5
+  m_Category: Size
+  m_Min:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_Max:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_IsOutput: 0
+  m_EnumValues: []
+  m_ValueFilter: 0
+  m_Tooltip: affect all particles
+  m_Nodes:
+  - m_Id: 0
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661615320}
+      inputSlot: {fileID: 8926484042661615323}
+    position: {x: 333, y: 25}
+    expandedSlots: []
+    expanded: 1
+    supecollapsed: 1
+--- !u!114 &8926484042661615320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615320}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615319}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 0.3
+    m_Space: -1
+  m_Property:
+    name: o
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
+  m_LinkedSlots:
+  - {fileID: 8926484042661615323}
+--- !u!114 &8926484042661615321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ee8a7543fa09e42a7c8616f60d2ad7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 114350483966674976}
+  m_Children: []
+  m_UIPosition: {x: 534, y: -14}
+  m_UICollapsed: 0
+  m_UISuperCollapsed: 1
+  m_InputSlots:
+  - {fileID: 8926484042661615322}
+  - {fileID: 8926484042661615323}
+  m_OutputSlots:
+  - {fileID: 8926484042661615324}
+  m_Operands:
+  - name: a
+    type:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  - name: b
+    type:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+--- !u!114 &8926484042661615322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615322}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615321}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 1
+    m_Space: -1
+  m_Property:
+    name: a
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 0
+  m_LinkedSlots:
+  - {fileID: 8926484042661615190}
+--- !u!114 &8926484042661615323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615323}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615321}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 1
+    m_Space: -1
+  m_Property:
+    name: b
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 0
+  m_LinkedSlots:
+  - {fileID: 8926484042661615320}
+--- !u!114 &8926484042661615324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615324}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615321}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 
+    m_Space: -1
+  m_Property:
+    name: 
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
+  m_LinkedSlots:
+  - {fileID: 8926484042661615182}
+--- !u!114 &8926484042661615325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 330e0fca1717dde4aaa144f48232aa64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 114350483966674976}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_InputSlots: []
+  m_OutputSlots:
+  - {fileID: 8926484042661615326}
+  m_ExposedName: Width_Lightning
+  m_Exposed: 1
+  m_Order: 7
+  m_Category: Size
+  m_Min:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_Max:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_IsOutput: 0
+  m_EnumValues: []
+  m_ValueFilter: 0
+  m_Tooltip: affect all particles
+  m_Nodes:
+  - m_Id: 0
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661615326}
+      inputSlot: {fileID: 8926484042661615193}
+    position: {x: 1748.261, y: 899.1305}
+    expandedSlots: []
+    expanded: 1
+    supecollapsed: 1
+--- !u!114 &8926484042661615326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661615326}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661615325}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 20
+    m_Space: -1
+  m_Property:
+    name: o
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
+  m_LinkedSlots:
+  - {fileID: 8926484042661615193}
