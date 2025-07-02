@@ -20,7 +20,7 @@ public class SpectatorPlayerPanel : MonoBehaviour
 
     public void Start()
     {
-        if (InstanceFinder.TryGetInstance(out NetGameplayConductor _gameplayConductor))
+        if (InstanceFinder.TryGetInstance(out _gameplayConductor))
         {
             _gameplayConductor.OnLocalPlayerDeath += OnLocalPlayerDeath;
             _gameplayConductor.OnRegisterPlayerDeath += OnRegisterPlayerDeath;
@@ -29,6 +29,8 @@ public class SpectatorPlayerPanel : MonoBehaviour
 
     private void OnRegisterPlayerDeath(NetGameplayConductor.RegisterPlayerDeathEventArgs arg0)
     {
+        Debug.Log("PlayerPanel: OnRegisterPlayerDeath");
+        
         NetworkConnection conn = arg0.Owner;
         NetMatchPlayer player = _lobbyConductor.PlayersByConnection[conn];
         if (player.IsUnityNull()) return;
@@ -62,7 +64,7 @@ public class SpectatorPlayerPanel : MonoBehaviour
             playerPanelEntryMap.Add(player.PlayerID.Value, entry);
         }
         
-        _panelContainer.SetActive(false);
+        // _panelContainer.SetActive(false);
         _initialized = true;
     }
 
@@ -84,6 +86,6 @@ public class SpectatorPlayerPanel : MonoBehaviour
     public void OnPlayerPanelClicked(NetBridge bridge)
     {
         if (_cameraFollow.IsUnityNull()) return;
-        _cameraFollow.SetTarget(bridge.transform);
+        _cameraFollow.SetTarget(bridge.VisualRootTransform);
     }
 }
