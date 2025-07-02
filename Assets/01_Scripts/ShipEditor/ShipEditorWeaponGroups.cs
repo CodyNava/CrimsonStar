@@ -55,6 +55,7 @@ public class ShipEditorWeaponGroups : MonoBehaviour
                 weaponGroupThree.Add(module);
                 break;
         }
+        module.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
     }
 
     public void RemoveModuleFromWeaponGroup(NetEditorModule module)

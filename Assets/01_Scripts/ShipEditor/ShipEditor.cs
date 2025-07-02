@@ -206,6 +206,7 @@ public class ShipEditor : MonoBehaviour
                     NetModuleID id = _heldNetEditorModule.ModuleID;
                     PlaceModule(cursorHexCoord);
                     FMODUnity.RuntimeManager.PlayOneShot(modulePlacedEvent, transform.position);
+                    EventSystem.current.SetSelectedGameObject(lastSelected);
                     if (Keyboard.current.leftShiftKey.isPressed)
                     {
                         SpawnPart(id);
