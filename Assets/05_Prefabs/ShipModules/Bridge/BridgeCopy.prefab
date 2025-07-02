@@ -48,6 +48,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scale: 2
+  gizmosRange: 3
+  gizmosScale: 0.9
+  gizmosColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!114 &4588626170810716719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,6 +65,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ModuleID>k__BackingField: 1
   <VisualTransform>k__BackingField: {fileID: 8869851105163984641}
+  <IsPowered>k__BackingField: 0
+  <PowerMaterialGameObject>k__BackingField: {fileID: 0}
+  <PowerMaterial>k__BackingField: {fileID: 0}
+  <shipEditor>k__BackingField: {fileID: 0}
+  <WeaponGroupManager>k__BackingField: {fileID: 0}
+  <isSelected>k__BackingField: 0
 --- !u!1001 &551556173803633966
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -117,23 +126,23 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 291e74bb06e208b459023ab0f15e37b8, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 4734868862669877581, guid: fc698ef035614e9418a1a1b3a4f77d72, type: 3}
+      objectReference: {fileID: 2100000, guid: e1dfea3d6f09c7343b7deca90c1b1dc9, type: 2}
     - target: {fileID: -7511558181221131132, guid: 291e74bb06e208b459023ab0f15e37b8, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 4297708407004247117, guid: fc698ef035614e9418a1a1b3a4f77d72, type: 3}
+      objectReference: {fileID: 2100000, guid: 0ce405b6b789e9f4d9ee4a9f06a35fab, type: 2}
     - target: {fileID: -7511558181221131132, guid: 291e74bb06e208b459023ab0f15e37b8, type: 3}
       propertyPath: 'm_Materials.Array.data[2]'
       value: 
-      objectReference: {fileID: 658401698297794605, guid: fc698ef035614e9418a1a1b3a4f77d72, type: 3}
+      objectReference: {fileID: 2100000, guid: ebcf81e07a2410f43b89ad13d2b76734, type: 2}
     - target: {fileID: -7511558181221131132, guid: 291e74bb06e208b459023ab0f15e37b8, type: 3}
       propertyPath: 'm_Materials.Array.data[3]'
       value: 
-      objectReference: {fileID: -4681039916268861010, guid: fc698ef035614e9418a1a1b3a4f77d72, type: 3}
+      objectReference: {fileID: 2100000, guid: 0a63bf65bd5b19145b972fac71dda0fb, type: 2}
     - target: {fileID: -5754084199372789682, guid: 291e74bb06e208b459023ab0f15e37b8, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -6534722726851870494, guid: fc698ef035614e9418a1a1b3a4f77d72, type: 3}
+      objectReference: {fileID: 4337607531802711499, guid: fc698ef035614e9418a1a1b3a4f77d72, type: 3}
     - target: {fileID: 919132149155446097, guid: 291e74bb06e208b459023ab0f15e37b8, type: 3}
       propertyPath: m_Name
       value: SM_Module_Bridge_BO
