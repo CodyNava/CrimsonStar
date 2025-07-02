@@ -8,7 +8,7 @@ public class PreventDeselecting : MonoBehaviour
     [SerializeField] private InputManager inputManager;
     private void Reset()
     {
-        eventSystem = FindFirstObjectByType<EventSystem>();
+        eventSystem = EventSystem.current;
         lastSelected = eventSystem.firstSelectedGameObject;
     }
 

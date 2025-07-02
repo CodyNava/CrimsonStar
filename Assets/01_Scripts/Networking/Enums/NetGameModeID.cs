@@ -3,5 +3,6 @@
     DefaultMode,
     EasyMode,
     HardcoreMode,
-    TestingMode
+    TestingMode,
+    Custom
 }
