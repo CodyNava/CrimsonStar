@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Runtime.ConstrainedExecution;
 using FishNet;
 using UnityEngine;
 using UnityEngine.VFX;
 using _01_Scripts.Projectiles;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
+using FishNet.Transporting;
 
 
 public class NetPredictedProjectileRocket : NetworkBehaviour
@@ -16,8 +19,8 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
 
     private const float MaxPassedTime = 0.3f;
     private ulong _attackerID;
-    private NetTeamID _netTeamID;
-    private Vector3 _direction;
+    private readonly SyncVar<NetTeamID> _netTeamID = new SyncVar<NetTeamID>();
+    private readonly SyncVar<Vector3> _direction = new SyncVar<Vector3>();
     private Vector3 velocity = Vector3.zero;
     private float lifeTime;
     private bool _hasShot;
@@ -25,13 +28,14 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
 
     public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID)
     {
-        _direction = direction;
-        _netTeamID = netTeamID;
+        _direction.Value = direction;
+        _netTeamID.Value = netTeamID;
         _attackerID = attackerID;
-        
+
+
         if (bulletVFX.HasVector3("DirectionVector_position"))
         {
-            bulletVFX.SetVector3("DirectionVector_position", _direction);
+            bulletVFX.SetVector3("DirectionVector_position", _direction.Value);
         }
     }
 
@@ -44,7 +48,7 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
     {
         float dt = Time.deltaTime;
 
-        Vector3 accVector = _direction.normalized * rocketProjectileObject.ProjectileAcceleration;
+        Vector3 accVector = _direction.Value.normalized * rocketProjectileObject.ProjectileAcceleration;
         velocity += accVector * dt;
         if (velocity.magnitude > rocketProjectileObject.ProjectileMaxSpeed)
             velocity = velocity.normalized * rocketProjectileObject.ProjectileMaxSpeed;
@@ -54,18 +58,22 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
         if (lifeTime <= 0f && !_hasShot)
         {
             _hasShot = true;
-            S_SpawnExplosion(transform.position, _direction, TimeManager.Tick, _attackerID);
+            if (InstanceFinder.IsServerStarted)
+            {
+                S_SpawnExplosion(transform.position, _direction.Value, TimeManager.Tick, _attackerID);
+            }
             Destroy(gameObject);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.NetTeamID == _netTeamID) return;
+        if (!other.transform.TryGetComponent(out NetGameplayModule module) ||
+            module.NetTeamID == _netTeamID.Value) return;
         if (_hasShot) return;
-        
+
         _hasShot = true;
-        
+
         if (InstanceFinder.IsClientStarted)
         {
             Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
@@ -73,12 +81,12 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            S_SpawnExplosion(transform.position, _direction, TimeManager.Tick, _attackerID);
+            S_SpawnExplosion(transform.position, _direction.Value, TimeManager.Tick, _attackerID);
         }
-        
+
         Destroy(gameObject);
     }
-    
+
     [Server]
     private void S_SpawnExplosion(Vector3 pos, Vector3 dir, uint tick, ulong senderID)
     {
@@ -86,23 +94,22 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
         C_SpawnExplosion(pos, dir, passedTime, senderID);
-        C_ObserversSpawnExplosion(pos, dir, tick, senderID);
+        C_ObserversSpawnExplosion(pos, dir, tick, senderID, Channel.Reliable);
     }
-    
+
     [ObserversRpc]
-    private void C_ObserversSpawnExplosion(Vector3 pos, Vector3 dir, uint tick, ulong senderID)
+    private void C_ObserversSpawnExplosion(Vector3 pos, Vector3 dir, uint tick, ulong senderID, Channel channel = Channel.Reliable)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
         C_SpawnExplosion(pos, dir, passedTime, senderID);
     }
-    
+
     private void C_SpawnExplosion(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
         print("Spawning Explosion");
         NetPredictedExplosion pe = Instantiate(rocketProjectileObject.Explosion, position, Quaternion.identity);
-        pe.Initialize(direction, passedTime, _netTeamID, senderID);
+        pe.Initialize(direction, passedTime, _netTeamID.Value, senderID);
     }
-    
 }
