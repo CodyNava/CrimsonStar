@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9113743782805865405}
   - component: {fileID: -5749749284738857041}
   - component: {fileID: 4573435141410385277}
+  - component: {fileID: -6670244774906828094}
   m_Layer: 12
   m_Name: NetworkedProjectileRocket
   m_TagString: Untagged
@@ -46,9 +47,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75979c7f820d2494196ea849cc873eb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: -6670244774906828094}
+  _networkObjectCache: {fileID: 0}
   bulletVFX: {fileID: 3071076292827999600}
   hitFeedbackVFX: {fileID: 6750847382748261619, guid: bf4c3946f2f689e4693929c802debfc4, type: 3}
   rocketProjectileObject: {fileID: 11400000, guid: 2eccb04ac866bc24bac6cf16ca180c4b, type: 2}
+  turretModule: {fileID: 138746299594672162, guid: 26bc44288f531144dbbf885bbbd76f3d, type: 3}
 --- !u!61 &4573435141410385277
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -95,6 +100,58 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.5, y: 0.5}
   m_EdgeRadius: 0
+--- !u!114 &-6670244774906828094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2456487081987262527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsNested>k__BackingField: 0
+  WasActiveDuringEdit: 1
+  WasActiveDuringEdit_Set: 1
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  <PredictedOwner>k__BackingField: {fileID: 0}
+  NetworkBehaviours: []
+  InitializedParentNetworkBehaviour: {fileID: 0}
+  InitializedNestedNetworkObjects: []
+  RuntimeParentNetworkBehaviour: {fileID: 0}
+  RuntimeChildNetworkBehaviours: []
+  _isNetworked: 1
+  _isSpawnable: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _preventDespawnOnDisconnect: 0
+  _defaultDespawnType: 0
+  NetworkObserver: {fileID: 0}
+  _enablePrediction: 0
+  _predictionType: 0
+  _graphicalObject: {fileID: 0}
+  _detachGraphicalObject: 0
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _ownerSmoothedProperties: 255
+  _adaptiveInterpolation: 3
+  _spectatorSmoothedProperties: 255
+  _spectatorInterpolation: 2
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  <PrefabId>k__BackingField: 65535
+  <SpawnableCollectionId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 17674323923096509844
+  <SceneId>k__BackingField: 0
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Scale: {x: 0, y: 0, z: 0}
+    IsValid: 0
 --- !u!1001 &757068161738328148
 PrefabInstance:
   m_ObjectHideFlags: 0
