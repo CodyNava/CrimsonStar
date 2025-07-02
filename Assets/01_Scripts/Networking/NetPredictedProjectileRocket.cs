@@ -44,7 +44,7 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
         lifeTime = rocketProjectileObject.ProjectileTimer;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         float dt = Time.deltaTime;
 
@@ -62,7 +62,6 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
             {
                 S_SpawnExplosion(transform.position, _attackerID);
             }
-            Destroy(gameObject);
         }
     }
 
@@ -83,26 +82,18 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
         {
             S_SpawnExplosion(transform.position, _attackerID);
         }
-
-        Destroy(gameObject);
     }
 
     [Server]
     private void S_SpawnExplosion(Vector3 pos, ulong senderID)
     {
-       // float passedTime = (float)TimeManager.TimePassed(tick, false);
-       // passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
-
         C_SpawnExplosion(pos, senderID);
         C_ObserversSpawnExplosion(pos, senderID, Channel.Reliable);
     }
 
     [ObserversRpc]
-    private void C_ObserversSpawnExplosion(Vector3 pos,  ulong senderID, Channel channel = Channel.Reliable)
+    private void C_ObserversSpawnExplosion(Vector3 pos, ulong senderID, Channel channel = Channel.Reliable)
     {
-      //  float passedTime = (float)TimeManager.TimePassed(tick, false);
-       // passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
-
         C_SpawnExplosion(pos, senderID);
     }
 
@@ -111,5 +102,6 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
         print("Spawning Explosion");
         NetPredictedExplosion pe = Instantiate(rocketProjectileObject.Explosion, position, Quaternion.identity);
         pe.Initialize(_netTeamID.Value, senderID);
+        Destroy(gameObject);
     }
 }
