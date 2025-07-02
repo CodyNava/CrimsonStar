@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1843412431716043568
+--- !u!1 &881883025696786422
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,11 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2930334855206222997}
-  - component: {fileID: 4956743959161177916}
-  - component: {fileID: 984766205097239825}
-  - component: {fileID: 3423324459333866054}
-  - component: {fileID: 3950203426401314336}
+  - component: {fileID: 8600490781345396402}
+  - component: {fileID: 4096881834173536648}
+  - component: {fileID: 4861809133875469278}
+  - component: {fileID: 1602332434901671370}
+  - component: {fileID: 3275445785387695501}
   m_Layer: 0
   m_Name: VFXGraph_M_Laser
   m_TagString: Untagged
@@ -20,28 +20,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2930334855206222997
+--- !u!4 &8600490781345396402
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1843412431716043568}
+  m_GameObject: {fileID: 881883025696786422}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -12.28, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6439586436413867179}
+  m_Father: {fileID: 2421482549427040580}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!2083052967 &4956743959161177916
+--- !u!2083052967 &4096881834173536648
 VisualEffect:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1843412431716043568}
+  m_GameObject: {fileID: 881883025696786422}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: f3c5937daf0f7b046b4d7a62fa1be09b, type: 3}
   m_InitialEventName: 
@@ -71,7 +71,7 @@ VisualEffect:
       - m_Value: 6
         m_Name: Lenght_Laser
         m_Overridden: 1
-      - m_Value: 2
+      - m_Value: 2.02
         m_Name: Size_BackgroundLaser
         m_Overridden: 1
       - m_Value: 0.2
@@ -83,6 +83,15 @@ VisualEffect:
       - m_Value: 4
         m_Name: Set_Length_BoudningBox
         m_Overridden: 1
+      - m_Value: 8
+        m_Name: Width_Lightning
+        m_Overridden: 1
+      - m_Value: 0.26
+        m_Name: Width_Laser
+        m_Overridden: 1
+      - m_Value: 1.2
+        m_Name: Width_BackgroundLaser
+        m_Overridden: 1
     m_Vector2f:
       m_Array:
       - m_Value: {x: -5, y: 0}
@@ -93,24 +102,24 @@ VisualEffect:
         m_Overridden: 0
     m_Vector3f:
       m_Array:
-      - m_Value: {x: -0, y: 0, z: 0}
+      - m_Value: {x: -0, y: 0, z: 66.85118}
         m_Name: SetTransform_BoundingBox_angles
         m_Overridden: 1
-      - m_Value: {x: 0, y: -0.52, z: 0}
+      - m_Value: {x: 17.87, y: -4.48, z: 0}
         m_Name: SetTransform_BoundingBox_position
         m_Overridden: 1
-      - m_Value: {x: 1, y: 1, z: 1}
+      - m_Value: {x: 0.99999994, y: 0.99999994, z: 1}
         m_Name: SetTransform_BoundingBox_scale
         m_Overridden: 1
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 11.984314, y: 1.6941174, z: 3.7865365, w: 0}
+      - m_Value: {x: 1.7746989, y: 16.94838, z: 15.940777, w: 0}
         m_Name: Color_Laser
         m_Overridden: 1
-      - m_Value: {x: 0.20905341, y: 0.11961552, z: 1.2075472, w: 0}
+      - m_Value: {x: 0.060875736, y: 0.17394894, z: 0.67924523, w: 0}
         m_Name: Color_BackgroundLaser
         m_Overridden: 1
-      - m_Value: {x: 2.8179405, y: 2.5098033, z: 23.968628, w: 0}
+      - m_Value: {x: 3.1342442, y: 1.2549016, z: 11.984314, w: 0}
         m_Name: Color_Lightning
         m_Overridden: 1
     m_Uint:
@@ -139,7 +148,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggleLooping
         m_Overridden: 1
-      - m_Value: 0
+      - m_Value: 1
         m_Name: ToggleSubgraph_BackgroundLaser
         m_Overridden: 1
       - m_Value: 1
@@ -147,15 +156,18 @@ VisualEffect:
         m_Overridden: 1
       - m_Value: 1
         m_Name: ToggleMask_Laser
-        m_Overridden: 0
---- !u!73398921 &984766205097239825
+        m_Overridden: 1
+      - m_Value: 1
+        m_Name: ToggleMask_Lightning
+        m_Overridden: 1
+--- !u!73398921 &4861809133875469278
 VFXRenderer:
   serializedVersion: 1
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1843412431716043568}
+  m_GameObject: {fileID: 881883025696786422}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -191,13 +203,13 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &3423324459333866054
+--- !u!114 &1602332434901671370
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1843412431716043568}
+  m_GameObject: {fileID: 881883025696786422}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cdafc37f32b176349b1684c4455b98e9, type: 3}
@@ -205,15 +217,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ExecuteInEditor: 1
   m_Bindings:
-  - {fileID: 3950203426401314336}
-  m_VisualEffect: {fileID: 4956743959161177916}
---- !u!114 &3950203426401314336
+  - {fileID: 3275445785387695501}
+  m_VisualEffect: {fileID: 4096881834173536648}
+--- !u!114 &3275445785387695501
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1843412431716043568}
+  m_GameObject: {fileID: 881883025696786422}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7fdfea1f838247c40921a07afedde962, type: 3}
@@ -222,8 +234,8 @@ MonoBehaviour:
   Space: 0
   m_Property:
     m_Name: SetTransform_BoundingBox
-  Target: {fileID: 9113743782805865405, guid: 768adeae67e354b47849e4614d4a77a9, type: 3}
---- !u!1 &3640024387264491550
+  Target: {fileID: 0}
+--- !u!1 &3411162853780674095
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -231,27 +243,27 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6439586436413867179}
+  - component: {fileID: 2421482549427040580}
   m_Layer: 0
-  m_Name: VFX_Laser
+  m_Name: VFX_Laser_Tier2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6439586436413867179
+--- !u!4 &2421482549427040580
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3640024387264491550}
+  m_GameObject: {fileID: 3411162853780674095}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.52, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2930334855206222997}
+  - {fileID: 8600490781345396402}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
