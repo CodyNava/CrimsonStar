@@ -49,6 +49,7 @@ public class NetEditorModule : MonoBehaviour
 
     public void ModuleSelected()
     {
+        shipEditor.moduleFirstSelectedGP = true;
         VisualTransform.gameObject.layer =
             isSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
     }
@@ -98,7 +99,6 @@ public class NetEditorModule : MonoBehaviour
 
     private void ChangeMaterialAndCheckPowerAlways()
     {
-        
         if (EnergyViewEnable())
         {
             if (ModuleData.CanBePowered)
@@ -122,15 +122,17 @@ public class NetEditorModule : MonoBehaviour
         var weaponGroupTwo = WeaponGroupManager.weaponGroupTwo;
         var weaponGroupThree = WeaponGroupManager.weaponGroupThree;
 
-        var inGroupOneAndGroupActive = weaponGroupOne.Contains(this) && currentGroup == 1;
-        var inGroupTwoAndGroupActive = weaponGroupTwo.Contains(this) && currentGroup == 2;
-        var inGroupThreeAndGroupActive = weaponGroupThree.Contains(this) && currentGroup == 3;
-        
-        WeaponGroupOutliner.SetActive(inGroupOneAndGroupActive);
+        var inGroupOneAndGroupActive = weaponGroupOne.Contains(this) && currentGroup == 1 && !isSelected;
+        var inGroupTwoAndGroupActive = weaponGroupTwo.Contains(this) && currentGroup == 2 && !isSelected;
+        var inGroupThreeAndGroupActive = weaponGroupThree.Contains(this) && currentGroup == 3 && !isSelected;
+        var weaponLayer = LayerMask.NameToLayer("WeaponGroupOne");
+        var normalLayer = isSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
+
+        VisualTransform.gameObject.layer = inGroupOneAndGroupActive ? weaponLayer : normalLayer;
         if (inGroupOneAndGroupActive) return;
-        WeaponGroupOutliner.SetActive(inGroupTwoAndGroupActive);
+        VisualTransform.gameObject.layer = inGroupTwoAndGroupActive ? weaponLayer : normalLayer;
         if (inGroupTwoAndGroupActive) return;
-        WeaponGroupOutliner.SetActive(inGroupThreeAndGroupActive);
+        VisualTransform.gameObject.layer = inGroupThreeAndGroupActive ? weaponLayer : normalLayer;
     }
 
     public bool EnergyViewEnable() => shipEditor.inEnergyView;
