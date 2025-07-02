@@ -942,6 +942,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "WeaponGroupSelectGP",
+                    "type": "Button",
+                    "id": "57fd24a6-c6e9-493c-8ca7-9e92a982e4f8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1094,7 +1103,7 @@
                     "path": "<Keyboard>/1",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "WeaponGroupSelect",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1105,7 +1114,7 @@
                     "path": "<Keyboard>/2",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "WeaponGroupSelect",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1116,8 +1125,30 @@
                     "path": "<Keyboard>/3",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "WeaponGroupSelect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a173d032-c710-45b5-89f3-0f2373cfc427",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "WeaponGroupSelectGP",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3b6f5bfd-470e-4daa-9cde-55467fbb107a",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "WeaponGroupSelectGP",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

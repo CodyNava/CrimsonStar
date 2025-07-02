@@ -189,10 +189,10 @@ public class ShipEditor : MonoBehaviour
         moveInput = Keybinds.Actions.ShipEditor.MoveModule.ReadValue<Vector2>();
         moveInput.Normalize();
         Debug.Log(moveInput);
-        HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(_heldNetEditorModule.transform.position);
 
         if (_heldNetEditorModule != null)
         {
+            HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(_heldNetEditorModule.transform.position);
             HandleHeldEnergyModule(cursorHexCoord);
             ToggleOnEnergyViewBasedOnMudule();
             EventSystem.current.SetSelectedGameObject(null);
@@ -374,8 +374,8 @@ public class ShipEditor : MonoBehaviour
 
     public void ChangeLayerOnEachModule()
     {
-        
     }
+
     private bool IsSomethingBelowThruster(HexCoordinate coord)
     {
         const int maxDistance = 3;
@@ -501,6 +501,7 @@ public class ShipEditor : MonoBehaviour
         {
             _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
         }
+
         _editorModuleList.Add(_heldNetEditorModule);
         shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
         _heldNetEditorModule = null;
