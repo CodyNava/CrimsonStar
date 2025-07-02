@@ -174,6 +174,9 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     private void S_StopMatch()
     {
         _roundsPlayed++;
+        
+        S_CalculateRoundResults();
+        
         if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
         {
             foreach (var (conn, bridge) in _bridges)
@@ -197,7 +200,6 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         {
             bridge.HandleEndOfRound();
         }
-        S_CalculateRoundResults();
         _bridges.Clear();
         yield return new WaitForSecondsRealtime(3f);
         ServerManager.Broadcast(new NetGameplayBroadcasts.RoundResult());
