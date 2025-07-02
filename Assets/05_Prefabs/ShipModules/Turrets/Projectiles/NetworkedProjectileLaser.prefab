@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9113743782805865405}
   - component: {fileID: 1658271926906834673}
+  - component: {fileID: 8052029468892986636}
   m_Layer: 12
   m_Name: NetworkedProjectileLaser
   m_TagString: Untagged
@@ -49,6 +50,33 @@ MonoBehaviour:
   hitFeedbackVFX: {fileID: 1412538434211685962, guid: c5301cc5cd900274bae4052493add16c, type: 3}
   hitBox: {fileID: 5784612182080730052}
   laserProjectileObject: {fileID: 11400000, guid: 44461ea8df4ac1642a985470230099c1, type: 2}
+--- !u!50 &8052029468892986636
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2456487081987262527}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &5784612182080730052
 GameObject:
   m_ObjectHideFlags: 0
