@@ -1,25 +1,22 @@
-﻿using FishNet;
+﻿using System;
+using FishNet;
 using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections.Generic;
 
 public class NetPredictedExplosion : MonoBehaviour
 {
-    [SerializeField] private float explosionDamage;
-    [SerializeField] private float explosionTimer;
+    [SerializeField] public ExplosionObject explosionObject;
     [SerializeField] private VisualEffect VFX;
     [SerializeField] private GameObject hitFeedbackVFX;
-    [SerializeField] private float explosionGrowSpeed;
-    
-    public float ExplosionGrowSpeed => explosionGrowSpeed;
-    public float ExplosionDamage => explosionDamage;
-    public float ExplosionTimer => explosionTimer;
+    [SerializeField] private GameObject ScalingObject;
 
     private ulong _attackerID;
     private NetTeamID _netTeamID;
     private Vector3 _direction;
-    
-    private Vector3 size = Vector3.zero;
+    private Vector3 startScale;
+    private Vector3 endScale;
+    private float timer;
     
     private HashSet<NetGameplayModule> hitModules = new HashSet<NetGameplayModule>();
     
@@ -27,17 +24,27 @@ public class NetPredictedExplosion : MonoBehaviour
     {
         _netTeamID = netTeamID;
         _attackerID = attackerID;
-        Destroy(gameObject, explosionTimer);
+        
+        Destroy(gameObject, explosionObject.ExplosionTimer);
         if (VFX.HasVector3("DirectionVector_position"))
         {
             VFX.SetVector3("DirectionVector_position", _direction);
         }
     }
 
+    private void Start()
+    {
+        Destroy(gameObject, explosionObject.ExplosionTimer);
+        startScale = Vector3.one * explosionObject.ExplosionMinSize;
+        endScale = Vector3.one * explosionObject.ExplosionMaxSize;
+        ScalingObject.transform.localScale = startScale;
+    }
+
     private void Update()
     {
-        float dt = Time.deltaTime;
-        transform.localScale += size * (dt * explosionGrowSpeed);
+        timer += Time.deltaTime;
+        float progress = Mathf.Clamp01(timer / explosionObject.ExplosionTimer);
+        ScalingObject.transform.localScale = Vector3.Lerp(startScale, endScale, progress);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -54,7 +61,7 @@ public class NetPredictedExplosion : MonoBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(explosionDamage, _attackerID);
+            module.S_InflictDamage(explosionObject.ExplosionDamage, _attackerID);
         }
         Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
     }
