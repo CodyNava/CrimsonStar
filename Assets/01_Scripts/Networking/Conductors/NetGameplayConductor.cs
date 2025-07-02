@@ -132,7 +132,8 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         TriggerOnRegisterPlayerDeath(conn);
     }
-
+    
+    // TODO: Refactor as Broadcast with IBroadcast
     private void TriggerOnRegisterPlayerDeath(NetworkConnection conn)
     {
 
