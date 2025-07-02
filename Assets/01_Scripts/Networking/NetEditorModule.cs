@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -17,6 +18,8 @@ public class NetEditorModule : MonoBehaviour
     [field: SerializeField] public GameObject PowerMaterialGameObject { get; set; }
     [field: SerializeField] public Material PowerMaterial { get; set; }
     [field: SerializeField] public ShipEditor shipEditor { get; set; }
+    [field: SerializeField] public ShipEditorWeaponGroups WeaponGroupManager { get; set; }
+    [field: SerializeField] public int currentGroup => WeaponGroupManager.currentGroup;
     [field: SerializeField] public bool isSelected { get; set; }
     private Color originalColor;
 
@@ -33,6 +36,7 @@ public class NetEditorModule : MonoBehaviour
     public void Awake()
     {
         shipEditor = FindFirstObjectByType<ShipEditor>();
+        WeaponGroupManager = FindFirstObjectByType<ShipEditorWeaponGroups>();
         PowerMaterial = GetComponentInChildren<MeshRenderer>().material;
         originalColor = PowerMaterial.color;
     }
@@ -88,6 +92,7 @@ public class NetEditorModule : MonoBehaviour
     public void Update()
     {
         ChangeMaterialAndCheckPowerAlways();
+        ChangeLayerBasedOnWeaponGroup();
     }
 
     public void ChangeMaterialAndCheckPowerAlways()
@@ -105,6 +110,30 @@ public class NetEditorModule : MonoBehaviour
         }
 
         IsPowered = Powered();
+    }
+
+    private void ChangeLayerBasedOnWeaponGroup()
+    {
+        if (!shipEditor.EditorModuleList.Contains(this)) return;
+
+        var weaponGroupOne = WeaponGroupManager.weaponGroupOne;
+        var weaponGroupTwo = WeaponGroupManager.weaponGroupTwo;
+        var weaponGroupThree = WeaponGroupManager.weaponGroupThree;
+
+        var inGroupOneAndGroupActive = weaponGroupOne.Contains(this) && currentGroup == 1;
+        var inGroupTwoAndGroupActive = weaponGroupTwo.Contains(this) && currentGroup == 2;
+        var inGroupThreeAndGroupActive = weaponGroupThree.Contains(this) && currentGroup == 3;
+
+        var weaponLayer = LayerMask.NameToLayer("WeaponGroupOne");
+        var normalLayer = LayerMask.NameToLayer("Modules");
+
+        
+        
+        VisualTransform.gameObject.layer = inGroupOneAndGroupActive ? weaponLayer : normalLayer;
+        if (inGroupOneAndGroupActive) return;
+        VisualTransform.gameObject.layer = inGroupTwoAndGroupActive ? weaponLayer : normalLayer;
+        if (inGroupTwoAndGroupActive) return;
+        VisualTransform.gameObject.layer = inGroupThreeAndGroupActive ? weaponLayer : normalLayer;
     }
 
     public bool EnergyViewEnable() => shipEditor.inEnergyView;
