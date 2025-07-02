@@ -596,6 +596,24 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Increase"",
+                    ""type"": ""Button"",
+                    ""id"": ""0f522f14-b10e-411e-9893-7a447df2ea2f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Decrease"",
+                    ""type"": ""Button"",
+                    ""id"": ""0e292cd5-c279-4d26-b249-5ad1a2ded952"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1038,6 +1056,50 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""action"": ""SwapTabLeft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4b7500f0-ea86-4a5b-80bb-3755722ad79c"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Increase"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d2896a60-8549-4211-b2ab-819bb6a024f7"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Increase"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e8c52057-d88e-4e56-a941-c8865c7af817"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Decrease"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""39d6b861-3c95-4614-9418-e69d7c46765f"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Decrease"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1107,6 +1169,24 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""WeaponGroupSelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""0b795027-94d1-4ec5-88ff-bc5c451e0fe2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""WeaponGroupSelectGP"",
+                    ""type"": ""Button"",
+                    ""id"": ""57fd24a6-c6e9-493c-8ca7-9e92a982e4f8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1252,6 +1332,61 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""action"": ""MoveModule"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""41330d1d-becc-4513-92ce-7750bade445d"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""WeaponGroupSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5ae9836b-925e-4dcf-abbd-8a4d6440ee35"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""WeaponGroupSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5b7a7140-d967-49e3-a2fe-ce7f38d4f2e4"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""WeaponGroupSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a173d032-c710-45b5-89f3-0f2373cfc427"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""WeaponGroupSelectGP"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3b6f5bfd-470e-4daa-9cde-55467fbb107a"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""WeaponGroupSelectGP"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1311,6 +1446,8 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         m_UI_SwapTabRight = m_UI.FindAction("SwapTabRight", throwIfNotFound: true);
         m_UI_SwapTabLeft = m_UI.FindAction("SwapTabLeft", throwIfNotFound: true);
+        m_UI_Increase = m_UI.FindAction("Increase", throwIfNotFound: true);
+        m_UI_Decrease = m_UI.FindAction("Decrease", throwIfNotFound: true);
         // ShipEditor
         m_ShipEditor = asset.FindActionMap("ShipEditor", throwIfNotFound: true);
         m_ShipEditor_ModulePickOrDrop = m_ShipEditor.FindAction("ModulePickOrDrop", throwIfNotFound: true);
@@ -1320,6 +1457,8 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_ShipEditor_EnergyOverview = m_ShipEditor.FindAction("EnergyOverview", throwIfNotFound: true);
         m_ShipEditor_HealthOverview = m_ShipEditor.FindAction("HealthOverview", throwIfNotFound: true);
         m_ShipEditor_MoveModule = m_ShipEditor.FindAction("MoveModule", throwIfNotFound: true);
+        m_ShipEditor_WeaponGroupSelect = m_ShipEditor.FindAction("WeaponGroupSelect", throwIfNotFound: true);
+        m_ShipEditor_WeaponGroupSelectGP = m_ShipEditor.FindAction("WeaponGroupSelectGP", throwIfNotFound: true);
     }
 
     ~@GameActions()
@@ -1662,6 +1801,8 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_TrackedDeviceOrientation;
     private readonly InputAction m_UI_SwapTabRight;
     private readonly InputAction m_UI_SwapTabLeft;
+    private readonly InputAction m_UI_Increase;
+    private readonly InputAction m_UI_Decrease;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -1721,6 +1862,14 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "UI/SwapTabLeft".
         /// </summary>
         public InputAction @SwapTabLeft => m_Wrapper.m_UI_SwapTabLeft;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/Increase".
+        /// </summary>
+        public InputAction @Increase => m_Wrapper.m_UI_Increase;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/Decrease".
+        /// </summary>
+        public InputAction @Decrease => m_Wrapper.m_UI_Decrease;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1783,6 +1932,12 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @SwapTabLeft.started += instance.OnSwapTabLeft;
             @SwapTabLeft.performed += instance.OnSwapTabLeft;
             @SwapTabLeft.canceled += instance.OnSwapTabLeft;
+            @Increase.started += instance.OnIncrease;
+            @Increase.performed += instance.OnIncrease;
+            @Increase.canceled += instance.OnIncrease;
+            @Decrease.started += instance.OnDecrease;
+            @Decrease.performed += instance.OnDecrease;
+            @Decrease.canceled += instance.OnDecrease;
         }
 
         /// <summary>
@@ -1830,6 +1985,12 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @SwapTabLeft.started -= instance.OnSwapTabLeft;
             @SwapTabLeft.performed -= instance.OnSwapTabLeft;
             @SwapTabLeft.canceled -= instance.OnSwapTabLeft;
+            @Increase.started -= instance.OnIncrease;
+            @Increase.performed -= instance.OnIncrease;
+            @Increase.canceled -= instance.OnIncrease;
+            @Decrease.started -= instance.OnDecrease;
+            @Decrease.performed -= instance.OnDecrease;
+            @Decrease.canceled -= instance.OnDecrease;
         }
 
         /// <summary>
@@ -1874,6 +2035,8 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_ShipEditor_EnergyOverview;
     private readonly InputAction m_ShipEditor_HealthOverview;
     private readonly InputAction m_ShipEditor_MoveModule;
+    private readonly InputAction m_ShipEditor_WeaponGroupSelect;
+    private readonly InputAction m_ShipEditor_WeaponGroupSelectGP;
     /// <summary>
     /// Provides access to input actions defined in input action map "ShipEditor".
     /// </summary>
@@ -1913,6 +2076,14 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "ShipEditor/MoveModule".
         /// </summary>
         public InputAction @MoveModule => m_Wrapper.m_ShipEditor_MoveModule;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/WeaponGroupSelect".
+        /// </summary>
+        public InputAction @WeaponGroupSelect => m_Wrapper.m_ShipEditor_WeaponGroupSelect;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/WeaponGroupSelectGP".
+        /// </summary>
+        public InputAction @WeaponGroupSelectGP => m_Wrapper.m_ShipEditor_WeaponGroupSelectGP;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1960,6 +2131,12 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @MoveModule.started += instance.OnMoveModule;
             @MoveModule.performed += instance.OnMoveModule;
             @MoveModule.canceled += instance.OnMoveModule;
+            @WeaponGroupSelect.started += instance.OnWeaponGroupSelect;
+            @WeaponGroupSelect.performed += instance.OnWeaponGroupSelect;
+            @WeaponGroupSelect.canceled += instance.OnWeaponGroupSelect;
+            @WeaponGroupSelectGP.started += instance.OnWeaponGroupSelectGP;
+            @WeaponGroupSelectGP.performed += instance.OnWeaponGroupSelectGP;
+            @WeaponGroupSelectGP.canceled += instance.OnWeaponGroupSelectGP;
         }
 
         /// <summary>
@@ -1992,6 +2169,12 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @MoveModule.started -= instance.OnMoveModule;
             @MoveModule.performed -= instance.OnMoveModule;
             @MoveModule.canceled -= instance.OnMoveModule;
+            @WeaponGroupSelect.started -= instance.OnWeaponGroupSelect;
+            @WeaponGroupSelect.performed -= instance.OnWeaponGroupSelect;
+            @WeaponGroupSelect.canceled -= instance.OnWeaponGroupSelect;
+            @WeaponGroupSelectGP.started -= instance.OnWeaponGroupSelectGP;
+            @WeaponGroupSelectGP.performed -= instance.OnWeaponGroupSelectGP;
+            @WeaponGroupSelectGP.canceled -= instance.OnWeaponGroupSelectGP;
         }
 
         /// <summary>
@@ -2207,6 +2390,20 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSwapTabLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Increase" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnIncrease(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Decrease" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDecrease(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ShipEditor" which allows adding and removing callbacks.
@@ -2264,5 +2461,19 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMoveModule(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "WeaponGroupSelect" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnWeaponGroupSelect(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "WeaponGroupSelectGP" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnWeaponGroupSelectGP(InputAction.CallbackContext context);
     }
 }
