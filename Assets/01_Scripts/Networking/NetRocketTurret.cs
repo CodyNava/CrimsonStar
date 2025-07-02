@@ -48,20 +48,28 @@ public class NetRocketTurret : NetworkBehaviour
         Vector3 position = spawnTransform.position;
         Vector3 direction = spawnTransform.up;
 
-        if (!IsHostInitialized)
+        // if (!IsHostInitialized)
+        // {
+        //     C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
+        // }
+        if (IsServerInitialized)
         {
-            C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
+            S_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
         }
-        S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
+        else
+        {
+            S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
+        }
         muzzleFlash.Play();
         FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
 
-    private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
+    [Server]
+    private void S_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
         NetPredictedProjectileRocket pp = Instantiate(netRocketTurretData.Projectile, position, Quaternion.identity);
-        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID);
         ServerManager.Spawn(pp.gameObject);
+        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID);
     }
 
     [ServerRpc][Server]
@@ -70,6 +78,6 @@ public class NetRocketTurret : NetworkBehaviour
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
-        C_SpawnProjectile(position, direction, passedTime, senderID);
+        S_SpawnProjectile(position, direction, passedTime, senderID);
     }
 }
