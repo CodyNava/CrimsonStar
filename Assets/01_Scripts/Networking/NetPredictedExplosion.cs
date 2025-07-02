@@ -3,10 +3,13 @@ using FishNet;
 using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections.Generic;
+using _01_Scripts.Projectiles;
+
 
 public class NetPredictedExplosion : MonoBehaviour
 {
     [SerializeField] public ExplosionObject explosionObject;
+    [SerializeField] public RocketProjectileObject rocketProjectileObject;
     [SerializeField] private VisualEffect VFX;
     [SerializeField] private GameObject hitFeedbackVFX;
     [SerializeField] private GameObject ScalingObject;
@@ -17,6 +20,7 @@ public class NetPredictedExplosion : MonoBehaviour
     private Vector3 startScale;
     private Vector3 endScale;
     private float timer;
+    private CircleCollider2D circleCollider;
     
     private HashSet<NetGameplayModule> hitModules = new HashSet<NetGameplayModule>();
     
@@ -34,17 +38,25 @@ public class NetPredictedExplosion : MonoBehaviour
 
     private void Start()
     {
-        Destroy(gameObject, explosionObject.ExplosionTimer);
         startScale = Vector3.one * explosionObject.ExplosionMinSize;
         endScale = Vector3.one * explosionObject.ExplosionMaxSize;
         ScalingObject.transform.localScale = startScale;
+        
+        circleCollider = GetComponent<CircleCollider2D>();
+        circleCollider.radius = explosionObject.ExplosionMinSize / 2f;
+        
+        Destroy(gameObject, explosionObject.ExplosionTimer);
     }
 
     private void Update()
     {
         timer += Time.deltaTime;
         float progress = Mathf.Clamp01(timer / explosionObject.ExplosionTimer);
-        ScalingObject.transform.localScale = Vector3.Lerp(startScale, endScale, progress);
+        Vector3 currentScale = Vector3.Lerp(startScale, endScale, progress);
+        
+        ScalingObject.transform.localScale = currentScale;
+        
+        circleCollider.radius = currentScale.x / 2f;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -61,7 +73,7 @@ public class NetPredictedExplosion : MonoBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(explosionObject.ExplosionDamage, _attackerID);
+            module.S_InflictDamage(rocketProjectileObject.ProjectileDamage, _attackerID);
         }
         Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
     }
