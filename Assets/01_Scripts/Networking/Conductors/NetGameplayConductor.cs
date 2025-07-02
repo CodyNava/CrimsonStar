@@ -121,10 +121,10 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         C_TriggerOnRegisterPlayerDeath(owner);
         TriggerOnRegisterPlayerDeath(owner);
         
-        // if (S_IsMatchComplete())
-        // {
-        //     S_StopMatch();
-        // }
+        if (S_IsMatchComplete())
+        {
+            S_StopMatch();
+        }
     }
 
     [Client][ObserversRpc]
@@ -301,7 +301,5 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         }
     }
 
-    public struct LocalPlayerDeathEventArgs
-    {
-    }
+    public struct LocalPlayerDeathEventArgs { }
 }
