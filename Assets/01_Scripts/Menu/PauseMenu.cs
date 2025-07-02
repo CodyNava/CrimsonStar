@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] GameObject pauseMenuUI;
+    [SerializeField] private GameObject pauseMenuUI;
     [SerializeField] private GameObject panel;
-    [SerializeField] GameObject settingsMenuUI;
-    [SerializeField] GameObject deathScreenUi;
-    [SerializeField] Image brightness;
+    [SerializeField] private GameObject settingsMenuUI;
+    [SerializeField] private GameObject deathScreenUi;
+    [SerializeField] private Image brightness;
 
-    [SerializeField] bool paused = false;
+    [SerializeField] private bool paused = false;
 
     private void Awake()
     {
@@ -68,7 +68,6 @@ public class PauseMenu : MonoBehaviour
     public void BackToMenu()
     {
         Resume();
-        //GameStateController.Instance.ChangeState(new MainMenu_GameState());
         SceneManager.LoadScene("MainMenu");
     }
 

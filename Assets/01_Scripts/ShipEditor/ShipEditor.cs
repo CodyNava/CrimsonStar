@@ -20,18 +20,24 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private HexTransform hexTransform;
     [SerializeField] private ShipEditorStats shipEditorStats;
     [SerializeField] private NetEditorModule netEditorBridgeRef;
+    [SerializeField] private ShipEditorWeaponGroups weaponGroupManager;
     [SerializeField] private Button energyViewToggleButton;
     [SerializeField] private Material outlineShader;
     [SerializeField] private Vector2 moveInput;
     [SerializeField] private GameObject lastSelected;
     [SerializeField] private float moduleMoveSpeedGP;
     [SerializeField] public bool inEnergyView;
+    [SerializeField] public bool inEnergyViewParentToggle;
+
     [SerializeField] public bool moduleSpawnedInGP;
+    [SerializeField] public bool reactorIsNearby;
 
     private Color originalOutlineShaderColor;
     private float originalOutlineShaderStrenght;
 
     [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
+    [SerializeField] private FMODUnity.EventReference moduleRefundEvent;
+    [SerializeField] private FMODUnity.EventReference moduleBuyEvent;
     public NetMatchPlayer PlayerData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
@@ -40,6 +46,7 @@ public class ShipEditor : MonoBehaviour
     private NetEditorModule _heldNetEditorModule;
 
     private List<NetEditorModule> _editorModuleList;
+    public IReadOnlyList<NetEditorModule> EditorModuleList => _editorModuleList;
 
     private void Update()
     {
@@ -59,6 +66,11 @@ public class ShipEditor : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        IsPowereableInRangeOfReactor();
+    }
+
     private void Start()
     {
         editCamera ??= Camera.main;
@@ -69,7 +81,7 @@ public class ShipEditor : MonoBehaviour
             netEditorBridgeRef
         };
         StartCoroutine(LinkPlayerRoutine());
-        shipEditorStats.GetTotalStats(_editorModuleList);
+        shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
         // energyViewToggleButton.onClick.AddListener(ToggleEnergyView);
         originalOutlineShaderColor = outlineShader.GetColor(OutlineColor);
         originalOutlineShaderStrenght = outlineShader.GetFloat("_OutlineThickness");
@@ -163,6 +175,7 @@ public class ShipEditor : MonoBehaviour
                 transform.rotation);
         }
 
+        FMODUnity.RuntimeManager.PlayOneShot(moduleBuyEvent, _heldNetEditorModule.transform.position);
         _heldNetEditorModule.Initialize();
         PlayerData.C_PayForModule(moduleID);
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
@@ -176,10 +189,12 @@ public class ShipEditor : MonoBehaviour
         moveInput = Keybinds.Actions.ShipEditor.MoveModule.ReadValue<Vector2>();
         moveInput.Normalize();
         Debug.Log(moveInput);
-        HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(_heldNetEditorModule.transform.position);
 
         if (_heldNetEditorModule != null)
         {
+            HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(_heldNetEditorModule.transform.position);
+            HandleHeldEnergyModule(cursorHexCoord);
+            ToggleOnEnergyViewBasedOnMudule();
             EventSystem.current.SetSelectedGameObject(null);
             _heldNetEditorModule.transform.Translate(moveInput.x * v * t, moveInput.y * v * t, 0f, Space.World);
             if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasPerformedThisFrame())
@@ -207,6 +222,7 @@ public class ShipEditor : MonoBehaviour
             //_heldNetEditorModule.transform.position = moveInput.xy0();
             if (Keybinds.Actions.ShipEditor.ModuleSell.WasPerformedThisFrame())
             {
+                FMODUnity.RuntimeManager.PlayOneShot(moduleRefundEvent, _heldNetEditorModule.transform.position);
                 PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
                 _heldNetEditorModule = null;
@@ -228,7 +244,6 @@ public class ShipEditor : MonoBehaviour
         }
     }
 
-
     private void ModuleHoldingKeyboard()
     {
         if (EventSystem.current.IsPointerOverGameObject())
@@ -240,6 +255,8 @@ public class ShipEditor : MonoBehaviour
         HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
         if (_heldNetEditorModule != null)
         {
+            HandleHeldEnergyModule(cursorHexCoord);
+            ToggleOnEnergyViewBasedOnMudule();
             if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasReleasedThisFrame())
             {
                 if (CanPlaceModule(cursorHexCoord))
@@ -265,6 +282,7 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule.transform.position = mousePosWorld.xy0();
             if (Keybinds.Actions.ShipEditor.ModuleSell.WasPerformedThisFrame())
             {
+                FMODUnity.RuntimeManager.PlayOneShot(moduleRefundEvent, _heldNetEditorModule.transform.position);
                 PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
                 _heldNetEditorModule = null;
@@ -309,7 +327,8 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = rootCoord + localCoord;
             var moduleID = _heldNetEditorModule.ModuleID;
             var condition = GetPlacementConditionForModule(moduleID);
-            if (PlayerData.ModuleStorage.SC_IsCoordinateOccupied(coord) || condition(rootCoord) || IsThrusterAbove(coord))
+            if (PlayerData.ModuleStorage.SC_IsCoordinateOccupied(coord) || condition(rootCoord) ||
+                IsThrusterAbove(coord))
             {
                 return false;
             }
@@ -329,7 +348,7 @@ public class ShipEditor : MonoBehaviour
         {
             return IsSomethingBelowThruster;
         }
-        
+
         return IsThrusterAbove;
     }
 
@@ -343,7 +362,6 @@ public class ShipEditor : MonoBehaviour
             {
                 if (module.ModuleID == NetModuleID.Thruster)
                 {
-                    
                     Debug.Log("is Above" + module);
                     return true;
                 }
@@ -351,6 +369,11 @@ public class ShipEditor : MonoBehaviour
         }
 
         return false;
+    }
+
+
+    public void ChangeLayerOnEachModule()
+    {
     }
 
     private bool IsSomethingBelowThruster(HexCoordinate coord)
@@ -368,6 +391,8 @@ public class ShipEditor : MonoBehaviour
 
         return false;
     }
+
+
     private void AddPowerToEnergyMap(HexCoordinate coord, bool reactorPlaced, int range)
     {
         foreach (HexCoordinate neighborCoord in coord.CoordinatesInRange(range))
@@ -399,6 +424,26 @@ public class ShipEditor : MonoBehaviour
         return false;
     }
 
+    public void IsPowereableInRangeOfReactor()
+    {
+        if (_heldNetEditorModule != null && _heldNetEditorModule.ModuleID == NetModuleID.Reactor)
+        {
+            Vector2 mousePosWorld = editCamera.ScreenToWorldPoint(Input.mousePosition).xy();
+            HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
+
+            foreach (HexCoordinate neighborCoord in cursorHexCoord.CoordinatesInRange(2))
+            {
+                if (_editorModulesMap.TryGetValue(neighborCoord, out var module))
+                {
+                    if (module.ModuleData.CanBePowered)
+                    {
+                        module.IsPowered = true;
+                    }
+                }
+            }
+        }
+    }
+
 
     private bool IsConnectionToBridge(HexCoordinate coord)
     {
@@ -408,6 +453,31 @@ public class ShipEditor : MonoBehaviour
     public void ToggleEnergyView()
     {
         inEnergyView = !inEnergyView;
+        inEnergyViewParentToggle = !inEnergyViewParentToggle;
+    }
+
+    private void ToggleOnEnergyViewBasedOnMudule()
+    {
+        if (!inEnergyView && !inEnergyViewParentToggle && _heldNetEditorModule.ModuleID == NetModuleID.Reactor
+            || _heldNetEditorModule.ModuleData.CanBePowered)
+        {
+            inEnergyView = true;
+        }
+    }
+
+    private void ToggleOffEnergyViewBasedOnMudule()
+    {
+        if (inEnergyView && _heldNetEditorModule.ModuleID == NetModuleID.Reactor
+            || _heldNetEditorModule.ModuleData.CanBePowered)
+        {
+            inEnergyView = inEnergyViewParentToggle;
+        }
+    }
+
+    public void HandleHeldEnergyModule(HexCoordinate coord)
+    {
+        if (_heldNetEditorModule.ModuleData.CanBePowered)
+            _heldNetEditorModule.PlacedLocation = coord;
     }
 
     public void PlaceModule(HexCoordinate rootCoord)
@@ -417,6 +487,8 @@ public class ShipEditor : MonoBehaviour
             AddPowerToEnergyMap(rootCoord, true, _heldNetEditorModule.ModuleData.EffectRange);
         }
 
+        weaponGroupManager.AddModuleToWeaponGroup(_heldNetEditorModule);
+        ToggleOffEnergyViewBasedOnMudule();
         _heldNetEditorModule.PlacedLocation = rootCoord;
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
@@ -425,9 +497,13 @@ public class ShipEditor : MonoBehaviour
         }
 
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
-        _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
+        if (_heldNetEditorModule.ModuleData.ModuleCategory != NetModuleCategory.Weapons)
+        {
+            _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
+        }
+
         _editorModuleList.Add(_heldNetEditorModule);
-        shipEditorStats.GetTotalStats(_editorModuleList);
+        shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
         _heldNetEditorModule = null;
         EventSystem.current.SetSelectedGameObject(lastSelected);
     }
@@ -439,6 +515,7 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule = moduleToRemove;
         }
 
+        weaponGroupManager.RemoveModuleFromWeaponGroup(_heldNetEditorModule);
         if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
             AddPowerToEnergyMap(moduleToRemove.PlacedLocation, false, _heldNetEditorModule.ModuleData.EffectRange);
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
@@ -447,9 +524,10 @@ public class ShipEditor : MonoBehaviour
             _editorModulesMap.Remove(coord);
         }
 
+
         PlayerData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
         _editorModuleList.Remove(_heldNetEditorModule);
-        shipEditorStats.GetTotalStats(_editorModuleList);
+        shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
     }
 
     public void SignalReady()

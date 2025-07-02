@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -17,8 +18,11 @@ public class NetEditorModule : MonoBehaviour
     [field: SerializeField] public GameObject PowerMaterialGameObject { get; set; }
     [field: SerializeField] public Material PowerMaterial { get; set; }
     [field: SerializeField] public ShipEditor shipEditor { get; set; }
+    [field: SerializeField] public ShipEditorWeaponGroups WeaponGroupManager { get; set; }
+    [field: SerializeField] public int currentGroup => WeaponGroupManager.currentGroup;
     [field: SerializeField] public bool isSelected { get; set; }
     private Color originalColor;
+
     public void Initialize()
     {
         NetModuleData moduleData = DataProvider.Instance.ModuleDB.ModuleData[ModuleID];
@@ -32,9 +36,9 @@ public class NetEditorModule : MonoBehaviour
     public void Awake()
     {
         shipEditor = FindFirstObjectByType<ShipEditor>();
+        WeaponGroupManager = FindFirstObjectByType<ShipEditorWeaponGroups>();
         PowerMaterial = GetComponentInChildren<MeshRenderer>().material;
         originalColor = PowerMaterial.color;
-        
     }
 
     public void PickUpModule()
@@ -44,8 +48,10 @@ public class NetEditorModule : MonoBehaviour
 
     public void ModuleSelected()
     {
-        VisualTransform.gameObject.layer = isSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
+        VisualTransform.gameObject.layer =
+            isSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
     }
+
     public void C_RotateClockwise()
     {
         for (int i = 0; i < LocalCoordinates.Count; i++)
@@ -85,24 +91,53 @@ public class NetEditorModule : MonoBehaviour
 
     public void Update()
     {
-        ChangeMaterialAndCheckPower();
-        if (!EnergyViewEnable() && PowerMaterial.color != originalColor)
-        {
-            PowerMaterial.color = originalColor;
-        }
+        ChangeMaterialAndCheckPowerAlways();
+        ChangeLayerBasedOnWeaponGroup();
     }
 
-    public void ChangeMaterialAndCheckPower()
+    public void ChangeMaterialAndCheckPowerAlways()
     {
-        if (ModuleData.CanBePowered)
+        if (EnergyViewEnable())
         {
-            IsPowered = shipEditor.CheckIfPowered(PlacedLocation);
-            if (shipEditor.inEnergyView)
+            if (ModuleData.CanBePowered)
             {
                 PowerMaterial.color = IsPowered ? Color.green : Color.blue;
             }
-            //todo implement shader change (waiting for gd to decide)
         }
+        else if (PowerMaterial.color != originalColor)
+        {
+            PowerMaterial.color = originalColor;
+        }
+
+        IsPowered = Powered();
     }
+
+    private void ChangeLayerBasedOnWeaponGroup()
+    {
+        if (!shipEditor.EditorModuleList.Contains(this)) return;
+
+        var weaponGroupOne = WeaponGroupManager.weaponGroupOne;
+        var weaponGroupTwo = WeaponGroupManager.weaponGroupTwo;
+        var weaponGroupThree = WeaponGroupManager.weaponGroupThree;
+
+        var inGroupOneAndGroupActive = weaponGroupOne.Contains(this) && currentGroup == 1;
+        var inGroupTwoAndGroupActive = weaponGroupTwo.Contains(this) && currentGroup == 2;
+        var inGroupThreeAndGroupActive = weaponGroupThree.Contains(this) && currentGroup == 3;
+
+        var weaponLayer = LayerMask.NameToLayer("WeaponGroupOne");
+        var normalLayer = LayerMask.NameToLayer("Modules");
+
+        
+        
+        VisualTransform.gameObject.layer = inGroupOneAndGroupActive ? weaponLayer : normalLayer;
+        if (inGroupOneAndGroupActive) return;
+        VisualTransform.gameObject.layer = inGroupTwoAndGroupActive ? weaponLayer : normalLayer;
+        if (inGroupTwoAndGroupActive) return;
+        VisualTransform.gameObject.layer = inGroupThreeAndGroupActive ? weaponLayer : normalLayer;
+    }
+
     public bool EnergyViewEnable() => shipEditor.inEnergyView;
+
+    //public bool ReactorNearby() => shipEditor.IsPowereableInRangeOfReactor();
+    public bool Powered() => shipEditor.CheckIfPowered(PlacedLocation);
 }
