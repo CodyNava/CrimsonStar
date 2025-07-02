@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.84036, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3279581397603576903}
@@ -181,7 +181,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.67382646, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3279581397603576903}
@@ -222,13 +222,13 @@ VisualEffect:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 1.2549015, y: 8.933567, z: 11.984313, w: 0}
+      - m_Value: {x: 0.31372538, y: 2.2333918, z: 2.9960783, w: 0}
         m_Name: Color_Blur
         m_Overridden: 1
-      - m_Value: {x: 1.1583692, y: 1.1294111, z: 23.968628, w: 0}
+      - m_Value: {x: 0.14479615, y: 0.14117639, z: 2.9960785, w: 0}
         m_Name: Color_LightningBall
         m_Overridden: 1
-      - m_Value: {x: 5.992157, y: 1.7696099, z: 0.3137254, w: 0}
+      - m_Value: {x: 1.4980392, y: 0.44240248, z: 0.07843135, w: 0}
         m_Name: Color_EmissionParticle
         m_Overridden: 1
     m_Uint:
@@ -244,7 +244,10 @@ VisualEffect:
     m_NamedObject:
       m_Array: []
     m_Bool:
-      m_Array: []
+      m_Array:
+      - m_Value: 1
+        m_Name: ToggleSubgraph_EmissionParticle
+        m_Overridden: 1
 --- !u!73398921 &1117843618047218829
 VFXRenderer:
   serializedVersion: 1
@@ -314,7 +317,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.6835624, z: -1.6399658}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 534018168345693473}
