@@ -24,7 +24,7 @@ public class NetPredictedExplosion : MonoBehaviour
     
     private HashSet<NetGameplayModule> hitModules = new HashSet<NetGameplayModule>();
     
-    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID)
+    public void Initialize(NetTeamID netTeamID, ulong attackerID)
     {
         _netTeamID = netTeamID;
         _attackerID = attackerID;
