@@ -1,7 +1,7 @@
 ﻿public enum NetGameModeID
 {
-    DefaultMode,
     EasyMode,
+    DefaultMode,
     HardcoreMode,
     TestingMode,
     Custom

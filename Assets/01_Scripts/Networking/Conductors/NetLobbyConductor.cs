@@ -4,6 +4,7 @@ using System.Linq;
 using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using Steamworks;
 using UnityEngine;
@@ -27,12 +28,12 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
 
     public NetworkObject[] Players { get; private set; }
     public Dictionary<ulong, NetMatchPlayer> PlayersByID { get; private set; }
-    public Dictionary<NetworkConnection, NetMatchPlayer> PlayersByConnection { get; private set; }
-    
+    private readonly SyncDictionary<NetworkConnection, NetMatchPlayer> _playersByConnection = new ();
+    public SyncDictionary<NetworkConnection, NetMatchPlayer> PlayersByConnection => _playersByConnection;
     public Dictionary<NetworkConnection, NetLobbyData> ConnectionPlayerMap { get; } = new();
 
     private NetworkConnection _hostConnection;
-    private NetGameModeID _selectedGameMode;
+    private NetGameModeID _selectedGameMode = NetGameModeID.DefaultMode;
     private NetTeamModeID _selectedTeamMode;
 
     private float _updateAccumulator;
@@ -180,7 +181,13 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     {
         ServerManager.Broadcast(new NetLobbyBroadcasts.SetGameMode
         {
-            GameMode = _selectedGameMode
+            GameMode = _selectedGameMode,
+            BaseCurrency = DataProvider.GetStartingCurrency(_selectedGameMode),
+            CurrencyAddedPerRound = DataProvider.GetCurrencyAddedPerRound(_selectedGameMode)
+        }, false);
+        ServerManager.Broadcast(new NetLobbyBroadcasts.SetTeamMode
+        {
+            TeamMode = _selectedTeamMode
         }, false);
     }
 
@@ -208,7 +215,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         
         Players = new NetworkObject[ConnectionPlayerMap.Count];
         PlayersByID = new Dictionary<ulong, NetMatchPlayer>();
-        PlayersByConnection = new Dictionary<NetworkConnection, NetMatchPlayer>();
+        _playersByConnection.Clear();
         int count = 0;
         foreach (var (conn, lobbyData) in ConnectionPlayerMap)
         {

@@ -24,6 +24,8 @@ public static class NetLobbyBroadcasts
     public struct SetGameMode : IBroadcast
     {
         public NetGameModeID GameMode;
+        public int BaseCurrency;
+        public int CurrencyAddedPerRound;
     }
 
     public struct SetTeamMode : IBroadcast
