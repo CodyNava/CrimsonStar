@@ -27,10 +27,16 @@ public class LobbyUI : MonoBehaviour
     {
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
+        InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(OnTeamModeChanged);
         hostSettings.Initialize();
         switchTeamsButton.SetPlayerID(PlayerData.PlayerID);
     }
-    
+
+    private void OnTeamModeChanged(NetLobbyBroadcasts.SetTeamMode msg, Channel channel)
+    {
+        hostSettings.UpdateGameModeDisplay(msg);
+    }
+
     private void OnGameModeChanged(NetLobbyBroadcasts.SetGameMode msg, Channel channel)
     {
         hostSettings.UpdateGameSettingsDisplay(msg);
@@ -117,5 +123,6 @@ public class LobbyUI : MonoBehaviour
     {
         InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
         InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(OnTeamModeChanged);
     }
 }

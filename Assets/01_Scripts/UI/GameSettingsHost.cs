@@ -120,7 +120,9 @@ public class GameSettingsHost : MonoBehaviour
 
         UpdateGameSettingsDisplay(new NetLobbyBroadcasts.SetGameMode
         {
-            GameMode = NetGameModeID.DefaultMode
+            GameMode = NetGameModeID.DefaultMode,
+            BaseCurrency = DataProvider.GetStartingCurrency((NetGameModeID)_currentResourceMode),
+            CurrencyAddedPerRound = DataProvider.GetCurrencyAddedPerRound((NetGameModeID)_currentResourceMode)
         });
 
         _currentResourceMode = 1;
@@ -307,16 +309,38 @@ public class GameSettingsHost : MonoBehaviour
     }
 
    public void UpdateGameSettingsDisplay(NetLobbyBroadcasts.SetGameMode settings)
-    {
-        startingCurrencyText.text = DataProvider.GetStartingCurrency(settings.GameMode).ToString();
-        currencyPerRoundText.text = DataProvider.GetCurrencyAddedPerRound(settings.GameMode).ToString();
+   {
+        resourceModeText.text = _resourceMode[(int)settings.GameMode];
+        startingCurrencyText.text = settings.BaseCurrency.ToString();
+        currencyPerRoundText.text = settings.CurrencyAddedPerRound.ToString();
     }
+
+   public void UpdateGameModeDisplay(NetLobbyBroadcasts.SetTeamMode teamMode)
+   {
+       _currentSelectedMode = (int)teamMode.TeamMode;
+       
+       if (_currentSelectedMode == 1)
+       {
+           team1.SetActive(true);
+           team2.SetActive(true);
+       }
+
+       if (_currentSelectedMode == 0)
+       {
+           team1.SetActive(false);
+           team2.SetActive(false);
+       }
+
+       gameModeText.text = _gameMode[_currentSelectedMode];
+   }
 
     private void UpdateResourceMode(int selectedGameMode)
     {
         InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.SetGameMode
         {
-            GameMode = (NetGameModeID)selectedGameMode
+            GameMode = (NetGameModeID)selectedGameMode,
+            BaseCurrency = DataProvider.GetStartingCurrency((NetGameModeID)_currentResourceMode),
+            CurrencyAddedPerRound = DataProvider.GetCurrencyAddedPerRound((NetGameModeID)_currentResourceMode)
         });
 
         resourceModeText.text = _resourceMode[selectedGameMode];
@@ -356,24 +380,13 @@ public class GameSettingsHost : MonoBehaviour
 
     private void UpdateGameMode(int selectedTeamMode)
     {
-        InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.SetTeamMode()
+        var bc = new NetLobbyBroadcasts.SetTeamMode
         {
             TeamMode = (NetTeamModeID)selectedTeamMode
-        });
+        };
+        InstanceFinder.ClientManager.Broadcast(bc);
 
-        if (selectedTeamMode == 1)
-        {
-            team1.SetActive(true);
-            team2.SetActive(true);
-        }
-
-        if (selectedTeamMode == 0)
-        {
-            team1.SetActive(false);
-            team2.SetActive(false);
-        }
-
-        gameModeText.text = _gameMode[selectedTeamMode];
+        UpdateGameModeDisplay(bc);
     }
 
     public void NextGameMode()

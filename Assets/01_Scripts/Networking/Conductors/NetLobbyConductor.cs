@@ -181,7 +181,13 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     {
         ServerManager.Broadcast(new NetLobbyBroadcasts.SetGameMode
         {
-            GameMode = _selectedGameMode
+            GameMode = _selectedGameMode,
+            BaseCurrency = DataProvider.GetStartingCurrency(_selectedGameMode),
+            CurrencyAddedPerRound = DataProvider.GetCurrencyAddedPerRound(_selectedGameMode)
+        }, false);
+        ServerManager.Broadcast(new NetLobbyBroadcasts.SetTeamMode
+        {
+            TeamMode = _selectedTeamMode
         }, false);
     }
 
