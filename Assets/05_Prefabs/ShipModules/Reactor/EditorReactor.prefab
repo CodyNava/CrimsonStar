@@ -51,12 +51,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ModuleID>k__BackingField: 6
   <VisualTransform>k__BackingField: {fileID: 1444197679776078048}
-  <IsPowered>k__BackingField: 0
   <PowerMaterialGameObject>k__BackingField: {fileID: 2252084105133900378}
-  <PowerMaterial>k__BackingField: {fileID: 2252084105133900378}
-  <shipEditor>k__BackingField: {fileID: 0}
-  <WeaponGroupManager>k__BackingField: {fileID: 0}
-  <isSelected>k__BackingField: 0
+  poweredColor:
+    serializedVersion: 2
+    rgba: 0
 --- !u!114 &-3028318755988369243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,10 +431,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
       propertyPath: m_Materials.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ebcf81e07a2410f43b89ad13d2b76734, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: c3fddf1396e175647a3215d757b05924, type: 2}
     - target: {fileID: -5754084199372789682, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
