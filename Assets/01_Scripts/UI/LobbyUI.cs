@@ -13,6 +13,7 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Button startGameButton, readyButton;
     [SerializeField] private TMP_Text readyButtonText;
     [SerializeField] private Image brightness;
+    [SerializeField] private SwitchTeamsButton switchTeamsButton;
 
     private bool _ready;
 
@@ -25,6 +26,7 @@ public class LobbyUI : MonoBehaviour
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
         hostSettings.Initialize();
+        switchTeamsButton.SetPlayerID(PlayerData.PlayerID);
     }
     
     private void OnGameModeChanged(NetLobbyBroadcasts.SetGameMode msg, Channel channel)
@@ -48,6 +50,10 @@ public class LobbyUI : MonoBehaviour
         for (int i = 0; i < msg.Players.Length; i++)
         {
             playerPlates[i].UpdateDisplay(msg.Players[i], msg.TeamMode);
+            if (msg.Players[i].playerID == PlayerData.PlayerID)
+            {
+                switchTeamsButton.UpdateTeamID(msg.Players[i].playerTeamID);
+            }
         }
     }
 

@@ -32,7 +32,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     public Dictionary<NetworkConnection, NetLobbyData> ConnectionPlayerMap { get; } = new();
 
     private NetworkConnection _hostConnection;
-    private NetGameModeID _selectedGameMode;
+    private NetGameModeID _selectedGameMode = NetGameModeID.DefaultMode;
     private NetTeamModeID _selectedTeamMode;
 
     private float _updateAccumulator;

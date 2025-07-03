@@ -42,7 +42,5 @@ public class PlayerPlateDisplay : MonoBehaviour
     {
         readyImage.gameObject.SetActive(false);
         playerName.text = "-";
-        //teamDropDown.gameObject.SetActive(false);
-        //teamLabel.gameObject.SetActive(false);
     }
 }
