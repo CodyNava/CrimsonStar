@@ -614,6 +614,15 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Save"",
+                    ""type"": ""Button"",
+                    ""id"": ""ac160aae-7f1c-47e4-b130-8d0218baf670"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1100,6 +1109,17 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""action"": ""Decrease"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3619bc1d-35d8-4478-bb74-db431bfd25ec"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Save"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1448,6 +1468,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_UI_SwapTabLeft = m_UI.FindAction("SwapTabLeft", throwIfNotFound: true);
         m_UI_Increase = m_UI.FindAction("Increase", throwIfNotFound: true);
         m_UI_Decrease = m_UI.FindAction("Decrease", throwIfNotFound: true);
+        m_UI_Save = m_UI.FindAction("Save", throwIfNotFound: true);
         // ShipEditor
         m_ShipEditor = asset.FindActionMap("ShipEditor", throwIfNotFound: true);
         m_ShipEditor_ModulePickOrDrop = m_ShipEditor.FindAction("ModulePickOrDrop", throwIfNotFound: true);
@@ -1803,6 +1824,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_SwapTabLeft;
     private readonly InputAction m_UI_Increase;
     private readonly InputAction m_UI_Decrease;
+    private readonly InputAction m_UI_Save;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -1871,6 +1893,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Decrease => m_Wrapper.m_UI_Decrease;
         /// <summary>
+        /// Provides access to the underlying input action "UI/Save".
+        /// </summary>
+        public InputAction @Save => m_Wrapper.m_UI_Save;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_UI; }
@@ -1938,6 +1964,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @Decrease.started += instance.OnDecrease;
             @Decrease.performed += instance.OnDecrease;
             @Decrease.canceled += instance.OnDecrease;
+            @Save.started += instance.OnSave;
+            @Save.performed += instance.OnSave;
+            @Save.canceled += instance.OnSave;
         }
 
         /// <summary>
@@ -1991,6 +2020,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @Decrease.started -= instance.OnDecrease;
             @Decrease.performed -= instance.OnDecrease;
             @Decrease.canceled -= instance.OnDecrease;
+            @Save.started -= instance.OnSave;
+            @Save.performed -= instance.OnSave;
+            @Save.canceled -= instance.OnSave;
         }
 
         /// <summary>
@@ -2404,6 +2436,13 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDecrease(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Save" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSave(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ShipEditor" which allows adding and removing callbacks.

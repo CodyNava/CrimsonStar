@@ -12,7 +12,6 @@ public class GameSettingsHost : MonoBehaviour
     private EventSystem _eventSystem;
     
     [SerializeField] private GameObject[] currentSelectedTabList;
-    private int _lastSelectedTabIndex;
     private int _currentSelectedTabIndex;
 
     [SerializeField] private GameObject playerLb;
@@ -151,7 +150,6 @@ public class GameSettingsHost : MonoBehaviour
             SelectTab(3);
             return;
         }
-        SelectTab(_lastSelectedTabIndex);
         
         switchTeamController.SetActive(_currentSelectedMode.Equals(1) && _currentSelectedTabIndex == 0);
         inviteController.SetActive(true);
@@ -177,7 +175,7 @@ public class GameSettingsHost : MonoBehaviour
 
         if (PlayerData.IsLobbyHost)
         {
-            if (Keybinds.Actions.UI.Increase.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.Increase.WasPerformedThisFrame())
             {
                 if (_eventSystem.currentSelectedGameObject.Equals(gameMode))
                 {
@@ -210,7 +208,7 @@ public class GameSettingsHost : MonoBehaviour
                 }
             }
 
-            if (Keybinds.Actions.UI.Decrease.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.Decrease.WasPerformedThisFrame())
             {
                 if (_eventSystem.currentSelectedGameObject.Equals(gameMode))
                 {
@@ -275,8 +273,6 @@ public class GameSettingsHost : MonoBehaviour
                 gameModeSettingsRb.SetActive(false);
                 customSettingsLb.SetActive(false);
                 customSettingsRb.SetActive(false);
-                switchTeamController.SetActive(true);
-                _lastSelectedTabIndex = index;
                 break;
             
             case 1:
@@ -290,7 +286,6 @@ public class GameSettingsHost : MonoBehaviour
                 switchTeamController.SetActive(false);
                 inviteController.SetActive(true);
                 kickController.SetActive(false);
-                _lastSelectedTabIndex = index;
                 break;
 
             case 2:
@@ -304,7 +299,6 @@ public class GameSettingsHost : MonoBehaviour
                 switchTeamController.SetActive(false);
                 inviteController.SetActive(true);
                 kickController.SetActive(false);
-                _lastSelectedTabIndex = index;
                 break;
             case 3:
                 playerLb.SetActive(false);
@@ -427,8 +421,7 @@ public class GameSettingsHost : MonoBehaviour
     {
         _startCurrencyIndex++;
         _startCurrencyIndex %= _startCurrencyList.Count;
-
-        Debug.Log("starting" + _startCurrencyIndex);
+        
         DataProvider.Instance.customGameMode.BaseCurrency = _startCurrencyList[_startCurrencyIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
@@ -443,8 +436,7 @@ public class GameSettingsHost : MonoBehaviour
         {
             _startCurrencyIndex--;
         }
-
-        Debug.Log("starting" + _startCurrencyIndex);
+        
         DataProvider.Instance.customGameMode.BaseCurrency = _startCurrencyList[_startCurrencyIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
@@ -453,8 +445,7 @@ public class GameSettingsHost : MonoBehaviour
     {
         _currencyPerRoundIndex++;
         _currencyPerRoundIndex %= _currencyPerRoundList.Count;
-
-        Debug.Log("Round" + _currencyPerRoundIndex);
+        
         DataProvider.Instance.customGameMode.CurrencyAddedPerRound = _currencyPerRoundList[_currencyPerRoundIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
@@ -469,8 +460,7 @@ public class GameSettingsHost : MonoBehaviour
         {
             _currencyPerRoundIndex--;
         }
-
-        Debug.Log("Round" + _currencyPerRoundIndex);
+        
         DataProvider.Instance.customGameMode.CurrencyAddedPerRound = _currencyPerRoundList[_currencyPerRoundIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
