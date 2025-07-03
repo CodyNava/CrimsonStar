@@ -125,7 +125,9 @@ public class NetGameplayModule : NetworkBehaviour
             {
                 if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.75f)
                 {
-                    _lowHealthAlarmInstance.start();
+                    _lowHealthAlarmInstance.getPlaybackState(out PLAYBACK_STATE state);
+                    if (state == PLAYBACK_STATE.STOPPED)
+                        _lowHealthAlarmInstance.start();
                 }
             }
         }
