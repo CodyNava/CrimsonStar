@@ -15,6 +15,8 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Image brightness;
     [SerializeField] private SwitchTeamsButton switchTeamsButton;
 
+    private NetTeamModeID _currentTeamMode;
+    
     private bool _ready;
 
     private void Awake()
@@ -46,10 +48,30 @@ public class LobbyUI : MonoBehaviour
         }
         
         ClearNames();
-
+        
+        int teamAIndice = 0;
+        int teamBIndice = 0;
         for (int i = 0; i < msg.Players.Length; i++)
         {
-            playerPlates[i].UpdateDisplay(msg.Players[i], msg.TeamMode);
+            if (hostSettings.CurrentSelectedTeamMode == NetTeamModeID.TeamMode)
+            {
+                switch (msg.Players[i].playerTeamID)
+                {
+                    case NetTeamID.Team1:
+                        playerPlates[teamAIndice].UpdateDisplay(msg.Players[i], msg.TeamMode);
+                        teamAIndice++;
+                        break;
+                    case NetTeamID.Team2:
+                        playerPlates[4+teamBIndice].UpdateDisplay(msg.Players[i], msg.TeamMode);
+                        teamBIndice++;
+                        break;
+                }
+            }
+            else
+            {
+                playerPlates[i].UpdateDisplay(msg.Players[i], msg.TeamMode);
+            }
+            
             if (msg.Players[i].playerID == PlayerData.PlayerID)
             {
                 switchTeamsButton.UpdateTeamID(msg.Players[i].playerTeamID);

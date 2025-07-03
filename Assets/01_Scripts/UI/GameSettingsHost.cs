@@ -44,7 +44,8 @@ public class GameSettingsHost : MonoBehaviour
     [SerializeField] private Button previousGameMode;
     private readonly string[] _gameMode = { "Free For All", "Team Mode" };
     private int _currentSelectedMode;
-
+    public NetTeamModeID CurrentSelectedTeamMode => (NetTeamModeID)_currentSelectedMode;
+    
     [Header("Resources")] 
     [SerializeField] private GameObject resource;
     [SerializeField] private TMP_Text resourceModeText;

@@ -5,15 +5,14 @@ public class SwitchTeamsButton : MonoBehaviour
 {
     private NetTeamID _teamID;
     private ulong _playerID;
+    
 
     public void OnButtonClick()
     {
-        var netTeamID = (int)_teamID;
-        netTeamID++;
-        netTeamID %= 2;
+        NetTeamID netTeamID = (int)_teamID <= 1 ? NetTeamID.Team2 : NetTeamID.Team1;
         InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.PlayerTeamChangeRequested
         {
-            NewTeamID = (NetTeamID)netTeamID, PlayerID = _playerID
+            NewTeamID = netTeamID, PlayerID = _playerID
         });
     }
 
