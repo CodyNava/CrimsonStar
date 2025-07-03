@@ -42,7 +42,7 @@ VisualEffect:
   m_GameObject: {fileID: 59474662080971240}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: cb69f68c1bb9917428da1752ab57a82e, type: 3}
-  m_InitialEventName: 
+  m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 1
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
@@ -168,6 +168,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2102882392502488767}
+  - component: {fileID: 6439013032764608951}
   m_Layer: 0
   m_Name: VFX_HitFeedback_Laser
   m_TagString: Untagged
@@ -193,6 +194,19 @@ Transform:
   - {fileID: 1444001047736064446}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6439013032764608951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412538434211685962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f244f524a030c6459722c6594b1e9bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _delay: 0.5
 --- !u!1 &4040311808157128464
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,7 +249,7 @@ VisualEffect:
   m_GameObject: {fileID: 4040311808157128464}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: cb69f68c1bb9917428da1752ab57a82e, type: 3}
-  m_InitialEventName: 
+  m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 1
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
@@ -397,7 +411,7 @@ VisualEffect:
   m_GameObject: {fileID: 5973548391730531173}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: cb69f68c1bb9917428da1752ab57a82e, type: 3}
-  m_InitialEventName: 
+  m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 1
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1

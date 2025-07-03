@@ -10,5 +10,6 @@ namespace _01_Scripts.Projectiles
         [field:SerializeField] public float LifetimeAfterFullGrown { get; private set; }
         [field:SerializeField] public float MaxHits { get; private set; }
         [field:SerializeField] public float ProjectileDamage { get; private set; }
+        [field:SerializeField] public float LaserWidth { get; private set; }
     }
 }

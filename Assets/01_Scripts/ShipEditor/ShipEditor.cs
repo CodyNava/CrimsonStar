@@ -30,6 +30,7 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] public bool inEnergyViewParentToggle;
 
     [SerializeField] public bool moduleSpawnedInGP;
+    [SerializeField] public bool moduleFirstSelectedGP;
     [SerializeField] public bool reactorIsNearby;
 
     private Color originalOutlineShaderColor;
@@ -196,9 +197,15 @@ public class ShipEditor : MonoBehaviour
             HandleHeldEnergyModule(cursorHexCoord);
             ToggleOnEnergyViewBasedOnMudule();
             EventSystem.current.SetSelectedGameObject(null);
+            _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
             _heldNetEditorModule.transform.Translate(moveInput.x * v * t, moveInput.y * v * t, 0f, Space.World);
             if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasPerformedThisFrame())
             {
+                if (moduleFirstSelectedGP)
+                {
+                    moduleFirstSelectedGP = false;
+                    return;
+                }
                 if (CanPlaceModule(cursorHexCoord))
                 {
                     PlayerData.ModuleStorage.C_AddModule(cursorHexCoord, _heldNetEditorModule.ModuleID,

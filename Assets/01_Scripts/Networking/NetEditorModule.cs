@@ -8,21 +8,24 @@ using UnityEngine.EventSystems;
 
 public class NetEditorModule : MonoBehaviour
 {
+    private static readonly int ColourShift = Shader.PropertyToID("_ColourShift");
     [field: SerializeField] public NetModuleID ModuleID { get; private set; }
     [field: SerializeField] public Transform VisualTransform { get; private set; }
+    [HideInInspector] public bool IsSelected { get; set; }
     public HexCoordinate PlacedLocation { get; set; }
     public int PlacedRotation { get; set; }
     public NetModuleData ModuleData => ModuleID.GetModuleData();
     public List<HexCoordinate> LocalCoordinates { get; private set; }
-    [field: SerializeField] public bool IsPowered { get; set; }
-    [field: SerializeField] public GameObject PowerMaterialGameObject { get; set; }
-    [field: SerializeField] public Material PowerMaterial { get; set; }
-    [field: SerializeField] public ShipEditor shipEditor { get; set; }
-    [field: SerializeField] public ShipEditorWeaponGroups WeaponGroupManager { get; set; }
-    [field: SerializeField] public GameObject WeaponGroupOutliner { get; set; }
-    [field: SerializeField] public int currentGroup => WeaponGroupManager.currentGroup;
-    [field: SerializeField] public bool isSelected { get; set; }
-    private Color originalColor;
+    [HideInInspector] public bool IsPowered { get; set; }
+    [field: SerializeField] private GameObject PowerMaterialGameObject { get; set; }
+    private Material PowerMaterial { get; set; }
+    private ShipEditor ShipEditor { get; set; }
+    private ShipEditorWeaponGroups WeaponGroupManager { get; set; }
+    private int CurrentGroup => WeaponGroupManager.currentGroup;
+    [Tooltip("poweredColor is only Relevant if it can be Powered")]
+    [field: SerializeField] private Color32 poweredColor;
+    private Color32 _originalColor;
+
 
     public void Initialize()
     {
@@ -36,21 +39,24 @@ public class NetEditorModule : MonoBehaviour
 
     public void Awake()
     {
-        shipEditor = FindFirstObjectByType<ShipEditor>();
+        ShipEditor = FindFirstObjectByType<ShipEditor>();
         WeaponGroupManager = FindFirstObjectByType<ShipEditorWeaponGroups>();
-        PowerMaterial = GetComponentInChildren<MeshRenderer>().material;
-        if (ModuleData.CanBePowered) originalColor = PowerMaterial.color;
+        if (!ModuleData.CanBePowered) return;
+        var mesh = GetComponentInChildren<MeshRenderer>();
+        PowerMaterial = mesh.materials[1];
+        _originalColor = PowerMaterial.GetColor(ColourShift);
     }
 
     public void PickUpModule()
     {
-        shipEditor.RemoveModule(this);
+        ShipEditor.RemoveModule(this);
     }
 
     public void ModuleSelected()
     {
+        ShipEditor.moduleFirstSelectedGP = true;
         VisualTransform.gameObject.layer =
-            isSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
+            IsSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
     }
 
     public void C_RotateClockwise()
@@ -98,17 +104,16 @@ public class NetEditorModule : MonoBehaviour
 
     private void ChangeMaterialAndCheckPowerAlways()
     {
-        
         if (EnergyViewEnable())
         {
             if (ModuleData.CanBePowered)
             {
-                PowerMaterial.color = IsPowered ? Color.green : Color.blue;
+                PowerMaterial.SetColor(ColourShift, IsPowered ? poweredColor : _originalColor);
             }
         }
-        else if (PowerMaterial.color != originalColor)
+        else if (PowerMaterial.GetColor(ColourShift) != _originalColor)
         {
-            PowerMaterial.color = originalColor;
+            PowerMaterial.SetColor(ColourShift, _originalColor) ;
         }
 
         IsPowered = Powered();
@@ -116,25 +121,26 @@ public class NetEditorModule : MonoBehaviour
 
     private void ChangeLayerBasedOnWeaponGroup()
     {
-        if (!shipEditor.EditorModuleList.Contains(this)) return;
+        if (!ShipEditor.EditorModuleList.Contains(this)) return;
 
         var weaponGroupOne = WeaponGroupManager.weaponGroupOne;
         var weaponGroupTwo = WeaponGroupManager.weaponGroupTwo;
         var weaponGroupThree = WeaponGroupManager.weaponGroupThree;
 
-        var inGroupOneAndGroupActive = weaponGroupOne.Contains(this) && currentGroup == 1;
-        var inGroupTwoAndGroupActive = weaponGroupTwo.Contains(this) && currentGroup == 2;
-        var inGroupThreeAndGroupActive = weaponGroupThree.Contains(this) && currentGroup == 3;
+        var inGroupOneAndGroupActive = weaponGroupOne.Contains(this) && CurrentGroup == 1 && !IsSelected;
+        var inGroupTwoAndGroupActive = weaponGroupTwo.Contains(this) && CurrentGroup == 2 && !IsSelected;
+        var inGroupThreeAndGroupActive = weaponGroupThree.Contains(this) && CurrentGroup == 3 && !IsSelected;
         
-        WeaponGroupOutliner.SetActive(inGroupOneAndGroupActive);
+        var weaponLayer = LayerMask.NameToLayer("WeaponGroupOne");
+        var normalLayer = IsSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
+
+        VisualTransform.gameObject.layer = inGroupOneAndGroupActive ? weaponLayer : normalLayer;
         if (inGroupOneAndGroupActive) return;
-        WeaponGroupOutliner.SetActive(inGroupTwoAndGroupActive);
+        VisualTransform.gameObject.layer = inGroupTwoAndGroupActive ? weaponLayer : normalLayer;
         if (inGroupTwoAndGroupActive) return;
-        WeaponGroupOutliner.SetActive(inGroupThreeAndGroupActive);
+        VisualTransform.gameObject.layer = inGroupThreeAndGroupActive ? weaponLayer : normalLayer;
     }
 
-    public bool EnergyViewEnable() => shipEditor.inEnergyView;
-
-    //public bool ReactorNearby() => shipEditor.IsPowereableInRangeOfReactor();
-    public bool Powered() => shipEditor.CheckIfPowered(PlacedLocation);
+    public bool EnergyViewEnable() => ShipEditor.inEnergyView;
+    public bool Powered() => ShipEditor.CheckIfPowered(PlacedLocation);
 }
