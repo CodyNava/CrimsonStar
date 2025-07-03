@@ -180,19 +180,25 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         
         if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
         {
-            foreach (var (conn, bridge) in _bridges)
-            {
-                _lobbyConductor.PlayersByConnection[conn].Survived.Value = true;
-                bridge.HandleEndOfRound();
-            }
-            _bridges.Clear();
-            ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult());
+            StartCoroutine(EndOfMatchRoutine());
         }
         else
         {
             _isMatchConcluded.Value = true;
             StartCoroutine(EndOfRoundRoutine());
         }
+    }
+
+    private IEnumerator EndOfMatchRoutine()
+    {
+        foreach (var (conn, bridge) in _bridges)
+        {
+            _lobbyConductor.PlayersByConnection[conn].Survived.Value = true;
+            bridge.HandleEndOfRound();
+        }
+        _bridges.Clear();
+        yield return new WaitForSecondsRealtime(3f);
+        ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult());
     }
 
     private IEnumerator EndOfRoundRoutine()
