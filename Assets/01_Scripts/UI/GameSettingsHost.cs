@@ -12,6 +12,7 @@ public class GameSettingsHost : MonoBehaviour
     private EventSystem _eventSystem;
     
     [SerializeField] private GameObject[] currentSelectedTabList;
+    private int _lastSelectedTabIndex;
     private int _currentSelectedTabIndex;
 
     [SerializeField] private GameObject playerLb;
@@ -27,6 +28,7 @@ public class GameSettingsHost : MonoBehaviour
     [SerializeField] private GameObject player1;
     [SerializeField] private GameObject team1;
     [SerializeField] private GameObject team2;
+    [SerializeField] private Button switchTeam;
 
     //  FOR KICK private NetMatchPlayer _playerID;
 
@@ -132,7 +134,7 @@ public class GameSettingsHost : MonoBehaviour
         resourceModeText.text = _resourceMode[_currentResourceMode];
      
         gameModeText.text = "Free For All";
-        SelectTab(_currentSelectedTabIndex);
+        SelectTab(0);
     }
 
     private void Update()
@@ -141,31 +143,32 @@ public class GameSettingsHost : MonoBehaviour
         {
             switchTeamController.SetActive(false);
             inviteController.SetActive(false);
-            kickController.SetActive(false);
+            //kickController.SetActive(false);
 
             switchTeamKeyboard.SetActive(_currentSelectedMode.Equals(1));
             inviteKeyboard.SetActive(true);
-            kickKeyboard.SetActive(PlayerData.IsLobbyHost);
+            //kickKeyboard.SetActive(PlayerData.IsLobbyHost);
             SelectTab(3);
             return;
         }
-
-        switchTeamController.SetActive(_currentSelectedMode.Equals(1));
+        SelectTab(_lastSelectedTabIndex);
+        
+        switchTeamController.SetActive(_currentSelectedMode.Equals(1) && _currentSelectedTabIndex == 0);
         inviteController.SetActive(true);
-        kickController.SetActive(PlayerData.IsLobbyHost);
+        //kickController.SetActive(PlayerData.IsLobbyHost);
 
         switchTeamKeyboard.SetActive(false);
         inviteKeyboard.SetActive(false);
-        kickKeyboard.SetActive(false);
+        //kickKeyboard.SetActive(false);
         
         if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
         {
             leave.onClick.Invoke();
         }
 
-        if (Keybinds.Actions.UI.Submit.WasPerformedThisFrame())
+        if (Keybinds.Actions.UI.Submit.WasPerformedThisFrame() && _currentSelectedTabIndex== 0)
         {
-            //TODO: Implement Team Switching
+            switchTeam.onClick.Invoke();
         }
 
         if (!PlayerData.IsLobbyHost) return;
@@ -238,8 +241,10 @@ public class GameSettingsHost : MonoBehaviour
                 {
                     decreaseModuleRefund.onClick.Invoke();
                 }
+                
+                
             }
-
+            
             if (Keybinds.Actions.UI.SwapTabLeft.WasPerformedThisFrame())
             {
                 _currentSelectedTabIndex = (_currentSelectedTabIndex == 0)
@@ -270,6 +275,8 @@ public class GameSettingsHost : MonoBehaviour
                 gameModeSettingsRb.SetActive(false);
                 customSettingsLb.SetActive(false);
                 customSettingsRb.SetActive(false);
+                switchTeamController.SetActive(true);
+                _lastSelectedTabIndex = index;
                 break;
             
             case 1:
@@ -283,6 +290,7 @@ public class GameSettingsHost : MonoBehaviour
                 switchTeamController.SetActive(false);
                 inviteController.SetActive(true);
                 kickController.SetActive(false);
+                _lastSelectedTabIndex = index;
                 break;
 
             case 2:
@@ -296,6 +304,7 @@ public class GameSettingsHost : MonoBehaviour
                 switchTeamController.SetActive(false);
                 inviteController.SetActive(true);
                 kickController.SetActive(false);
+                _lastSelectedTabIndex = index;
                 break;
             case 3:
                 playerLb.SetActive(false);
@@ -309,14 +318,14 @@ public class GameSettingsHost : MonoBehaviour
     }
 
    public void UpdateGameSettingsDisplay(NetLobbyBroadcasts.SetGameMode settings)
-   {
+    {
         resourceModeText.text = _resourceMode[(int)settings.GameMode];
         startingCurrencyText.text = settings.BaseCurrency.ToString();
         currencyPerRoundText.text = settings.CurrencyAddedPerRound.ToString();
     }
 
    public void UpdateGameModeDisplay(NetLobbyBroadcasts.SetTeamMode teamMode)
-   {
+    {
        _currentSelectedMode = (int)teamMode.TeamMode;
        
        if (_currentSelectedMode == 1)
@@ -332,7 +341,7 @@ public class GameSettingsHost : MonoBehaviour
        }
 
        gameModeText.text = _gameMode[_currentSelectedMode];
-   }
+    }
 
     private void UpdateResourceMode(int selectedGameMode)
     {
