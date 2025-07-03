@@ -334,6 +334,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6431193197934670072}
   - component: {fileID: 499211687323158369}
+  - component: {fileID: 7555704665663895743}
   m_Layer: 0
   m_Name: VFX_ModuleExplosion
   m_TagString: Untagged
@@ -373,6 +374,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delay: 3
+--- !u!114 &7555704665663895743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3855630418371909128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1553963947
+      Data2: 1314644772
+      Data3: 1802120114
+      Data4: 1976369574
+    Path: event:/SFX/Module_detonates_SFX
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 1
+  OverrideMinDistance: 20
+  OverrideMaxDistance: 500
 --- !u!1 &4671680037128072394
 GameObject:
   m_ObjectHideFlags: 0
