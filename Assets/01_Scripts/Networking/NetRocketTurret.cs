@@ -1,6 +1,8 @@
 ﻿using FishNet.Object;
 using UnityEngine;
-using UnityEngine.VFX; 
+using UnityEngine.VFX;
+using UnityEngine.InputSystem;
+
 public class NetRocketTurret : NetworkBehaviour
 {
     [SerializeField] private NetRocketTurretData netRocketTurretData;
@@ -9,10 +11,15 @@ public class NetRocketTurret : NetworkBehaviour
     [SerializeField] private VisualEffect muzzleFlash;
     [SerializeField] private FMODUnity.EventReference shotSound;
     private const float MaxPassedTime = 0.3f;
+    private InputAction _fireKey;
 
-   
     private float _accumulatedTime;
     private float _cooldownTime;
+
+    public void Start()
+    {
+        SetHotKey(turretModule.WeaponGroup);
+    }
 
     private void Update()
     {
@@ -22,18 +29,46 @@ public class NetRocketTurret : NetworkBehaviour
 
         if (_cooldownTime < netRocketTurretData.Cooldown) return;
 
-        if (!C_IsAttacking()) return;
-        
-        C_ClientFire();
-        
+        //if (!C_IsAttacking()) return;
+        Debug.Log("rocket"+ _fireKey != null);
+        if (_fireKey == null)
+        {
+            SetHotKey(turretModule.WeaponGroup);
+            return;
+        }
+
+        if (_fireKey.IsPressed())
+        {
+            C_ClientFire();
+        }
+
         _accumulatedTime = 0f;
+    }
+
+    private void SetHotKey(int group)
+    {
+        var hotKeyMouse1 = Keybinds.Actions.Player.Attack;
+        var hotKeyE = Keybinds.Actions.Player.Attack2;
+        var hotKeyQ = Keybinds.Actions.Player.Attack3;
+        switch (group)
+        {
+            case 1:
+                _fireKey = hotKeyMouse1;
+                break;
+            case 2:
+                _fireKey = hotKeyE;
+                break;
+            case 3:
+                _fireKey = hotKeyQ;
+                break;
+        }
     }
 
     private bool C_IsAttacking()
     {
         if (!InputManager.Instance.IsGamepadUsed)
         {
-            return Keybinds.Actions.Player.Attack.IsPressed();
+            return _fireKey.IsPressed();
         }
         else
         {
@@ -42,7 +77,7 @@ public class NetRocketTurret : NetworkBehaviour
             return input.magnitude > 0.2f;
         }
     }
-    
+
     private void C_ClientFire()
     {
         Vector3 position = spawnTransform.position;
@@ -60,6 +95,7 @@ public class NetRocketTurret : NetworkBehaviour
         {
             S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
         }
+
         muzzleFlash.Play();
         FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
@@ -72,7 +108,8 @@ public class NetRocketTurret : NetworkBehaviour
         ServerManager.Spawn(pp.gameObject);
     }
 
-    [ServerRpc][Server]
+    [ServerRpc]
+    [Server]
     private void S_ServerFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);

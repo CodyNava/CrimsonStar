@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
 using UnityEngine;
 
 
@@ -22,6 +23,8 @@ public class ShipEditorWeaponGroups : MonoBehaviour
 
     [SerializeField] public List<NetEditorModule> weaponGroupThree =
         new List<NetEditorModule>();
+    [SerializedDictionary]
+
 
     public void DeselectButtonsExcept(ShipEditorWeaponGroupButton activeButton)
     {
@@ -39,8 +42,8 @@ public class ShipEditorWeaponGroups : MonoBehaviour
         currentGroup = 0;
         currentGroup = id;
     }
-    
-    public void AddModuleToWeaponGroup(NetEditorModule module)
+
+    public void AddModuleToWeaponGroup(NetEditorModule module, HexCoordinate coord)
     {
         if (module.ModuleData.ModuleCategory != NetModuleCategory.Weapons) return;
         switch (currentGroup)
@@ -55,15 +58,17 @@ public class ShipEditorWeaponGroups : MonoBehaviour
                 weaponGroupThree.Add(module);
                 break;
         }
+        NetModuleWeaponGroupData.WriteWeaponGroup(coord, currentGroup);
         module.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
     }
 
-    public void RemoveModuleFromWeaponGroup(NetEditorModule module)
+    public void RemoveModuleFromWeaponGroup(NetEditorModule module, HexCoordinate coord)
     {
         if (module.ModuleData.ModuleCategory != NetModuleCategory.Weapons) return;
         weaponGroupOne.Remove(module);
         weaponGroupTwo.Remove(module);
         weaponGroupThree.Remove(module);
         module.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
+        NetModuleWeaponGroupData.RemoveWeaponGroup(coord);
     }
 }

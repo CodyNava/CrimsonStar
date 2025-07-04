@@ -44,6 +44,7 @@ public class ShipEditor : MonoBehaviour
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
 
     [SerializedDictionary("EnergyMap")] public SerializedDictionary<HexCoordinate, int> energyMap = new();
+
     private NetEditorModule _heldNetEditorModule;
 
     private List<NetEditorModule> _editorModuleList;
@@ -495,7 +496,7 @@ public class ShipEditor : MonoBehaviour
             AddPowerToEnergyMap(rootCoord, true, _heldNetEditorModule.ModuleData.EffectRange);
         }
 
-        weaponGroupManager.AddModuleToWeaponGroup(_heldNetEditorModule);
+        weaponGroupManager.AddModuleToWeaponGroup(_heldNetEditorModule, rootCoord);
         ToggleOffEnergyViewBasedOnMudule();
         _heldNetEditorModule.PlacedLocation = rootCoord;
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
@@ -523,7 +524,7 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule = moduleToRemove;
         }
 
-        weaponGroupManager.RemoveModuleFromWeaponGroup(_heldNetEditorModule);
+        weaponGroupManager.RemoveModuleFromWeaponGroup(_heldNetEditorModule, moduleToRemove.PlacedLocation);
         if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
             AddPowerToEnergyMap(moduleToRemove.PlacedLocation, false, _heldNetEditorModule.ModuleData.EffectRange);
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
