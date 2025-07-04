@@ -14,7 +14,6 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private VisualEffect muzzleCharge, muzzleImpact;
     [SerializeField] private AudioSource shootingSound;
     [SerializeField] private bool isCharging;
-    private InputAction _fireKey;
 
 
     private const float MaxPassedTime = 0.3f;
@@ -34,7 +33,6 @@ public class NetLaserTurret : NetworkBehaviour
     {
         muzzleCharge.SetFloat("Get_ChargeTime", netLaserTurretData.ChargeTime);
         muzzleImpact.SetFloat("Delay", netLaserTurretData.ChargeTime);
-        SetHotKey(turretModule.WeaponGroup);
     }
 
     private void Update()
@@ -45,15 +43,9 @@ public class NetLaserTurret : NetworkBehaviour
         
         if (_cooldownTime < netLaserTurretData.Cooldown) return;
         if (!CanFire()) return;
-        Debug.Log("Laser"+ _fireKey != null);
-        if (_fireKey == null)
-        {
-            SetHotKey(turretModule.WeaponGroup);
-            return;
-        }
 
-        // if (!C_IsAttacking()) return;
-        if (_fireKey.IsPressed() || isCharging)
+        
+        if (C_IsAttacking() || isCharging)
         {
             isCharging = true;
             _chargeTime += Time.deltaTime;
@@ -71,30 +63,17 @@ public class NetLaserTurret : NetworkBehaviour
         }
     }
 
-    private void SetHotKey(int group)
-    {
-        var hotKeyMouse1 = Keybinds.Actions.Player.Attack;
-        var hotKeyE = Keybinds.Actions.Player.Attack2;
-        var hotKeyQ = Keybinds.Actions.Player.Attack3;
-        switch (group)
-        {
-            case 1:
-                _fireKey = hotKeyMouse1;
-                break;
-            case 2:
-                _fireKey = hotKeyE;
-                break;
-            case 3:
-                _fireKey = hotKeyQ;
-                break;
-        }
-    }
-
     private bool C_IsAttacking()
     {
         if (!InputManager.Instance.IsGamepadUsed)
         {
-            return _fireKey.IsPressed();
+            switch (turretModule.WeaponGroup)
+            {
+                case 2: return Keybinds.Actions.Player.Attack2.IsPressed();
+                case 3: return Keybinds.Actions.Player.Attack3.IsPressed();
+                default:
+                case 1: return Keybinds.Actions.Player.Attack.IsPressed();
+            }
         }
         else
         {

@@ -61,7 +61,10 @@ public class NetPredictedProjectile : MonoBehaviour
     {
         if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.Bridge == _bridgeOrigin) return;
 
-        if (module.NetTeamID == _netTeamID && _lobbyConductor.FriendlyFireID == NetFirendlyFireID.Off) return;
+        if (!_lobbyConductor.IsUnityNull())
+        {
+            if (module.NetTeamID == _netTeamID && _lobbyConductor.FriendlyFireID == NetFirendlyFireID.Off) return;
+        }
 
         if (InstanceFinder.IsClientStarted)
         {

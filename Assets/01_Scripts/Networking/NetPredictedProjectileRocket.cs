@@ -76,8 +76,12 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.Bridge == _bridgeOrigin) return;
+
+        if (!_lobbyConductor.IsUnityNull())
+        {
+            if (module.NetTeamID == _netTeamID.Value && _lobbyConductor.FriendlyFireID == NetFirendlyFireID.Off) return;
+        }
         
-        if (module.NetTeamID == _netTeamID.Value && _lobbyConductor.FriendlyFireID == NetFirendlyFireID.Off) return;
         
         if (_hasShot) return;
 

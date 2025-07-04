@@ -18,7 +18,6 @@ public class NetTurret : NetworkBehaviour
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
     private float _accumulatedTime;
-    private InputAction _fireKey;
 
     public override void OnStartClient()
     {
@@ -28,7 +27,6 @@ public class NetTurret : NetworkBehaviour
         }
 
         _nextMuzzleFlash = muzzleFlashA;
-        SetHotKey(turretModule.WeaponGroup);
     }
 
     private void LateUpdate()
@@ -51,37 +49,11 @@ public class NetTurret : NetworkBehaviour
             _nextSpawnTransform = spawnTransformA;
             _nextMuzzleFlash = muzzleFlashA;
         }
-        Debug.Log("turret"+ _fireKey != null);
-        if (_fireKey == null)
-        {
-            SetHotKey(turretModule.WeaponGroup);
-            return;
-        }
 
-        if (_fireKey.IsPressed())
+        if (C_IsAttacking())
         {
             C_ClientFire();
-        }
-
-        _accumulatedTime -= netTurretData.Cooldown;
-    }
-
-    private void SetHotKey(int group)
-    {
-        var hotKeyMouse1 = Keybinds.Actions.Player.Attack;
-        var hotKeyE = Keybinds.Actions.Player.Attack2;
-        var hotKeyQ = Keybinds.Actions.Player.Attack3;
-        switch (group)
-        {
-            case 1:
-                _fireKey = hotKeyMouse1;
-                break;
-            case 2:
-                _fireKey = hotKeyE;
-                break;
-            case 3:
-                _fireKey = hotKeyQ;
-                break;
+            _accumulatedTime = 0f;
         }
     }
 
@@ -89,7 +61,13 @@ public class NetTurret : NetworkBehaviour
     {
         if (!InputManager.Instance.IsGamepadUsed)
         {
-            return Keybinds.Actions.Player.Attack.IsPressed();
+            switch (turretModule.WeaponGroup)
+            {
+                case 2: return Keybinds.Actions.Player.Attack2.IsPressed();
+                case 3: return Keybinds.Actions.Player.Attack3.IsPressed();
+                default:
+                case 1: return Keybinds.Actions.Player.Attack.IsPressed();
+            }
         }
         else
         {
