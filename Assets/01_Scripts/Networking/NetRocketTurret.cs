@@ -1,16 +1,18 @@
 ﻿using FishNet.Object;
+using FMODUnity;
 using UnityEngine;
-using UnityEngine.VFX; 
+using UnityEngine.VFX;
+
 public class NetRocketTurret : NetworkBehaviour
 {
     [SerializeField] private NetRocketTurretData netRocketTurretData;
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private VisualEffect muzzleFlash;
-    [SerializeField] private FMODUnity.EventReference shotSound;
+    [SerializeField] private StudioEventEmitter shotSound;
     private const float MaxPassedTime = 0.3f;
 
-   
+
     private float _accumulatedTime;
     private float _cooldownTime;
 
@@ -23,9 +25,9 @@ public class NetRocketTurret : NetworkBehaviour
         if (_cooldownTime < netRocketTurretData.Cooldown) return;
 
         if (!C_IsAttacking()) return;
-        
+
         C_ClientFire();
-        
+
         _accumulatedTime = 0f;
     }
 
@@ -42,7 +44,7 @@ public class NetRocketTurret : NetworkBehaviour
             return input.magnitude > 0.2f;
         }
     }
-    
+
     private void C_ClientFire()
     {
         Vector3 position = spawnTransform.position;
@@ -60,8 +62,9 @@ public class NetRocketTurret : NetworkBehaviour
         {
             S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
         }
+
         muzzleFlash.Play();
-        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
+        shotSound.Play();
     }
 
     [Server]
@@ -72,12 +75,14 @@ public class NetRocketTurret : NetworkBehaviour
         ServerManager.Spawn(pp.gameObject);
     }
 
-    [ServerRpc][Server]
+    [ServerRpc]
+    [Server]
     private void S_ServerFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
+        shotSound.Play();
         S_SpawnProjectile(position, direction, passedTime, senderID);
     }
 }
