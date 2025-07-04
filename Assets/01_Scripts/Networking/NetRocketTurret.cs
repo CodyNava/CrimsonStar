@@ -48,39 +48,36 @@ public class NetRocketTurret : NetworkBehaviour
         Vector3 position = spawnTransform.position;
         Vector3 direction = spawnTransform.up;
 
-        if (!IsHostInitialized)
+        // if (!IsHostInitialized)
+        // {
+        //     C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
+        // }
+        if (IsServerInitialized)
         {
-            C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
+            S_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
         }
-        S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
+        else
+        {
+            S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
+        }
         muzzleFlash.Play();
         FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
 
-    private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
+    [Server]
+    private void S_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
-        print("Spawning projectile");
         NetPredictedProjectileRocket pp = Instantiate(netRocketTurretData.Projectile, position, Quaternion.identity);
         pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID);
+        ServerManager.Spawn(pp.gameObject);
     }
 
-    [ServerRpc]
+    [ServerRpc][Server]
     private void S_ServerFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
-        C_SpawnProjectile(position, direction, passedTime, senderID);
-        C_ObserversFire(position, direction, tick, senderID);
-    }
-
-    [ObserversRpc(ExcludeOwner = true)]
-    private void C_ObserversFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
-    {
-        float passedTime = (float)TimeManager.TimePassed(tick, false);
-        passedTime = Mathf.Min(MaxPassedTime, passedTime);
-        C_SpawnProjectile(position, direction, passedTime, senderID);
-        muzzleFlash.Play();
-        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
+        S_SpawnProjectile(position, direction, passedTime, senderID);
     }
 }
