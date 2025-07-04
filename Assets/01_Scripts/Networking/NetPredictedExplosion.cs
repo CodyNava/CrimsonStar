@@ -9,11 +9,11 @@ using Unity.VisualScripting;
 
 public class NetPredictedExplosion : MonoBehaviour
 {
-    [SerializeField] public ExplosionObject explosionObject;
-    [SerializeField] public RocketProjectileObject rocketProjectileObject;
+    private ExplosionObject _explosionObject;
     [SerializeField] private VisualEffect VFX;
     [SerializeField] private GameObject hitFeedbackVFX;
     [SerializeField] private GameObject ScalingObject;
+
 
     private ulong _attackerID;
     private NetTeamID _netTeamID;
@@ -45,20 +45,20 @@ public class NetPredictedExplosion : MonoBehaviour
 
     private void Start()
     {
-        startScale = Vector3.one * explosionObject.ExplosionMinSize;
-        endScale = Vector3.one * explosionObject.ExplosionMaxSize;
+        startScale = Vector3.one * _explosionObject.ExplosionMinSize;
+        endScale = Vector3.one * _explosionObject.ExplosionMaxSize;
         ScalingObject.transform.localScale = startScale;
         
         circleCollider = GetComponent<CircleCollider2D>();
-        circleCollider.radius = explosionObject.ExplosionMinSize / 2f;
+        circleCollider.radius = _explosionObject.ExplosionMinSize / 2f;
         
-        Destroy(gameObject, explosionObject.ExplosionTimer);
+        Destroy(gameObject, _explosionObject.ExplosionTimer);
     }
 
     private void Update()
     {
         timer += Time.deltaTime;
-        float progress = Mathf.Clamp01(timer / explosionObject.ExplosionTimer);
+        float progress = Mathf.Clamp01(timer / _explosionObject.ExplosionTimer);
         Vector3 currentScale = Vector3.Lerp(startScale, endScale, progress);
         
         ScalingObject.transform.localScale = currentScale;

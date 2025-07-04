@@ -17,7 +17,6 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
     [SerializeField] public RocketProjectileObject rocketProjectileObject;
     [SerializeField] private NetGameplayModule turretModule;
 
-
     private const float MaxPassedTime = 0.3f;
     private ulong _attackerID;
     private readonly SyncVar<NetTeamID> _netTeamID = new SyncVar<NetTeamID>();
