@@ -191,6 +191,7 @@ public class GameSettingsHost : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(InputManager.Instance.IsGamepadUsed);
         if (!InputManager.Instance.IsGamepadUsed)
         {
             switchTeamController.SetActive(false);
@@ -575,19 +576,6 @@ public class GameSettingsHost : MonoBehaviour
     {
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
-
-    public void OptionsSelect()
-    {
-        optionsContainer.SetActive(true);
-        _eventSystem.SetSelectedGameObject(gameMode);
-        playerContainer.SetActive(false);
-    }
-
-    public void PlayerSelect()
-    {
-        playerContainer.SetActive(true);
-        _eventSystem.SetSelectedGameObject(player1);
-        optionsContainer.SetActive(false);
-    }
+    
     #endregion
 }
