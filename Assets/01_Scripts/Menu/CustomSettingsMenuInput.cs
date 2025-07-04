@@ -15,7 +15,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
 
     [SerializeField] private Button audioButton;
     [SerializeField] private Button graphicsButton;
-    [SerializeField] private Button backButton;
+    [SerializeField] private Button settingsBackButton;
 
     [Header("Graphics")]
     [SerializeField] private GameObject applyButtonKeyboard;
@@ -93,7 +93,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
 
             if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
             {
-                backButton.onClick.Invoke();
+                settingsBackButton.onClick.Invoke();
             }
 
             if (Keybinds.Actions.UI.Decrease.IsPressed() && !_cooldownStarted)

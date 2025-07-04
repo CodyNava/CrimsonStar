@@ -5,6 +5,7 @@ public class ButtonTransformBehaviour : MonoBehaviour
     [SerializeField] private float sizeIncrease;
     [SerializeField] private Vector2 rectVector;
     [SerializeField] private RectTransform rectTransform;
+    private bool _hovered;
     
     private void Awake()
     {
@@ -15,13 +16,21 @@ public class ButtonTransformBehaviour : MonoBehaviour
 
     public void Hover()
     {
-        rectVector.x *= sizeIncrease;
-        rectTransform.sizeDelta = rectVector;
+        if (!_hovered)
+        {
+            rectVector.x *= sizeIncrease;
+            rectTransform.sizeDelta = rectVector;
+            _hovered = true;
+        }
     }
 
     public void UnHover()
     {
-        rectVector.x /= sizeIncrease;
-        rectTransform.sizeDelta = rectVector;
+        if (_hovered)
+        {
+            rectVector.x /= sizeIncrease;
+            rectTransform.sizeDelta = rectVector;
+            _hovered = false;
+        }
     }
 }
