@@ -44,10 +44,24 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
 
     
     // Settings Accessors
-    public NetFirendlyFireID FirendlyFireID
+    public NetFirendlyFireID FriendlyFireID
     {
         get => _friendlyFireSetting.Value;
         set { if (IsServerInitialized) _friendlyFireSetting.Value = value; }
+    }
+
+    public float FriendlyFireDamageMult
+    {
+        get
+        {
+            return FriendlyFireID switch
+            {
+                NetFirendlyFireID.Half => 0.5f,
+                NetFirendlyFireID.Quarter => 0.25f,
+                NetFirendlyFireID.Off => 0f,
+                _ => 1f
+            };
+        }
     }
     public int RoundCount
     {

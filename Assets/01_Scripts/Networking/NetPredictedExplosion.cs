@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections.Generic;
 using _01_Scripts.Projectiles;
+using Unity.VisualScripting;
 
 
 public class NetPredictedExplosion : MonoBehaviour
@@ -21,19 +22,25 @@ public class NetPredictedExplosion : MonoBehaviour
     private Vector3 endScale;
     private float timer;
     private CircleCollider2D circleCollider;
+
+    private NetBridge _bridgeOrigin;
+    private NetLobbyConductor _lobbyConductor;
     
     private HashSet<NetGameplayModule> hitModules = new HashSet<NetGameplayModule>();
     
-    public void Initialize(NetTeamID netTeamID, ulong attackerID)
+    public void Initialize(NetTeamID netTeamID, ulong attackerID, NetBridge bridgeOrigin)
     {
         _netTeamID = netTeamID;
         _attackerID = attackerID;
+        _bridgeOrigin = bridgeOrigin;
         
         Destroy(gameObject, explosionObject.ExplosionTimer);
         if (VFX.HasVector3("DirectionVector_position"))
         {
             VFX.SetVector3("DirectionVector_position", _direction);
         }
+
+        InstanceFinder.TryGetInstance(out _lobbyConductor);
     }
 
     private void Start()
@@ -61,7 +68,10 @@ public class NetPredictedExplosion : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.NetTeamID == _netTeamID) return;
+        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.Bridge == _bridgeOrigin) return;
+        
+        if (module.NetTeamID == _netTeamID && _lobbyConductor.FriendlyFireID == NetFirendlyFireID.Off) return;
+        
         if (hitModules.Contains(module)) return;
         
         hitModules.Add(module);
@@ -73,7 +83,10 @@ public class NetPredictedExplosion : MonoBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(rocketProjectileObject.ProjectileDamage, _attackerID);
+            float friendlyFireDamageMult = 1f;
+            if (module.NetTeamID == _netTeamID) friendlyFireDamageMult = _lobbyConductor.FriendlyFireDamageMult;
+            
+            module.S_InflictDamage(rocketProjectileObject.ProjectileDamage * friendlyFireDamageMult, _attackerID);
         }
         Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
     }

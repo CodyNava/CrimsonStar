@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections.Generic;
 using _01_Scripts.Projectiles;
+using Unity.VisualScripting;
 
 public class NetPredictedProjectileLaser : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class NetPredictedProjectileLaser : MonoBehaviour
 
     private NetTeamID _netTeamID;
     private Vector3 _direction;
+    private NetBridge _bridgeOrigin;
+    private NetLobbyConductor _lobbyConductor;
     
     private float _growProgress = 0f;
     private float _currentLength = 0f;
@@ -25,12 +28,13 @@ public class NetPredictedProjectileLaser : MonoBehaviour
     private bool _fullyGrown = false;
     private float _lifetimeTimer = 0f;
     
-    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID)
+    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID, NetBridge bridgeOrigin)
     {
         bulletVFX.Play();
         _direction = direction.normalized;
         _netTeamID = netTeamID;
         _attackerID = attackerID;
+        _bridgeOrigin = bridgeOrigin;
         _initialWidth = laserProjectileObject.LaserWidth;
         
         transform.rotation = Quaternion.LookRotation(Vector3.forward, _direction);
@@ -42,6 +46,8 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         {
             bulletVFX.SetVector3("DirectionVector_position", _direction);
         }
+
+        InstanceFinder.TryGetInstance(out _lobbyConductor);
     }
 
     private void Update()
@@ -74,15 +80,20 @@ public class NetPredictedProjectileLaser : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.TryGetComponent(out NetGameplayModule module)) return;
-        if (module.NetTeamID == _netTeamID) return;
+        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.Bridge == _bridgeOrigin) return;
         if (_hitModules.Contains(module)) return;
+
+        if (module.NetTeamID == _netTeamID && _lobbyConductor.FriendlyFireID == NetFirendlyFireID.Off) return;
+
 
         _hitModules.Add(module);
         
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(laserProjectileObject.ProjectileDamage, _attackerID);
+            float friendlyFireDamageMult = 1f;
+            if (module.NetTeamID == _netTeamID) friendlyFireDamageMult = _lobbyConductor.FriendlyFireDamageMult;
+            
+            module.S_InflictDamage(laserProjectileObject.ProjectileDamage * friendlyFireDamageMult, _attackerID);
         }
         
         if (InstanceFinder.IsClientStarted)

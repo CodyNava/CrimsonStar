@@ -122,7 +122,7 @@ public class NetLaserTurret : NetworkBehaviour
     {
         print("Spawning projectile");
         NetPredictedProjectileLaser pp = Instantiate(netLaserTurretData.Projectile, position, Quaternion.identity);
-        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID);
+        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge);
     }
 
     [ServerRpc]

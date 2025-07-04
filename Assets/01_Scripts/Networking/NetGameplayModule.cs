@@ -7,6 +7,7 @@ using FishNet.Object.Synchronizing;
 using FMOD.Studio;
 using FMODUnity;
 using Steamworks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
 using STOP_MODE = FMOD.Studio.STOP_MODE;

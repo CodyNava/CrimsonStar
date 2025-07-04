@@ -104,7 +104,7 @@ public class NetRocketTurret : NetworkBehaviour
     private void S_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
         NetPredictedProjectileRocket pp = Instantiate(netRocketTurretData.Projectile, position, Quaternion.identity);
-        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID);
+        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge);
         ServerManager.Spawn(pp.gameObject);
     }
 
