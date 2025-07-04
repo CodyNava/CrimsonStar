@@ -149,6 +149,7 @@ public class ShipEditorStats : MonoBehaviour
                 var rocketProjectile = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject;
                 
                 float projDmg = rocketProjectile.Explosion.ExplosionDamage;
+                float explosionSize = rocketProjectile.Explosion.ExplosionMaxSize;
                 float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown; 
                 float rocketTimer = rocketProjectile.ProjectileTimer;
                 float dt = (float)InstanceFinder.TimeManager.TickDelta;
@@ -163,7 +164,7 @@ public class ShipEditorStats : MonoBehaviour
                 }
                 
                 float rocketRangeUnrounded = distanceTraveled / 10;
-                _damagePerSecondWg1 += projDmg / shootingCd;
+                _damagePerSecondWg1 += (projDmg * (explosionSize /2) ) / shootingCd;
                 _rocketRangeWg1 = Mathf.RoundToInt(rocketRangeUnrounded) * 10;
                 
             }
@@ -209,6 +210,7 @@ public class ShipEditorStats : MonoBehaviour
                 var rocketProjectile = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject;
                 
                 float projDmg = rocketProjectile.Explosion.ExplosionDamage;
+                float explosionSize = rocketProjectile.Explosion.ExplosionMaxSize;
                 float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown; 
                 float rocketTimer = rocketProjectile.ProjectileTimer;
                 float dt = (float)InstanceFinder.TimeManager.TickDelta;
@@ -223,7 +225,7 @@ public class ShipEditorStats : MonoBehaviour
                 }
                 
                 float rocketRangeUnrounded = distanceTraveled / 10;
-                _damagePerSecondWg2 += projDmg / shootingCd;
+                _damagePerSecondWg2 += (projDmg * (explosionSize /2) ) / shootingCd;
                 _rocketRangeWg2 = Mathf.RoundToInt(rocketRangeUnrounded) * 10;
                 
             }
@@ -269,6 +271,7 @@ public class ShipEditorStats : MonoBehaviour
                 var rocketProjectile = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject;
                 
                 float projDmg = rocketProjectile.Explosion.ExplosionDamage;
+                float explosionSize = rocketProjectile.Explosion.ExplosionMaxSize;
                 float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown; 
                 float rocketTimer = rocketProjectile.ProjectileTimer;
                 float dt = (float)InstanceFinder.TimeManager.TickDelta;
@@ -283,7 +286,7 @@ public class ShipEditorStats : MonoBehaviour
                 }
                 
                 float rocketRangeUnrounded = distanceTraveled / 10;
-                _damagePerSecondWg3 += projDmg / shootingCd;
+                _damagePerSecondWg3 += (projDmg * (explosionSize /2) ) / shootingCd;
                 _rocketRangeWg3 = Mathf.RoundToInt(rocketRangeUnrounded) * 10;
                 
             }
