@@ -64,7 +64,7 @@ public class SpectatorPlayerPanel : MonoBehaviour
             playerPanelEntryMap.Add(player.PlayerID.Value, entry);
         }
         
-        // _panelContainer.SetActive(false);
+        _panelContainer.SetActive(false);
         _initialized = true;
     }
 

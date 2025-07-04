@@ -61,7 +61,7 @@ Transform:
   m_GameObject: {fileID: 4286742609009066964}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -12.45, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -124,6 +124,12 @@ VisualEffect:
       - m_Value: 1.1
         m_Name: Width_BackgroundLaser
         m_Overridden: 1
+      - m_Value: 0.4
+        m_Name: Width
+        m_Overridden: 1
+      - m_Value: 0.025
+        m_Name: Laser_Length
+        m_Overridden: 1
     m_Vector2f:
       m_Array:
       - m_Value: {x: -5, y: 0}
@@ -157,7 +163,10 @@ VisualEffect:
     m_Uint:
       m_Array: []
     m_Int:
-      m_Array: []
+      m_Array:
+      - m_Value: 1
+        m_Name: Y_Scale_Multiplier
+        m_Overridden: 1
     m_Matrix4x4f:
       m_Array: []
     m_AnimationCurve:

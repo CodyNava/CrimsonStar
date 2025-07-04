@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using FishNet.Connection;
 using FishNet.Object;
 using UnityEngine;
-using UnityEngine.VFX; 
+using UnityEngine.InputSystem;
+using UnityEngine.VFX;
+
 public class NetLaserTurret : NetworkBehaviour
 {
     [SerializeField] private NetLaserTurretData netLaserTurretData;
@@ -12,7 +14,9 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private VisualEffect muzzleCharge, muzzleImpact;
     [SerializeField] private AudioSource shootingSound;
     [SerializeField] private bool isCharging;
-    
+    private InputAction _fireKey;
+
+
     private const float MaxPassedTime = 0.3f;
 
     private float _accumulatedTime;
@@ -30,19 +34,26 @@ public class NetLaserTurret : NetworkBehaviour
     {
         muzzleCharge.SetFloat("Get_ChargeTime", netLaserTurretData.ChargeTime);
         muzzleImpact.SetFloat("Delay", netLaserTurretData.ChargeTime);
+        SetHotKey(turretModule.WeaponGroup);
     }
+
     private void Update()
     {
         if (!IsOwner) return;
         _accumulatedTime += Time.deltaTime;
         _cooldownTime = Mathf.Min(_accumulatedTime, netLaserTurretData.Cooldown);
         
-
         if (_cooldownTime < netLaserTurretData.Cooldown) return;
         if (!CanFire()) return;
-        //if (!C_IsAttacking()) return;
-        
-        if (Keybinds.Actions.Player.Attack.IsPressed() || isCharging)
+        Debug.Log("Laser"+ _fireKey != null);
+        if (_fireKey == null)
+        {
+            SetHotKey(turretModule.WeaponGroup);
+            return;
+        }
+
+        // if (!C_IsAttacking()) return;
+        if (_fireKey.IsPressed() || isCharging)
         {
             isCharging = true;
             _chargeTime += Time.deltaTime;
@@ -58,14 +69,32 @@ public class NetLaserTurret : NetworkBehaviour
                 C_ClientFire();
             }
         }
-        
+    }
+
+    private void SetHotKey(int group)
+    {
+        var hotKeyMouse1 = Keybinds.Actions.Player.Attack;
+        var hotKeyE = Keybinds.Actions.Player.Attack2;
+        var hotKeyQ = Keybinds.Actions.Player.Attack3;
+        switch (group)
+        {
+            case 1:
+                _fireKey = hotKeyMouse1;
+                break;
+            case 2:
+                _fireKey = hotKeyE;
+                break;
+            case 3:
+                _fireKey = hotKeyQ;
+                break;
+        }
     }
 
     private bool C_IsAttacking()
     {
         if (!InputManager.Instance.IsGamepadUsed)
         {
-            return Keybinds.Actions.Player.Attack.IsPressed();
+            return _fireKey.IsPressed();
         }
         else
         {
@@ -74,6 +103,7 @@ public class NetLaserTurret : NetworkBehaviour
             return input.magnitude > 0.2f;
         }
     }
+
     private void C_ClientFire()
     {
         Vector3 position = spawnTransform.position;
@@ -83,6 +113,7 @@ public class NetLaserTurret : NetworkBehaviour
         {
             C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
         }
+
         S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
         shootingSound.Play();
     }

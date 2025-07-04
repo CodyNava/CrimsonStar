@@ -8,16 +8,18 @@ public class NetPredictedProjectileLaser : MonoBehaviour
 {
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
+    [SerializeField] public GameObject hitBox;
     [SerializeField] public LaserProjectileObject laserProjectileObject;
+    
 
     private NetTeamID _netTeamID;
     private Vector3 _direction;
     
     private float _growProgress = 0f;
     private float _currentLength = 0f;
-    private Vector3 _initialScale;
+    private float _initialWidth;
 
-    private HashSet<NetGameplayModule> hitModules = new HashSet<NetGameplayModule>();
+    private readonly HashSet<NetGameplayModule> _hitModules = new HashSet<NetGameplayModule>();
     
     private ulong _attackerID;
     private bool _fullyGrown = false;
@@ -29,9 +31,12 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         _direction = direction.normalized;
         _netTeamID = netTeamID;
         _attackerID = attackerID;
-
-        _initialScale = transform.localScale;
+        _initialWidth = laserProjectileObject.LaserWidth;
+        
         transform.rotation = Quaternion.LookRotation(Vector3.forward, _direction);
+        
+        //int y = bulletVFX.GetInt("y_asd");
+        //y = (int)_currentLength;
         
         if (bulletVFX.HasVector3("DirectionVector_position"))
         {
@@ -48,7 +53,8 @@ public class NetPredictedProjectileLaser : MonoBehaviour
             _growProgress += laserProjectileObject.GrowSpeed * dt;
             _growProgress = Mathf.Clamp01(_growProgress);
             _currentLength = Mathf.Lerp(0f, laserProjectileObject.MaxLength, _growProgress);
-            transform.localScale = new Vector3(_initialScale.x, _currentLength, _initialScale.z);
+            //transform.localScale = new Vector3(_initialScale.x, _currentLength, _initialScale.z);
+            hitBox.transform.localScale = new Vector2(_initialWidth, _currentLength);
 
             if (_growProgress >= 1f)
             {
@@ -70,9 +76,9 @@ public class NetPredictedProjectileLaser : MonoBehaviour
     {
         if (!other.TryGetComponent(out NetGameplayModule module)) return;
         if (module.NetTeamID == _netTeamID) return;
-        if (hitModules.Contains(module)) return;
+        if (_hitModules.Contains(module)) return;
 
-        hitModules.Add(module);
+        _hitModules.Add(module);
         
         if (InstanceFinder.IsServerStarted)
         {
@@ -85,11 +91,11 @@ public class NetPredictedProjectileLaser : MonoBehaviour
             Instantiate(hitFeedbackVFX, spawnPos, Quaternion.identity);
         }
         
-        if (hitModules.Count >= laserProjectileObject.MaxHits)
+        if (_hitModules.Count >= laserProjectileObject.MaxHits)
         {
             _fullyGrown = true;
             _lifetimeTimer = laserProjectileObject.LifetimeAfterFullGrown;
-            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            hitBox.GetComponent<BoxCollider2D>().enabled = false;
         }
     }
 

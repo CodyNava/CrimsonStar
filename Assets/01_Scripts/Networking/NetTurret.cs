@@ -4,6 +4,7 @@ using FishNet.Object;
 using FMODUnity;
 using Steamworks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.VFX;
 
 public class NetTurret : NetworkBehaviour
@@ -17,6 +18,7 @@ public class NetTurret : NetworkBehaviour
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
     private float _accumulatedTime;
+    private InputAction _fireKey;
 
     public override void OnStartClient()
     {
@@ -26,17 +28,7 @@ public class NetTurret : NetworkBehaviour
         }
 
         _nextMuzzleFlash = muzzleFlashA;
-    }
-
-    private bool CanFire()
-    {
-        Debug.Log($"PowerGrid: {turretModule.Bridge.PowerGrid.Count}");
-        foreach (KeyValuePair<HexCoordinate, int> gridEntry in turretModule.Bridge.PowerGrid)
-        {
-            Debug.Log($"PoweredCoords: [{gridEntry.Key.Q},{gridEntry.Key.R},{gridEntry.Key.S}]: {gridEntry.Value}");
-        }
-
-        return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
+        SetHotKey(turretModule.WeaponGroup);
     }
 
     private void LateUpdate()
@@ -47,7 +39,7 @@ public class NetTurret : NetworkBehaviour
 
         if (_accumulatedTime < netTurretData.Cooldown) return;
 
-        if (!C_IsAttacking()) return;
+        // if (!C_IsAttacking()) return;
 
         if (_nextSpawnTransform == spawnTransformA)
         {
@@ -59,9 +51,38 @@ public class NetTurret : NetworkBehaviour
             _nextSpawnTransform = spawnTransformA;
             _nextMuzzleFlash = muzzleFlashA;
         }
+        Debug.Log("turret"+ _fireKey != null);
+        if (_fireKey == null)
+        {
+            SetHotKey(turretModule.WeaponGroup);
+            return;
+        }
 
-        C_ClientFire();
+        if (_fireKey.IsPressed())
+        {
+            C_ClientFire();
+        }
+
         _accumulatedTime -= netTurretData.Cooldown;
+    }
+
+    private void SetHotKey(int group)
+    {
+        var hotKeyMouse1 = Keybinds.Actions.Player.Attack;
+        var hotKeyE = Keybinds.Actions.Player.Attack2;
+        var hotKeyQ = Keybinds.Actions.Player.Attack3;
+        switch (group)
+        {
+            case 1:
+                _fireKey = hotKeyMouse1;
+                break;
+            case 2:
+                _fireKey = hotKeyE;
+                break;
+            case 3:
+                _fireKey = hotKeyQ;
+                break;
+        }
     }
 
     private bool C_IsAttacking()

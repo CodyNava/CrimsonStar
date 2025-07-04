@@ -107,7 +107,6 @@ public class NetBridge : NetworkBehaviour
             _powerGrid[coordinate] = power + 1;
         }
     }
-
     [Server]
     private void S_RemoveModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
