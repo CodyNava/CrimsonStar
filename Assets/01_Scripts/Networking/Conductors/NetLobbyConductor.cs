@@ -37,6 +37,24 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     private NetTeamModeID _selectedTeamMode;
 
     private float _updateAccumulator;
+    
+    // LobbySettings
+    private readonly SyncVar<NetFirendlyFireID> _friendlyFireSetting = new();
+    private readonly SyncVar<int> _roundCount = new(); 
+
+    
+    // Settings Accessors
+    public NetFirendlyFireID FirendlyFireID
+    {
+        get => _friendlyFireSetting.Value;
+        set { if (IsServerInitialized) _friendlyFireSetting.Value = value; }
+    }
+    public int RoundCount
+    {
+        get => _roundCount.Value;
+        set { if (IsServerInitialized) _roundCount.Value = value; }
+    }
+    
 
     public override string ConductedSceneName => "NetLobby";
 
@@ -247,4 +265,6 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     
     [Server]
     public int S_GetInitialResourceCount() => DataProvider.Instance.GameModeConfig.GetBaseCurrency(_selectedGameMode);
+    
+    
 }
