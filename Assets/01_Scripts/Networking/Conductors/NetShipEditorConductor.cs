@@ -14,6 +14,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     [SerializeField] private int minimumResourceCount;
     [SerializeField] private float shipEditorTimerDuration;
     [SerializeField] private FMODUnity.StudioEventEmitter intro;
+    
     public override string ConductedSceneName => "NetShipEditor";
 
     private Dictionary<NetworkConnection, bool> _playersReady = new();
@@ -22,7 +23,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     private NetLobbyConductor _lobbyConductor;
 
     public float TimeRemaining => _editorTimer.Remaining;
-
+    
 
     protected override void OnNetworkStarted()
     {
@@ -41,7 +42,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     {
         if (_playersReady.Count == 0)
         {
-            _editorTimer.StartTimer(shipEditorTimerDuration);
+            _editorTimer.StartTimer(_lobbyConductor.EditorTimerDuration);
             _editorTimer.OnChange += OnTimerChange;
         }
 
