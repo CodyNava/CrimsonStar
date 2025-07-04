@@ -148,7 +148,7 @@ public class ShipEditorStats : MonoBehaviour
                 //float explDmg = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject.   //todo explosion damage beachten
                 var rocketProjectile = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject;
                 
-                float projDmg = rocketProjectile.ProjectileDamage;
+                float projDmg = rocketProjectile.Explosion.ExplosionDamage;
                 float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown; 
                 float rocketTimer = rocketProjectile.ProjectileTimer;
                 float dt = (float)InstanceFinder.TimeManager.TickDelta;
@@ -208,7 +208,7 @@ public class ShipEditorStats : MonoBehaviour
                 //float explDmg = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject.   //todo explosion damage beachten
                 var rocketProjectile = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject;
                 
-                float projDmg = rocketProjectile.ProjectileDamage;
+                float projDmg = rocketProjectile.Explosion.ExplosionDamage;
                 float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown; 
                 float rocketTimer = rocketProjectile.ProjectileTimer;
                 float dt = (float)InstanceFinder.TimeManager.TickDelta;
@@ -268,7 +268,7 @@ public class ShipEditorStats : MonoBehaviour
                 //float explDmg = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject.   //todo explosion damage beachten
                 var rocketProjectile = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject;
                 
-                float projDmg = rocketProjectile.ProjectileDamage;
+                float projDmg = rocketProjectile.Explosion.ExplosionDamage;
                 float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown; 
                 float rocketTimer = rocketProjectile.ProjectileTimer;
                 float dt = (float)InstanceFinder.TimeManager.TickDelta;

@@ -6,4 +6,7 @@ public class ExplosionObject : ScriptableObject
 	[field:SerializeField] public float ExplosionTimer { get; private set; }
 	[field:SerializeField] public float ExplosionMinSize { get; private set; }
 	[field:SerializeField] public float ExplosionMaxSize { get; private set; }
+	[field:SerializeField] public float ExplosionDamage { get; private set; }
+	[field: SerializeField] public NetPredictedExplosion ExplosionPrefab { get; private set; }
+
 }
