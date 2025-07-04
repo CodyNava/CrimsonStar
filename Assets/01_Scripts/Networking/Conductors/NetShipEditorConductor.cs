@@ -57,8 +57,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     {
         if (asServer && op == SyncTimerOperation.Finished)
         {
-            TriggerIntroSound();
-            C_TriggerIntroSound();
+            StartCoroutine(AdvanceToGameplayScene());
             _editorTimer.OnChange -= OnTimerChange;
         }
     }
@@ -70,8 +69,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
 
         if (S_AllPlayersReady())
         {
-            TriggerIntroSound();
-            C_TriggerIntroSound();
+            StartCoroutine(AdvanceToGameplayScene());
         }
     }
 
@@ -83,18 +81,15 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     
     private void TriggerIntroSound()
     {
-        StartCoroutine(PlayIntroSound());
-    }
-
-    public IEnumerator PlayIntroSound()
-    {
         intro.Play();
-        yield return new WaitForSecondsRealtime(6.5f);
-        if(IsServerStarted) AdvanceToGameplayScene();
     }
 
-    private void AdvanceToGameplayScene()
+    private IEnumerator AdvanceToGameplayScene()
     {
+        C_TriggerIntroSound();
+        TriggerIntroSound();
+        yield return new WaitForSecondsRealtime(6.5f);
+        
         InstanceFinder.GetInstance<NetGameplayConductor>().MoveToScene(this, _lobbyConductor.Players);
         _playersReady.Clear();
     }
