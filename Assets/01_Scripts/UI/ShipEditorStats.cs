@@ -101,7 +101,7 @@ public class ShipEditorStats : MonoBehaviour
             _mass += modules.ModuleData.BaseStats.mass;
             _thrust += modules.ModuleData.BaseStats.thrust;
             _maxSpeed = netBridge.MaxMovementSpeed / (1 + _mass);
-            _acceleration = netBridge.BaseMovementSpeed + _thrust / (1 + _mass);
+            _acceleration = (netBridge.BaseMovementSpeed + _thrust) * 1.6f;
             _maneuverability = netBridge.MaxAngularSpeed / (1 + _mass);
         }
         
@@ -301,8 +301,8 @@ public class ShipEditorStats : MonoBehaviour
     {
         totalHealth.text = $"TotalHealth: {_totalHealth:0}";
         hexCount.text = $"HexCount: {_hexCount:0}";
-        maxSpeed.text = $"MaxSpeed: {_maxSpeed:0.0}";
-        acceleration.text = $"Acceleration: {_acceleration:0.0}";
+        maxSpeed.text = $"MaxVelocity: {_maxSpeed:0.0}";
+        acceleration.text = $"Velocity: {_acceleration:0.0}";
         maneuverability.text = $"Maneuverability: {_maneuverability:0.0}";
         //Wg1
         damagePerSecondWg1.text = $"DmgPerSecond: {_damagePerSecondWg1:0}";
