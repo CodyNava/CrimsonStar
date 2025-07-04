@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using FishNet;
 using TMPro;
 using Unity.VisualScripting;
@@ -8,9 +9,10 @@ using UnityEngine.UI;
 
 public class GameSettingsHost : MonoBehaviour
 {
-    [Header("General")]
-    private EventSystem _eventSystem;
-    
+    [Header("General")] private EventSystem _eventSystem;
+
+    private NetLobbyConductor _lobbyConductor;
+
     [SerializeField] private GameObject[] currentSelectedTabList;
     private int _currentSelectedTabIndex;
 
@@ -23,8 +25,7 @@ public class GameSettingsHost : MonoBehaviour
 
     [SerializeField] private Button leave;
 
-    [Header("Player")]
-    [SerializeField] private GameObject player1;
+    [Header("Player")] [SerializeField] private GameObject player1;
     [SerializeField] private GameObject team1;
     [SerializeField] private GameObject team2;
     [SerializeField] private Button switchTeam;
@@ -38,31 +39,58 @@ public class GameSettingsHost : MonoBehaviour
     [SerializeField] private GameObject kickController;
     [SerializeField] private GameObject kickKeyboard;
 
-    [Header("GameMode")]
-    [SerializeField] private GameObject gameMode;
+    [Header("GameMode")] [SerializeField] private GameObject gameMode;
     [SerializeField] private TMP_Text gameModeText;
     [SerializeField] private Button nextGameMode;
     [SerializeField] private Button previousGameMode;
     private readonly string[] _gameMode = { "Free For All", "Team Mode" };
     private int _currentSelectedMode;
     public NetTeamModeID CurrentSelectedTeamMode => (NetTeamModeID)_currentSelectedMode;
-    
-    [Header("Resources")] 
-    [SerializeField] private GameObject resource;
+
+    [Header("Rounds")] [SerializeField] private GameObject rounds;
+    [SerializeField] private TMP_Text roundsText;
+    [SerializeField] private Button increaseRounds;
+    [SerializeField] private Button decreaseRounds;
+    private int[] _roundsToPlay = { 3, 5, 9 };
+    private int _currentRoundsToPlayIndex;
+
+    [Header("Timer")] [SerializeField] private GameObject timer;
+    [SerializeField] private TMP_Text timerText;
+    [SerializeField] private Button increaseTimer;
+    [SerializeField] private Button decreaseTimer;
+    private List<int> _timerCounter;
+    private int _currentSelectedTimeIndex;
+
+    [Header("Friendly Fire")] [SerializeField]
+    private GameObject friendlyFire;
+    [SerializeField] private TMP_Text friendlyFireText;
+    [SerializeField] private Button increaseFriendlyFire;
+    [SerializeField] private Button decreaseFriendlyFire;
+    private int _currentFriendlyFireModeIndex;
+
+    [Header("Bots")] [SerializeField] private GameObject bots;
+    [SerializeField] private TMP_Text botsCount;
+    [SerializeField] private Button increaseBots;
+    [SerializeField] private Button decreaseBots;
+    private int _currentSelectedBotCountIndex;
+
+    [Header("Steam Friends Only")] [SerializeField]
+    private GameObject steamFriendsOnly;
+
+    [SerializeField] private TMP_Text friendsOnlyText;
+    [SerializeField] private Button increaseFriendsOnly;
+    [SerializeField] private Button decreaseFriendsOnly;
+    private int _currentSelectedFriendsModeIndex;
+
+    [Header("Resources")] [SerializeField] private GameObject resource;
     [SerializeField] private TMP_Text resourceModeText;
     [SerializeField] private Button nextResourceMode;
     [SerializeField] private Button previousResourceMode;
     private readonly string[] _resourceMode = { "Easy", "Default", "Hardcore", "Testing", "Custom" };
     private int _currentResourceMode;
 
-    [Header("Rounds")]
-    [SerializeField] private GameObject rounds;
-    [SerializeField] private TMP_Text roundsText;
-    [SerializeField] private Button increaseRounds;
-    [SerializeField] private Button decreaseRounds;
-
-    [Header("Starting Currency")]
-    [SerializeField] private GameObject startingCurrency;
+    [Header("Starting Currency")] [SerializeField]
+    private GameObject startingCurrency;
 
     [SerializeField] private TMP_Text startingCurrencyText;
     [SerializeField] private Button increaseStartingCurrency;
@@ -70,8 +98,8 @@ public class GameSettingsHost : MonoBehaviour
     private List<int> _startCurrencyList;
     private int _startCurrencyIndex;
 
-    [Header("Currency Per Round")]
-    [SerializeField] private GameObject currencyPerRound;
+    [Header("Currency Per Round")] [SerializeField]
+    private GameObject currencyPerRound;
 
     [SerializeField] private TMP_Text currencyPerRoundText;
     [SerializeField] private Button increaseCurrencyPerRound;
@@ -79,17 +107,19 @@ public class GameSettingsHost : MonoBehaviour
     private List<int> _currencyPerRoundList;
     private int _currencyPerRoundIndex;
 
-    [Header("Module Refund")]
-    [SerializeField] private GameObject moduleRefund;
+    [Header("Module Refund")] [SerializeField]
+    private GameObject moduleRefund;
 
     [SerializeField] private TMP_Text moduleRefundText;
     [SerializeField] private Button increaseModuleRefund;
     [SerializeField] private Button decreaseModuleRefund;
+    private int _currentModuleRefund;
 
     public void Initialize()
     {
         _eventSystem = EventSystem.current;
 
+        _lobbyConductor = FindFirstObjectByType<NetLobbyConductor>();
         _startCurrencyList = new List<int>();
         _currencyPerRoundList = new List<int>();
 
@@ -99,14 +129,27 @@ public class GameSettingsHost : MonoBehaviour
             _currencyPerRoundList.Add(DataProvider.GetCurrencyAddedPerRound((NetGameModeID)i));
         }
 
+        _timerCounter = new List<int>();
+
+        for (var i = 1; i <= 10; i++)
+        {
+            _timerCounter.Add(i * 10);
+        }
+
         nextResourceMode.gameObject.SetActive(PlayerData.IsLobbyHost);
         previousResourceMode.gameObject.SetActive(PlayerData.IsLobbyHost);
 
         nextGameMode.gameObject.SetActive(PlayerData.IsLobbyHost);
         previousGameMode.gameObject.SetActive(PlayerData.IsLobbyHost);
 
-        /*increaseRounds.gameObject.SetActive(PlayerData.IsLobbyHost);
-        decreaseRounds.gameObject.SetActive(PlayerData.IsLobbyHost);*/
+        increaseRounds.gameObject.SetActive(PlayerData.IsLobbyHost);
+        decreaseRounds.gameObject.SetActive(PlayerData.IsLobbyHost);
+        
+        increaseTimer.gameObject.SetActive(PlayerData.IsLobbyHost);
+        decreaseTimer.gameObject.SetActive(PlayerData.IsLobbyHost);
+        
+        increaseFriendlyFire.gameObject.SetActive(PlayerData.IsLobbyHost);
+        decreaseFriendlyFire.gameObject.SetActive(PlayerData.IsLobbyHost);
 
         increaseStartingCurrency.gameObject.SetActive(PlayerData.IsLobbyHost);
         decreaseStartingCurrency.gameObject.SetActive(PlayerData.IsLobbyHost);
@@ -129,15 +172,16 @@ public class GameSettingsHost : MonoBehaviour
         _currentResourceMode = 1;
         _startCurrencyIndex = 1;
         _currencyPerRoundIndex = 1;
-        
+
         resourceModeText.text = _resourceMode[_currentResourceMode];
-     
+
         gameModeText.text = "Free For All";
         SelectTab(0);
     }
 
     private void Update()
     {
+        IncreaseRounds();
         if (!InputManager.Instance.IsGamepadUsed)
         {
             switchTeamController.SetActive(false);
@@ -150,7 +194,7 @@ public class GameSettingsHost : MonoBehaviour
             SelectTab(3);
             return;
         }
-        
+
         switchTeamController.SetActive(_currentSelectedMode.Equals(1) && _currentSelectedTabIndex == 0);
         inviteController.SetActive(true);
         //kickController.SetActive(PlayerData.IsLobbyHost);
@@ -158,13 +202,13 @@ public class GameSettingsHost : MonoBehaviour
         switchTeamKeyboard.SetActive(false);
         inviteKeyboard.SetActive(false);
         //kickKeyboard.SetActive(false);
-        
+
         if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
         {
             leave.onClick.Invoke();
         }
 
-        if (Keybinds.Actions.UI.Submit.WasPerformedThisFrame() && _currentSelectedTabIndex== 0)
+        if (Keybinds.Actions.UI.Submit.WasPerformedThisFrame() && _currentSelectedTabIndex == 0)
         {
             switchTeam.onClick.Invoke();
         }
@@ -239,10 +283,8 @@ public class GameSettingsHost : MonoBehaviour
                 {
                     decreaseModuleRefund.onClick.Invoke();
                 }
-                
-                
             }
-            
+
             if (Keybinds.Actions.UI.SwapTabLeft.WasPerformedThisFrame())
             {
                 _currentSelectedTabIndex = (_currentSelectedTabIndex == 0)
@@ -274,7 +316,7 @@ public class GameSettingsHost : MonoBehaviour
                 customSettingsLb.SetActive(false);
                 customSettingsRb.SetActive(false);
                 break;
-            
+
             case 1:
                 _eventSystem.SetSelectedGameObject(gameMode);
                 playerLb.SetActive(false);
@@ -311,30 +353,30 @@ public class GameSettingsHost : MonoBehaviour
         }
     }
 
-   public void UpdateGameSettingsDisplay(NetLobbyBroadcasts.SetGameMode settings)
+    public void UpdateGameSettingsDisplay(NetLobbyBroadcasts.SetGameMode settings)
     {
         resourceModeText.text = _resourceMode[(int)settings.GameMode];
         startingCurrencyText.text = settings.BaseCurrency.ToString();
         currencyPerRoundText.text = settings.CurrencyAddedPerRound.ToString();
     }
 
-   public void UpdateGameModeDisplay(NetLobbyBroadcasts.SetTeamMode teamMode)
+    public void UpdateGameModeDisplay(NetLobbyBroadcasts.SetTeamMode teamMode)
     {
-       _currentSelectedMode = (int)teamMode.TeamMode;
-       
-       if (_currentSelectedMode == 1)
-       {
-           team1.SetActive(true);
-           team2.SetActive(true);
-       }
+        _currentSelectedMode = (int)teamMode.TeamMode;
 
-       if (_currentSelectedMode == 0)
-       {
-           team1.SetActive(false);
-           team2.SetActive(false);
-       }
+        if (_currentSelectedMode == 1)
+        {
+            team1.SetActive(true);
+            team2.SetActive(true);
+        }
 
-       gameModeText.text = _gameMode[_currentSelectedMode];
+        if (_currentSelectedMode == 0)
+        {
+            team1.SetActive(false);
+            team2.SetActive(false);
+        }
+
+        gameModeText.text = _gameMode[_currentSelectedMode];
     }
 
     private void UpdateResourceMode(int selectedGameMode)
@@ -411,17 +453,71 @@ public class GameSettingsHost : MonoBehaviour
 
     public void IncreaseRounds()
     {
+        _currentRoundsToPlayIndex++;
+        _currentRoundsToPlayIndex %= 3;
+
+        //TODO: Set Rounds
     }
 
     public void DecreaseRounds()
     {
+        if (_currentRoundsToPlayIndex == 0)
+        {
+            _currentRoundsToPlayIndex = 2;
+        }
+        else
+        {
+            _currentRoundsToPlayIndex--;
+        }
+
+        //TODO: Set Rounds
+    }
+
+    public void IncreaseTimer()
+    {
+        _currentSelectedTimeIndex++;
+        _currentSelectedTimeIndex %= _timerCounter.Count;
+
+        //TODO: Set Timer
+    }
+
+    public void DecreaseTimer()
+    {
+        if (_currentSelectedTimeIndex == 0)
+        {
+            _currentSelectedTimeIndex = _timerCounter.Count - 1;
+        }
+        else
+        {
+            _currentSelectedTimeIndex--;
+        }
+        // TODO: Set Timer
+    }
+
+    public void IncreaseFriendlyFire()
+    {
+        _currentFriendlyFireModeIndex++;
+        //TODO: Set FriendlyFireMode
+    }
+
+    public void DecreaseFriendlyFire()
+    {
+        if (_currentFriendlyFireModeIndex == 0)
+        {
+            
+        }
+        else
+        {
+            _currentFriendlyFireModeIndex--;
+        }
+        //TODO: Set FriendlyFireMode
     }
 
     public void IncreaseStartingCurrency()
     {
         _startCurrencyIndex++;
         _startCurrencyIndex %= _startCurrencyList.Count;
-        
+
         DataProvider.Instance.customGameMode.BaseCurrency = _startCurrencyList[_startCurrencyIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
@@ -436,7 +532,7 @@ public class GameSettingsHost : MonoBehaviour
         {
             _startCurrencyIndex--;
         }
-        
+
         DataProvider.Instance.customGameMode.BaseCurrency = _startCurrencyList[_startCurrencyIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
@@ -445,7 +541,7 @@ public class GameSettingsHost : MonoBehaviour
     {
         _currencyPerRoundIndex++;
         _currencyPerRoundIndex %= _currencyPerRoundList.Count;
-        
+
         DataProvider.Instance.customGameMode.CurrencyAddedPerRound = _currencyPerRoundList[_currencyPerRoundIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
@@ -460,7 +556,7 @@ public class GameSettingsHost : MonoBehaviour
         {
             _currencyPerRoundIndex--;
         }
-        
+
         DataProvider.Instance.customGameMode.CurrencyAddedPerRound = _currencyPerRoundList[_currencyPerRoundIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
