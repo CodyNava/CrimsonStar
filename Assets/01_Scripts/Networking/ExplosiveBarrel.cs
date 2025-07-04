@@ -7,10 +7,10 @@ public class ExplosiveBarrel : NetworkBehaviour
 {
     [SerializeField] private ExplosionObject explosionObject;
     private readonly SyncVar<NetTeamID> _netTeamID = new SyncVar<NetTeamID>();
-    private ulong _attackerID;
+    private ulong _attackerID = 0;
 
     
-    public void Initialize(float passedTime, NetTeamID netTeamID, ulong attackerID)
+    public void Initialize(float passedTime, NetTeamID netTeamID, ulong attackerID = 0)
     {
         _netTeamID.Value = netTeamID;
         _attackerID = attackerID;
@@ -25,8 +25,7 @@ public class ExplosiveBarrel : NetworkBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            // PlayerData.PlayerID has to be changed to neutral ID
-            S_SpawnExplosion(transform.position, PlayerData.PlayerID);
+            S_SpawnExplosion(transform.position, _attackerID);
         }
     }
     
@@ -46,7 +45,7 @@ public class ExplosiveBarrel : NetworkBehaviour
     private void C_SpawnExplosion(Vector3 position, ulong senderID)
     {
         NetPredictedExplosion pe = Instantiate(explosionObject.ExplosionPrefab, position, Quaternion.identity);
-        pe.Initialize(_netTeamID.Value, senderID, explosionObject);
+        pe.Initialize(_netTeamID.Value, explosionObject, senderID);
         Destroy(gameObject);
     }
 }

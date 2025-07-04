@@ -15,7 +15,7 @@ public class NetPredictedExplosion : MonoBehaviour
     [SerializeField] private GameObject ScalingObject;
 
 
-    private ulong _attackerID;
+    private ulong _attackerID = 0;
     private NetTeamID _netTeamID;
     private Vector3 _direction;
     private Vector3 startScale;
@@ -28,10 +28,11 @@ public class NetPredictedExplosion : MonoBehaviour
     
     private HashSet<NetGameplayModule> hitModules = new HashSet<NetGameplayModule>();
     
-    public void Initialize(NetTeamID netTeamID, ulong attackerID, NetBridge bridgeOrigin)
+    public void Initialize(NetTeamID netTeamID, ExplosionObject explosionObject, ulong attackerID = 0, NetBridge bridgeOrigin = null)
     {
         _netTeamID = netTeamID;
         _attackerID = attackerID;
+        _explosionObject = explosionObject;
         _bridgeOrigin = bridgeOrigin;
         
         Destroy(gameObject, explosionObject.ExplosionTimer);
@@ -68,7 +69,8 @@ public class NetPredictedExplosion : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.Bridge == _bridgeOrigin) return;
+        if (!other.transform.TryGetComponent(out NetGameplayModule module)) return;
+        if (!_bridgeOrigin.IsUnityNull() && _bridgeOrigin == module.Bridge) return;
         
         if (!_lobbyConductor.IsUnityNull())
         {
@@ -89,7 +91,7 @@ public class NetPredictedExplosion : MonoBehaviour
             float friendlyFireDamageMult = 1f;
             if (module.NetTeamID == _netTeamID) friendlyFireDamageMult = _lobbyConductor.FriendlyFireDamageMult;
             
-            module.S_InflictDamage(rocketProjectileObject.ProjectileDamage * friendlyFireDamageMult, _attackerID);
+            module.S_InflictDamage(_explosionObject.ExplosionDamage * friendlyFireDamageMult, _attackerID);
         }
         Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
     }

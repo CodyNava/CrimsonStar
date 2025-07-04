@@ -113,8 +113,8 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
     private void C_SpawnExplosion(Vector3 position, ulong senderID, NetBridge bridgeOrigin)
     {
         print("Spawning Explosion");
-        NetPredictedExplosion pe = Instantiate(rocketProjectileObject.Explosion, position, Quaternion.identity);
-        pe.Initialize(_netTeamID.Value, senderID, bridgeOrigin);
+        NetPredictedExplosion pe = Instantiate(rocketProjectileObject.Explosion.ExplosionPrefab, position, Quaternion.identity);
+        pe.Initialize(_netTeamID.Value, rocketProjectileObject.Explosion, senderID, bridgeOrigin);
         Destroy(gameObject);
     }
 }

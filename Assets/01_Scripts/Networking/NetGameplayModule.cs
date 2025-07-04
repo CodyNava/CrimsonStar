@@ -148,9 +148,9 @@ public class NetGameplayModule : NetworkBehaviour
 
     [Server]
     [ServerRpc(RequireOwnership = false)]
-    public void S_InflictDamage(float damage, ulong attackerID)
+    public void S_InflictDamage(float damage, ulong attackerID = 0)
     {
-        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor))
+        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor) && attackerID != 0)
         {
             gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
         }
@@ -164,7 +164,7 @@ public class NetGameplayModule : NetworkBehaviour
                 _lowHealthAlarmInstance.release();
             }
 
-            if (ModuleID == NetModuleID.Bridge && gameplayConductor)
+            if (ModuleID == NetModuleID.Bridge && gameplayConductor && attackerID != 0)
             {
                 gameplayConductor.S_ReportKillInstance(attackerID, _bridge.PlayerID);
             }
