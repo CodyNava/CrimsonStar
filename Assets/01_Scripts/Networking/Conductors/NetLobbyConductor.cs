@@ -28,7 +28,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     public NetworkObject[] Players { get; private set; }
     public Dictionary<ulong, NetMatchPlayer> PlayersByID { get; private set; }
     public Dictionary<NetworkConnection, NetMatchPlayer> PlayersByConnection { get; private set; }
-    
+
     public Dictionary<NetworkConnection, NetLobbyData> ConnectionPlayerMap { get; } = new();
 
     private NetworkConnection _hostConnection;
@@ -45,10 +45,11 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         var gameplayConductor = Instantiate(netGameplayConductor);
         ServerManager.Spawn(shipEditorConductor.gameObject);
         ServerManager.Spawn(gameplayConductor.gameObject);
-        
+
         ServerManager.OnRemoteConnectionState += S_OnConnectionStateChange;
         ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified, false);
-        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerTeamChangeRequested>(S_OnPlayerTeamChangeRequested, false);
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerTeamChangeRequested>(S_OnPlayerTeamChangeRequested,
+            false);
         ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(S_OnGameModeChangeRequested, false);
         ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(S_OnTeamModeChangeRequested, false);
         ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged, false);
@@ -67,7 +68,8 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         }
     }
 
-    private void S_OnTeamModeChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetTeamMode msg, Channel channel)
+    private void S_OnTeamModeChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetTeamMode msg,
+        Channel channel)
     {
         NetTeamID teamID = NetTeamID.Team1;
         foreach (var playerData in ConnectionPlayerMap.Values)
@@ -101,7 +103,8 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     }
 
     [Server]
-    private void S_OnPlayerReadyStateChanged(NetworkConnection conn, NetLobbyBroadcasts.SetReadyState msg, Channel channel)
+    private void S_OnPlayerReadyStateChanged(NetworkConnection conn, NetLobbyBroadcasts.SetReadyState msg,
+        Channel channel)
     {
         if (!ConnectionPlayerMap.TryGetValue(conn, out var playerData))
             return;
@@ -109,14 +112,16 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     }
 
     [Server]
-    private void S_OnGameModeChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetGameMode msg, Channel channel)
+    private void S_OnGameModeChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetGameMode msg,
+        Channel channel)
     {
         if (conn != _hostConnection) return;
         _selectedGameMode = msg.GameMode;
     }
 
     [Server]
-    private void S_OnPlayerTeamChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.PlayerTeamChangeRequested msg, Channel channel)
+    private void S_OnPlayerTeamChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.PlayerTeamChangeRequested msg,
+        Channel channel)
     {
         foreach (var (connection, data) in ConnectionPlayerMap)
         {
@@ -140,7 +145,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         {
             S_SetTeamsFreeForAll();
         }
-        
+
         if (msg.IsHost)
         {
             _hostConnection = conn;
@@ -185,8 +190,10 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     }
 
     [Server]
-    private void S_OnGameStartRequested(NetworkConnection connection, NetLobbyBroadcasts.GameStartRequested msg, Channel channel)
+    private void S_OnGameStartRequested(NetworkConnection connection, NetLobbyBroadcasts.GameStartRequested msg,
+        Channel channel)
     {
+        SceneAudioManager.instance.StopMainMusic();
         if (!ConnectionPlayerMap.Values.All(player => player.isReady)) return;
         S_SetUpMatchPlayers();
         InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(this, Players);
@@ -205,7 +212,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
                 }
             }
         }
-        
+
         Players = new NetworkObject[ConnectionPlayerMap.Count];
         PlayersByID = new Dictionary<ulong, NetMatchPlayer>();
         PlayersByConnection = new Dictionary<NetworkConnection, NetMatchPlayer>();
@@ -231,13 +238,14 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(S_OnTeamModeChangeRequested);
         ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged);
     }
-    
+
     [Server]
     public int S_GetRoundCount() => 3;
-    
+
     [Server]
-    public int S_GetResourcePerRound() => DataProvider.Instance.GameModeConfig.GetCurrencyAddedPerRound(_selectedGameMode);
-    
+    public int S_GetResourcePerRound() =>
+        DataProvider.Instance.GameModeConfig.GetCurrencyAddedPerRound(_selectedGameMode);
+
     [Server]
     public int S_GetInitialResourceCount() => DataProvider.Instance.GameModeConfig.GetBaseCurrency(_selectedGameMode);
 }
