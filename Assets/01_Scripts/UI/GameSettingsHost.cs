@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using FishNet;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -10,18 +9,14 @@ public class GameSettingsHost : MonoBehaviour
 {
     [Header("General")]
     private EventSystem _eventSystem;
-    
-    [SerializeField] private GameObject[] currentSelectedTabList;
-    private int _currentSelectedTabIndex;
-
-    [SerializeField] private GameObject playerLb;
-    [SerializeField] private GameObject playerRb;
-    [SerializeField] private GameObject gameModeSettingsLb;
-    [SerializeField] private GameObject gameModeSettingsRb;
-    [SerializeField] private GameObject customSettingsLb;
-    [SerializeField] private GameObject customSettingsRb;
+    private NetLobbyConductor _lobbyConductor;
 
     [SerializeField] private Button leave;
+    [SerializeField] private Button players;
+    [SerializeField] private Button options;
+
+    [SerializeField] private GameObject playerContainer;
+    [SerializeField] private GameObject optionsContainer;
 
     [Header("Player")]
     [SerializeField] private GameObject player1;
@@ -41,29 +36,64 @@ public class GameSettingsHost : MonoBehaviour
     [Header("GameMode")]
     [SerializeField] private GameObject gameMode;
     [SerializeField] private TMP_Text gameModeText;
+    [SerializeField] private TMP_Text gameModePreview;
     [SerializeField] private Button nextGameMode;
     [SerializeField] private Button previousGameMode;
     private readonly string[] _gameMode = { "Free For All", "Team Mode" };
     private int _currentSelectedMode;
     public NetTeamModeID CurrentSelectedTeamMode => (NetTeamModeID)_currentSelectedMode;
-    
-    [Header("Resources")] 
+
+    [Header("Rounds")]
+    [SerializeField] private GameObject rounds;
+    [SerializeField] private TMP_Text roundsText;
+    [SerializeField] private TMP_Text roundsPreview;
+    [SerializeField] private Button increaseRounds;
+    [SerializeField] private Button decreaseRounds;
+    private readonly int[] _roundsToPlay = { 3, 5, 9 };
+    private int _currentRoundsToPlayIndex;
+
+    [Header("Timer")]
+    [SerializeField] private GameObject timer;
+    [SerializeField] private TMP_Text timerText;
+    [SerializeField] private TMP_Text timerPreview;
+    [SerializeField] private Button increaseTimer;
+    [SerializeField] private Button decreaseTimer;
+    private List<float> _timerCounter;
+    private int _currentSelectedTimeIndex;
+
+    [Header("Friendly Fire")]
+    [SerializeField] private GameObject friendlyFire;
+    [SerializeField] private TMP_Text friendlyFireText;
+    [SerializeField] private TMP_Text friendlyFirePreview;
+    [SerializeField] private Button increaseFriendlyFire;
+    [SerializeField] private Button decreaseFriendlyFire;
+    private int _currentFriendlyFireModeIndex;
+
+    [Header("Bots")]
+    [SerializeField] private GameObject bots;
+    [SerializeField] private TMP_Text botsCount;
+    [SerializeField] private Button increaseBots;
+    [SerializeField] private Button decreaseBots;
+    private int _currentSelectedBotCountIndex;
+
+    [Header("Steam Friends Only")]
+    [SerializeField] private GameObject steamFriendsOnly;
+    [SerializeField] private TMP_Text friendsOnlyText;
+    [SerializeField] private Button increaseFriendsOnly;
+    [SerializeField] private Button decreaseFriendsOnly;
+    private int _currentSelectedFriendsModeIndex;
+
+    [Header("Resources")]
     [SerializeField] private GameObject resource;
     [SerializeField] private TMP_Text resourceModeText;
+    [SerializeField] private TMP_Text resourceModePreview;
     [SerializeField] private Button nextResourceMode;
     [SerializeField] private Button previousResourceMode;
     private readonly string[] _resourceMode = { "Easy", "Default", "Hardcore", "Testing", "Custom" };
     private int _currentResourceMode;
 
-    [Header("Rounds")]
-    [SerializeField] private GameObject rounds;
-    [SerializeField] private TMP_Text roundsText;
-    [SerializeField] private Button increaseRounds;
-    [SerializeField] private Button decreaseRounds;
-
     [Header("Starting Currency")]
     [SerializeField] private GameObject startingCurrency;
-
     [SerializeField] private TMP_Text startingCurrencyText;
     [SerializeField] private Button increaseStartingCurrency;
     [SerializeField] private Button decreaseStartingCurrency;
@@ -72,7 +102,6 @@ public class GameSettingsHost : MonoBehaviour
 
     [Header("Currency Per Round")]
     [SerializeField] private GameObject currencyPerRound;
-
     [SerializeField] private TMP_Text currencyPerRoundText;
     [SerializeField] private Button increaseCurrencyPerRound;
     [SerializeField] private Button decreaseCurrencyPerRound;
@@ -81,15 +110,15 @@ public class GameSettingsHost : MonoBehaviour
 
     [Header("Module Refund")]
     [SerializeField] private GameObject moduleRefund;
-
     [SerializeField] private TMP_Text moduleRefundText;
     [SerializeField] private Button increaseModuleRefund;
     [SerializeField] private Button decreaseModuleRefund;
+    private int _currentModuleRefund;
 
     public void Initialize()
     {
         _eventSystem = EventSystem.current;
-
+        InstanceFinder.TryGetInstance(out _lobbyConductor);
         _startCurrencyList = new List<int>();
         _currencyPerRoundList = new List<int>();
 
@@ -99,14 +128,30 @@ public class GameSettingsHost : MonoBehaviour
             _currencyPerRoundList.Add(DataProvider.GetCurrencyAddedPerRound((NetGameModeID)i));
         }
 
+        _timerCounter = new List<float>();
+
+        for (var i = 1; i <= 20; i++)
+        {
+            _timerCounter.Add(i * 10);
+        }
+
+        players.gameObject.SetActive(PlayerData.IsLobbyHost);
+        options.gameObject.SetActive(PlayerData.IsLobbyHost);
+        
         nextResourceMode.gameObject.SetActive(PlayerData.IsLobbyHost);
         previousResourceMode.gameObject.SetActive(PlayerData.IsLobbyHost);
 
         nextGameMode.gameObject.SetActive(PlayerData.IsLobbyHost);
         previousGameMode.gameObject.SetActive(PlayerData.IsLobbyHost);
 
-        /*increaseRounds.gameObject.SetActive(PlayerData.IsLobbyHost);
-        decreaseRounds.gameObject.SetActive(PlayerData.IsLobbyHost);*/
+        increaseRounds.gameObject.SetActive(PlayerData.IsLobbyHost);
+        decreaseRounds.gameObject.SetActive(PlayerData.IsLobbyHost);
+        
+        increaseTimer.gameObject.SetActive(PlayerData.IsLobbyHost);
+        decreaseTimer.gameObject.SetActive(PlayerData.IsLobbyHost);
+        
+        increaseFriendlyFire.gameObject.SetActive(PlayerData.IsLobbyHost);
+        decreaseFriendlyFire.gameObject.SetActive(PlayerData.IsLobbyHost);
 
         increaseStartingCurrency.gameObject.SetActive(PlayerData.IsLobbyHost);
         decreaseStartingCurrency.gameObject.SetActive(PlayerData.IsLobbyHost);
@@ -129,52 +174,72 @@ public class GameSettingsHost : MonoBehaviour
         _currentResourceMode = 1;
         _startCurrencyIndex = 1;
         _currencyPerRoundIndex = 1;
-        
+        _currentSelectedTimeIndex = 11;
+        _currentFriendlyFireModeIndex = 0;
+        _lobbyConductor.FriendlyFireID = 0;
+
+        friendlyFireText.text = _lobbyConductor.FriendlyFireID.ToString();
+        friendlyFirePreview.text = _lobbyConductor.FriendlyFireID.ToString();
+        timerText.text = _timerCounter[_currentSelectedTimeIndex].ToString();
+        timerPreview.text = _timerCounter[_currentSelectedTimeIndex].ToString();
         resourceModeText.text = _resourceMode[_currentResourceMode];
-     
+        resourceModePreview.text = _resourceMode[_currentResourceMode];
+
         gameModeText.text = "Free For All";
-        SelectTab(0);
+        gameModePreview.text = "Free For All";
     }
 
     private void Update()
     {
+        Debug.Log(InputManager.Instance.IsGamepadUsed);
         if (!InputManager.Instance.IsGamepadUsed)
         {
             switchTeamController.SetActive(false);
-            inviteController.SetActive(false);
+            //inviteController.SetActive(false);
             //kickController.SetActive(false);
 
             switchTeamKeyboard.SetActive(_currentSelectedMode.Equals(1));
-            inviteKeyboard.SetActive(true);
+            //inviteKeyboard.SetActive(true);
             //kickKeyboard.SetActive(PlayerData.IsLobbyHost);
-            SelectTab(3);
             return;
         }
-        
-        switchTeamController.SetActive(_currentSelectedMode.Equals(1) && _currentSelectedTabIndex == 0);
-        inviteController.SetActive(true);
+
+        switchTeamController.SetActive(_currentSelectedMode.Equals(1));
+        //inviteController.SetActive(true);
         //kickController.SetActive(PlayerData.IsLobbyHost);
 
         switchTeamKeyboard.SetActive(false);
-        inviteKeyboard.SetActive(false);
+        //inviteKeyboard.SetActive(false);
         //kickKeyboard.SetActive(false);
-        
+
         if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
         {
             leave.onClick.Invoke();
         }
 
-        if (Keybinds.Actions.UI.Submit.WasPerformedThisFrame() && _currentSelectedTabIndex== 0)
+        if (Keybinds.Actions.UI.Submit.WasPerformedThisFrame() && playerContainer.activeSelf)
         {
             switchTeam.onClick.Invoke();
         }
 
         if (!PlayerData.IsLobbyHost) return;
-
-        if (_eventSystem.currentSelectedGameObject.IsUnityNull()) return;
+        
+        //if (_eventSystem.currentSelectedGameObject.IsUnityNull()) return;
 
         if (PlayerData.IsLobbyHost)
         {
+            if (Keybinds.Actions.UI.SwapTabRight.WasPressedThisFrame())
+            {
+                options.onClick.Invoke();
+                Debug.Log("Invoke");
+            }
+
+            if (Keybinds.Actions.UI.SwapTabLeft.WasPressedThisFrame())
+            {
+                players.onClick.Invoke();
+                Debug.Log("Invoke");
+            }
+            
             if (Keybinds.Actions.UI.Increase.WasPerformedThisFrame())
             {
                 if (_eventSystem.currentSelectedGameObject.Equals(gameMode))
@@ -192,6 +257,16 @@ public class GameSettingsHost : MonoBehaviour
                     increaseRounds.onClick.Invoke();
                 }
 
+                if (_eventSystem.currentSelectedGameObject.Equals(timer))
+                {
+                    increaseTimer.onClick.Invoke();
+                }
+                
+                if (_eventSystem.currentSelectedGameObject.Equals(friendlyFire))
+                {
+                    increaseFriendlyFire.onClick.Invoke();
+                }
+                
                 if (_eventSystem.currentSelectedGameObject.Equals(startingCurrency))
                 {
                     increaseStartingCurrency.onClick.Invoke();
@@ -224,6 +299,16 @@ public class GameSettingsHost : MonoBehaviour
                 {
                     decreaseRounds.onClick.Invoke();
                 }
+                
+                if (_eventSystem.currentSelectedGameObject.Equals(timer))
+                {
+                    decreaseTimer.onClick.Invoke();
+                }
+                
+                if (_eventSystem.currentSelectedGameObject.Equals(friendlyFire))
+                {
+                    decreaseFriendlyFire.onClick.Invoke();
+                }
 
                 if (_eventSystem.currentSelectedGameObject.Equals(startingCurrency))
                 {
@@ -239,102 +324,51 @@ public class GameSettingsHost : MonoBehaviour
                 {
                     decreaseModuleRefund.onClick.Invoke();
                 }
-                
-                
-            }
-            
-            if (Keybinds.Actions.UI.SwapTabLeft.WasPerformedThisFrame())
-            {
-                _currentSelectedTabIndex = (_currentSelectedTabIndex == 0)
-                    ? currentSelectedTabList.Length - 1
-                    : _currentSelectedTabIndex - 1;
-                SelectTab(_currentSelectedTabIndex);
             }
 
-            if (Keybinds.Actions.UI.SwapTabRight.WasPerformedThisFrame())
+            if (optionsContainer.activeSelf && _eventSystem.currentSelectedGameObject.Equals(resource) &&
+                Keybinds.Actions.UI.Submit.WasPerformedThisFrame())
             {
-                _currentSelectedTabIndex = (_currentSelectedTabIndex + 1) % currentSelectedTabList.Length;
-                SelectTab(_currentSelectedTabIndex);
+                _eventSystem.SetSelectedGameObject(startingCurrency);
+                return;
+            }
+            
+            if (optionsContainer.activeSelf && (_eventSystem.currentSelectedGameObject.Equals(startingCurrency) || _eventSystem.currentSelectedGameObject.Equals(currencyPerRound) || _eventSystem.currentSelectedGameObject.Equals(moduleRefund)) &&
+                Keybinds.Actions.UI.Submit.WasPerformedThisFrame())
+            {
+                _eventSystem.SetSelectedGameObject(resource);
             }
         }
     }
 
     #region Settings
 
-    private void SelectTab(int index)
-    {
-        switch (index)
-        {
-            case 0:
-                _eventSystem.SetSelectedGameObject(player1);
-                playerLb.SetActive(true);
-                playerRb.SetActive(true);
-                gameModeSettingsLb.SetActive(false);
-                gameModeSettingsRb.SetActive(false);
-                customSettingsLb.SetActive(false);
-                customSettingsRb.SetActive(false);
-                break;
-            
-            case 1:
-                _eventSystem.SetSelectedGameObject(gameMode);
-                playerLb.SetActive(false);
-                playerRb.SetActive(false);
-                gameModeSettingsLb.SetActive(false);
-                gameModeSettingsRb.SetActive(false);
-                customSettingsLb.SetActive(true);
-                customSettingsRb.SetActive(true);
-                switchTeamController.SetActive(false);
-                inviteController.SetActive(true);
-                kickController.SetActive(false);
-                break;
-
-            case 2:
-                _eventSystem.SetSelectedGameObject(resource);
-                playerLb.SetActive(false);
-                playerRb.SetActive(false);
-                gameModeSettingsLb.SetActive(true);
-                gameModeSettingsRb.SetActive(true);
-                customSettingsLb.SetActive(false);
-                customSettingsRb.SetActive(false);
-                switchTeamController.SetActive(false);
-                inviteController.SetActive(true);
-                kickController.SetActive(false);
-                break;
-            case 3:
-                playerLb.SetActive(false);
-                playerRb.SetActive(false);
-                gameModeSettingsLb.SetActive(false);
-                gameModeSettingsRb.SetActive(false);
-                customSettingsLb.SetActive(false);
-                customSettingsRb.SetActive(false);
-                break;
-        }
-    }
-
-   public void UpdateGameSettingsDisplay(NetLobbyBroadcasts.SetGameMode settings)
+    public void UpdateGameSettingsDisplay(NetLobbyBroadcasts.SetGameMode settings)
     {
         resourceModeText.text = _resourceMode[(int)settings.GameMode];
+        resourceModePreview.text = _resourceMode[(int)settings.GameMode];
         startingCurrencyText.text = settings.BaseCurrency.ToString();
         currencyPerRoundText.text = settings.CurrencyAddedPerRound.ToString();
     }
 
-   public void UpdateGameModeDisplay(NetLobbyBroadcasts.SetTeamMode teamMode)
+    public void UpdateGameModeDisplay(NetLobbyBroadcasts.SetTeamMode teamMode)
     {
-       _currentSelectedMode = (int)teamMode.TeamMode;
-       
-       if (_currentSelectedMode == 1)
-       {
-           team1.SetActive(true);
-           team2.SetActive(true);
-       }
+        _currentSelectedMode = (int)teamMode.TeamMode;
 
-       if (_currentSelectedMode == 0)
-       {
-           team1.SetActive(false);
-           team2.SetActive(false);
-       }
+        if (_currentSelectedMode == 1)
+        {
+            team1.SetActive(true);
+            team2.SetActive(true);
+        }
 
-       gameModeText.text = _gameMode[_currentSelectedMode];
+        if (_currentSelectedMode == 0)
+        {
+            team1.SetActive(false);
+            team2.SetActive(false);
+        }
+
+        gameModeText.text = _gameMode[_currentSelectedMode];
+        gameModePreview.text = _gameMode[_currentSelectedMode];
     }
 
     private void UpdateResourceMode(int selectedGameMode)
@@ -347,6 +381,7 @@ public class GameSettingsHost : MonoBehaviour
         });
 
         resourceModeText.text = _resourceMode[selectedGameMode];
+        resourceModePreview.text = _resourceMode[selectedGameMode];
     }
 
     public void NextResources()
@@ -411,17 +446,84 @@ public class GameSettingsHost : MonoBehaviour
 
     public void IncreaseRounds()
     {
+        _currentRoundsToPlayIndex++;
+        _currentRoundsToPlayIndex %= 3;
+
+        _lobbyConductor.RoundCount = _roundsToPlay[_currentRoundsToPlayIndex];
+        roundsText.text = _roundsToPlay[_currentRoundsToPlayIndex].ToString();
+        roundsPreview.text = _roundsToPlay[_currentRoundsToPlayIndex].ToString();
     }
 
     public void DecreaseRounds()
     {
+        if (_currentRoundsToPlayIndex == 0)
+        {
+            _currentRoundsToPlayIndex = 2;
+        }
+        else
+        {
+            _currentRoundsToPlayIndex--;
+        }
+
+        _lobbyConductor.RoundCount = _roundsToPlay[_currentRoundsToPlayIndex];
+        roundsText.text = _roundsToPlay[_currentRoundsToPlayIndex].ToString();
+        roundsPreview.text = _roundsToPlay[_currentRoundsToPlayIndex].ToString();
+    }
+
+    public void IncreaseTimer()
+    {
+        _currentSelectedTimeIndex++;
+        _currentSelectedTimeIndex %= _timerCounter.Count;
+
+        _lobbyConductor.EditorTimerDuration = _timerCounter[_currentSelectedTimeIndex];
+        timerText.text = _timerCounter[_currentSelectedTimeIndex].ToString();
+        timerPreview.text = _timerCounter[_currentSelectedTimeIndex].ToString();
+    }
+
+    public void DecreaseTimer()
+    {
+        if (_currentSelectedTimeIndex == 0)
+        {
+            _currentSelectedTimeIndex = _timerCounter.Count - 1;
+        }
+        else
+        {
+            _currentSelectedTimeIndex--;
+        }
+        _lobbyConductor.EditorTimerDuration = _timerCounter[_currentSelectedTimeIndex];
+        timerText.text = _timerCounter[_currentSelectedTimeIndex].ToString();
+        timerPreview.text = _timerCounter[_currentSelectedTimeIndex].ToString();
+    }
+
+    public void IncreaseFriendlyFire()
+    {
+        _currentFriendlyFireModeIndex++;
+        _currentFriendlyFireModeIndex %= 4;
+        _lobbyConductor.FriendlyFireID = (NetFirendlyFireID)_currentFriendlyFireModeIndex;
+        friendlyFireText.text = _lobbyConductor.FriendlyFireID.ToString();
+        friendlyFirePreview.text = _lobbyConductor.FriendlyFireID.ToString();
+    }
+
+    public void DecreaseFriendlyFire()
+    {
+        if (_currentFriendlyFireModeIndex == 0)
+        {
+            _currentFriendlyFireModeIndex = 3;
+        }
+        else
+        {
+            _currentFriendlyFireModeIndex--;
+        }
+        _lobbyConductor.FriendlyFireID = (NetFirendlyFireID)_currentFriendlyFireModeIndex;
+        friendlyFireText.text = _lobbyConductor.FriendlyFireID.ToString();
+        friendlyFirePreview.text = _lobbyConductor.FriendlyFireID.ToString();
     }
 
     public void IncreaseStartingCurrency()
     {
         _startCurrencyIndex++;
         _startCurrencyIndex %= _startCurrencyList.Count;
-        
+
         DataProvider.Instance.customGameMode.BaseCurrency = _startCurrencyList[_startCurrencyIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
@@ -436,7 +538,7 @@ public class GameSettingsHost : MonoBehaviour
         {
             _startCurrencyIndex--;
         }
-        
+
         DataProvider.Instance.customGameMode.BaseCurrency = _startCurrencyList[_startCurrencyIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
@@ -445,7 +547,7 @@ public class GameSettingsHost : MonoBehaviour
     {
         _currencyPerRoundIndex++;
         _currencyPerRoundIndex %= _currencyPerRoundList.Count;
-        
+
         DataProvider.Instance.customGameMode.CurrencyAddedPerRound = _currencyPerRoundList[_currencyPerRoundIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
@@ -460,7 +562,7 @@ public class GameSettingsHost : MonoBehaviour
         {
             _currencyPerRoundIndex--;
         }
-        
+
         DataProvider.Instance.customGameMode.CurrencyAddedPerRound = _currencyPerRoundList[_currencyPerRoundIndex];
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
@@ -474,6 +576,6 @@ public class GameSettingsHost : MonoBehaviour
     {
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
-
+    
     #endregion
 }

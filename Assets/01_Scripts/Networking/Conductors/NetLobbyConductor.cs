@@ -41,6 +41,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     // LobbySettings
     private readonly SyncVar<NetFirendlyFireID> _friendlyFireSetting = new();
     private readonly SyncVar<int> _roundCount = new(); 
+    private readonly SyncVar<float> _editorTimerDuration = new();
 
     
     // Settings Accessors
@@ -67,6 +68,12 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     {
         get => _roundCount.Value;
         set { if (IsServerInitialized) _roundCount.Value = value; }
+    }
+
+    public float EditorTimerDuration
+    {
+        get => _editorTimerDuration.Value;
+        set { if (IsServerInitialized) _editorTimerDuration.Value = value; }
     }
     
 
