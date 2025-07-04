@@ -16,7 +16,6 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
     [SerializeField] public RocketProjectileObject rocketProjectileObject;
     [SerializeField] private NetGameplayModule turretModule;
 
-
     private const float MaxPassedTime = 0.3f;
     private ulong _attackerID;
     private readonly SyncVar<NetTeamID> _netTeamID = new SyncVar<NetTeamID>();
@@ -100,8 +99,8 @@ public class NetPredictedProjectileRocket : NetworkBehaviour
     private void C_SpawnExplosion(Vector3 position, ulong senderID)
     {
         print("Spawning Explosion");
-        NetPredictedExplosion pe = Instantiate(rocketProjectileObject.Explosion, position, Quaternion.identity);
-        pe.Initialize(_netTeamID.Value, senderID);
+        NetPredictedExplosion pe = Instantiate(rocketProjectileObject.Explosion.ExplosionPrefab, position, Quaternion.identity);
+        pe.Initialize(_netTeamID.Value, senderID, rocketProjectileObject.Explosion);
         Destroy(gameObject);
     }
 }
