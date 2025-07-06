@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FishNet;
@@ -23,7 +24,11 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     private NetLobbyConductor _lobbyConductor;
 
     public float TimeRemaining => _editorTimer.Remaining;
-    
+
+    private void Start()
+    {
+        SceneAudioManager.instance.StartInGameMusic();
+    }
 
     protected override void OnNetworkStarted()
     {

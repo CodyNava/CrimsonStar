@@ -20,17 +20,18 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         public ulong AttackerID;
         public ulong DefenderID;
     }
+
     private struct DamageInstance
     {
         public ulong AttackerID;
         public ulong DefenderID;
         public float DamageTaken;
     }
-    
+
     [SerializeField] private NetBridge bridgePrefab;
     [SerializeField] private float endOfRoundTime;
-    
-    [SerializeField, SerializedDictionary] 
+
+    [SerializeField, SerializedDictionary]
     private AYellowpaper.SerializedCollections.SerializedDictionary<int, Transform[]> spawnTransforms;
 
     private NetLobbyConductor _lobbyConductor;
@@ -55,7 +56,6 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     public override string ConductedSceneName => "NetGameplayScene";
 
 
-
     public event UnityAction<RegisterPlayerDeathEventArgs> OnRegisterPlayerDeath;
     public event UnityAction<LocalPlayerDeathEventArgs> OnLocalPlayerDeath;
 
@@ -78,10 +78,10 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         }
     }
 
-   public override void ProcessClientAddition(NetworkConnection connection, Scene scene)
+    public override void ProcessClientAddition(NetworkConnection connection, Scene scene)
     {
         NetMatchPlayer matchPlayer = _lobbyConductor.PlayersByConnection[connection];
-        
+
         matchPlayer.S_ResetRoundStats();
 
         var bridge = Instantiate(bridgePrefab);
@@ -97,12 +97,13 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
         if (_spawnedPlayers == PlayerCount)
         {
-             S_StartMatch();
+            S_StartMatch();
         }
     }
 
     private void S_StartMatch()
     {
+        SceneAudioManager.instance.IncreaseMusicProgress();
         C_OnMatchStart();
     }
 
@@ -111,7 +112,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         InputManager.EnableGameControls();
     }
-    
+
     [Server]
     public void S_RegisterPlayerDeath(NetworkConnection owner)
     {
@@ -120,28 +121,28 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
         C_TriggerOnRegisterPlayerDeath(owner);
         TriggerOnRegisterPlayerDeath(owner);
-        
+
         if (S_IsMatchComplete())
         {
             S_StopMatch();
         }
     }
 
-    [Client][ObserversRpc]
+    [Client]
+    [ObserversRpc]
     private void C_TriggerOnRegisterPlayerDeath(NetworkConnection conn)
     {
         TriggerOnRegisterPlayerDeath(conn);
     }
-    
+
     // TODO: Refactor as Broadcast with IBroadcast
     private void TriggerOnRegisterPlayerDeath(NetworkConnection conn)
     {
-
         if (conn == InstanceFinder.ClientManager.Connection)
         {
             OnLocalPlayerDeath?.Invoke(new LocalPlayerDeathEventArgs());
         }
-        
+
         OnRegisterPlayerDeath?.Invoke(new RegisterPlayerDeathEventArgs(conn));
     }
 
@@ -149,7 +150,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     private bool S_IsMatchComplete()
     {
         HashSet<NetTeamID> teamIDs = new HashSet<NetTeamID>();
-        
+
         foreach (var (conn, _) in _bridges)
         {
             var teamID = _lobbyConductor.PlayersByConnection[conn].Team.Value;
@@ -168,6 +169,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         {
             player.MatchScore.Value = _scoreBoard.GetValueOrDefault(player.Team.Value);
         }
+
         return true;
     }
 
@@ -175,9 +177,9 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     private void S_StopMatch()
     {
         _roundsPlayed++;
-        
+
         S_CalculateRoundResults();
-        
+
         if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
         {
             StartCoroutine(EndOfMatchRoutine());
@@ -196,6 +198,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             _lobbyConductor.PlayersByConnection[conn].Survived.Value = true;
             bridge.HandleEndOfRound();
         }
+
         _bridges.Clear();
         yield return new WaitForSecondsRealtime(3f);
         ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult());
@@ -207,6 +210,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         {
             bridge.HandleEndOfRound();
         }
+
         _bridges.Clear();
         yield return new WaitForSecondsRealtime(3f);
         ServerManager.Broadcast(new NetGameplayBroadcasts.RoundResult());
@@ -218,7 +222,8 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     }
 
     [Server]
-    private void S_ConstructPlayerShip(NetworkConnection conn, NetTeamID id, NetBridge bridge, NetModuleStorage editorData, Scene scene)
+    private void S_ConstructPlayerShip(NetworkConnection conn, NetTeamID id, NetBridge bridge,
+        NetModuleStorage editorData, Scene scene)
     {
         foreach (var placementData in editorData.GetUniqueModules())
         {
@@ -226,12 +231,13 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             Vector3 modulePos = bridge.HexTransform.Layout.HexToPositionXY(placementData.RootCoordinate);
             NetGameplayModule module = Instantiate(placementData.ModuleID.GetModuleData().GameplayPrefab);
             module.NetworkObject.SetParent(bridge);
-            module.transform.SetLocalPositionAndRotation(bridge.transform.InverseTransformPoint(modulePos), moduleRotation);
+            module.transform.SetLocalPositionAndRotation(bridge.transform.InverseTransformPoint(modulePos),
+                moduleRotation);
             ServerManager.Spawn(module.gameObject, conn);
             module.S_ServerInit(bridge, id, placementData.RootCoordinate);
         }
     }
-    
+
     [Server]
     public void S_ReportDamageInstance(ulong attacker, ulong defender, float damageTaken)
     {
@@ -242,7 +248,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             DamageTaken = damageTaken
         });
     }
-    
+
     [Server]
     public void S_ReportKillInstance(ulong attackerID, ulong defenderID)
     {
@@ -274,7 +280,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             attacker.KillsRound.Value += 1;
             attacker.KillsMatch.Value += 1;
         }
-        
+
         _damageInstancesRound.Clear();
         _killInstancesRound.Clear();
     }
@@ -298,7 +304,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _spawnedPlayers++;
         return spawn;
     }
-    
+
     public struct RegisterPlayerDeathEventArgs
     {
         private NetworkConnection _owner;
@@ -310,5 +316,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         }
     }
 
-    public struct LocalPlayerDeathEventArgs { }
+    public struct LocalPlayerDeathEventArgs
+    {
+    }
 }

@@ -60,6 +60,23 @@ public class SceneAudioManager : MonoBehaviour
         _mainMenuInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
     }
 
+    public void IncreaseMusicProgress()
+    {
+        _inGameMusicInstance.getParameterByName("Music-progress", out float value);
+        _inGameMusicInstance.setParameterByName("Music-progress", value + 1);
+    }
+
+    public void DecreaseMusicProgress()
+    {
+        _inGameMusicInstance.getParameterByName("Music-progress", out float value);
+        _inGameMusicInstance.setParameterByName("Music-progress", value - 1);
+    }
+
+    public void ResetMusicProgress()
+    {
+        _inGameMusicInstance.setParameterByName("Music-progress", 0);
+    }
+
     public void ToggleMainMusic()
     {
         _mainMenuInstance.getPaused(out bool paused);
