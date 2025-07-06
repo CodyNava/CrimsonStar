@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FishNet;
@@ -14,7 +15,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     [SerializeField] private int minimumResourceCount;
     [SerializeField] private float shipEditorTimerDuration;
     [SerializeField] private FMODUnity.StudioEventEmitter intro;
-    
+
     public override string ConductedSceneName => "NetShipEditor";
 
     private Dictionary<NetworkConnection, bool> _playersReady = new();
@@ -23,10 +24,11 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     private NetLobbyConductor _lobbyConductor;
 
     public float TimeRemaining => _editorTimer.Remaining;
-    
+
 
     protected override void OnNetworkStarted()
     {
+        C_TriggerSwapMusic();
         StartCoroutine(LoadDependencies());
     }
 
@@ -63,7 +65,8 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
         }
     }
 
-    [ServerRpc(RequireOwnership = false)][Server]
+    [ServerRpc(RequireOwnership = false)]
+    [Server]
     public void S_SignalReady(Channel channel = Channel.Reliable, NetworkConnection conn = null)
     {
         _playersReady[conn!] = true;
@@ -74,12 +77,27 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
         }
     }
 
-    [ObserversRpc][Client]
+    [ObserversRpc]
+    [Client]
+    private void C_TriggerSwapMusic()
+    {
+        SwapMusic();
+    }
+
+    private void SwapMusic()
+    {
+        SceneAudioManager.instance.StopMainMusic();
+        SceneAudioManager.instance.StartInGameMusic();
+    }
+
+
+    [ObserversRpc]
+    [Client]
     private void C_TriggerIntroSound()
     {
         TriggerIntroSound();
     }
-    
+
     private void TriggerIntroSound()
     {
         intro.Play();
@@ -90,7 +108,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
         C_TriggerIntroSound();
         TriggerIntroSound();
         yield return new WaitForSecondsRealtime(6.5f);
-        
+
         InstanceFinder.GetInstance<NetGameplayConductor>().MoveToScene(this, _lobbyConductor.Players);
         _playersReady.Clear();
     }

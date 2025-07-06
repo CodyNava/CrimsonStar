@@ -50,6 +50,24 @@ public class SceneAudioManager : MonoBehaviour
         _inGameMusicInstance.setPaused(!paused);
     }
 
+
+    public void IncreaseMusicProgress()
+    {
+        _inGameMusicInstance.getParameterByName("Music-progress", out float value);
+        _inGameMusicInstance.setParameterByName("Music-progress", value + 1);
+    }
+
+    public void DecreaseMusicProgress()
+    {
+        _inGameMusicInstance.getParameterByName("Music-progress", out float value);
+        _inGameMusicInstance.setParameterByName("Music-progress", value - 1);
+    }
+
+    public void ResetMusicProgress()
+    {
+        _inGameMusicInstance.setParameterByName("Music-progress", 0);
+    }
+
     public void StartMainMusic()
     {
         _mainMenuInstance.start();
