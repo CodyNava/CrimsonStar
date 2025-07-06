@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using _01_Scripts.Ship;
 using FishNet;
@@ -61,6 +62,12 @@ public class NetGameplayModule : NetworkBehaviour
     {
     }
 
+    public void OnDestroy()
+    {
+        _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
+        _lowHealthAlarmInstance.release();
+    }
+
     public override void OnStartClient()
     {
         _bridge = ModuleID == NetModuleID.Bridge ? GetComponent<NetBridge>() : GetComponentInParent<NetBridge>();
@@ -73,12 +80,14 @@ public class NetGameplayModule : NetworkBehaviour
         {
             _lowHealthAlarmInstance = RuntimeManager.CreateInstance(lowHealthAlarmSFX);
         }
+
         if (IsOwner)
         {
             int weaponGroupValue = NetModuleWeaponGroupData.WeaponGroupMap.GetValueOrDefault(coord);
             WeaponGroup = weaponGroupValue;
         }
     }
+
     // Occurs when a module gets destroyed
     [Server]
     private void S_DestroyModule()
@@ -124,7 +133,6 @@ public class NetGameplayModule : NetworkBehaviour
     public void C_DisplayDamageObserver()
     {
         float health = HealthPct;
-
         damagedVFX.SetFloat("DamageInput", 1 - health);
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         if (IsOwner)
@@ -138,6 +146,7 @@ public class NetGameplayModule : NetworkBehaviour
                     if (state == PLAYBACK_STATE.STOPPED)
                         _lowHealthAlarmInstance.start();
                 }
+                
             }
         }
         else
