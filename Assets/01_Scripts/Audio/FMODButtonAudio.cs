@@ -30,6 +30,7 @@ public class FMODButtonAudio : MonoBehaviour
 
     public void OnHover()
     {
+        if (!button.interactable) return;
         RuntimeManager.PlayOneShot(buttonHover, transform.position);
         eventInstance.setParameterByName(parameterName, value);
     }

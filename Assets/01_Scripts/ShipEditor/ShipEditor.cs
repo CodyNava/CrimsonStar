@@ -28,6 +28,8 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private float moduleMoveSpeedGP;
     [SerializeField] public bool inEnergyView;
     [SerializeField] public bool inEnergyViewParentToggle;
+    [SerializeField] public bool joiningEditor;
+    
 
     [SerializeField] public bool moduleSpawnedInGP;
     [SerializeField] public bool moduleFirstSelectedGP;
@@ -44,6 +46,7 @@ public class ShipEditor : MonoBehaviour
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
 
     [SerializedDictionary("EnergyMap")] public SerializedDictionary<HexCoordinate, int> energyMap = new();
+
     private NetEditorModule _heldNetEditorModule;
 
     private List<NetEditorModule> _editorModuleList;
@@ -495,7 +498,6 @@ public class ShipEditor : MonoBehaviour
             AddPowerToEnergyMap(rootCoord, true, _heldNetEditorModule.ModuleData.EffectRange);
         }
 
-        weaponGroupManager.AddModuleToWeaponGroup(_heldNetEditorModule);
         ToggleOffEnergyViewBasedOnMudule();
         _heldNetEditorModule.PlacedLocation = rootCoord;
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
@@ -504,6 +506,10 @@ public class ShipEditor : MonoBehaviour
             _editorModulesMap[coord] = _heldNetEditorModule;
         }
 
+        if (!joiningEditor)
+        {
+            weaponGroupManager.AddModuleToWeaponGroup(_heldNetEditorModule, rootCoord);
+        }
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
         if (_heldNetEditorModule.ModuleData.ModuleCategory != NetModuleCategory.Weapons)
         {
@@ -523,7 +529,6 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule = moduleToRemove;
         }
 
-        weaponGroupManager.RemoveModuleFromWeaponGroup(_heldNetEditorModule);
         if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
             AddPowerToEnergyMap(moduleToRemove.PlacedLocation, false, _heldNetEditorModule.ModuleData.EffectRange);
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
@@ -535,6 +540,7 @@ public class ShipEditor : MonoBehaviour
 
         PlayerData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
         _editorModuleList.Remove(_heldNetEditorModule);
+        weaponGroupManager.RemoveModuleFromWeaponGroup(_heldNetEditorModule, moduleToRemove.PlacedLocation);
         shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
     }
 
@@ -548,18 +554,28 @@ public class ShipEditor : MonoBehaviour
 
     public void ReconstructShip(IEnumerable<ModulePlacementData> uniqueModules)
     {
+        joiningEditor = true;
         foreach (ModulePlacementData uniqueModule in uniqueModules)
         {
             _heldNetEditorModule = Instantiate(uniqueModule.ModuleID.GetModuleData().ShipEditorPrefab,
                 new InstantiateParameters { scene = gameObject.scene });
             _heldNetEditorModule.Initialize();
-
+            
             for (int i = 0; i < uniqueModule.Rotation; i++)
             {
                 _heldNetEditorModule.C_RotateClockwise();
             }
-
             PlaceModule(uniqueModule.RootCoordinate);
         }
+
+        StartCoroutine(WaitForReconstructShip());
+
+    }
+
+    public IEnumerator WaitForReconstructShip()
+    {
+        yield return new WaitForSeconds(0.5f);
+        joiningEditor = false;
+        shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
     }
 }

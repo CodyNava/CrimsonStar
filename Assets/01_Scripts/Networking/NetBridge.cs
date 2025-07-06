@@ -2,6 +2,7 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
+using _01_Scripts.Ship;
 using _01_Scripts.Ship.ModuleControllers;
 using FishNet.Component.Prediction;
 using FishNet.Connection;
@@ -20,6 +21,7 @@ public class NetBridge : NetworkBehaviour
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
     private readonly SyncVar<string> _displayName = new();
     private readonly SyncVar<ulong> _playerId = new();
+    public CameraZoom cameraZoom;
     public NetModuleBaseStats BaseStats => _baseStats.Value;
     public string DisplayName => _displayName.Value;
     public ulong PlayerID => _playerId.Value;
@@ -107,7 +109,6 @@ public class NetBridge : NetworkBehaviour
             _powerGrid[coordinate] = power + 1;
         }
     }
-
     [Server]
     private void S_RemoveModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
@@ -211,6 +212,7 @@ public class NetBridge : NetworkBehaviour
     {
         if (IsOwner)
         {
+            cameraZoom = FindFirstObjectByType<CameraZoom>();
             FindFirstObjectByType<CameraFollow>().SetTargetFollow(VisualRootTransform);
             fmodListener.enabled = true;
         }

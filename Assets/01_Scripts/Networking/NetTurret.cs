@@ -4,6 +4,7 @@ using FishNet.Object;
 using FMODUnity;
 using Steamworks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.VFX;
 
 public class NetTurret : NetworkBehaviour
@@ -28,17 +29,6 @@ public class NetTurret : NetworkBehaviour
         _nextMuzzleFlash = muzzleFlashA;
     }
 
-    private bool CanFire()
-    {
-        Debug.Log($"PowerGrid: {turretModule.Bridge.PowerGrid.Count}");
-        foreach (KeyValuePair<HexCoordinate, int> gridEntry in turretModule.Bridge.PowerGrid)
-        {
-            Debug.Log($"PoweredCoords: [{gridEntry.Key.Q},{gridEntry.Key.R},{gridEntry.Key.S}]: {gridEntry.Value}");
-        }
-
-        return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
-    }
-
     private void LateUpdate()
     {
         if (!IsOwner) return;
@@ -47,7 +37,7 @@ public class NetTurret : NetworkBehaviour
 
         if (_accumulatedTime < netTurretData.Cooldown) return;
 
-        if (!C_IsAttacking()) return;
+        // if (!C_IsAttacking()) return;
 
         if (_nextSpawnTransform == spawnTransformA)
         {
@@ -60,15 +50,24 @@ public class NetTurret : NetworkBehaviour
             _nextMuzzleFlash = muzzleFlashA;
         }
 
-        C_ClientFire();
-        _accumulatedTime -= netTurretData.Cooldown;
+        if (C_IsAttacking())
+        {
+            C_ClientFire();
+            _accumulatedTime = 0f;
+        }
     }
 
     private bool C_IsAttacking()
     {
         if (!InputManager.Instance.IsGamepadUsed)
         {
-            return Keybinds.Actions.Player.Attack.IsPressed();
+            switch (turretModule.WeaponGroup)
+            {
+                case 2: return Keybinds.Actions.Player.Attack2.IsPressed();
+                case 3: return Keybinds.Actions.Player.Attack3.IsPressed();
+                default:
+                case 1: return Keybinds.Actions.Player.Attack.IsPressed();
+            }
         }
         else
         {
@@ -96,7 +95,7 @@ public class NetTurret : NetworkBehaviour
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
         NetPredictedProjectile pp = Instantiate(netTurretData.Projectile, position, Quaternion.identity);
-        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID);
+        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge);
     }
 
     [ServerRpc]

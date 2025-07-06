@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class NetEditorModule : MonoBehaviour
 {
@@ -22,8 +19,11 @@ public class NetEditorModule : MonoBehaviour
     private ShipEditor ShipEditor { get; set; }
     private ShipEditorWeaponGroups WeaponGroupManager { get; set; }
     private int CurrentGroup => WeaponGroupManager.currentGroup;
-    [Tooltip("poweredColor is only Relevant if it can be Powered")]
-    [field: SerializeField] private Color32 poweredColor;
+    [SerializeField] private int _insideCurrentGroup;
+
+    [Tooltip("poweredColor is only Relevant if it can be Powered")] [field: SerializeField]
+    private Color32 poweredColor;
+
     private Color32 _originalColor;
 
 
@@ -113,7 +113,7 @@ public class NetEditorModule : MonoBehaviour
         }
         else if (PowerMaterial.GetColor(ColourShift) != _originalColor)
         {
-            PowerMaterial.SetColor(ColourShift, _originalColor) ;
+            PowerMaterial.SetColor(ColourShift, _originalColor);
         }
 
         IsPowered = Powered();
@@ -121,16 +121,15 @@ public class NetEditorModule : MonoBehaviour
 
     private void ChangeLayerBasedOnWeaponGroup()
     {
-        if (!ShipEditor.EditorModuleList.Contains(this)) return;
-
-        var weaponGroupOne = WeaponGroupManager.weaponGroupOne;
-        var weaponGroupTwo = WeaponGroupManager.weaponGroupTwo;
-        var weaponGroupThree = WeaponGroupManager.weaponGroupThree;
-
-        var inGroupOneAndGroupActive = weaponGroupOne.Contains(this) && CurrentGroup == 1 && !IsSelected;
-        var inGroupTwoAndGroupActive = weaponGroupTwo.Contains(this) && CurrentGroup == 2 && !IsSelected;
-        var inGroupThreeAndGroupActive = weaponGroupThree.Contains(this) && CurrentGroup == 3 && !IsSelected;
+        _insideCurrentGroup = NetModuleWeaponGroupData.ReadWeaponGroup(PlacedLocation);
         
+        AddToListWhenReconstructing();
+        
+        if (!ShipEditor.EditorModuleList.Contains(this)) return;
+        var inGroupOneAndGroupActive = _insideCurrentGroup == 1 && CurrentGroup == 1 && !IsSelected;
+        var inGroupTwoAndGroupActive = _insideCurrentGroup == 2 && CurrentGroup == 2 && !IsSelected;
+        var inGroupThreeAndGroupActive = _insideCurrentGroup == 3 && CurrentGroup == 3 && !IsSelected;
+
         var weaponLayer = LayerMask.NameToLayer("WeaponGroupOne");
         var normalLayer = IsSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
 
@@ -139,6 +138,35 @@ public class NetEditorModule : MonoBehaviour
         VisualTransform.gameObject.layer = inGroupTwoAndGroupActive ? weaponLayer : normalLayer;
         if (inGroupTwoAndGroupActive) return;
         VisualTransform.gameObject.layer = inGroupThreeAndGroupActive ? weaponLayer : normalLayer;
+    }
+
+    public void AddToListWhenReconstructing()
+    {
+        if (!ShipEditor.joiningEditor) return;
+        bool notInAnyList = !WeaponGroupManager.weaponGroupOne.Contains(this) &&
+                            !WeaponGroupManager.weaponGroupTwo.Contains(this) &&
+                            !WeaponGroupManager.weaponGroupThree.Contains(this);
+        if (notInAnyList)
+        {
+            switch (_insideCurrentGroup)
+            {
+                case 1:
+                    WeaponGroupManager.weaponGroupOne.Add(this);
+                    break;
+                case 2:
+                    WeaponGroupManager.weaponGroupTwo.Add(this);
+                    break;
+                case 3:
+                    WeaponGroupManager.weaponGroupThree.Add(this);
+                    break;
+            }
+        }
+        else if (_insideCurrentGroup == 0)
+        {
+            WeaponGroupManager.weaponGroupOne.Remove(this);
+            WeaponGroupManager.weaponGroupTwo.Remove(this);
+            WeaponGroupManager.weaponGroupThree.Remove(this);
+        }
     }
 
     public bool EnergyViewEnable() => ShipEditor.inEnergyView;

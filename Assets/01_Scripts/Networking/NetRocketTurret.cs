@@ -1,7 +1,7 @@
 ﻿using FishNet.Object;
-using FMODUnity;
 using UnityEngine;
 using UnityEngine.VFX;
+using UnityEngine.InputSystem;
 
 public class NetRocketTurret : NetworkBehaviour
 {
@@ -9,12 +9,12 @@ public class NetRocketTurret : NetworkBehaviour
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private VisualEffect muzzleFlash;
-    [SerializeField] private StudioEventEmitter shotSound;
+    [SerializeField] private FMODUnity.EventReference shotSound;
     private const float MaxPassedTime = 0.3f;
-
 
     private float _accumulatedTime;
     private float _cooldownTime;
+    
 
     private void Update()
     {
@@ -24,18 +24,25 @@ public class NetRocketTurret : NetworkBehaviour
 
         if (_cooldownTime < netRocketTurretData.Cooldown) return;
 
-        if (!C_IsAttacking()) return;
-
-        C_ClientFire();
-
-        _accumulatedTime = 0f;
+        //if (!C_IsAttacking()) return;
+        if (C_IsAttacking())
+        {
+            C_ClientFire();
+            _accumulatedTime = 0f;
+        }
     }
 
     private bool C_IsAttacking()
     {
         if (!InputManager.Instance.IsGamepadUsed)
         {
-            return Keybinds.Actions.Player.Attack.IsPressed();
+            switch (turretModule.WeaponGroup)
+            {
+                case 2: return Keybinds.Actions.Player.Attack2.IsPressed();
+                case 3: return Keybinds.Actions.Player.Attack3.IsPressed();
+                default:
+                case 1: return Keybinds.Actions.Player.Attack.IsPressed();
+            }
         }
         else
         {
@@ -56,33 +63,32 @@ public class NetRocketTurret : NetworkBehaviour
         // }
         if (IsServerInitialized)
         {
-            S_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
+            S_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID, turretModule.Bridge);
         }
         else
         {
-            S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
+            S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID, turretModule.Bridge);
         }
 
         muzzleFlash.Play();
-        shotSound.Play();
+        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
     }
 
     [Server]
-    private void S_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
+    private void S_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID, NetBridge bridgeOrigin)
     {
         NetPredictedProjectileRocket pp = Instantiate(netRocketTurretData.Projectile, position, Quaternion.identity);
-        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID);
+        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, bridgeOrigin);
         ServerManager.Spawn(pp.gameObject);
     }
 
     [ServerRpc]
     [Server]
-    private void S_ServerFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
+    private void S_ServerFire(Vector3 position, Vector3 direction, uint tick, ulong senderID, NetBridge bridgeOrigin)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
-        shotSound.Play();
-        S_SpawnProjectile(position, direction, passedTime, senderID);
+        S_SpawnProjectile(position, direction, passedTime, senderID, bridgeOrigin);
     }
 }

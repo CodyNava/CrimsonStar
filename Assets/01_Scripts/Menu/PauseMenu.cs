@@ -68,6 +68,7 @@ public class PauseMenu : MonoBehaviour
     public void BackToMenu()
     {
         Resume();
+        NetModuleWeaponGroupData.ClearAllWeaponGroupKeys();
         SceneManager.LoadScene("MainMenu");
     }
 

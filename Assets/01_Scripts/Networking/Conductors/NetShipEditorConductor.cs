@@ -14,6 +14,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     [SerializeField] private int minimumResourceCount;
     [SerializeField] private float shipEditorTimerDuration;
     [SerializeField] private FMODUnity.StudioEventEmitter intro;
+    
     public override string ConductedSceneName => "NetShipEditor";
 
     private Dictionary<NetworkConnection, bool> _playersReady = new();
@@ -22,7 +23,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     private NetLobbyConductor _lobbyConductor;
 
     public float TimeRemaining => _editorTimer.Remaining;
-
+    
 
     protected override void OnNetworkStarted()
     {
@@ -41,7 +42,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     {
         if (_playersReady.Count == 0)
         {
-            _editorTimer.StartTimer(shipEditorTimerDuration);
+            _editorTimer.StartTimer(_lobbyConductor.EditorTimerDuration);
             _editorTimer.OnChange += OnTimerChange;
         }
 
@@ -57,8 +58,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     {
         if (asServer && op == SyncTimerOperation.Finished)
         {
-            TriggerIntroSound();
-            C_TriggerIntroSound();
+            StartCoroutine(AdvanceToGameplayScene());
             _editorTimer.OnChange -= OnTimerChange;
         }
     }
@@ -70,8 +70,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
 
         if (S_AllPlayersReady())
         {
-            TriggerIntroSound();
-            C_TriggerIntroSound();
+            StartCoroutine(AdvanceToGameplayScene());
         }
     }
 
@@ -83,18 +82,15 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     
     private void TriggerIntroSound()
     {
-        StartCoroutine(PlayIntroSound());
-    }
-
-    public IEnumerator PlayIntroSound()
-    {
         intro.Play();
-        yield return new WaitForSecondsRealtime(6.5f);
-        AdvanceToGameplayScene();
     }
 
-    private void AdvanceToGameplayScene()
+    private IEnumerator AdvanceToGameplayScene()
     {
+        C_TriggerIntroSound();
+        TriggerIntroSound();
+        yield return new WaitForSecondsRealtime(6.5f);
+        
         InstanceFinder.GetInstance<NetGameplayConductor>().MoveToScene(this, _lobbyConductor.Players);
         _playersReady.Clear();
     }

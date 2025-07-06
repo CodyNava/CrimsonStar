@@ -1,10 +1,13 @@
-﻿using _01_Scripts.Ship;
+﻿using System.Collections;
+using System.Collections.Generic;
+using _01_Scripts.Ship;
 using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FMOD.Studio;
 using FMODUnity;
 using Steamworks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
 using STOP_MODE = FMOD.Studio.STOP_MODE;
@@ -13,6 +16,7 @@ public class NetGameplayModule : NetworkBehaviour
 {
     [field: SerializeField] public NetModuleID ModuleID { get; private set; }
     [field: SerializeField] public Transform VisualTransform { get; private set; }
+    [field: SerializeField] public int WeaponGroup { get; set; }
 
     [SerializeField] private GameObject deathVFX;
     [SerializeField] private VisualEffect damagedVFX;
@@ -60,6 +64,7 @@ public class NetGameplayModule : NetworkBehaviour
     public override void OnStartClient()
     {
         _bridge = ModuleID == NetModuleID.Bridge ? GetComponent<NetBridge>() : GetComponentInParent<NetBridge>();
+        var coord = _bridge.HexTransform.Layout.PositionXYToHex(transform.position);
         Debug.Log($"IsClient: {IsClientStarted}, PlayerID: {_playerID.Value}, Module: {ModuleID}, Bridge: {_bridge}");
         var moduleData = ModuleID.GetModuleData();
         _maxHealth = moduleData.BaseStats.health;
@@ -68,8 +73,12 @@ public class NetGameplayModule : NetworkBehaviour
         {
             _lowHealthAlarmInstance = RuntimeManager.CreateInstance(lowHealthAlarmSFX);
         }
+        if (IsOwner)
+        {
+            int weaponGroupValue = NetModuleWeaponGroupData.WeaponGroupMap.GetValueOrDefault(coord);
+            WeaponGroup = weaponGroupValue;
+        }
     }
-
     // Occurs when a module gets destroyed
     [Server]
     private void S_DestroyModule()
@@ -141,9 +150,9 @@ public class NetGameplayModule : NetworkBehaviour
 
     [Server]
     [ServerRpc(RequireOwnership = false)]
-    public void S_InflictDamage(float damage, ulong attackerID)
+    public void S_InflictDamage(float damage, ulong attackerID = 0)
     {
-        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor))
+        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor) && attackerID != 0)
         {
             gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
         }
@@ -157,7 +166,7 @@ public class NetGameplayModule : NetworkBehaviour
                 _lowHealthAlarmInstance.release();
             }
 
-            if (ModuleID == NetModuleID.Bridge && gameplayConductor)
+            if (ModuleID == NetModuleID.Bridge && gameplayConductor && attackerID != 0)
             {
                 gameplayConductor.S_ReportKillInstance(attackerID, _bridge.PlayerID);
             }

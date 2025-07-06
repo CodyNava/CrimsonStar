@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using FishNet.Connection;
 using FishNet.Object;
-using FMODUnity;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.VFX;
 
 public class NetLaserTurret : NetworkBehaviour
@@ -12,8 +12,9 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private VisualEffect muzzleCharge, muzzleImpact;
-    [SerializeField] private StudioEventEmitter chargeSound;
+    [SerializeField] private AudioSource shootingSound;
     [SerializeField] private bool isCharging;
+
 
     private const float MaxPassedTime = 0.3f;
 
@@ -39,22 +40,16 @@ public class NetLaserTurret : NetworkBehaviour
         if (!IsOwner) return;
         _accumulatedTime += Time.deltaTime;
         _cooldownTime = Mathf.Min(_accumulatedTime, netLaserTurretData.Cooldown);
-
-
+        
         if (_cooldownTime < netLaserTurretData.Cooldown) return;
         if (!CanFire()) return;
-        //if (!C_IsAttacking()) return;
 
-        if (Keybinds.Actions.Player.Attack.IsPressed() || isCharging)
+        
+        if (C_IsAttacking() || isCharging)
         {
             isCharging = true;
             _chargeTime += Time.deltaTime;
             print(_chargeTime);
-            if (!chargeSound.IsPlaying())
-            {
-                chargeSound.Play();
-            }
-
             muzzleCharge.Play();
             muzzleImpact.Play();
             if (_chargeTime >= netLaserTurretData.ChargeTime)
@@ -72,7 +67,13 @@ public class NetLaserTurret : NetworkBehaviour
     {
         if (!InputManager.Instance.IsGamepadUsed)
         {
-            return Keybinds.Actions.Player.Attack.IsPressed();
+            switch (turretModule.WeaponGroup)
+            {
+                case 2: return Keybinds.Actions.Player.Attack2.IsPressed();
+                case 3: return Keybinds.Actions.Player.Attack3.IsPressed();
+                default:
+                case 1: return Keybinds.Actions.Player.Attack.IsPressed();
+            }
         }
         else
         {
@@ -93,13 +94,14 @@ public class NetLaserTurret : NetworkBehaviour
         }
 
         S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
+        shootingSound.Play();
     }
 
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
         print("Spawning projectile");
         NetPredictedProjectileLaser pp = Instantiate(netLaserTurretData.Projectile, position, Quaternion.identity);
-        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID);
+        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge);
     }
 
     [ServerRpc]
@@ -118,7 +120,6 @@ public class NetLaserTurret : NetworkBehaviour
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
-        chargeSound.Play();
         muzzleCharge.Play();
     }
 }
