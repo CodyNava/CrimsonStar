@@ -96,7 +96,6 @@ public class NetLaserTurret : NetworkBehaviour
         }
 
         S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
-        shootingSound.Play();
     }
 
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
