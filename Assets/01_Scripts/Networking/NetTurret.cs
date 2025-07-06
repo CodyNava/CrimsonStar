@@ -13,7 +13,7 @@ public class NetTurret : NetworkBehaviour
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransformA, spawnTransformB;
     [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
-    [SerializeField] private EventReference shotSound;
+    [SerializeField] private StudioEventEmitter shotEvent;
     private const float MaxPassedTime = 0.3f;
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
@@ -89,7 +89,7 @@ public class NetTurret : NetworkBehaviour
 
         S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
         _nextMuzzleFlash.Play();
-        RuntimeManager.PlayOneShot(shotSound, transform.position);
+        shotEvent.Play();
     }
 
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
@@ -115,7 +115,7 @@ public class NetTurret : NetworkBehaviour
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
         _nextMuzzleFlash.Play();
-        RuntimeManager.PlayOneShot(shotSound, transform.position);
+        shotEvent.Play();
         if (_nextMuzzleFlash == muzzleFlashA)
         {
             _nextMuzzleFlash = muzzleFlashB;

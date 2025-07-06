@@ -233,6 +233,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     [Server]
     private void S_OnGameStartRequested(NetworkConnection connection, NetLobbyBroadcasts.GameStartRequested msg, Channel channel)
     {
+        SceneAudioManager.instance.StopMainMusic();
         if (!ConnectionPlayerMap.Values.All(player => player.isReady)) return;
         S_SetUpMatchPlayers();
         InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(this, Players);

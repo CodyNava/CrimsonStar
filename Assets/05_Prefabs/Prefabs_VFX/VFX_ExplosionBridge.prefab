@@ -177,7 +177,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7491223077838396108}
   - component: {fileID: 624573570458932279}
-  - component: {fileID: 5909176208868380288}
+  - component: {fileID: 1144276979842080528}
   m_Layer: 0
   m_Name: VFX_ExplosionBridge
   m_TagString: Untagged
@@ -217,7 +217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delay: 5
---- !u!114 &5909176208868380288
+--- !u!114 &1144276979842080528
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -226,16 +226,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 1316573703697364532}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 758e12ac71f04034197c81f2c6095596, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detonateSound:
+  CollisionTag: 
+  EventReference:
     Guid:
       Data1: -1500992291
       Data2: 1190121294
       Data3: 1564358539
       Data4: -344815202
     Path: event:/SFX/BridgeExplosion_SFX
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 1
+  OverrideMinDistance: 200
+  OverrideMaxDistance: 600
 --- !u!1 &1873304523186826220
 GameObject:
   m_ObjectHideFlags: 0

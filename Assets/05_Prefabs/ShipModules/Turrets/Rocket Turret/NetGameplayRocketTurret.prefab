@@ -154,6 +154,7 @@ GameObject:
   - component: {fileID: 3068879227175671063}
   - component: {fileID: -6516749871641350677}
   - component: {fileID: 8628075508951527880}
+  - component: {fileID: 7740271789994968576}
   m_Layer: 3
   m_Name: NetGameplayRocketTurret
   m_TagString: Untagged
@@ -195,6 +196,7 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 8117090760363641474}
   <ModuleID>k__BackingField: 7
   <VisualTransform>k__BackingField: {fileID: 5016803788315297660}
+  <WeaponGroup>k__BackingField: 0
   deathVFX: {fileID: 3855630418371909128, guid: a48c47118e70ca4408d122c10549bf2e, type: 3}
   damagedVFX: {fileID: 31954623182648792}
   damagedMaterial: {fileID: 6184683274925898771}
@@ -212,6 +214,13 @@ MonoBehaviour:
       Data3: 36086663
       Data4: 611758014
     Path: event:/SFX/GetDamage_SFX
+  lowHealthAlarmSFX:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   _detachmentForce: 0
 --- !u!114 &8117090760363641474
 MonoBehaviour:
@@ -407,13 +416,38 @@ MonoBehaviour:
   turretModule: {fileID: 138746299594672162}
   spawnTransform: {fileID: 8287526850846769230}
   muzzleFlash: {fileID: 2394617733928845454}
-  shotSound:
+  shotSound: {fileID: 7740271789994968576}
+--- !u!114 &7740271789994968576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6107309012093280526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
     Guid:
-      Data1: -144558069
-      Data2: 1235515689
-      Data3: -1000414306
-      Data4: -669236780
-    Path: event:/SFX/ProjectileFire_SFX
+      Data1: 1041275897
+      Data2: 1312636889
+      Data3: -1883151685
+      Data4: -1672748388
+    Path: event:/SFX/MissileFire_SFX
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 1
+  OverrideMinDistance: 50
+  OverrideMaxDistance: 220
 --- !u!1001 &3156257486412003263
 PrefabInstance:
   m_ObjectHideFlags: 0

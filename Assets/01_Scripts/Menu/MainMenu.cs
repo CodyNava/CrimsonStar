@@ -20,17 +20,22 @@ public class MainMenu : MonoBehaviour
             onlineButton.gameObject.SetActive(true);
             _eventSystem.SetSelectedGameObject(onlineButton.gameObject);
         }
-        #if !UNITY_EDITOR
+#if !UNITY_EDITOR
         localHostButton.gameObject.SetActive(false);
         localJoinButton.gameObject.SetActive(false);
-        #endif
+#endif
+    }
+
+    void Start()
+    {
+        SceneAudioManager.instance.StartMainMusic();
     }
 
     public void StartGame()
     {
         SceneManager.LoadScene(playScene);
     }
-    
+
     public void CreateLobby()
     {
         NetGameBootstrapper.CreateLobby();
@@ -48,6 +53,6 @@ public class MainMenu : MonoBehaviour
 
     public void Quit()
     {
-       Application.Quit();
+        Application.Quit();
     }
 }
