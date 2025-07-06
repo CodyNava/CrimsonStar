@@ -4766,6 +4766,64 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1190379385}
   m_CullTransparentMesh: 1
+--- !u!1 &1260801499
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1260801501}
+  - component: {fileID: 1260801500}
+  m_Layer: 0
+  m_Name: AudioSceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1260801500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260801499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab225be71a124960bf01404a3bb5c490, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MainMenu:
+    Guid:
+      Data1: 1907386906
+      Data2: 1184075901
+      Data3: -767058515
+      Data4: -1221732981
+    Path: event:/Music/MainMenu_Music
+  InGameMusic:
+    Guid:
+      Data1: 1923287413
+      Data2: 1304107170
+      Data3: -2021009482
+      Data4: -1427694453
+    Path: event:/Music/Arena_Round1_Music
+--- !u!4 &1260801501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260801499}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1275879787
 GameObject:
   m_ObjectHideFlags: 0
@@ -9801,3 +9859,4 @@ SceneRoots:
   - {fileID: 488145011}
   - {fileID: 193676278}
   - {fileID: 648245676}
+  - {fileID: 1260801501}
