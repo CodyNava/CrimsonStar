@@ -91,6 +91,7 @@ public class NetRocketTurret : NetworkBehaviour
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
+        shotSound.Play();
         S_SpawnProjectile(position, direction, passedTime, senderID, bridgeOrigin);
     }
 }

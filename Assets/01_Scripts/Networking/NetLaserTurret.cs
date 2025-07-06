@@ -53,7 +53,11 @@ public class NetLaserTurret : NetworkBehaviour
             print(_chargeTime);
             muzzleCharge.Play();
             muzzleImpact.Play();
-            shotSound.Play();
+            if (!shotSound.IsPlaying())
+            {
+                shotSound.Play();
+            }
+
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
                 _accumulatedTime = 0;
