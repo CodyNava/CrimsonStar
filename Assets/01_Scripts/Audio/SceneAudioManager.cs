@@ -1,3 +1,4 @@
+using System;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
@@ -27,17 +28,22 @@ public class SceneAudioManager : MonoBehaviour
         _mainMenuInstance = RuntimeManager.CreateInstance(MainMenu);
         _inGameMusicInstance = RuntimeManager.CreateInstance(InGameMusic);
     }
-    
+
+    private void Start()
+    {
+        _mainMenuInstance.setParameterByName("Announcer-time-steps", 1);
+    }
+
     public void StartInGameMusic()
     {
         _inGameMusicInstance.start();
     }
-    
+
     public void StopInGameMusic()
     {
         _inGameMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
     }
-    
+
     public void ToggleInGameMusic()
     {
         _inGameMusicInstance.getPaused(out bool paused);
