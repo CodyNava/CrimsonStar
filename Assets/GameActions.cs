@@ -515,7 +515,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""16516d86-5f38-4ef0-9378-0be80ded9f78"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
@@ -537,7 +537,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""ab12739a-710b-461b-ac8d-923d4e5051c1"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",

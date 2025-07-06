@@ -115,6 +115,10 @@ public class NetGameplayModule : NetworkBehaviour
         if (deathVFX != null)
         {
             Instantiate(deathVFX, VisualTransform.position, Quaternion.identity);
+            if (ModuleID == NetModuleID.Reactor)
+            {
+                //todo implement reactor explosion Here
+            }
         }
 
         Destroy(VisualTransform.gameObject);
