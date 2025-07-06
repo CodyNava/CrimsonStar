@@ -64,6 +64,7 @@ public class NetGameplayModule : NetworkBehaviour
 
     public void OnDestroy()
     {
+        if (ModuleID != NetModuleID.Bridge) return;
         _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
         _lowHealthAlarmInstance.release();
     }
@@ -140,7 +141,7 @@ public class NetGameplayModule : NetworkBehaviour
             RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
             if (lowHealthAlarmSFX.IsNull == false)
             {
-                if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.75f)
+                if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.35f)
                 {
                     _lowHealthAlarmInstance.getPlaybackState(out PLAYBACK_STATE state);
                     if (state == PLAYBACK_STATE.STOPPED)
@@ -182,6 +183,7 @@ public class NetGameplayModule : NetworkBehaviour
 
             S_DestroyModule();
         }
+        Debug.Log("damage inflicted: " + damage);
 
         C_DisplayDamageObserver();
     }
