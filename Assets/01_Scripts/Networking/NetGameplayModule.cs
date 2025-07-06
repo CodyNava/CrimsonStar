@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using _01_Scripts.Ship;
 using FishNet;
@@ -61,6 +62,13 @@ public class NetGameplayModule : NetworkBehaviour
     {
     }
 
+    public void OnDestroy()
+    {
+        if (ModuleID != NetModuleID.Bridge) return;
+        _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
+        _lowHealthAlarmInstance.release();
+    }
+
     public override void OnStartClient()
     {
         _bridge = ModuleID == NetModuleID.Bridge ? GetComponent<NetBridge>() : GetComponentInParent<NetBridge>();
@@ -73,12 +81,14 @@ public class NetGameplayModule : NetworkBehaviour
         {
             _lowHealthAlarmInstance = RuntimeManager.CreateInstance(lowHealthAlarmSFX);
         }
+
         if (IsOwner)
         {
             int weaponGroupValue = NetModuleWeaponGroupData.WeaponGroupMap.GetValueOrDefault(coord);
             WeaponGroup = weaponGroupValue;
         }
     }
+
     // Occurs when a module gets destroyed
     [Server]
     private void S_DestroyModule()
@@ -124,7 +134,6 @@ public class NetGameplayModule : NetworkBehaviour
     public void C_DisplayDamageObserver()
     {
         float health = HealthPct;
-
         damagedVFX.SetFloat("DamageInput", 1 - health);
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         if (IsOwner)
@@ -132,12 +141,13 @@ public class NetGameplayModule : NetworkBehaviour
             RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
             if (lowHealthAlarmSFX.IsNull == false)
             {
-                if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.75f)
+                if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.35f)
                 {
                     _lowHealthAlarmInstance.getPlaybackState(out PLAYBACK_STATE state);
                     if (state == PLAYBACK_STATE.STOPPED)
                         _lowHealthAlarmInstance.start();
                 }
+                
             }
         }
         else
@@ -173,6 +183,7 @@ public class NetGameplayModule : NetworkBehaviour
 
             S_DestroyModule();
         }
+        Debug.Log("damage inflicted: " + damage);
 
         C_DisplayDamageObserver();
     }

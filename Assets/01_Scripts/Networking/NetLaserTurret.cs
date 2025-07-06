@@ -104,7 +104,6 @@ public class NetLaserTurret : NetworkBehaviour
 
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
-        print("Spawning projectile");
         NetPredictedProjectileLaser pp = Instantiate(netLaserTurretData.Projectile, position, Quaternion.identity);
         pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge);
     }
@@ -115,7 +114,11 @@ public class NetLaserTurret : NetworkBehaviour
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
-        C_SpawnProjectile(position, direction, passedTime, senderID);
+        if (IsOwner)
+        {
+            C_SpawnProjectile(position, direction, passedTime, senderID);
+        }
+
         C_ObserversFire(position, direction, tick, senderID);
     }
 

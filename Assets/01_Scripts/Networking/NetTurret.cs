@@ -104,7 +104,11 @@ public class NetTurret : NetworkBehaviour
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
-        C_SpawnProjectile(position, direction, passedTime, senderID);
+        if (IsOwner)
+        {
+            C_SpawnProjectile(position, direction, passedTime, senderID);
+        }
+
         C_ObserversFire(position, direction, tick, senderID);
     }
 

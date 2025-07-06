@@ -77,6 +77,7 @@ public class NetPredictedProjectile : MonoBehaviour
             if (module.NetTeamID == _netTeamID) friendlyFireDamageMult = _lobbyConductor.FriendlyFireDamageMult;
             
             module.S_InflictDamage(baseProjectileObject.ProjectileDamage * friendlyFireDamageMult, _attackerID);
+            Debug.Log("damage inflicted 2 : ");
         }
         
         Destroy(gameObject);
