@@ -103,13 +103,13 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
     private void S_StartMatch()
     {
-        SceneAudioManager.instance.IncreaseMusicProgress();
         C_OnMatchStart();
     }
 
     [ObserversRpc]
     public void C_OnMatchStart()
     {
+        SceneAudioManager.instance.IncreaseMusicProgress();
         InputManager.EnableGameControls();
     }
 
