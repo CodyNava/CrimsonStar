@@ -219,6 +219,24 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _editorConductor.S_SetupNewEditPhase();
         InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(this, _lobbyConductor.Players);
         _isMatchConcluded.Value = false;
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
+        SceneAudioManager.instance.StartInGameMusic();
+        C_TriggerResetMusic();
+    }
+
+    [ObserversRpc]
+    [Client]
+    private void C_TriggerResetMusic()
+    {
+        ResetMusic();
+    }
+
+    private void ResetMusic()
+    {
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
+        SceneAudioManager.instance.StartInGameMusic();
     }
 
     [Server]
