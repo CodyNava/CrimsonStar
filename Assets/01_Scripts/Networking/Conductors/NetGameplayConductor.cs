@@ -119,6 +119,13 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Remove(owner);
         _eliminatedPlayers.Add(owner);
 
+        /*
+        if (_eliminatedPlayers.Count >= PlayerCount / 2)
+        {
+            SceneAudioManager.instance.IncreaseMusicProgress();
+            C_TriggerIncreaseMusicProgress();
+        } */
+
         C_TriggerOnRegisterPlayerDeath(owner);
         TriggerOnRegisterPlayerDeath(owner);
 
@@ -227,6 +234,19 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         SceneAudioManager.instance.StartInGameMusic();
         C_TriggerResetMusic();
     }
+
+    /*
+    [ObserversRpc]
+    [Client]
+    private void C_TriggerIncreaseMusicProgress()
+    {
+        IncreaseMusicProgress();
+    }
+
+    private void IncreaseMusicProgress()
+    {
+        SceneAudioManager.instance.IncreaseMusicProgress();
+    }*/
 
     [ObserversRpc]
     [Client]
