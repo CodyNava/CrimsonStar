@@ -131,13 +131,10 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             conn = owner   
         });
 
-        // C_TriggerOnRegisterPlayerDeath(owner);
-        // TriggerOnRegisterPlayerDeath(owner);
-
-        // if (S_IsMatchComplete())
-        // {
-        //     S_StopMatch();
-        // }
+        if (S_IsMatchComplete())
+        {
+            S_StopMatch();
+        }
     }
 
     [Client]

@@ -39,20 +39,6 @@ public class SpectatorPlayerPanel : MonoBehaviour
         panelObject.SetEnable = false;
     }
 
-    // private void OnRegisterPlayerDeath(NetGameplayConductor.RegisterPlayerDeathEventArgs arg0)
-    // {
-    //     Debug.Log("PlayerPanel: OnRegisterPlayerDeath");
-    //     
-    //     NetworkConnection conn = arg0.Owner;
-    //     NetMatchPlayer player = _lobbyConductor.PlayersByConnection[conn];
-    //     if (player.IsUnityNull()) return;
-    //
-    //     SpectatorPlayerPanelEntry panelObject = playerPanelEntryMap[player.PlayerID.Value];
-    //     if (panelObject.IsUnityNull()) return;
-    //
-    //     panelObject.SetEnable = false;
-    // }
-
 
     private void Init()
     {
@@ -89,11 +75,6 @@ public class SpectatorPlayerPanel : MonoBehaviour
     {
         InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerDeath>(OnPlayerDeath);
     }
-
-    // private void OnLocalPlayerDeath(NetGameplayConductor.LocalPlayerDeathEventArgs arg0)
-    // {
-    //     _panelContainer.SetActive(true);
-    // }
 
     public void OnPlayerPanelClicked(NetBridge bridge)
     {
