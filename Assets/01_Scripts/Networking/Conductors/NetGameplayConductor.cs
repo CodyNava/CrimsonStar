@@ -125,14 +125,19 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             SceneAudioManager.instance.IncreaseMusicProgress();
             C_TriggerIncreaseMusicProgress();
         } */
-
-        C_TriggerOnRegisterPlayerDeath(owner);
-        TriggerOnRegisterPlayerDeath(owner);
-
-        if (S_IsMatchComplete())
+        
+        ServerManager.Broadcast(new NetGameplayBroadcasts.PlayerDeath
         {
-            S_StopMatch();
-        }
+            conn = owner   
+        });
+
+        // C_TriggerOnRegisterPlayerDeath(owner);
+        // TriggerOnRegisterPlayerDeath(owner);
+
+        // if (S_IsMatchComplete())
+        // {
+        //     S_StopMatch();
+        // }
     }
 
     [Client]

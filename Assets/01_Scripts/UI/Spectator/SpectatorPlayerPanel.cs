@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FishNet;
 using FishNet.Connection;
+using FishNet.Transporting;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -20,18 +21,15 @@ public class SpectatorPlayerPanel : MonoBehaviour
 
     public void Start()
     {
-        if (InstanceFinder.TryGetInstance(out _gameplayConductor))
-        {
-            _gameplayConductor.OnLocalPlayerDeath += OnLocalPlayerDeath;
-            _gameplayConductor.OnRegisterPlayerDeath += OnRegisterPlayerDeath;
-        }
+        InstanceFinder.ClientManager.RegisterBroadcast<NetGameplayBroadcasts.PlayerDeath>(OnPlayerDeath);
     }
 
-    private void OnRegisterPlayerDeath(NetGameplayConductor.RegisterPlayerDeathEventArgs arg0)
+    private void OnPlayerDeath(NetGameplayBroadcasts.PlayerDeath msg, Channel channel)
     {
-        Debug.Log("PlayerPanel: OnRegisterPlayerDeath");
+        NetworkConnection conn = msg.conn;
         
-        NetworkConnection conn = arg0.Owner;
+        if(conn == InstanceFinder.ClientManager.Connection) _panelContainer.SetActive(true);
+        
         NetMatchPlayer player = _lobbyConductor.PlayersByConnection[conn];
         if (player.IsUnityNull()) return;
 
@@ -40,6 +38,20 @@ public class SpectatorPlayerPanel : MonoBehaviour
 
         panelObject.SetEnable = false;
     }
+
+    // private void OnRegisterPlayerDeath(NetGameplayConductor.RegisterPlayerDeathEventArgs arg0)
+    // {
+    //     Debug.Log("PlayerPanel: OnRegisterPlayerDeath");
+    //     
+    //     NetworkConnection conn = arg0.Owner;
+    //     NetMatchPlayer player = _lobbyConductor.PlayersByConnection[conn];
+    //     if (player.IsUnityNull()) return;
+    //
+    //     SpectatorPlayerPanelEntry panelObject = playerPanelEntryMap[player.PlayerID.Value];
+    //     if (panelObject.IsUnityNull()) return;
+    //
+    //     panelObject.SetEnable = false;
+    // }
 
 
     private void Init()
@@ -73,15 +85,15 @@ public class SpectatorPlayerPanel : MonoBehaviour
         if (!_initialized) Init();
     }
 
-    public void OnDisable()
+    public void OnDestroy()
     {
-        if (!_gameplayConductor.IsUnityNull()) _gameplayConductor.OnLocalPlayerDeath -= OnLocalPlayerDeath;
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerDeath>(OnPlayerDeath);
     }
 
-    private void OnLocalPlayerDeath(NetGameplayConductor.LocalPlayerDeathEventArgs arg0)
-    {
-        _panelContainer.SetActive(true);
-    }
+    // private void OnLocalPlayerDeath(NetGameplayConductor.LocalPlayerDeathEventArgs arg0)
+    // {
+    //     _panelContainer.SetActive(true);
+    // }
 
     public void OnPlayerPanelClicked(NetBridge bridge)
     {
