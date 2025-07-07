@@ -119,6 +119,13 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Remove(owner);
         _eliminatedPlayers.Add(owner);
 
+        /*
+        if (_eliminatedPlayers.Count >= PlayerCount / 2)
+        {
+            SceneAudioManager.instance.IncreaseMusicProgress();
+            C_TriggerIncreaseMusicProgress();
+        } */
+
         C_TriggerOnRegisterPlayerDeath(owner);
         TriggerOnRegisterPlayerDeath(owner);
 
@@ -202,6 +209,9 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Clear();
         yield return new WaitForSecondsRealtime(3f);
         ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult());
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
+        C_TriggerStopMusic();
     }
 
     private IEnumerator EndOfRoundRoutine()
@@ -225,6 +235,19 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         C_TriggerResetMusic();
     }
 
+    /*
+    [ObserversRpc]
+    [Client]
+    private void C_TriggerIncreaseMusicProgress()
+    {
+        IncreaseMusicProgress();
+    }
+
+    private void IncreaseMusicProgress()
+    {
+        SceneAudioManager.instance.IncreaseMusicProgress();
+    }*/
+
     [ObserversRpc]
     [Client]
     private void C_TriggerResetMusic()
@@ -237,6 +260,19 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         SceneAudioManager.instance.StopInGameMusic();
         SceneAudioManager.instance.ResetMusicProgress();
         SceneAudioManager.instance.StartInGameMusic();
+    }
+
+    [ObserversRpc]
+    [Client]
+    private void C_TriggerStopMusic()
+    {
+        StopMusic();
+    }
+
+    private void StopMusic()
+    {
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
     }
 
     [Server]
