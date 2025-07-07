@@ -120,7 +120,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _eliminatedPlayers.Add(owner);
 
 
-        if (_eliminatedPlayers.Count >= PlayerCount * 0.25f)
+        if (_eliminatedPlayers.Count >= PlayerCount * 0.5f)
         {
             SceneAudioManager.instance.IncreaseMusicProgress();
             C_TriggerIncreaseMusicProgress();
