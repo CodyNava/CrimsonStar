@@ -1,24 +1,20 @@
-using System;
 using UnityEngine;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEngine.UI;
 
 public class TooltipBehaviour : MonoBehaviour
 {
-    public static TooltipBehaviour instance;
-    public TextMeshProUGUI tooltipText;
-    private Tooltip _tooltipObject;
+    public static TooltipBehaviour Instance;
+    [SerializeField] private TextMeshProUGUI tooltipText;
 
     private void Awake()
     {
-        if (instance != null && instance != this)
+        if (Instance != null && Instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
         else
         {
-            instance = this;
+            Instance = this;
         }
     }
 
@@ -26,12 +22,12 @@ public class TooltipBehaviour : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+    
 
-    public void ShowToolTip(string tooltip)
+    public void ShowToolTip (string tooltip)
     {
-        gameObject.SetActive(true);
         tooltipText.text = tooltip;
-        Debug.Log("Tooltip shown");
+        gameObject.SetActive(true);
     }
 
     public void HideToolTip()
