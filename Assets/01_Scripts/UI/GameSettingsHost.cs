@@ -174,7 +174,6 @@ public class GameSettingsHost : MonoBehaviour
         _currencyPerRoundIndex = 1;
         _currentSelectedTimeIndex = 11;
         _currentFriendlyFireModeIndex = 0;
-        _lobbyConductor.FriendlyFireID = 0;
         _currentRoundsToPlayIndex = 0;
 
         _startCurrencyIndex = _currentResourceMode;
@@ -347,6 +346,8 @@ public class GameSettingsHost : MonoBehaviour
                 _eventSystem.SetSelectedGameObject(resource);
             }
         }
+        timerText.text = _timerCounter[_currentSelectedTimeIndex].ToString();
+        timerPreview.text = _timerCounter[_currentSelectedTimeIndex].ToString();
     }
 
     #region Settings
@@ -358,7 +359,7 @@ public class GameSettingsHost : MonoBehaviour
         startingCurrencyText.text = settings.BaseCurrency.ToString();
         currencyPerRoundText.text = settings.CurrencyAddedPerRound.ToString();
     }
-
+    
     public void UpdateGameModeDisplay(NetLobbyBroadcasts.SetTeamMode teamMode)
     {
         _currentSelectedMode = (int)teamMode.TeamMode;

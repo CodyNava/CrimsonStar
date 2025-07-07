@@ -311,8 +311,8 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged);
     }
 
-    [Server]
-    public int S_GetRoundCount() => 3;
+   [Server]
+    public int S_GetRoundCount() => _roundCount.Value;
 
     [Server]
     public int S_GetResourcePerRound() =>
