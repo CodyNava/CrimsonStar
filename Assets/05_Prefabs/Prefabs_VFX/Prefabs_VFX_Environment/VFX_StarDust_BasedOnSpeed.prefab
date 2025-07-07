@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7886387321942341382}
   - component: {fileID: 5588706262186024430}
   m_Layer: 0
-  m_Name: StarDust_BasedOnSpeed
+  m_Name: VFX_StarDust_BasedOnSpeed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54,12 +54,18 @@ VisualEffect:
       - m_Value: 0
         m_Name: Set_SpeedInput
         m_Overridden: 1
+      - m_Value: 200
+        m_Name: SpawnRate
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 0.3480392, y: 0.37254903, z: 0.5, w: 0}
+        m_Name: Color_slow
+        m_Overridden: 1
     m_Uint:
       m_Array: []
     m_Int:
