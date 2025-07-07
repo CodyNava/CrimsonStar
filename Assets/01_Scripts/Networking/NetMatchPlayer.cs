@@ -3,6 +3,7 @@ using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using Steamworks;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class NetMatchPlayer : NetworkBehaviour
@@ -34,6 +35,7 @@ public class NetMatchPlayer : NetworkBehaviour
         Survived.Value = true;
         C_Init();
     }
+    
 
     [Server]
     public void S_ResetRoundStats()
