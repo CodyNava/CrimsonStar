@@ -87,18 +87,20 @@ public class ShipEditorWeaponGroupButton : MonoBehaviour
 
     private void ChangeToSelected()
     {
-        shipWeaponGroupManager.DeselectButtonsExcept(this);
         buttonToggle = true;
+        shipWeaponGroupManager.DeselectButtonsExcept(this);
         rectTransform.sizeDelta = rectVector * SizeIncrease;
         buttonImageColorRef.color = SelectedColor;
         shipWeaponGroupManager.SetWeaponGroup(buttonID);
+        Debug.Log("Bigger");
     }
 
     public void ChangeToUnselected()
     {
         if (!buttonToggle) return;
         buttonToggle = false;
-        rectTransform.sizeDelta = rectVector / SizeIncrease;
+        rectTransform.sizeDelta = rectVector;
         buttonImageColorRef.color = DeselectedColor;
+        Debug.Log("Smaller");
     }
 }

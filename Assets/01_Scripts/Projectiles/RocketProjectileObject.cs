@@ -7,10 +7,7 @@ namespace _01_Scripts.Projectiles
 	{
 		[field:SerializeField] public float ProjectileAcceleration { get; private set; }
 		[field:SerializeField] public float ProjectileMaxSpeed { get; private set; }
-		[field:SerializeField] public float ProjectileDamage { get; private set; }
 		[field:SerializeField] public float ProjectileTimer { get; private set; }
-		
-		[field: SerializeField] public NetPredictedExplosion Explosion { get; private set; }
-
+		[field: SerializeField] public ExplosionObject Explosion { get; private set; }
 	}
 }

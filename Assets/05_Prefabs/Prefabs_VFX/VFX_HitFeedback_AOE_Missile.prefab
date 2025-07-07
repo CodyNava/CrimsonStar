@@ -457,6 +457,7 @@ GameObject:
   m_Component:
   - component: {fileID: 958165456196440744}
   - component: {fileID: 6155830648898177110}
+  - component: {fileID: 1507049135753745733}
   m_Layer: 0
   m_Name: VFX_HitFeedback_AOE_Missile
   m_TagString: Untagged
@@ -494,3 +495,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delay: 2
+--- !u!114 &1507049135753745733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6750847382748261619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 873138320
+      Data2: 1282408962
+      Data3: -378935160
+      Data4: -1042413797
+    Path: event:/SFX/Missile_Explosion_SFX
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 1
+  OverrideMinDistance: 20
+  OverrideMaxDistance: 250

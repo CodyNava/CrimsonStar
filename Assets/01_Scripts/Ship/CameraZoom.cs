@@ -9,6 +9,8 @@ namespace _01_Scripts.Ship
     {
         [SerializeField] private CameraZoomSettings _cameraZoomSettings;
         [SerializeField] private CameraFollow _cameraFollow;
+        public CameraFollow CameraFollow => _cameraFollow;
+        public CameraZoomSettings CameraZoomSettings => _cameraZoomSettings;
 
         public Action<float> OnChangeZoomDistance;
 

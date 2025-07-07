@@ -1,10 +1,14 @@
-﻿using _01_Scripts.Ship;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using _01_Scripts.Ship;
 using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FMOD.Studio;
 using FMODUnity;
 using Steamworks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
 using STOP_MODE = FMOD.Studio.STOP_MODE;
@@ -13,6 +17,7 @@ public class NetGameplayModule : NetworkBehaviour
 {
     [field: SerializeField] public NetModuleID ModuleID { get; private set; }
     [field: SerializeField] public Transform VisualTransform { get; private set; }
+    [field: SerializeField] public int WeaponGroup { get; set; }
 
     [SerializeField] private GameObject deathVFX;
     [SerializeField] private VisualEffect damagedVFX;
@@ -57,9 +62,17 @@ public class NetGameplayModule : NetworkBehaviour
     {
     }
 
+    public void OnDestroy()
+    {
+        if (ModuleID != NetModuleID.Bridge) return;
+        _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
+        _lowHealthAlarmInstance.release();
+    }
+
     public override void OnStartClient()
     {
         _bridge = ModuleID == NetModuleID.Bridge ? GetComponent<NetBridge>() : GetComponentInParent<NetBridge>();
+        var coord = _bridge.HexTransform.Layout.PositionXYToHex(transform.position);
         Debug.Log($"IsClient: {IsClientStarted}, PlayerID: {_playerID.Value}, Module: {ModuleID}, Bridge: {_bridge}");
         var moduleData = ModuleID.GetModuleData();
         _maxHealth = moduleData.BaseStats.health;
@@ -67,6 +80,12 @@ public class NetGameplayModule : NetworkBehaviour
         if (lowHealthAlarmSFX.IsNull == false)
         {
             _lowHealthAlarmInstance = RuntimeManager.CreateInstance(lowHealthAlarmSFX);
+        }
+
+        if (IsOwner)
+        {
+            int weaponGroupValue = NetModuleWeaponGroupData.WeaponGroupMap.GetValueOrDefault(coord);
+            WeaponGroup = weaponGroupValue;
         }
     }
 
@@ -96,6 +115,10 @@ public class NetGameplayModule : NetworkBehaviour
         if (deathVFX != null)
         {
             Instantiate(deathVFX, VisualTransform.position, Quaternion.identity);
+            if (ModuleID == NetModuleID.Reactor)
+            {
+                //todo implement reactor explosion Here
+            }
         }
 
         Destroy(VisualTransform.gameObject);
@@ -115,7 +138,6 @@ public class NetGameplayModule : NetworkBehaviour
     public void C_DisplayDamageObserver()
     {
         float health = HealthPct;
-
         damagedVFX.SetFloat("DamageInput", 1 - health);
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         if (IsOwner)
@@ -123,10 +145,13 @@ public class NetGameplayModule : NetworkBehaviour
             RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
             if (lowHealthAlarmSFX.IsNull == false)
             {
-                if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.75f)
+                if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.35f)
                 {
-                    _lowHealthAlarmInstance.start();
+                    _lowHealthAlarmInstance.getPlaybackState(out PLAYBACK_STATE state);
+                    if (state == PLAYBACK_STATE.STOPPED)
+                        _lowHealthAlarmInstance.start();
                 }
+                
             }
         }
         else
@@ -139,9 +164,9 @@ public class NetGameplayModule : NetworkBehaviour
 
     [Server]
     [ServerRpc(RequireOwnership = false)]
-    public void S_InflictDamage(float damage, ulong attackerID)
+    public void S_InflictDamage(float damage, ulong attackerID = 0)
     {
-        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor))
+        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor) && attackerID != 0)
         {
             gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
         }
@@ -155,13 +180,14 @@ public class NetGameplayModule : NetworkBehaviour
                 _lowHealthAlarmInstance.release();
             }
 
-            if (ModuleID == NetModuleID.Bridge && gameplayConductor)
+            if (ModuleID == NetModuleID.Bridge && gameplayConductor && attackerID != 0)
             {
                 gameplayConductor.S_ReportKillInstance(attackerID, _bridge.PlayerID);
             }
 
             S_DestroyModule();
         }
+        Debug.Log("damage inflicted: " + damage);
 
         C_DisplayDamageObserver();
     }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: -5749749284738857041}
   - component: {fileID: 4573435141410385277}
   - component: {fileID: -6670244774906828094}
+  - component: {fileID: 5081322472400135667}
   m_Layer: 12
   m_Name: NetworkedProjectileRocket
   m_TagString: Untagged
@@ -152,6 +153,37 @@ MonoBehaviour:
     Rotation: {x: 0, y: 0, z: 0, w: 0}
     Scale: {x: 0, y: 0, z: 0}
     IsValid: 0
+--- !u!114 &5081322472400135667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2456487081987262527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1952342629
+      Data2: 1207309130
+      Data3: -986544212
+      Data4: 640091379
+    Path: event:/SFX/Missile_Flying_SFX
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 1
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 40
 --- !u!1001 &757068161738328148
 PrefabInstance:
   m_ObjectHideFlags: 0

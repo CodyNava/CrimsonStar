@@ -7,8 +7,6 @@ public class PlayerPlateDisplay : MonoBehaviour
 {
     [SerializeField] private Image readyImage;
     [SerializeField] private TMP_Text playerName;
-    [SerializeField] private TMP_Dropdown teamDropDown;
-    [SerializeField] private TMP_Text teamLabel;
     private NetLobbyData _lobbyData;
 
     public void UpdateDisplay(NetLobbyData lobbyData, NetTeamModeID teamMode)
@@ -17,7 +15,7 @@ public class PlayerPlateDisplay : MonoBehaviour
         readyImage.gameObject.SetActive(lobbyData.isReady);
         playerName.text = lobbyData.playerDisplayName;
         bool canEdit = lobbyData.playerID == PlayerData.PlayerID || PlayerData.IsLobbyHost;
-        if (canEdit)
+        /*if (canEdit)
         {
             teamDropDown.gameObject.SetActive(teamMode == NetTeamModeID.TeamMode);
             teamDropDown.SetValueWithoutNotify((int)lobbyData.playerTeamID);
@@ -28,7 +26,7 @@ public class PlayerPlateDisplay : MonoBehaviour
             teamDropDown.gameObject.SetActive(false);
             teamLabel.gameObject.SetActive(teamMode == NetTeamModeID.TeamMode);
             teamLabel.text = lobbyData.playerTeamID.ToString();
-        }
+        }*/
     }
 
     public void SetTeam(int teamIDint)
@@ -44,7 +42,5 @@ public class PlayerPlateDisplay : MonoBehaviour
     {
         readyImage.gameObject.SetActive(false);
         playerName.text = "-";
-        teamDropDown.gameObject.SetActive(false);
-        teamLabel.gameObject.SetActive(false);
     }
 }
