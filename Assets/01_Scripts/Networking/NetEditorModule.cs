@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class NetEditorModule : MonoBehaviour
 {
-    private static readonly int ColourShift = Shader.PropertyToID("_ColourShift");
+    private static readonly int ColourShift = Shader.PropertyToID("_EmissionColor");
     [field: SerializeField] public NetModuleID ModuleID { get; private set; }
     [field: SerializeField] public Transform VisualTransform { get; private set; }
     [HideInInspector] public bool IsSelected { get; set; }
@@ -15,7 +15,7 @@ public class NetEditorModule : MonoBehaviour
     public List<HexCoordinate> LocalCoordinates { get; private set; }
     [HideInInspector] public bool IsPowered { get; set; }
     [field: SerializeField] private GameObject PowerMaterialGameObject { get; set; }
-    private Material PowerMaterial { get; set; }
+    [field: SerializeField] private Material PowerMaterial { get; set; }
     private ShipEditor ShipEditor { get; set; }
     private ShipEditorWeaponGroups WeaponGroupManager { get; set; }
     private int CurrentGroup => WeaponGroupManager.currentGroup;
@@ -43,7 +43,7 @@ public class NetEditorModule : MonoBehaviour
         WeaponGroupManager = FindFirstObjectByType<ShipEditorWeaponGroups>();
         if (!ModuleData.CanBePowered) return;
         var mesh = GetComponentInChildren<MeshRenderer>();
-        PowerMaterial = mesh.materials[1];
+        PowerMaterial = mesh.materials[3];
         _originalColor = PowerMaterial.GetColor(ColourShift);
     }
 
