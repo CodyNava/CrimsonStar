@@ -1,22 +1,17 @@
 using UnityEngine;
 using Random = System.Random;
 using FishNet;
+using System.Collections.Generic;
 
 public class Nebula : MonoBehaviour
 {
     [SerializeField] private NebulaObject _nebulaObject;
     [SerializeField] private GameObject hitFeedbackVFX;
     
-    private ulong _attackerID;
-    private NetTeamID _netTeamID;
     private float dt;
+    private HashSet<NetGameplayModule> hitModules = new HashSet<NetGameplayModule>();
     
-    
-    public void Initialize(float passedTime, NetTeamID netTeamID, ulong attackerID)
-    {
-        _netTeamID = netTeamID;
-        _attackerID = attackerID;
-    }
+    private Coroutine damageCoroutine;
     
     public void Start()
     {
@@ -25,26 +20,38 @@ public class Nebula : MonoBehaviour
         gameObject.transform.localScale = Vector3.one * size;
     }
 
-    public void Update()
+    public void LateUpdate()
     {
-        dt = Time.deltaTime;
-    }
-    
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.NetTeamID == _netTeamID) return;
-
+        if (InstanceFinder.IsClientStarted) return;
+        
+        dt += Time.deltaTime;
+        
         if (dt > _nebulaObject.NebulaDamageInterval)
         {
-            if (InstanceFinder.IsClientStarted)
+
+            foreach (NetGameplayModule module in hitModules)
             {
-                // Visual and Audio
-            }
-            if (InstanceFinder.IsServerStarted)
-            {
-                module.S_InflictDamage(_nebulaObject.NebulaDamage, _attackerID);
+                //TODO: Visuals and Audio
+                // attacker ID is 0 for neutral damage detection
+                module.S_InflictDamage(_nebulaObject.NebulaDamage, 0);
             }
             dt = 0;
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (InstanceFinder.IsClientStarted) return;
+        if (!other.transform.TryGetComponent(out NetGameplayModule module)) return;
+        
+        hitModules.Add(module);
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (InstanceFinder.IsClientStarted) return;
+        if (!other.transform.TryGetComponent(out NetGameplayModule module)) return;
+        
+        hitModules.Remove(module);
     }
 }

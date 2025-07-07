@@ -7,15 +7,7 @@ public class Asteroid : MonoBehaviour
     [SerializeField] private AsteroidObject _asteroidObject;
     [SerializeField] private GameObject hitFeedbackVFX;
     
-    private ulong _attackerID;
-    private NetTeamID _netTeamID;
-    
-    
-    public void Initialize(float passedTime, NetTeamID netTeamID, ulong attackerID)
-    {
-        _netTeamID = netTeamID;
-        _attackerID = attackerID;
-    }
+
 
     public void Start()
     {
@@ -24,9 +16,9 @@ public class Asteroid : MonoBehaviour
         gameObject.transform.localScale = Vector3.one * size;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.NetTeamID == _netTeamID) return;
+        if (!collision.transform.TryGetComponent(out NetGameplayModule module)) return;
         
         
         if (InstanceFinder.IsClientStarted)
@@ -36,7 +28,7 @@ public class Asteroid : MonoBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(_asteroidObject.AsteroidDamage, _attackerID);
+            module.S_InflictDamage(_asteroidObject.AsteroidDamage, 0);
         }
         Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
         Destroy(gameObject);
