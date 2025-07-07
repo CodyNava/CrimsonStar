@@ -12,6 +12,8 @@ public static class NetModuleWeaponGroupData
     private static readonly Dictionary<HexCoordinate, int> _weaponGroupMap = new();
 
     public static IReadOnlyDictionary<HexCoordinate, int> WeaponGroupMap => _weaponGroupMap;
+    
+    
 
     public static void WriteWeaponGroup(HexCoordinate coord, int weaponGroup)
     {
@@ -22,6 +24,8 @@ public static class NetModuleWeaponGroupData
     {
         _weaponGroupMap.Remove(coord); //diesen key(coord) töten
     }
+    
+    public static int ReadWeaponGroup(HexCoordinate coord) => _weaponGroupMap.GetValueOrDefault(coord);
 
     public static void ClearAllWeaponGroupKeys()
     {

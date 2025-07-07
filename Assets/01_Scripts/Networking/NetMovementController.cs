@@ -3,6 +3,7 @@ using FishNet.Object.Prediction;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public struct MoveReplicateData : IReplicateData
 {
@@ -45,6 +46,7 @@ public struct MoveReconcileData : IReconcileData
 public class NetMovementController : NetworkBehaviour
 {
     [SerializeField] private NetBridge bridge;
+    [SerializeField] private VisualEffect startDustVFX;
 
     public PredictionRigidbody2D PredictionRB;
 
@@ -150,6 +152,16 @@ public class NetMovementController : NetworkBehaviour
         PredictionRB.AngularVelocity(angularVelocity);
         PredictionRB.Velocity(linearVelocity);
         PredictionRB.Simulate();
+       // CalculateStarDust(linearVelocity);
+        Debug.Log("_______________"+linearVelocity);
+        
+    }
+
+    private void CalculateStarDust(Vector2 linearVelocity)
+    {
+        startDustVFX.SetFloat("Set_SpeedInput", linearVelocity.magnitude / bridge.BridgeModule.Bridge.GetMaxMoveSpeed());
+        if (!bridge.cameraZoom) return;
+        startDustVFX.SetFloat("Set_CameraZoom", bridge.cameraZoom.CameraFollow.OffSet.magnitude / bridge.cameraZoom.CameraZoomSettings.MaxDistance);
     }
 
     private void OnPostTick()

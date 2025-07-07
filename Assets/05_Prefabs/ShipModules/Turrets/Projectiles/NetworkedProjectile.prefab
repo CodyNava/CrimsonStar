@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9113743782805865405}
   - component: {fileID: 1332760611907753262}
   - component: {fileID: 1840815982162558663}
+  - component: {fileID: -6110158522725373232}
   m_Layer: 12
   m_Name: NetworkedProjectile
   m_TagString: Untagged
@@ -85,6 +86,37 @@ MonoBehaviour:
   bulletVFX: {fileID: 9099989994403282068}
   hitFeedbackVFX: {fileID: 5671986103320250904, guid: e2d233654d75a7b4c81db863eb5572d4, type: 3}
   baseProjectileObject: {fileID: 11400000, guid: c2520e1c4c7b255448d16f56a44fc5da, type: 2}
+--- !u!114 &-6110158522725373232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2456487081987262527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1421093396
+      Data2: 1094572565
+      Data3: 1370712217
+      Data4: 970145998
+    Path: event:/SFX/ProjectileFlying_SFX
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 1
+  OverrideMinDistance: 2
+  OverrideMaxDistance: 30
 --- !u!1001 &2452612083921129194
 PrefabInstance:
   m_ObjectHideFlags: 0

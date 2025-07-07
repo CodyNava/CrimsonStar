@@ -1,4 +1,5 @@
 ﻿using FishNet.Object;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.InputSystem;
@@ -9,12 +10,12 @@ public class NetRocketTurret : NetworkBehaviour
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private VisualEffect muzzleFlash;
-    [SerializeField] private FMODUnity.EventReference shotSound;
+    [SerializeField] private StudioEventEmitter shotSound;
     private const float MaxPassedTime = 0.3f;
 
     private float _accumulatedTime;
     private float _cooldownTime;
-    
+
 
     private void Update()
     {
@@ -71,11 +72,12 @@ public class NetRocketTurret : NetworkBehaviour
         }
 
         muzzleFlash.Play();
-        FMODUnity.RuntimeManager.PlayOneShot(shotSound, transform.position);
+        shotSound.Play();
     }
 
     [Server]
-    private void S_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID, NetBridge bridgeOrigin)
+    private void S_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID,
+        NetBridge bridgeOrigin)
     {
         NetPredictedProjectileRocket pp = Instantiate(netRocketTurretData.Projectile, position, Quaternion.identity);
         pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, bridgeOrigin);
@@ -89,6 +91,7 @@ public class NetRocketTurret : NetworkBehaviour
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
+        shotSound.Play();
         S_SpawnProjectile(position, direction, passedTime, senderID, bridgeOrigin);
     }
 }

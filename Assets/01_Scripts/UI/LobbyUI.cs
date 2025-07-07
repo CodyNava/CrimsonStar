@@ -1,4 +1,5 @@
-﻿using FishNet;
+﻿using System;
+using FishNet;
 using FishNet.Transporting;
 using Steamworks;
 using TMPro;
@@ -23,6 +24,12 @@ public class LobbyUI : MonoBehaviour
     {
         brightness.color = new Color(0f, 0f, 0f, PlayerPrefs.GetFloat("BrightnessValue"));
     }
+
+    public void Update()
+    {
+        switchTeamsButton.SetPlayerID(PlayerData.PlayerID); // temp fix 
+    }
+
     private void OnEnable()
     {
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);

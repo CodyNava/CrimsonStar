@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FishNet.Connection;
 using FishNet.Object;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
@@ -12,7 +13,7 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private VisualEffect muzzleCharge, muzzleImpact;
-    [SerializeField] private AudioSource shootingSound;
+    [SerializeField] private StudioEventEmitter shotSound;
     [SerializeField] private bool isCharging;
 
 
@@ -40,11 +41,11 @@ public class NetLaserTurret : NetworkBehaviour
         if (!IsOwner) return;
         _accumulatedTime += Time.deltaTime;
         _cooldownTime = Mathf.Min(_accumulatedTime, netLaserTurretData.Cooldown);
-        
+
         if (_cooldownTime < netLaserTurretData.Cooldown) return;
         if (!CanFire()) return;
 
-        
+
         if (C_IsAttacking() || isCharging)
         {
             isCharging = true;
@@ -52,6 +53,11 @@ public class NetLaserTurret : NetworkBehaviour
             print(_chargeTime);
             muzzleCharge.Play();
             muzzleImpact.Play();
+            if (!shotSound.IsPlaying())
+            {
+                shotSound.Play();
+            }
+
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
                 _accumulatedTime = 0;
@@ -94,12 +100,10 @@ public class NetLaserTurret : NetworkBehaviour
         }
 
         S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
-        shootingSound.Play();
     }
 
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
-        print("Spawning projectile");
         NetPredictedProjectileLaser pp = Instantiate(netLaserTurretData.Projectile, position, Quaternion.identity);
         pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge);
     }
@@ -110,7 +114,11 @@ public class NetLaserTurret : NetworkBehaviour
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
-        C_SpawnProjectile(position, direction, passedTime, senderID);
+        if (IsOwner)
+        {
+            C_SpawnProjectile(position, direction, passedTime, senderID);
+        }
+
         C_ObserversFire(position, direction, tick, senderID);
     }
 
@@ -121,5 +129,6 @@ public class NetLaserTurret : NetworkBehaviour
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
         muzzleCharge.Play();
+        shotSound.Play();
     }
 }

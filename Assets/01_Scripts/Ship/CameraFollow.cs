@@ -12,6 +12,7 @@ public class CameraFollow : MonoBehaviour
     [Header("Follow Settings")]
     [SerializeField] private float smoothTime = 0.3f;
     [SerializeField] private Vector3 offset;
+    public Vector3 OffSet => offset;
 
     [Header("Manual Settings")] 
     [SerializeField] private float panSpeedFactor = 0.75f;
