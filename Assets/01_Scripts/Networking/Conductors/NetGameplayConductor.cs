@@ -202,6 +202,9 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Clear();
         yield return new WaitForSecondsRealtime(3f);
         ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult());
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
+        C_TriggerStopMusic();
     }
 
     private IEnumerator EndOfRoundRoutine()
@@ -237,6 +240,19 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         SceneAudioManager.instance.StopInGameMusic();
         SceneAudioManager.instance.ResetMusicProgress();
         SceneAudioManager.instance.StartInGameMusic();
+    }
+
+    [ObserversRpc]
+    [Client]
+    private void C_TriggerStopMusic()
+    {
+        StopMusic();
+    }
+
+    private void StopMusic()
+    {
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
     }
 
     [Server]
