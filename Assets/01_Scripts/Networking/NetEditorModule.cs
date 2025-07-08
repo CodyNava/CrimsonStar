@@ -12,6 +12,7 @@ public class NetEditorModule : MonoBehaviour
     public HexCoordinate PlacedLocation { get; set; }
     public int PlacedRotation { get; set; }
     public NetModuleData ModuleData => ModuleID.GetModuleData();
+    public HealthOverLayData HealthOverLayData;
     public List<HexCoordinate> LocalCoordinates { get; private set; }
     [HideInInspector] public bool IsPowered { get; set; }
     [field: SerializeField] private GameObject PowerMaterialGameObject { get; set; }
@@ -117,13 +118,15 @@ public class NetEditorModule : MonoBehaviour
     {
         var newColor = Color.white.WithAlpha(0.3f);
         
-        bool lowTotalHealth = ModuleData.BaseStats.health >= 0f;
-        bool midTotalHealth = ModuleData.BaseStats.health >= 90f;
-        bool highTotalHealth = ModuleData.BaseStats.health >= 150f;
+        bool lowTotalHealth = ModuleData.BaseStats.health <= HealthOverLayData.LowHealth;
+        bool midTotalHealth = ModuleData.BaseStats.health <= HealthOverLayData.MidHealth;
+        bool highTotalHealth = ModuleData.BaseStats.health <= HealthOverLayData.HighHealth;
+        bool superHighTotalHealth = ModuleData.BaseStats.health <= HealthOverLayData.SuperHighHealth;
 
-        if (lowTotalHealth) newColor = Color.red.WithAlpha(0.3f);
-        if (midTotalHealth) newColor = Color.yellow.WithAlpha(0.3f);
-        if (highTotalHealth) newColor = Color.green.WithAlpha(0.3f);
+        if (lowTotalHealth) newColor = HealthOverLayData.LowHealthColor;
+        if (midTotalHealth) newColor = HealthOverLayData.MidHealthColor;
+        if (highTotalHealth) newColor = HealthOverLayData.HighHealthColor;
+        if (superHighTotalHealth) newColor = HealthOverLayData.SuperHighHealthColor;
 
         _healthOverLayObjectColour = newColor;
         healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
@@ -133,7 +136,7 @@ public class NetEditorModule : MonoBehaviour
     {
         
         if (!healthOverLayObject) return;
-        var newColor = Color.Lerp(Color.red.WithAlpha(0.3f), Color.green.WithAlpha(0.3f), colorValue);
+        var newColor = Color.Lerp(HealthOverLayData.LowestPercentageColor, HealthOverLayData.HighestPercentageColor, colorValue);
          _healthOverLayObjectColour = newColor;
         healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
          Debug.Log("ColorValue ===  "+colorValue);
