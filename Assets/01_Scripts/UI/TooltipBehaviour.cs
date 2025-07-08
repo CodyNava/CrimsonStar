@@ -1,17 +1,38 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
+using TMPro;
 
-public class TooltipBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class TooltipBehaviour : MonoBehaviour
 {
-    [SerializeField] private GameObject tooltip;
-    
-    public void OnPointerEnter(PointerEventData eventData)
+    public static TooltipBehaviour Instance;
+    [SerializeField] private TextMeshProUGUI tooltipText;
+
+    private void Awake()
     {
-        tooltip.SetActive(true);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    private void Start()
     {
-        tooltip.SetActive(false);
+        gameObject.SetActive(false);
+    }
+    
+
+    public void ShowToolTip (string tooltip)
+    {
+        tooltipText.text = tooltip;
+        gameObject.SetActive(true);
+    }
+
+    public void HideToolTip()
+    {
+        gameObject.SetActive(false);
+        tooltipText.text = string.Empty;
     }
 }
