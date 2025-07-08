@@ -113,6 +113,8 @@ public class GameSettingsHost : MonoBehaviour
     [SerializeField] private Button decreaseModuleRefund;
     private int _currentModuleRefund;
 
+    private bool _isInitialized = false;
+    
     public void Initialize()
     {
         _eventSystem = EventSystem.current;
@@ -192,11 +194,18 @@ public class GameSettingsHost : MonoBehaviour
 
         gameModeText.text = "Free For All";
         gameModePreview.text = "Free For All";
+
+        _isInitialized = true;
     }
 
     private void Update()
     {
-        Debug.Log(InputManager.Instance.IsGamepadUsed);
+        if (!_isInitialized && InstanceFinder.TryGetInstance(out _lobbyConductor))
+        {
+            Initialize();
+        }
+        
+        // Debug.Log(InputManager.Instance.IsGamepadUsed);
         if (!InputManager.Instance.IsGamepadUsed)
         {
             switchTeamController.SetActive(false);
