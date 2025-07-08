@@ -20,6 +20,12 @@ public class JoinLobbyPopUpController : MonoBehaviour
         _closePopUpBtn.onClick.RemoveListener(OnCloseBtnClicked);
     }
 
+    public void ShowPopUp()
+    {
+        _backgroundObject.SetActive(true);
+        _popupContainerObject.gameObject.SetActive(true);
+    }
+
     private void OnCloseBtnClicked()
     {
         _backgroundObject.SetActive(false);

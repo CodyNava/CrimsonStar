@@ -32,9 +32,8 @@ public class LobbyCodeDisplayController : MonoBehaviour
         _showLobbyCodeBtn.onPressed.AddListener(OnShowLobbyCode);
         _showLobbyCodeBtn.onReleased.AddListener(OnHideLobbyCode);
         ClearInfoLabel();
-
-        // Debug.Log(PlayerData.CurrentLobbyID.m_SteamID);
-        _lobbyCode = PlayerData.CurrentLobbyID.m_SteamID.ToString().ToUpper();
+        
+        _lobbyCode = PlayerData.CurrentLobbyID.m_SteamID.ToString();
 
         for (int i = 0; i < _lobbyCode.Length; i++)
         {
