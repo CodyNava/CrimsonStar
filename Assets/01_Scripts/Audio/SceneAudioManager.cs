@@ -10,9 +10,11 @@ public class SceneAudioManager : MonoBehaviour
     [SerializeField] private EventReference mainMenu;
     [SerializeField] private EventReference inGameMusic;
     [SerializeField] private EventReference killAnnouncer;
+    [SerializeField] private EventReference enemyHitFeedback;
     private EventInstance _mainMenuInstance;
     private EventInstance _inGameMusicInstance;
     private EventInstance _killAnnouncerInstance;
+    private EventInstance _enemyHitFeedback;
 
     public static SceneAudioManager instance;
 
@@ -30,6 +32,7 @@ public class SceneAudioManager : MonoBehaviour
         _mainMenuInstance = RuntimeManager.CreateInstance(mainMenu);
         _inGameMusicInstance = RuntimeManager.CreateInstance(inGameMusic);
         _killAnnouncerInstance = RuntimeManager.CreateInstance(killAnnouncer);
+        _enemyHitFeedback = RuntimeManager.CreateInstance(enemyHitFeedback);
     }
 
     public void StartInGameMusic()
@@ -86,5 +89,10 @@ public class SceneAudioManager : MonoBehaviour
     {
         _killAnnouncerInstance.setParameterByName("Kill_count", killCount);
         _killAnnouncerInstance.start();
+    }
+
+    public void EnemyHitFeedback()
+    {
+        _enemyHitFeedback.start();
     }
 }

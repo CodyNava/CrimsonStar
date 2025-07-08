@@ -306,12 +306,21 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [Server]
     public void S_ReportDamageInstance(ulong attacker, ulong defender, float damageTaken)
     {
+        Debug.Log("Damage inflicted: " + damageTaken);
+        NetworkConnection conn = _lobbyConductor.ConnectionsByPlayerID[attacker];
+        if (conn != null) TriggerEnemyHitFeedback(conn, Channel.Reliable);
         _damageInstancesRound.Add(new DamageInstance
         {
             AttackerID = attacker,
             DefenderID = defender,
             DamageTaken = damageTaken
         });
+    }
+
+    [TargetRpc]
+    private void TriggerEnemyHitFeedback(NetworkConnection conn, Channel channel)
+    {
+        SceneAudioManager.instance.EnemyHitFeedback();
     }
 
     [Server]
@@ -335,7 +344,6 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         {
             _kills = 0;
         }
-
 
         SceneAudioManager.instance.PlayKillAnnouncer(_kills);
         _kills++;
