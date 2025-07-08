@@ -2,25 +2,24 @@
 using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections.Generic;
+using _01_Scripts.Projectiles;
 
 public class NetPredictedProjectileLaser : MonoBehaviour
 {
-    [SerializeField] private float maxLength = 10f;
-    [SerializeField] private float growSpeed = 2f;   
-    [SerializeField] private float lifetimeAfterFullGrow = 2f;
-    [SerializeField] private int maxHits = 3;
-    [SerializeField] private float projectileDamage;
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
+    [SerializeField] public GameObject hitBox;
+    [SerializeField] public LaserProjectileObject laserProjectileObject;
+    
 
     private NetTeamID _netTeamID;
     private Vector3 _direction;
     
     private float _growProgress = 0f;
     private float _currentLength = 0f;
-    private Vector3 _initialScale;
+    private float _initialWidth;
 
-    private HashSet<NetGameplayModule> hitModules = new HashSet<NetGameplayModule>();
+    private readonly HashSet<NetGameplayModule> _hitModules = new HashSet<NetGameplayModule>();
     
     private ulong _attackerID;
     private bool _fullyGrown = false;
@@ -32,9 +31,12 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         _direction = direction.normalized;
         _netTeamID = netTeamID;
         _attackerID = attackerID;
-
-        _initialScale = transform.localScale;
+        _initialWidth = laserProjectileObject.LaserWidth;
+        
         transform.rotation = Quaternion.LookRotation(Vector3.forward, _direction);
+        
+        //int y = bulletVFX.GetInt("y_asd");
+        //y = (int)_currentLength;
         
         if (bulletVFX.HasVector3("DirectionVector_position"))
         {
@@ -48,15 +50,16 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         
         if (!_fullyGrown)
         {
-            _growProgress += growSpeed * dt;
+            _growProgress += laserProjectileObject.GrowSpeed * dt;
             _growProgress = Mathf.Clamp01(_growProgress);
-            _currentLength = Mathf.Lerp(0f, maxLength, _growProgress);
-            transform.localScale = new Vector3(_initialScale.x, _currentLength, _initialScale.z);
+            _currentLength = Mathf.Lerp(0f, laserProjectileObject.MaxLength, _growProgress);
+            //transform.localScale = new Vector3(_initialScale.x, _currentLength, _initialScale.z);
+            hitBox.transform.localScale = new Vector2(_initialWidth, _currentLength);
 
             if (_growProgress >= 1f)
             {
                 _fullyGrown = true;
-                _lifetimeTimer = lifetimeAfterFullGrow;
+                _lifetimeTimer = laserProjectileObject.LifetimeAfterFullGrown;
             }
         }
         else
@@ -73,18 +76,13 @@ public class NetPredictedProjectileLaser : MonoBehaviour
     {
         if (!other.TryGetComponent(out NetGameplayModule module)) return;
         if (module.NetTeamID == _netTeamID) return;
-        if (hitModules.Contains(module)) return;
+        if (_hitModules.Contains(module)) return;
 
-        hitModules.Add(module);
-
-        if (InstanceFinder.IsClientStarted)
-        {
-            // Visual and Audio
-        }
-
+        _hitModules.Add(module);
+        
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(projectileDamage, _attackerID);
+            module.S_InflictDamage(laserProjectileObject.ProjectileDamage, _attackerID);
         }
         
         if (InstanceFinder.IsClientStarted)
@@ -93,11 +91,11 @@ public class NetPredictedProjectileLaser : MonoBehaviour
             Instantiate(hitFeedbackVFX, spawnPos, Quaternion.identity);
         }
         
-        if (hitModules.Count >= maxHits)
+        if (_hitModules.Count >= laserProjectileObject.MaxHits)
         {
             _fullyGrown = true;
-            _lifetimeTimer = lifetimeAfterFullGrow;
-            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            _lifetimeTimer = laserProjectileObject.LifetimeAfterFullGrown;
+            hitBox.GetComponent<BoxCollider2D>().enabled = false;
         }
     }
 

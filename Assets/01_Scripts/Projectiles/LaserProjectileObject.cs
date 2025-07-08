@@ -2,11 +2,14 @@
 
 namespace _01_Scripts.Projectiles
 {
-    [CreateAssetMenu(fileName = "ProjectileObject", menuName = "ShipModules/ProjectileObject")]
+    [CreateAssetMenu(fileName = "LaserProjectileObject", menuName = "ShipModules/ProjectileModules/LaserProjectileObject")]
     public class LaserProjectileObject : ScriptableObject
     {
-        [field:SerializeField] public float Speed { get; private set; }
-        [field:SerializeField] public float Damage { get; private set; }
-
+        [field:SerializeField] public float MaxLength { get; private set; }
+        [field:SerializeField] public float GrowSpeed { get; private set; }
+        [field:SerializeField] public float LifetimeAfterFullGrown { get; private set; }
+        [field:SerializeField] public float MaxHits { get; private set; }
+        [field:SerializeField] public float ProjectileDamage { get; private set; }
+        [field:SerializeField] public float LaserWidth { get; private set; }
     }
 }

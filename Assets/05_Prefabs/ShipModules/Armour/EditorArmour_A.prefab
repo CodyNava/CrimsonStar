@@ -49,11 +49,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ModuleID>k__BackingField: 2
   <VisualTransform>k__BackingField: {fileID: 1444197679776078048}
-  <IsPowered>k__BackingField: 0
-  <PowerMaterialGameObject>k__BackingField: {fileID: 0}
-  <PowerMaterial>k__BackingField: {fileID: 2252084105133900378}
-  <shipEditor>k__BackingField: {fileID: 0}
-  <isSelected>k__BackingField: 0
+  <PowerMaterialGameObject>k__BackingField: {fileID: 2252084105133900378}
+  poweredColor:
+    serializedVersion: 2
+    rgba: 0
 --- !u!114 &1403924803196760748
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,7 +88,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: -5551696992373374558}
           m_TargetAssemblyTypeName: NetEditorModule, Assembly-CSharp
-          m_MethodName: set_isSelected
+          m_MethodName: set_IsSelected
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -117,7 +116,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: -5551696992373374558}
           m_TargetAssemblyTypeName: NetEditorModule, Assembly-CSharp
-          m_MethodName: set_isSelected
+          m_MethodName: set_IsSelected
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -245,8 +244,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
       propertyPath: m_Materials.Array.size
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e1dfea3d6f09c7343b7deca90c1b1dc9, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0ce405b6b789e9f4d9ee4a9f06a35fab, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: 'm_Materials.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0ce405b6b789e9f4d9ee4a9f06a35fab, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: 'm_Materials.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ebcf81e07a2410f43b89ad13d2b76734, type: 2}
     - target: {fileID: -5754084199372789682, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
       propertyPath: m_Mesh
       value: 

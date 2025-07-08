@@ -9,7 +9,8 @@ public enum NetModuleID
     Turret = 4,
     TurretLaser = 5,
     Reactor = 6,
-    TurretRocket = 7
+    TurretRocket = 7,
+    TurretT2 = 8
 }
 
 public static class ModuleIDExtensions
