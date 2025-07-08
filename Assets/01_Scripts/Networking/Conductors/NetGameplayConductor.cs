@@ -6,6 +6,7 @@ using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using FishNet.Transporting;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -312,6 +313,15 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             AttackerID = attackerID,
             DefenderID = defenderID
         });
+
+        NetworkConnection conn = _lobbyConductor.ConnectionsByPlayerID[attackerID];
+        if(conn != null) TriggerKillAnnouncer(conn, Channel.Reliable);
+    }
+
+    [TargetRpc]
+    private void TriggerKillAnnouncer(NetworkConnection conn, Channel channel)
+    {
+        // TODO: Trigger Kill Announcer SFX
     }
 
     [Server]
