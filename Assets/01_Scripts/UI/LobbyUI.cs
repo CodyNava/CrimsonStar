@@ -35,7 +35,7 @@ public class LobbyUI : MonoBehaviour
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(OnTeamModeChanged);
-        // hostSettings.Initialize();
+        hostSettings.Initialize();
         switchTeamsButton.SetPlayerID(PlayerData.PlayerID);
     }
 
