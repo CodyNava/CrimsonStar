@@ -14,7 +14,11 @@ public class GameSettingsHost : MonoBehaviour
 
     [SerializeField] private Button leave;
     [SerializeField] private Button players;
+    [SerializeField] private GameObject playersRT;
+    [SerializeField] private GameObject playersLT;
     [SerializeField] private Button options;
+    [SerializeField] private GameObject optionsRT;
+    [SerializeField] private GameObject optionsLT;
 
     [SerializeField] private GameObject playerContainer;
     [SerializeField] private GameObject optionsContainer;
@@ -86,6 +90,8 @@ public class GameSettingsHost : MonoBehaviour
 
     [Header("Resources")]
     [SerializeField] private GameObject resource;
+    [SerializeField] private GameObject resourceA;
+    [SerializeField] private GameObject settingsA;
     [SerializeField] private TMP_Text resourceModeText;
     [SerializeField] private TMP_Text resourceModePreview;
     [SerializeField] private Button nextResourceMode;
@@ -162,6 +168,9 @@ public class GameSettingsHost : MonoBehaviour
 
         increaseModuleRefund.gameObject.SetActive(PlayerData.IsLobbyHost);
         decreaseModuleRefund.gameObject.SetActive(PlayerData.IsLobbyHost);
+        
+        playersLT.SetActive(PlayerData.IsLobbyHost);
+        playersRT.SetActive(PlayerData.IsLobbyHost);
 
         _eventSystem.SetSelectedGameObject(player1);
 
@@ -193,7 +202,7 @@ public class GameSettingsHost : MonoBehaviour
         timerPreview.text = _timerCounter[_currentSelectedTimeIndex].ToString();
         resourceModeText.text = _resourceMode[_currentResourceMode];
         resourceModePreview.text = _resourceMode[_currentResourceMode];
-
+        moduleRefundText.text = _lobbyConductor.RefundModuleID.ToString();
 
         gameModeText.text = "Free For All";
         gameModePreview.text = "Free For All";
@@ -210,9 +219,12 @@ public class GameSettingsHost : MonoBehaviour
             switchTeamKeyboard.SetActive(_currentSelectedMode.Equals(1));
             //inviteKeyboard.SetActive(true);
             //kickKeyboard.SetActive(PlayerData.IsLobbyHost);
+            
+            playersLT.SetActive(false);
+            playersRT.SetActive(false);
             return;
         }
-
+        
         switchTeamController.SetActive(_currentSelectedMode.Equals(1));
         //inviteController.SetActive(true);
         //kickController.SetActive(PlayerData.IsLobbyHost);
@@ -237,14 +249,44 @@ public class GameSettingsHost : MonoBehaviour
 
         if (PlayerData.IsLobbyHost)
         {
-            if (Keybinds.Actions.UI.SwapTabRight.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.RightTrigger.WasPressedThisFrame())
             {
-                options.onClick.Invoke();
+                if (optionsContainer.activeSelf)
+                {
+                    players.onClick.Invoke();
+                    playersLT.SetActive(true);
+                    playersRT.SetActive(true);
+                    optionsLT.SetActive(false);
+                    optionsRT.SetActive(false);
+                }
+                else
+                {
+                    options.onClick.Invoke();
+                    playersLT.SetActive(false);
+                    playersRT.SetActive(false);
+                    optionsLT.SetActive(true);
+                    optionsRT.SetActive(true);
+                }
             }
 
-            if (Keybinds.Actions.UI.SwapTabLeft.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.LeftTrigger.WasPressedThisFrame())
             {
-                players.onClick.Invoke();
+                if (playerContainer.activeSelf)
+                {
+                    options.onClick.Invoke();
+                    playersLT.SetActive(false);
+                    playersRT.SetActive(false);
+                    optionsLT.SetActive(true);
+                    optionsRT.SetActive(true);
+                }
+                else
+                {
+                    players.onClick.Invoke();
+                    playersLT.SetActive(true);
+                    playersRT.SetActive(true);
+                    optionsLT.SetActive(false);
+                    optionsRT.SetActive(false);
+                }
             }
 
             if (Keybinds.Actions.UI.Increase.WasPerformedThisFrame())
@@ -337,6 +379,7 @@ public class GameSettingsHost : MonoBehaviour
                 Keybinds.Actions.UI.Submit.WasPerformedThisFrame())
             {
                 _eventSystem.SetSelectedGameObject(startingCurrency);
+                settingsA.SetActive(true);
                 return;
             }
 
@@ -346,6 +389,7 @@ public class GameSettingsHost : MonoBehaviour
                 Keybinds.Actions.UI.Submit.WasPerformedThisFrame())
             {
                 _eventSystem.SetSelectedGameObject(resource);
+                settingsA.SetActive(false);
             }
         }
         timerText.text = _timerCounter[_currentSelectedTimeIndex].ToString();

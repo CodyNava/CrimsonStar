@@ -3,6 +3,7 @@ using FishNet;
 using FishNet.Transporting;
 using Steamworks;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -20,11 +21,6 @@ public class LobbyUI : MonoBehaviour
     
     private bool _ready;
 
-    private void Awake()
-    {
-        brightness.color = new Color(0f, 0f, 0f, PlayerPrefs.GetFloat("BrightnessValue"));
-    }
-
     public void Update()
     {
         switchTeamsButton.SetPlayerID(PlayerData.PlayerID); // temp fix 
@@ -35,6 +31,7 @@ public class LobbyUI : MonoBehaviour
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(OnTeamModeChanged);
+        brightness.color = new Color(0f, 0f, 0f, PlayerPrefs.GetFloat("BrightnessValue"));
         hostSettings.Initialize();
         switchTeamsButton.SetPlayerID(PlayerData.PlayerID);
     }
