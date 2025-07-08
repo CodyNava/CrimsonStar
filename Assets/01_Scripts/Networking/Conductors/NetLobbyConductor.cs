@@ -229,6 +229,12 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     }
 
     [Server]
+    public void S_SyncPreview(NetLobbyBroadcasts.PreviewUIElements preview)
+    {
+            ServerManager.Broadcast(preview, false);
+    }
+
+    [Server]
     private void S_OnConnectionStateChange(NetworkConnection connection, RemoteConnectionStateArgs args)
     {
         if (args.ConnectionState == RemoteConnectionState.Started)

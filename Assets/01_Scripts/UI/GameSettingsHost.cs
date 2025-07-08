@@ -206,6 +206,8 @@ public class GameSettingsHost : MonoBehaviour
 
         gameModeText.text = "Free For All";
         gameModePreview.text = "Free For All";
+        
+        SyncPreviewUI();
     }
 
     private void Update()
@@ -398,6 +400,31 @@ public class GameSettingsHost : MonoBehaviour
 
     #region Settings
 
+    private void SyncPreviewUI ()
+    {
+        var preview = new NetLobbyBroadcasts.PreviewUIElements
+        {
+            GameMode = (NetTeamModeID)_currentSelectedMode,
+            ResourceMode = (NetGameModeID)_currentResourceMode,
+            Timer = (int)_timerCounter[_currentSelectedTimeIndex],
+            RoundCount = _roundsToPlay[_currentRoundsToPlayIndex],
+            FriendlyFireMode = (NetFirendlyFireID)_currentFriendlyFireModeIndex,
+        };
+        if (InstanceFinder.IsServerStarted)
+        {
+            NetLobbyConductor.Instance.S_SyncPreview(preview);
+        }
+    }
+
+    public void UpdatePreviewText(NetLobbyBroadcasts.PreviewUIElements preview)
+    {
+        gameModePreview.text = _gameMode[(int)preview.GameMode];
+        resourceModePreview.text = _resourceMode[(int)preview.ResourceMode];
+        timerPreview.text = preview.Timer.ToString();
+        roundsPreview.text = preview.RoundCount.ToString();
+        friendlyFirePreview.text = preview.FriendlyFireMode.ToString();
+    }
+
     public void UpdateGameSettingsDisplay(NetLobbyBroadcasts.SetGameMode settings)
     {
         resourceModeText.text = _resourceMode[(int)settings.GameMode];
@@ -437,6 +464,7 @@ public class GameSettingsHost : MonoBehaviour
 
         resourceModeText.text = _resourceMode[selectedGameMode];
         resourceModePreview.text = _resourceMode[selectedGameMode];
+        SyncPreviewUI();
     }
 
     public void NextResources()
@@ -452,6 +480,7 @@ public class GameSettingsHost : MonoBehaviour
         DataProvider.Instance.customGameMode.CurrencyAddedPerRound =
             DataProvider.GetCurrencyAddedPerRound((NetGameModeID)_currentResourceMode);
         UpdateResourceMode(_currentResourceMode);
+        SyncPreviewUI();
     }
 
     public void PreviousResources()
@@ -488,6 +517,7 @@ public class GameSettingsHost : MonoBehaviour
         _currentSelectedMode %= 2;
 
         UpdateGameMode(_currentSelectedMode);
+        SyncPreviewUI();
     }
 
     public void PreviousGameMode()
@@ -497,6 +527,7 @@ public class GameSettingsHost : MonoBehaviour
         else
             _currentSelectedMode--;
         UpdateGameMode(_currentSelectedMode);
+        SyncPreviewUI();
     }
 
     public void IncreaseRounds()
@@ -507,6 +538,7 @@ public class GameSettingsHost : MonoBehaviour
         _lobbyConductor.RoundCount = _roundsToPlay[_currentRoundsToPlayIndex];
         roundsText.text = _roundsToPlay[_currentRoundsToPlayIndex].ToString();
         roundsPreview.text = _roundsToPlay[_currentRoundsToPlayIndex].ToString();
+        SyncPreviewUI();
     }
 
     public void DecreaseRounds()
@@ -523,6 +555,7 @@ public class GameSettingsHost : MonoBehaviour
         _lobbyConductor.RoundCount = _roundsToPlay[_currentRoundsToPlayIndex];
         roundsText.text = _roundsToPlay[_currentRoundsToPlayIndex].ToString();
         roundsPreview.text = _roundsToPlay[_currentRoundsToPlayIndex].ToString();
+        SyncPreviewUI();
     }
 
     public void IncreaseTimer()
@@ -533,6 +566,7 @@ public class GameSettingsHost : MonoBehaviour
         _lobbyConductor.EditorTimerDuration = _timerCounter[_currentSelectedTimeIndex];
         timerText.text = _timerCounter[_currentSelectedTimeIndex].ToString();
         timerPreview.text = _timerCounter[_currentSelectedTimeIndex].ToString();
+        SyncPreviewUI();
     }
 
     public void DecreaseTimer()
@@ -549,6 +583,7 @@ public class GameSettingsHost : MonoBehaviour
         _lobbyConductor.EditorTimerDuration = _timerCounter[_currentSelectedTimeIndex];
         timerText.text = _timerCounter[_currentSelectedTimeIndex].ToString();
         timerPreview.text = _timerCounter[_currentSelectedTimeIndex].ToString();
+        SyncPreviewUI();
     }
 
     public void IncreaseFriendlyFire()
@@ -558,6 +593,7 @@ public class GameSettingsHost : MonoBehaviour
         _lobbyConductor.FriendlyFireID = (NetFirendlyFireID)_currentFriendlyFireModeIndex;
         friendlyFireText.text = _lobbyConductor.FriendlyFireID.ToString();
         friendlyFirePreview.text = _lobbyConductor.FriendlyFireID.ToString();
+        SyncPreviewUI();
     }
 
     public void DecreaseFriendlyFire()
@@ -574,6 +610,7 @@ public class GameSettingsHost : MonoBehaviour
         _lobbyConductor.FriendlyFireID = (NetFirendlyFireID)_currentFriendlyFireModeIndex;
         friendlyFireText.text = _lobbyConductor.FriendlyFireID.ToString();
         friendlyFirePreview.text = _lobbyConductor.FriendlyFireID.ToString();
+        SyncPreviewUI();
     }
 
     public void IncreaseStartingCurrency()

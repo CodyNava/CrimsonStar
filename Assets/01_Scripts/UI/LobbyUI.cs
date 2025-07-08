@@ -1,9 +1,7 @@
-﻿using System;
-using FishNet;
+﻿using FishNet;
 using FishNet.Transporting;
 using Steamworks;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -31,6 +29,7 @@ public class LobbyUI : MonoBehaviour
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(OnTeamModeChanged);
+        InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PreviewUIElements>(SyncPreview);
         brightness.color = new Color(0f, 0f, 0f, PlayerPrefs.GetFloat("BrightnessValue"));
         hostSettings.Initialize();
         switchTeamsButton.SetPlayerID(PlayerData.PlayerID);
@@ -89,6 +88,11 @@ public class LobbyUI : MonoBehaviour
         }
     }
 
+    private void SyncPreview(NetLobbyBroadcasts.PreviewUIElements msg, Channel channel)
+    {
+        hostSettings.UpdatePreviewText(msg);
+    }
+
     public void ToggleReady()
     {
         _ready = !_ready;
@@ -128,5 +132,6 @@ public class LobbyUI : MonoBehaviour
         InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
         InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
         InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(OnTeamModeChanged);
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.PreviewUIElements>(SyncPreview);
     }
 }
