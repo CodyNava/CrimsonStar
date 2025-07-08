@@ -13,7 +13,7 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private VisualEffect muzzleCharge, muzzleImpact;
-    [SerializeField] private StudioEventEmitter shotSound;
+   // [SerializeField] private StudioEventEmitter shotSound;
     [SerializeField] private bool isCharging;
 
 
@@ -51,8 +51,8 @@ public class NetLaserTurret : NetworkBehaviour
             isCharging = true;
             _chargeTime += Time.deltaTime;
             print(_chargeTime);
-            muzzleCharge.Play();
-            muzzleImpact.Play();
+           // muzzleCharge.Play();
+            //muzzleImpact.Play();
            /* if (!shotSound.IsPlaying())
             {
                 shotSound.Play();
@@ -128,7 +128,7 @@ public class NetLaserTurret : NetworkBehaviour
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
-        muzzleCharge.Play();
+        //muzzleCharge.Play();
         //shotSound.Play();
     }
 }
