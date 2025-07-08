@@ -68,7 +68,7 @@ public class LobbyCodeDisplayController : MonoBehaviour
     private void OnCopyLobbyCodeBtnClicked()
     {
         GUIUtility.systemCopyBuffer = _lobbyCode;
-        SetInfoLabel("Lobby-Code copied!");
+        SetInfoLabel("Code copied to clipboard.");
     }
     
     private void OnShowLobbyCode()
