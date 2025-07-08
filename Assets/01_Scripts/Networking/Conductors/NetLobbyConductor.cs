@@ -30,6 +30,8 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     public Dictionary<ulong, NetMatchPlayer> PlayersByID { get; private set; }
     private readonly SyncDictionary<NetworkConnection, NetMatchPlayer> _playersByConnection = new();
     public SyncDictionary<NetworkConnection, NetMatchPlayer> PlayersByConnection => _playersByConnection;
+    private readonly SyncDictionary<ulong, NetworkConnection> _connectionsByPlayerID = new();
+    public SyncDictionary<ulong, NetworkConnection> ConnectionsByPlayerID => _connectionsByPlayerID;
     public Dictionary<NetworkConnection, NetLobbyData> ConnectionPlayerMap { get; } = new();
 
     private NetworkConnection _hostConnection;
@@ -288,6 +290,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         Players = new NetworkObject[ConnectionPlayerMap.Count];
         PlayersByID = new Dictionary<ulong, NetMatchPlayer>();
         _playersByConnection.Clear();
+        _connectionsByPlayerID.Clear();
         int count = 0;
         foreach (var (conn, lobbyData) in ConnectionPlayerMap)
         {
@@ -297,6 +300,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
             Players[count++] = player.NetworkObject;
             PlayersByID.Add(player.PlayerID.Value, player);
             PlayersByConnection.Add(conn, player);
+            ConnectionsByPlayerID.Add(player.PlayerID.Value, conn);
         }
     }
 
