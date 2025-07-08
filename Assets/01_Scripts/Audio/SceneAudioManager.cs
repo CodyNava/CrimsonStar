@@ -7,10 +7,12 @@ using UnityEngine.SceneManagement;
 
 public class SceneAudioManager : MonoBehaviour
 {
-    [SerializeField] private EventReference MainMenu;
-    [SerializeField] private EventReference InGameMusic;
+    [SerializeField] private EventReference mainMenu;
+    [SerializeField] private EventReference inGameMusic;
+    [SerializeField] private EventReference killAnnouncer;
     private EventInstance _mainMenuInstance;
     private EventInstance _inGameMusicInstance;
+    private EventInstance _killAnnouncerInstance;
 
     public static SceneAudioManager instance;
 
@@ -25,13 +27,9 @@ public class SceneAudioManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        _mainMenuInstance = RuntimeManager.CreateInstance(MainMenu);
-        _inGameMusicInstance = RuntimeManager.CreateInstance(InGameMusic);
-    }
-
-    private void Start()
-    {
-        _mainMenuInstance.setParameterByName("Announcer-time-steps", 1);
+        _mainMenuInstance = RuntimeManager.CreateInstance(mainMenu);
+        _inGameMusicInstance = RuntimeManager.CreateInstance(inGameMusic);
+        _killAnnouncerInstance = RuntimeManager.CreateInstance(killAnnouncer);
     }
 
     public void StartInGameMusic()
@@ -82,5 +80,11 @@ public class SceneAudioManager : MonoBehaviour
     {
         _mainMenuInstance.getPaused(out bool paused);
         _mainMenuInstance.setPaused(!paused);
+    }
+
+    public void PlayKillAnnouncer(int killCount)
+    {
+        _killAnnouncerInstance.setParameterByName("Kill_count", killCount);
+        _killAnnouncerInstance.start();
     }
 }
