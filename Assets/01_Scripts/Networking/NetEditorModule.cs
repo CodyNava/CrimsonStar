@@ -20,11 +20,17 @@ public class NetEditorModule : MonoBehaviour
     private ShipEditorWeaponGroups WeaponGroupManager { get; set; }
     private int CurrentGroup => WeaponGroupManager.currentGroup;
     [SerializeField] private int _insideCurrentGroup;
+    [SerializeField] private GameObject healthOverLayObject;
+    [SerializeField] private Color _healthOverLayObjectColour;
 
     [Tooltip("poweredColor is only Relevant if it can be Powered")] [field: SerializeField]
-    private Color32 poweredColor;
+    private Color poweredColor;
 
-    private Color32 _originalColor;
+    [Tooltip("notPoweredColor is only Relevant if it can be Powered")] [field: SerializeField]
+    private Color notPoweredColor;
+
+    private Color _originalColor;
+    private float _originalColorIntensity;
 
 
     public void Initialize()
@@ -41,10 +47,15 @@ public class NetEditorModule : MonoBehaviour
     {
         ShipEditor = FindFirstObjectByType<ShipEditor>();
         WeaponGroupManager = FindFirstObjectByType<ShipEditorWeaponGroups>();
+        if (ModuleData.ModuleID == NetModuleID.Bridge)
+        {
+            ShipEditorHealthOverlay.WriteHealthMap(PlacedLocation, ModuleData.BaseStats.health);
+        }
         if (!ModuleData.CanBePowered) return;
-        var mesh = GetComponentInChildren<MeshRenderer>();
-        PowerMaterial = mesh.materials[3];
+        var powerMesh = GetComponentInChildren<MeshRenderer>();
+        PowerMaterial = powerMesh.materials[3];
         _originalColor = PowerMaterial.GetColor(ColourShift);
+        _originalColorIntensity = Mathf.Max(_originalColor.r, _originalColor.g, _originalColor.b);
     }
 
     public void PickUpModule()
@@ -102,13 +113,41 @@ public class NetEditorModule : MonoBehaviour
         if (ModuleData.ModuleCategory == NetModuleCategory.Weapons) ChangeLayerBasedOnWeaponGroup();
     }
 
+    public void TotalHealthChangeOverLayColour()
+    {
+        var newColor = Color.white.WithAlpha(0.2f);
+        
+        bool lowTotalHealth = ModuleData.BaseStats.health >= 0f;
+        bool midTotalHealth = ModuleData.BaseStats.health >= 90f;
+        bool highTotalHealth = ModuleData.BaseStats.health >= 150f;
+
+        if (lowTotalHealth) newColor = Color.red.WithAlpha(0.2f);
+        if (midTotalHealth) newColor = Color.yellow.WithAlpha(0.2f);
+        if (highTotalHealth) newColor = Color.green.WithAlpha(0.2f);
+
+        _healthOverLayObjectColour = newColor;
+        healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
+    }
+
+    public void PercentageHealthChangeOverLayColour(float colorValue)
+    {
+        
+        if (!healthOverLayObject) return;
+        var newColor = Color.Lerp(Color.red.WithAlpha(0.2f), Color.green.WithAlpha(0.2f), colorValue);
+         _healthOverLayObjectColour = newColor;
+        healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
+         Debug.Log("ColorValue ===  "+colorValue);
+    }
+
     private void ChangeMaterialAndCheckPowerAlways()
     {
         if (EnergyViewEnable())
         {
             if (ModuleData.CanBePowered)
             {
-                PowerMaterial.SetColor(ColourShift, IsPowered ? poweredColor : _originalColor);
+                PowerMaterial.SetColor(ColourShift, IsPowered
+                    ? poweredColor * _originalColorIntensity
+                    : notPoweredColor * _originalColorIntensity);
             }
         }
         else if (PowerMaterial.GetColor(ColourShift) != _originalColor)
@@ -122,9 +161,9 @@ public class NetEditorModule : MonoBehaviour
     private void ChangeLayerBasedOnWeaponGroup()
     {
         _insideCurrentGroup = NetModuleWeaponGroupData.ReadWeaponGroup(PlacedLocation);
-        
+
         AddToListWhenReconstructing();
-        
+
         if (!ShipEditor.EditorModuleList.Contains(this)) return;
         var inGroupOneAndGroupActive = _insideCurrentGroup == 1 && CurrentGroup == 1 && !IsSelected;
         var inGroupTwoAndGroupActive = _insideCurrentGroup == 2 && CurrentGroup == 2 && !IsSelected;

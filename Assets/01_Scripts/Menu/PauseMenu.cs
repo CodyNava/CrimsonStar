@@ -69,6 +69,7 @@ public class PauseMenu : MonoBehaviour
     {
         Resume();
         NetModuleWeaponGroupData.ClearAllWeaponGroupKeys();
+        ShipEditorHealthOverlay.ClearHealthMap();
         SceneManager.LoadScene("MainMenu");
     }
 

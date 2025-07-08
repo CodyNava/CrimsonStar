@@ -150,6 +150,7 @@ GameObject:
   - component: {fileID: 3290314016510420659}
   - component: {fileID: 3957505294794690889}
   - component: {fileID: 1437633912879689352}
+  - component: {fileID: 8943014676626815367}
   m_Layer: 0
   m_Name: ModuleSelectionButton
   m_TagString: Untagged
@@ -280,6 +281,7 @@ MonoBehaviour:
   moduleName: {fileID: 1889091870190256758}
   sizeLabel: {fileID: 1387051134666391489}
   currencyLabel: {fileID: 2274216154115680776}
+  tooltip: {fileID: 8943014676626815367}
 --- !u!114 &1437633912879689352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,6 +327,54 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8943014676626815367}
+          m_TargetAssemblyTypeName: Tooltip, Assembly-CSharp
+          m_MethodName: OnMouseEnter
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8943014676626815367}
+          m_TargetAssemblyTypeName: Tooltip, Assembly-CSharp
+          m_MethodName: OnMouseExit
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &8943014676626815367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296251384439809521}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d960905cd77d7e4eaff832e78a8b809, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  message: 
+  healthMessage: 
+  advancedMessage: 
+  buttonRectTransform: {fileID: 5610446785758686550}
 --- !u!1 &2440735278524159448
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using AYellowpaper.SerializedCollections;
 using TMPro;
 using UnityEngine;
@@ -27,9 +28,15 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private GameObject lastSelected;
     [SerializeField] private float moduleMoveSpeedGP;
     [SerializeField] public bool inEnergyView;
+
+    [Header("HealthView")] [SerializeField]
+    public TextMeshProUGUI healthViewModeText;
+
+    [SerializeField] public bool inHealthView;
+    [SerializeField] public bool inPercentageHealthView;
     [SerializeField] public bool inEnergyViewParentToggle;
     [SerializeField] public bool joiningEditor;
-    
+
 
     [SerializeField] public bool moduleSpawnedInGP;
     [SerializeField] public bool moduleFirstSelectedGP;
@@ -72,7 +79,7 @@ public class ShipEditor : MonoBehaviour
 
     private void LateUpdate()
     {
-        IsPowereableInRangeOfReactor();
+        IsPowerableInRangeOfReactor();
     }
 
     private void Start()
@@ -89,6 +96,8 @@ public class ShipEditor : MonoBehaviour
         // energyViewToggleButton.onClick.AddListener(ToggleEnergyView);
         originalOutlineShaderColor = outlineShader.GetColor(OutlineColor);
         originalOutlineShaderStrenght = outlineShader.GetFloat("_OutlineThickness");
+        inHealthView = false;
+        inPercentageHealthView = false;
     }
 
     private IEnumerator LinkPlayerRoutine()
@@ -198,7 +207,7 @@ public class ShipEditor : MonoBehaviour
         {
             HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(_heldNetEditorModule.transform.position);
             HandleHeldEnergyModule(cursorHexCoord);
-            ToggleOnEnergyViewBasedOnMudule();
+            ToggleOnEnergyViewBasedOnModule();
             EventSystem.current.SetSelectedGameObject(null);
             _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
             _heldNetEditorModule.transform.Translate(moveInput.x * v * t, moveInput.y * v * t, 0f, Space.World);
@@ -209,6 +218,7 @@ public class ShipEditor : MonoBehaviour
                     moduleFirstSelectedGP = false;
                     return;
                 }
+
                 if (CanPlaceModule(cursorHexCoord))
                 {
                     PlayerData.ModuleStorage.C_AddModule(cursorHexCoord, _heldNetEditorModule.ModuleID,
@@ -267,7 +277,7 @@ public class ShipEditor : MonoBehaviour
         if (_heldNetEditorModule != null)
         {
             HandleHeldEnergyModule(cursorHexCoord);
-            ToggleOnEnergyViewBasedOnMudule();
+            ToggleOnEnergyViewBasedOnModule();
             if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasReleasedThisFrame())
             {
                 if (CanPlaceModule(cursorHexCoord))
@@ -435,9 +445,9 @@ public class ShipEditor : MonoBehaviour
         return false;
     }
 
-    public void IsPowereableInRangeOfReactor()
+    public void IsPowerableInRangeOfReactor()
     {
-        if (_heldNetEditorModule != null && _heldNetEditorModule.ModuleID == NetModuleID.Reactor)
+        if (_heldNetEditorModule && _heldNetEditorModule.ModuleID == NetModuleID.Reactor)
         {
             Vector2 mousePosWorld = editCamera.ScreenToWorldPoint(Input.mousePosition).xy();
             HexCoordinate cursorHexCoord = hexTransform.Layout.PositionXYToHex(mousePosWorld);
@@ -467,7 +477,71 @@ public class ShipEditor : MonoBehaviour
         inEnergyViewParentToggle = !inEnergyViewParentToggle;
     }
 
-    private void ToggleOnEnergyViewBasedOnMudule()
+    public void ToggleHealthView()
+    {
+        inHealthView = !inHealthView;
+        int layer = LayerMask.NameToLayer("HealthOverLay");
+        if (layer == -1) return;
+        bool layerToggled = (editCamera.cullingMask & (1 << layer)) != 0;
+        editCamera.cullingMask = layerToggled
+            ? editCamera.cullingMask &= ~(1 << layer)
+            : editCamera.cullingMask |= 1 << layer;
+        if (inHealthView) SetOverLayModulesColourViaHealthMap();
+    }
+
+    public void TogglePercentageHealthView()
+    {
+        inPercentageHealthView = !inPercentageHealthView;
+        healthViewModeText.text = inPercentageHealthView ? "%" : "Total";
+        if (inHealthView) SetOverLayModulesColourViaHealthMap();
+    }
+
+    private void SetOverLayModulesColourViaHealthMap()
+    {
+        var values = ShipEditorHealthOverlay.HealthMap.Values.ToList();
+
+        float min = values.Min();
+        float max = values.Max();
+        float range = max - min;
+        float pseudoRange = Mathf.Max(range, 20f);
+
+        foreach (NetEditorModule module in _editorModulesMap.Values)
+        {
+            if (ShipEditorHealthOverlay.HealthMap.TryGetValue(module.PlacedLocation, out var value))
+            {
+                if (inPercentageHealthView)
+                {
+                    float colorShift = (value - min) / pseudoRange;
+                    colorShift = Mathf.Clamp01(colorShift);
+
+                    if (values.Count == 1)
+                        colorShift = 1; //this module is always green otherwise it would be red when alone
+                    float smoothShift = Mathf.Pow(colorShift, 0.5f);
+                    module.PercentageHealthChangeOverLayColour(smoothShift);
+                    
+                    
+                    if (ShipEditorHealthOverlay.HealthMap.TryGetValue(netEditorBridgeRef.PlacedLocation, out value))
+                    {
+                        float bridgeColorShift = (value - min) / pseudoRange;
+                        bridgeColorShift = Mathf.Clamp01(bridgeColorShift);
+
+                        if (values.Count == 1)
+                            bridgeColorShift = 1; //this module is always green otherwise it would be red when alone
+                        float bridgeSmoothShift = Mathf.Pow(bridgeColorShift, 0.5f);
+                        netEditorBridgeRef.PercentageHealthChangeOverLayColour(bridgeSmoothShift);
+                    }
+                }
+                else if (!inPercentageHealthView)
+                {
+                    module.TotalHealthChangeOverLayColour();
+                    netEditorBridgeRef.TotalHealthChangeOverLayColour();
+                }
+            }
+        }
+    }
+
+
+    private void ToggleOnEnergyViewBasedOnModule()
     {
         if (!inEnergyView && !inEnergyViewParentToggle && _heldNetEditorModule.ModuleID == NetModuleID.Reactor
             || _heldNetEditorModule.ModuleData.CanBePowered)
@@ -476,7 +550,7 @@ public class ShipEditor : MonoBehaviour
         }
     }
 
-    private void ToggleOffEnergyViewBasedOnMudule()
+    private void ToggleOffEnergyViewBasedOnModule()
     {
         if (inEnergyView && _heldNetEditorModule.ModuleID == NetModuleID.Reactor
             || _heldNetEditorModule.ModuleData.CanBePowered)
@@ -498,7 +572,7 @@ public class ShipEditor : MonoBehaviour
             AddPowerToEnergyMap(rootCoord, true, _heldNetEditorModule.ModuleData.EffectRange);
         }
 
-        ToggleOffEnergyViewBasedOnMudule();
+        ToggleOffEnergyViewBasedOnModule();
         _heldNetEditorModule.PlacedLocation = rootCoord;
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
@@ -510,6 +584,9 @@ public class ShipEditor : MonoBehaviour
         {
             weaponGroupManager.AddModuleToWeaponGroup(_heldNetEditorModule, rootCoord);
         }
+
+        ShipEditorHealthOverlay.WriteHealthMap(rootCoord, _heldNetEditorModule.ModuleData.BaseStats.health);
+        SetOverLayModulesColourViaHealthMap();
         _heldNetEditorModule.transform.position = hexTransform.Layout.HexToPositionXY(rootCoord).xy0();
         if (_heldNetEditorModule.ModuleData.ModuleCategory != NetModuleCategory.Weapons)
         {
@@ -541,6 +618,8 @@ public class ShipEditor : MonoBehaviour
         PlayerData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
         _editorModuleList.Remove(_heldNetEditorModule);
         weaponGroupManager.RemoveModuleFromWeaponGroup(_heldNetEditorModule, moduleToRemove.PlacedLocation);
+        ShipEditorHealthOverlay.RemoveHealthMap(moduleToRemove.PlacedLocation);
+        SetOverLayModulesColourViaHealthMap();
         shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
     }
 
@@ -560,16 +639,16 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule = Instantiate(uniqueModule.ModuleID.GetModuleData().ShipEditorPrefab,
                 new InstantiateParameters { scene = gameObject.scene });
             _heldNetEditorModule.Initialize();
-            
+
             for (int i = 0; i < uniqueModule.Rotation; i++)
             {
                 _heldNetEditorModule.C_RotateClockwise();
             }
+
             PlaceModule(uniqueModule.RootCoordinate);
         }
 
         StartCoroutine(WaitForReconstructShip());
-
     }
 
     public IEnumerator WaitForReconstructShip()

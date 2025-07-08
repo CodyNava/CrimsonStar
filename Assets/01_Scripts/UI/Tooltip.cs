@@ -5,7 +5,9 @@ public class Tooltip : MonoBehaviour
 {
     [Header("Tooltip")]
     [Tooltip("Enter your Tooltip here")]
-    [SerializeField] private string message;
+    public string message;
+    public string healthMessage;
+    public string advancedMessage;
 
     [Header("DO not Touch")]
     [SerializeField] private RectTransform buttonRectTransform;
@@ -21,6 +23,8 @@ public class Tooltip : MonoBehaviour
         Vector3 screenPos = _camera.WorldToScreenPoint(topRightWorld);
         if (message == String.Empty) return;
         TooltipBehaviour.Instance.ShowToolTip(message);
+        TooltipBehaviour.Instance.ShowAdvancedToolTip(advancedMessage);
+        TooltipBehaviour.Instance.ShowHealthTip(healthMessage);
         TooltipBehaviour.Instance.transform.position = screenPos;
     }
 
