@@ -98,6 +98,7 @@ public class ShipEditor : MonoBehaviour
         originalOutlineShaderStrenght = outlineShader.GetFloat("_OutlineThickness");
         inHealthView = false;
         inPercentageHealthView = false;
+        SetOverLayModulesColourViaHealthMap();
     }
 
     private IEnumerator LinkPlayerRoutine()

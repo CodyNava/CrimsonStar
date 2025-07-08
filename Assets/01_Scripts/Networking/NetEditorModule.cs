@@ -115,15 +115,15 @@ public class NetEditorModule : MonoBehaviour
 
     public void TotalHealthChangeOverLayColour()
     {
-        var newColor = Color.white.WithAlpha(0.2f);
+        var newColor = Color.white.WithAlpha(0.3f);
         
         bool lowTotalHealth = ModuleData.BaseStats.health >= 0f;
         bool midTotalHealth = ModuleData.BaseStats.health >= 90f;
         bool highTotalHealth = ModuleData.BaseStats.health >= 150f;
 
-        if (lowTotalHealth) newColor = Color.red.WithAlpha(0.2f);
-        if (midTotalHealth) newColor = Color.yellow.WithAlpha(0.2f);
-        if (highTotalHealth) newColor = Color.green.WithAlpha(0.2f);
+        if (lowTotalHealth) newColor = Color.red.WithAlpha(0.3f);
+        if (midTotalHealth) newColor = Color.yellow.WithAlpha(0.3f);
+        if (highTotalHealth) newColor = Color.green.WithAlpha(0.3f);
 
         _healthOverLayObjectColour = newColor;
         healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
@@ -133,7 +133,7 @@ public class NetEditorModule : MonoBehaviour
     {
         
         if (!healthOverLayObject) return;
-        var newColor = Color.Lerp(Color.red.WithAlpha(0.2f), Color.green.WithAlpha(0.2f), colorValue);
+        var newColor = Color.Lerp(Color.red.WithAlpha(0.3f), Color.green.WithAlpha(0.3f), colorValue);
          _healthOverLayObjectColour = newColor;
         healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
          Debug.Log("ColorValue ===  "+colorValue);
