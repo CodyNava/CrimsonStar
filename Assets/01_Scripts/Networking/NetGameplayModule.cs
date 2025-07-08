@@ -62,12 +62,12 @@ public class NetGameplayModule : NetworkBehaviour
     {
     }
 
-    public void OnDestroy()
+    /*public void OnDestroy()
     {
         if (ModuleID != NetModuleID.Bridge) return;
         _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
         _lowHealthAlarmInstance.release();
-    }
+    }*/
 
     public override void OnStartClient()
     {
@@ -77,10 +77,10 @@ public class NetGameplayModule : NetworkBehaviour
         var moduleData = ModuleID.GetModuleData();
         _maxHealth = moduleData.BaseStats.health;
         VisualTransform.SetParent(_bridge.VisualRootTransform);
-        if (lowHealthAlarmSFX.IsNull == false)
+        /*if (lowHealthAlarmSFX.IsNull == false)
         {
             _lowHealthAlarmInstance = RuntimeManager.CreateInstance(lowHealthAlarmSFX);
-        }
+        }*/
 
         if (IsOwner)
         {
@@ -112,14 +112,14 @@ public class NetGameplayModule : NetworkBehaviour
     [Client]
     public void C_DestroyModuleObserver()
     {
-        if (deathVFX != null)
+        /*if (deathVFX != null)
         {
             Instantiate(deathVFX, VisualTransform.position, Quaternion.identity);
             if (ModuleID == NetModuleID.Reactor)
             {
                 //todo implement reactor explosion Here
             }
-        }
+        }*/
 
         Destroy(VisualTransform.gameObject);
     }
@@ -142,8 +142,8 @@ public class NetGameplayModule : NetworkBehaviour
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         if (IsOwner)
         {
-            RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
-            if (lowHealthAlarmSFX.IsNull == false)
+            //RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
+            /*if (lowHealthAlarmSFX.IsNull == false)
             {
                 if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.35f)
                 {
@@ -152,11 +152,11 @@ public class NetGameplayModule : NetworkBehaviour
                         _lowHealthAlarmInstance.start();
                 }
                 
-            }
+            }*/
         }
         else
         {
-            RuntimeManager.PlayOneShot(hitFeedbackSFX, transform.position);
+            //RuntimeManager.PlayOneShot(hitFeedbackSFX, transform.position);
         }
         //Todo: Implement VFX Here
         // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
@@ -174,11 +174,11 @@ public class NetGameplayModule : NetworkBehaviour
         _health.Value -= damage;
         if (_health.Value <= 0)
         {
-            if (lowHealthAlarmSFX.IsNull == false)
+            /*if (lowHealthAlarmSFX.IsNull == false)
             {
                 _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
                 _lowHealthAlarmInstance.release();
-            }
+            }*/
 
             if (ModuleID == NetModuleID.Bridge && gameplayConductor && attackerID != 0)
             {

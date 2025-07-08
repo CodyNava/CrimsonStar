@@ -53,10 +53,10 @@ public class NetLaserTurret : NetworkBehaviour
             print(_chargeTime);
             muzzleCharge.Play();
             muzzleImpact.Play();
-            if (!shotSound.IsPlaying())
+           /* if (!shotSound.IsPlaying())
             {
                 shotSound.Play();
-            }
+            }*/
 
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
@@ -129,6 +129,6 @@ public class NetLaserTurret : NetworkBehaviour
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
         muzzleCharge.Play();
-        shotSound.Play();
+        //shotSound.Play();
     }
 }
