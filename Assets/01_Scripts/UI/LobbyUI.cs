@@ -12,7 +12,6 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private GameSettingsHost hostSettings;
     [SerializeField] private Button startGameButton, readyButton;
     [SerializeField] private TMP_Text readyButtonText;
-    [SerializeField] private Image brightness;
     [SerializeField] private SwitchTeamsButton switchTeamsButton;
 
     private NetTeamModeID _currentTeamMode;
@@ -30,8 +29,6 @@ public class LobbyUI : MonoBehaviour
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(OnTeamModeChanged);
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PreviewUIElements>(SyncPreview);
-        brightness.color = new Color(0f, 0f, 0f, PlayerPrefs.GetFloat("BrightnessValue"));
-        hostSettings.Initialize();
         switchTeamsButton.SetPlayerID(PlayerData.PlayerID);
     }
 

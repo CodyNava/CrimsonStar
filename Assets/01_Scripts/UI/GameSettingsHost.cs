@@ -122,12 +122,16 @@ public class GameSettingsHost : MonoBehaviour
     [SerializeField] private Button decreaseModuleRefund;
     private int _currentModuleRefund;
 
+    private bool _isInitialized = false;
+
     public void Initialize()
     {
         _eventSystem = EventSystem.current;
         InstanceFinder.TryGetInstance(out _lobbyConductor);
         _startCurrencyList = new List<int>();
         _currencyPerRoundList = new List<int>();
+
+        _isInitialized = true;
 
         for (var i = 0; i < 4; i++)
         {
@@ -212,6 +216,11 @@ public class GameSettingsHost : MonoBehaviour
 
     private void Update()
     {
+        if (!_isInitialized && InstanceFinder.TryGetInstance(out _lobbyConductor))
+        {
+            Initialize();
+        }
+        
         if (!InputManager.Instance.IsGamepadUsed)
         {
             switchTeamController.SetActive(false);
