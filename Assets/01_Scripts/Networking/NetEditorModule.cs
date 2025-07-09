@@ -114,7 +114,7 @@ public class NetEditorModule : MonoBehaviour
 
     public void TotalHealthChangeOverLayColour()
     {
-        var newColor = Color.white.WithAlpha(0.3f);
+        var newColor = Color.white;
 
         bool lowTotalHealth = healthOverLayData.LowHealth <= ModuleData.BaseStats.health;
         bool midTotalHealth = healthOverLayData.MidHealth <= ModuleData.BaseStats.health;
