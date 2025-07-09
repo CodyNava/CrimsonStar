@@ -8,14 +8,25 @@ public class NetRocketTurret : NetworkBehaviour
 {
     [SerializeField] private NetRocketTurretData netRocketTurretData;
     [SerializeField] private NetGameplayModule turretModule;
-    [SerializeField] private Transform spawnTransform;
-    [SerializeField] private VisualEffect muzzleFlash;
+    [SerializeField] private Transform spawnTransformA, spawnTransformB;
+    [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
+    private VisualEffect _nextMuzzleFlash;
     [SerializeField] private StudioEventEmitter shotSound;
     private const float MaxPassedTime = 0.3f;
-
+    private Transform _nextSpawnTransform;
     private float _accumulatedTime;
     private float _cooldownTime;
 
+    
+    public override void OnStartClient()
+    {
+        if (IsOwner)
+        {
+            _nextSpawnTransform = spawnTransformA;
+        }
+
+        _nextMuzzleFlash = muzzleFlashA;
+    }
 
     private void Update()
     {
@@ -55,8 +66,8 @@ public class NetRocketTurret : NetworkBehaviour
 
     private void C_ClientFire()
     {
-        Vector3 position = spawnTransform.position;
-        Vector3 direction = spawnTransform.up;
+        Vector3 position = _nextSpawnTransform.position;
+        Vector3 direction = _nextSpawnTransform.up;
 
         // if (!IsHostInitialized)
         // {
@@ -70,9 +81,30 @@ public class NetRocketTurret : NetworkBehaviour
         {
             S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID, turretModule.Bridge);
         }
-
-        muzzleFlash.Play();
+        
+        if (_nextSpawnTransform == spawnTransformA)
+        {
+            _nextSpawnTransform = spawnTransformB;
+            _nextMuzzleFlash = muzzleFlashB;
+        }
+        else
+        {
+            _nextSpawnTransform = spawnTransformA;
+            _nextMuzzleFlash = muzzleFlashA;
+        }
+        
+        if (_nextMuzzleFlash == muzzleFlashA)
+        {
+            _nextMuzzleFlash = muzzleFlashB;
+        }
+        else
+        {
+            _nextMuzzleFlash = muzzleFlashA;
+        }
+        
+        _nextMuzzleFlash.Play();
         shotSound.Play();
+        
     }
 
     [Server]
