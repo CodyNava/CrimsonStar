@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AYellowpaper.SerializedCollections;
@@ -12,6 +13,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 
 public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
@@ -51,6 +53,9 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
     private int _roundsPlayed;
 
+    private float _elapsedTime;
+    private int _kills = 0;
+
     private int PlayerCount => _lobbyConductor.Players.Length;
     private int _spawnedPlayers = 0;
 
@@ -59,6 +64,11 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
     public event UnityAction<RegisterPlayerDeathEventArgs> OnRegisterPlayerDeath;
     public event UnityAction<LocalPlayerDeathEventArgs> OnLocalPlayerDeath;
+
+    public void Update()
+    {
+        _elapsedTime += Time.deltaTime;
+    }
 
 
     protected override void OnNetworkStarted()
@@ -121,8 +131,8 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Remove(owner);
         _eliminatedPlayers.Add(owner);
 
-        /*
-        if (_eliminatedPlayers.Count >= PlayerCount / 2)
+
+        if (_eliminatedPlayers.Count >= PlayerCount * 0.34f)
         {
             SceneAudioManager.instance.IncreaseMusicProgress();
             C_TriggerIncreaseMusicProgress();
@@ -299,6 +309,10 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [Server]
     public void S_ReportDamageInstance(ulong attacker, ulong defender, float damageTaken)
     {
+        /*
+        Debug.Log("Damage inflicted: " + damageTaken);
+        NetworkConnection conn = _lobbyConductor.ConnectionsByPlayerID[attacker];
+        if (conn != null) TriggerEnemyHitFeedback(conn, Channel.Reliable);*/
         _damageInstancesRound.Add(new DamageInstance
         {
             AttackerID = attacker,
@@ -306,6 +320,12 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             DamageTaken = damageTaken
         });
     }
+/*
+    [TargetRpc]
+    private void TriggerEnemyHitFeedback(NetworkConnection conn, Channel channel)
+    {
+        SceneAudioManager.instance.EnemyHitFeedback();
+    }*/
 
     [Server]
     public void S_ReportKillInstance(ulong attackerID, ulong defenderID)
@@ -318,13 +338,20 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         });
 
         NetworkConnection conn = _lobbyConductor.ConnectionsByPlayerID[attackerID];
-        if(conn != null) TriggerKillAnnouncer(conn, Channel.Reliable);
+        if (conn != null) TriggerKillAnnouncer(conn, Channel.Reliable);
     }
 
     [TargetRpc]
     private void TriggerKillAnnouncer(NetworkConnection conn, Channel channel)
     {
-        // TODO: Trigger Kill Announcer SFX
+        if (_elapsedTime >= 40f)
+        {
+            _kills = 0;
+        }
+
+        SceneAudioManager.instance.PlayKillAnnouncer(_kills);
+        _kills++;
+        _elapsedTime = 0f;
     }
 
     [Server]
