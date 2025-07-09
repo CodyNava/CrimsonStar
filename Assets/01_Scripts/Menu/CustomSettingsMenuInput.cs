@@ -7,31 +7,25 @@ public class CustomSettingsMenuInput : MonoBehaviour
 {
     private bool _cooldownStarted;
 
-    [Tooltip("Scroll Speed in SECONDS. Use values smaller than 1. PLEASE I BEG YOU.")] [Range(0, 1)] [SerializeField]
-    private float scrollSpeedSeconds;
+    [Tooltip("Scroll Speed in SECONDS. Use values smaller than 1. PLEASE I BEG YOU.")]
+    [Range(0, 1)]
+    [SerializeField] private float scrollSpeedSeconds;
 
-    [SerializeField] private GameObject settingsCanvas;
+    [SerializeField] private GameObject settingsContainer;
     private EventSystem _eventSystem;
 
     [SerializeField] private Button audioButton;
-    [SerializeField] private GameObject audioRT;
-    [SerializeField] private GameObject audioLT;
     [SerializeField] private Button graphicsButton;
-    [SerializeField] private GameObject graphicsRT;
-    [SerializeField] private GameObject graphicsLT;
     [SerializeField] private Button settingsBackButton;
 
     [Header("Graphics")]
     [SerializeField] private GameObject graphicsContainer;
-    [SerializeField] private GameObject applyButtonKeyboard;
-    [SerializeField] private GameObject applyButtonControl;
     [SerializeField] private GameObject resolution;
     [SerializeField] private GameObject frameCap;
     [SerializeField] private GameObject vSync;
     [SerializeField] private GameObject brightness;
     [SerializeField] private GameObject gamma;
-
-    [SerializeField] private Button apply;
+    
     [SerializeField] private Button increaseResolution;
     [SerializeField] private Button decreaseResolution;
     [SerializeField] private Button increaseFrameCap;
@@ -64,31 +58,14 @@ public class CustomSettingsMenuInput : MonoBehaviour
 
     private void Awake()
     {
-        settingsCanvas = GameObject.Find("SettingsCanvas");
+        settingsContainer = GameObject.Find("SettingsCanvas");
         _eventSystem = FindFirstObjectByType<EventSystem>();
     }
 
     private void Update()
     {
-        if (settingsCanvas.activeSelf)
+        if (settingsContainer.activeSelf)
         {
-            if (!InputManager.Instance.IsGamepadUsed)
-            {
-                applyButtonKeyboard.SetActive(true);
-                applyButtonControl.SetActive(false);
-                graphicsRT.SetActive(false);
-                graphicsLT.SetActive(false);
-                audioLT.SetActive(false);
-                audioRT.SetActive(false);
-                return;
-            }
-            
-            applyButtonControl.SetActive(InputManager.Instance.IsGamepadUsed);
-            graphicsRT.SetActive(graphicsContainer.activeSelf);
-            graphicsLT.SetActive(graphicsContainer.activeSelf);
-            audioRT.SetActive(audioContainer.activeSelf);
-            audioLT.SetActive(audioContainer.activeSelf);
-
             if (Keybinds.Actions.UI.RightTrigger.WasPressedThisFrame())
             {
                 if (audioContainer.activeSelf)
@@ -117,15 +94,11 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 }
             }
 
-            if (Keybinds.Actions.UI.Save.WasPressedThisFrame())
-            {
-                apply.onClick.Invoke();
-            }
-
-            if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
+            //TODO: Implement BackButton on Other Scripts
+            /*if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
             {
                 settingsBackButton.onClick.Invoke();
-            }
+            }*/
 
             if (Keybinds.Actions.UI.Decrease.IsPressed() && !_cooldownStarted)
             {

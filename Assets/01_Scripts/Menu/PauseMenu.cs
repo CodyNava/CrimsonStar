@@ -1,79 +1,39 @@
-using _01_Scripts.GameState.States;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject pauseMenuUI;
-    [SerializeField] private GameObject panel;
-    [SerializeField] private GameObject settingsMenuUI;
-    [SerializeField] private GameObject deathScreenUi;
-    [SerializeField] private Image brightness;
-
-    [SerializeField] private bool paused = false;
+    [SerializeField] private GameObject settingsMenu;
+    [SerializeField] private GameObject resolutionSettings;
+    [SerializeField] private Button backButton;
+    private EventSystem _eventSystem;
+    private bool _settingsActive;
 
     private void Awake()
     {
-        CombatLose_GameState.onEnterState += CombatLose_GameState_onEnterState;
-        CombatLose_GameState.onExitState += CombatLose_GameState_onExitState;
+        _eventSystem = FindFirstObjectByType<EventSystem>();
     }
 
-    private void OnDestroy()
+    public void ToggleSettings()
     {
-        CombatLose_GameState.onEnterState -= CombatLose_GameState_onEnterState;
-        CombatLose_GameState.onExitState -= CombatLose_GameState_onExitState;
-    }
-
-    private void CombatLose_GameState_onExitState()
-    {
-        deathScreenUi.SetActive(false);
-    }
-
-    private void CombatLose_GameState_onEnterState(_01_Scripts.GameState.GameStateController obj)
-    {
-        deathScreenUi.SetActive(true);
+        _settingsActive = !_settingsActive;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Keybinds.Actions.Player.PauseGame.WasPressedThisFrame() && !_settingsActive)
         {
-            if (!paused)
-            {
-                Pause();
-            }
-            else
-            {
-                Resume();
-            }
+            settingsMenu.SetActive(true);
+            _eventSystem.SetSelectedGameObject(resolutionSettings);
+            _settingsActive = true;
+            return;
         }
-    }
 
-    private void Pause()
-    {
-        paused = true;
-        panel.SetActive(true);
-        pauseMenuUI.SetActive(true);
-    }
-
-    public void Resume()
-    {
-        paused = false;
-        pauseMenuUI.SetActive(false);
-        settingsMenuUI.SetActive(false);
-    }
-
-    public void BackToMenu()
-    {
-        Resume();
-        NetModuleWeaponGroupData.ClearAllWeaponGroupKeys();
-        ShipEditorHealthOverlay.ClearHealthMap();
-        SceneManager.LoadScene("MainMenu");
-    }
-
-    public void QuitGame()
-    {
-        Application.Quit();
+        if (Keybinds.Actions.Player.PauseGame.WasPressedThisFrame() && _settingsActive)
+        {
+            backButton.onClick.Invoke();
+            _eventSystem.SetSelectedGameObject(null);
+        }
     }
 }
