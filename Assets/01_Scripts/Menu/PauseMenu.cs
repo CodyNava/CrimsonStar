@@ -10,12 +10,13 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private GameObject settingsMenuUI;
     [SerializeField] private GameObject deathScreenUi;
     [SerializeField] private Image brightness;
+    [SerializeField] private SettingsBehaviour settingsBehaviour;
 
     [SerializeField] private bool paused = false;
 
     private void Awake()
     {
-        brightness.color = new Color(0f, 0f, 0f, PlayerPrefs.GetFloat("BrightnessValue"));
+        settingsBehaviour.Load();
         CombatLose_GameState.onEnterState += CombatLose_GameState_onEnterState;
         CombatLose_GameState.onExitState += CombatLose_GameState_onExitState;
     }
