@@ -14,10 +14,15 @@ public class CustomSettingsMenuInput : MonoBehaviour
     private EventSystem _eventSystem;
 
     [SerializeField] private Button audioButton;
+    [SerializeField] private GameObject audioRT;
+    [SerializeField] private GameObject audioLT;
     [SerializeField] private Button graphicsButton;
+    [SerializeField] private GameObject graphicsRT;
+    [SerializeField] private GameObject graphicsLT;
     [SerializeField] private Button settingsBackButton;
 
     [Header("Graphics")]
+    [SerializeField] private GameObject graphicsContainer;
     [SerializeField] private GameObject applyButtonKeyboard;
     [SerializeField] private GameObject applyButtonControl;
     [SerializeField] private GameObject resolution;
@@ -38,7 +43,9 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [SerializeField] private Button increaseGamma;
     [SerializeField] private Button decreaseGamma;
 
-    [Header("Sound")] [SerializeField] private GameObject master;
+    [Header("Sound")]
+    [SerializeField] private GameObject audioContainer;
+    [SerializeField] private GameObject master;
     [SerializeField] private GameObject music;
     [SerializeField] private GameObject sfx;
     [SerializeField] private GameObject voice;
@@ -69,21 +76,45 @@ public class CustomSettingsMenuInput : MonoBehaviour
             {
                 applyButtonKeyboard.SetActive(true);
                 applyButtonControl.SetActive(false);
+                graphicsRT.SetActive(false);
+                graphicsLT.SetActive(false);
+                audioLT.SetActive(false);
+                audioRT.SetActive(false);
                 return;
             }
             
             applyButtonControl.SetActive(InputManager.Instance.IsGamepadUsed);
+            graphicsRT.SetActive(graphicsContainer.activeSelf);
+            graphicsLT.SetActive(graphicsContainer.activeSelf);
+            audioRT.SetActive(audioContainer.activeSelf);
+            audioLT.SetActive(audioContainer.activeSelf);
 
-            if (Keybinds.Actions.UI.SwapTabRight.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.RightTrigger.WasPressedThisFrame())
             {
-                audioButton.onClick.Invoke();
-                _eventSystem.SetSelectedGameObject(master);
+                if (audioContainer.activeSelf)
+                {
+                    graphicsButton.onClick.Invoke();
+                    _eventSystem.SetSelectedGameObject(resolution);
+                }
+                else
+                {
+                    audioButton.onClick.Invoke();
+                    _eventSystem.SetSelectedGameObject(master);
+                }
             }
 
-            if (Keybinds.Actions.UI.SwapTabLeft.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.LeftTrigger.WasPressedThisFrame())
             {
-                graphicsButton.onClick.Invoke();
-                _eventSystem.SetSelectedGameObject(resolution);
+                if (graphicsContainer.activeSelf)
+                {
+                    audioButton.onClick.Invoke();
+                    _eventSystem.SetSelectedGameObject(master);
+                }
+                else
+                {
+                    graphicsButton.onClick.Invoke();
+                    _eventSystem.SetSelectedGameObject(resolution);
+                }
             }
 
             if (Keybinds.Actions.UI.Save.WasPressedThisFrame())

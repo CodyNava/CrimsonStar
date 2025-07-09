@@ -15,7 +15,6 @@ public class PauseMenu : MonoBehaviour
 
     private void Awake()
     {
-        brightness.color = new Color(0f, 0f, 0f, PlayerPrefs.GetFloat("BrightnessValue"));
         CombatLose_GameState.onEnterState += CombatLose_GameState_onEnterState;
         CombatLose_GameState.onExitState += CombatLose_GameState_onExitState;
     }
@@ -69,6 +68,7 @@ public class PauseMenu : MonoBehaviour
     {
         Resume();
         NetModuleWeaponGroupData.ClearAllWeaponGroupKeys();
+        ShipEditorHealthOverlay.ClearHealthMap();
         SceneManager.LoadScene("MainMenu");
     }
 
