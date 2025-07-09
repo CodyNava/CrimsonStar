@@ -142,7 +142,7 @@ public class NetGameplayModule : NetworkBehaviour
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         if (IsOwner)
         {
-            RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
+           RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
             if (lowHealthAlarmSFX.IsNull == false)
             {
                 if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.35f)
@@ -151,12 +151,7 @@ public class NetGameplayModule : NetworkBehaviour
                     if (state == PLAYBACK_STATE.STOPPED)
                         _lowHealthAlarmInstance.start();
                 }
-                
             }
-        }
-        else
-        {
-            RuntimeManager.PlayOneShot(hitFeedbackSFX, transform.position);
         }
         //Todo: Implement VFX Here
         // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
@@ -187,6 +182,7 @@ public class NetGameplayModule : NetworkBehaviour
 
             S_DestroyModule();
         }
+
         Debug.Log("damage inflicted: " + damage);
 
         C_DisplayDamageObserver();

@@ -5,26 +5,33 @@ using UnityEngine;
 
 public class NetEditorModule : MonoBehaviour
 {
-    private static readonly int ColourShift = Shader.PropertyToID("_ColourShift");
+    private static readonly int ColourShift = Shader.PropertyToID("_EmissionColor");
     [field: SerializeField] public NetModuleID ModuleID { get; private set; }
     [field: SerializeField] public Transform VisualTransform { get; private set; }
     [HideInInspector] public bool IsSelected { get; set; }
     public HexCoordinate PlacedLocation { get; set; }
     public int PlacedRotation { get; set; }
     public NetModuleData ModuleData => ModuleID.GetModuleData();
+    [field: SerializeField] public HealthOverLayData healthOverLayData;
     public List<HexCoordinate> LocalCoordinates { get; private set; }
     [HideInInspector] public bool IsPowered { get; set; }
     [field: SerializeField] private GameObject PowerMaterialGameObject { get; set; }
-    private Material PowerMaterial { get; set; }
+    [field: SerializeField] private Material PowerMaterial { get; set; }
     private ShipEditor ShipEditor { get; set; }
     private ShipEditorWeaponGroups WeaponGroupManager { get; set; }
     private int CurrentGroup => WeaponGroupManager.currentGroup;
     [SerializeField] private int _insideCurrentGroup;
+    [SerializeField] private GameObject healthOverLayObject;
+    [SerializeField] private Color _healthOverLayObjectColour;
 
     [Tooltip("poweredColor is only Relevant if it can be Powered")] [field: SerializeField]
-    private Color32 poweredColor;
+    private Color poweredColor;
 
-    private Color32 _originalColor;
+    [Tooltip("notPoweredColor is only Relevant if it can be Powered")] [field: SerializeField]
+    private Color notPoweredColor;
+
+    private Color _originalColor;
+    private float _originalColorIntensity;
 
 
     public void Initialize()
@@ -41,10 +48,13 @@ public class NetEditorModule : MonoBehaviour
     {
         ShipEditor = FindFirstObjectByType<ShipEditor>();
         WeaponGroupManager = FindFirstObjectByType<ShipEditorWeaponGroups>();
+        if (ModuleData.ModuleID == NetModuleID.Bridge)
+            ShipEditorHealthOverlay.WriteHealthMap(PlacedLocation, ModuleData.BaseStats.health);
+
         if (!ModuleData.CanBePowered) return;
-        var mesh = GetComponentInChildren<MeshRenderer>();
-        PowerMaterial = mesh.materials[1];
+        PowerMaterial = PowerMaterialGameObject.GetComponent<MeshRenderer>().materials[2];
         _originalColor = PowerMaterial.GetColor(ColourShift);
+        _originalColorIntensity = Mathf.Max(_originalColor.r, _originalColor.g, _originalColor.b);
     }
 
     public void PickUpModule()
@@ -102,13 +112,43 @@ public class NetEditorModule : MonoBehaviour
         if (ModuleData.ModuleCategory == NetModuleCategory.Weapons) ChangeLayerBasedOnWeaponGroup();
     }
 
+    public void TotalHealthChangeOverLayColour()
+    {
+        var newColor = Color.white;
+
+        bool lowTotalHealth = healthOverLayData.LowHealth <= ModuleData.BaseStats.health;
+        bool midTotalHealth = healthOverLayData.MidHealth <= ModuleData.BaseStats.health;
+        bool highTotalHealth = healthOverLayData.HighHealth <= ModuleData.BaseStats.health;
+        bool superHighTotalHealth = healthOverLayData.SuperHighHealth <= ModuleData.BaseStats.health;
+
+        if (lowTotalHealth) newColor = healthOverLayData.LowHealthColor;
+        if (midTotalHealth) newColor = healthOverLayData.MidHealthColor;
+        if (highTotalHealth) newColor = healthOverLayData.HighHealthColor;
+        if (superHighTotalHealth) newColor = healthOverLayData.SuperHighHealthColor;
+
+        _healthOverLayObjectColour = newColor;
+        healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
+    }
+
+    public void PercentageHealthChangeOverLayColour(float colorValue)
+    {
+        if (!healthOverLayObject) return;
+        var newColor = Color.Lerp(healthOverLayData.LowestPercentageColor, healthOverLayData.HighestPercentageColor,
+            colorValue);
+        _healthOverLayObjectColour = newColor;
+        healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
+        Debug.Log("ColorValue ===  " + colorValue);
+    }
+
     private void ChangeMaterialAndCheckPowerAlways()
     {
         if (EnergyViewEnable())
         {
             if (ModuleData.CanBePowered)
             {
-                PowerMaterial.SetColor(ColourShift, IsPowered ? poweredColor : _originalColor);
+                PowerMaterial.SetColor(ColourShift, IsPowered
+                    ? poweredColor * _originalColorIntensity
+                    : notPoweredColor * _originalColorIntensity);
             }
         }
         else if (PowerMaterial.GetColor(ColourShift) != _originalColor)
@@ -122,9 +162,9 @@ public class NetEditorModule : MonoBehaviour
     private void ChangeLayerBasedOnWeaponGroup()
     {
         _insideCurrentGroup = NetModuleWeaponGroupData.ReadWeaponGroup(PlacedLocation);
-        
+
         AddToListWhenReconstructing();
-        
+
         if (!ShipEditor.EditorModuleList.Contains(this)) return;
         var inGroupOneAndGroupActive = _insideCurrentGroup == 1 && CurrentGroup == 1 && !IsSelected;
         var inGroupTwoAndGroupActive = _insideCurrentGroup == 2 && CurrentGroup == 2 && !IsSelected;

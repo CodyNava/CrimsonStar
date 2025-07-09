@@ -317,7 +317,7 @@ public class SettingsBehaviour : MonoBehaviour
         PlayerPrefs.SetInt(ResolutionPref, _currentResolutionIndex);
     }
 
-    private void Load()
+    public void Load()
     {
         masterSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(MasterVolumePref, 0.5f));
         musicSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(MusicVolumePref, 0.5f));

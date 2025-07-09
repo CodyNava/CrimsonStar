@@ -6,8 +6,6 @@ using UnityEngine;
 public class ShipEditorWeaponGroups : MonoBehaviour
 {
     public float buttonSelectedSizeIncrease;
-    public Color selectedColor;
-    public Color deSelectedColor;
     [SerializeField] private Camera mainCamera;
 
     [Header("WeaponGroups")] public int currentGroup;

@@ -30,6 +30,8 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     public Dictionary<ulong, NetMatchPlayer> PlayersByID { get; private set; }
     private readonly SyncDictionary<NetworkConnection, NetMatchPlayer> _playersByConnection = new();
     public SyncDictionary<NetworkConnection, NetMatchPlayer> PlayersByConnection => _playersByConnection;
+    private readonly SyncDictionary<ulong, NetworkConnection> _connectionsByPlayerID = new();
+    public SyncDictionary<ulong, NetworkConnection> ConnectionsByPlayerID => _connectionsByPlayerID;
     public Dictionary<NetworkConnection, NetLobbyData> ConnectionPlayerMap { get; } = new();
 
     private NetworkConnection _hostConnection;
@@ -39,6 +41,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     private float _updateAccumulator;
 
     // LobbySettings
+    private readonly SyncVar<NetRefundModuleID> _refundModuleSetting = new();
     private readonly SyncVar<NetFirendlyFireID> _friendlyFireSetting = new();
     private readonly SyncVar<int> _roundCount = new();
     private readonly SyncVar<float> _editorTimerDuration = new();
@@ -53,7 +56,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
             if (IsServerInitialized) _friendlyFireSetting.Value = value;
         }
     }
-
+    
     public float FriendlyFireDamageMult
     {
         get
@@ -63,6 +66,30 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
                 NetFirendlyFireID.Half => 0.5f,
                 NetFirendlyFireID.Quarter => 0.25f,
                 NetFirendlyFireID.Off => 0f,
+                _ => 1f
+            };
+        }
+    }
+    
+    
+    public NetRefundModuleID RefundModuleID
+    {
+        get => _refundModuleSetting.Value;
+        set
+        {
+            if (IsServerInitialized) _refundModuleSetting.Value = value;
+        }
+    }
+
+    public float RefundModule
+    {
+        get
+        {
+            return RefundModuleID switch
+            {
+                NetRefundModuleID.Half => 0.5f,
+                NetRefundModuleID.Quarter => 0.25f,
+                NetRefundModuleID.Off => 0f,
                 _ => 1f
             };
         }
@@ -204,6 +231,12 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     }
 
     [Server]
+    public void S_SyncPreview(NetLobbyBroadcasts.PreviewUIElements preview)
+    {
+            ServerManager.Broadcast(preview, false);
+    }
+
+    [Server]
     private void S_OnConnectionStateChange(NetworkConnection connection, RemoteConnectionStateArgs args)
     {
         if (args.ConnectionState == RemoteConnectionState.Started)
@@ -288,6 +321,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         Players = new NetworkObject[ConnectionPlayerMap.Count];
         PlayersByID = new Dictionary<ulong, NetMatchPlayer>();
         _playersByConnection.Clear();
+        _connectionsByPlayerID.Clear();
         int count = 0;
         foreach (var (conn, lobbyData) in ConnectionPlayerMap)
         {
@@ -297,6 +331,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
             Players[count++] = player.NetworkObject;
             PlayersByID.Add(player.PlayerID.Value, player);
             PlayersByConnection.Add(conn, player);
+            ConnectionsByPlayerID.Add(player.PlayerID.Value, conn);
         }
     }
 

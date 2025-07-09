@@ -52,4 +52,13 @@ public static class NetLobbyBroadcasts
     {
         
     }
+
+    public struct PreviewUIElements : IBroadcast
+    {
+        public NetTeamModeID GameMode;
+        public NetGameModeID ResourceMode;
+        public int Timer;
+        public int RoundCount;
+        public NetFirendlyFireID FriendlyFireMode;
+    }
 }

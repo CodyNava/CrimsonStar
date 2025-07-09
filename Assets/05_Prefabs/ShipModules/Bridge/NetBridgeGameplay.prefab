@@ -272,6 +272,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameDisplay: {fileID: 8340605821069804596}
   bridge: {fileID: 4735051456491862256}
+  bridgeModule: {fileID: 8401872920864926394}
 --- !u!1 &4525481826453554704
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,7 +299,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4525481826453554704}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -1.39}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -364,8 +365,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 1.2
-  m_fontSizeBase: 1.2
+  m_fontSize: 2
+  m_fontSizeBase: 2
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -478,6 +479,7 @@ MonoBehaviour:
   <HexTransform>k__BackingField: {fileID: 7126793065188569584}
   <VisualRootTransform>k__BackingField: {fileID: 2613784735972627428}
   deathVFX: {fileID: 1316573703697364532, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
+  cameraZoom: {fileID: 0}
   fmodListener: {fileID: -4323517859218442446}
 --- !u!114 &8401872920864926394
 MonoBehaviour:
@@ -589,7 +591,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 14
+  <PrefabId>k__BackingField: 15
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 11199547117643051825
   <SceneId>k__BackingField: 0
@@ -1165,6 +1167,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StarDust_BasedOnSpeed
       objectReference: {fileID: 0}
+    - target: {fileID: 12552585867280371, guid: 9ac4a04d77e9a704286fc4cebb4fcc46, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3383556698869232217, guid: 9ac4a04d77e9a704286fc4cebb4fcc46, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -1215,6 +1221,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3383556698869232217, guid: 9ac4a04d77e9a704286fc4cebb4fcc46, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5588706262186024430, guid: 9ac4a04d77e9a704286fc4cebb4fcc46, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
