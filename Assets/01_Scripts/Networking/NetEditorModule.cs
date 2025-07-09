@@ -12,7 +12,7 @@ public class NetEditorModule : MonoBehaviour
     public HexCoordinate PlacedLocation { get; set; }
     public int PlacedRotation { get; set; }
     public NetModuleData ModuleData => ModuleID.GetModuleData();
-    public HealthOverLayData HealthOverLayData;
+    [field: SerializeField] public HealthOverLayData healthOverLayData;
     public List<HexCoordinate> LocalCoordinates { get; private set; }
     [HideInInspector] public bool IsPowered { get; set; }
     [field: SerializeField] private GameObject PowerMaterialGameObject { get; set; }
@@ -49,12 +49,10 @@ public class NetEditorModule : MonoBehaviour
         ShipEditor = FindFirstObjectByType<ShipEditor>();
         WeaponGroupManager = FindFirstObjectByType<ShipEditorWeaponGroups>();
         if (ModuleData.ModuleID == NetModuleID.Bridge)
-        {
             ShipEditorHealthOverlay.WriteHealthMap(PlacedLocation, ModuleData.BaseStats.health);
-        }
+
         if (!ModuleData.CanBePowered) return;
-        var powerMesh = GetComponentInChildren<MeshRenderer>();
-        PowerMaterial = powerMesh.materials[3];
+        PowerMaterial = PowerMaterialGameObject.GetComponent<MeshRenderer>().materials[2];
         _originalColor = PowerMaterial.GetColor(ColourShift);
         _originalColorIntensity = Mathf.Max(_originalColor.r, _originalColor.g, _originalColor.b);
     }
@@ -117,16 +115,16 @@ public class NetEditorModule : MonoBehaviour
     public void TotalHealthChangeOverLayColour()
     {
         var newColor = Color.white.WithAlpha(0.3f);
-        
-        bool lowTotalHealth = ModuleData.BaseStats.health <= HealthOverLayData.LowHealth;
-        bool midTotalHealth = ModuleData.BaseStats.health <= HealthOverLayData.MidHealth;
-        bool highTotalHealth = ModuleData.BaseStats.health <= HealthOverLayData.HighHealth;
-        bool superHighTotalHealth = ModuleData.BaseStats.health <= HealthOverLayData.SuperHighHealth;
 
-        if (lowTotalHealth) newColor = HealthOverLayData.LowHealthColor;
-        if (midTotalHealth) newColor = HealthOverLayData.MidHealthColor;
-        if (highTotalHealth) newColor = HealthOverLayData.HighHealthColor;
-        if (superHighTotalHealth) newColor = HealthOverLayData.SuperHighHealthColor;
+        bool lowTotalHealth = healthOverLayData.LowHealth <= ModuleData.BaseStats.health;
+        bool midTotalHealth = healthOverLayData.MidHealth <= ModuleData.BaseStats.health;
+        bool highTotalHealth = healthOverLayData.HighHealth <= ModuleData.BaseStats.health;
+        bool superHighTotalHealth = healthOverLayData.SuperHighHealth <= ModuleData.BaseStats.health;
+
+        if (lowTotalHealth) newColor = healthOverLayData.LowHealthColor;
+        if (midTotalHealth) newColor = healthOverLayData.MidHealthColor;
+        if (highTotalHealth) newColor = healthOverLayData.HighHealthColor;
+        if (superHighTotalHealth) newColor = healthOverLayData.SuperHighHealthColor;
 
         _healthOverLayObjectColour = newColor;
         healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
@@ -134,12 +132,12 @@ public class NetEditorModule : MonoBehaviour
 
     public void PercentageHealthChangeOverLayColour(float colorValue)
     {
-        
         if (!healthOverLayObject) return;
-        var newColor = Color.Lerp(HealthOverLayData.LowestPercentageColor, HealthOverLayData.HighestPercentageColor, colorValue);
-         _healthOverLayObjectColour = newColor;
+        var newColor = Color.Lerp(healthOverLayData.LowestPercentageColor, healthOverLayData.HighestPercentageColor,
+            colorValue);
+        _healthOverLayObjectColour = newColor;
         healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
-         Debug.Log("ColorValue ===  "+colorValue);
+        Debug.Log("ColorValue ===  " + colorValue);
     }
 
     private void ChangeMaterialAndCheckPowerAlways()

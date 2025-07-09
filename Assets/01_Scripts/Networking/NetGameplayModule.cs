@@ -64,9 +64,9 @@ public class NetGameplayModule : NetworkBehaviour
 
     public void OnDestroy()
     {
-        //if (ModuleID != NetModuleID.Bridge) return;
-        //_lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
-        //_lowHealthAlarmInstance.release();
+        if (ModuleID != NetModuleID.Bridge) return;
+        _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
+        _lowHealthAlarmInstance.release();
     }
 
     public override void OnStartClient()
@@ -142,7 +142,7 @@ public class NetGameplayModule : NetworkBehaviour
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         if (IsOwner)
         {
-           // RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
+           RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
             if (lowHealthAlarmSFX.IsNull == false)
             {
                 if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.35f)
@@ -156,7 +156,7 @@ public class NetGameplayModule : NetworkBehaviour
         }
         else
         {
-           // RuntimeManager.PlayOneShot(hitFeedbackSFX, transform.position);
+           RuntimeManager.PlayOneShot(hitFeedbackSFX, transform.position);
         }
         //Todo: Implement VFX Here
         // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
