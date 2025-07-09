@@ -6,6 +6,7 @@ using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using FishNet.Transporting;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -120,15 +121,17 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Remove(owner);
         _eliminatedPlayers.Add(owner);
 
-
-        if (_eliminatedPlayers.Count >= PlayerCount * 0.25f)
+        /*
+        if (_eliminatedPlayers.Count >= PlayerCount / 2)
         {
             SceneAudioManager.instance.IncreaseMusicProgress();
             C_TriggerIncreaseMusicProgress();
-        }
-
-        C_TriggerOnRegisterPlayerDeath(owner);
-        TriggerOnRegisterPlayerDeath(owner);
+        } */
+        
+        ServerManager.Broadcast(new NetGameplayBroadcasts.PlayerDeath
+        {
+            conn = owner   
+        });
 
         if (S_IsMatchComplete())
         {
@@ -236,7 +239,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         C_TriggerResetMusic();
     }
 
-
+    /*
     [ObserversRpc]
     [Client]
     private void C_TriggerIncreaseMusicProgress()
@@ -247,7 +250,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     private void IncreaseMusicProgress()
     {
         SceneAudioManager.instance.IncreaseMusicProgress();
-    }
+    }*/
 
     [ObserversRpc]
     [Client]
@@ -313,6 +316,15 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             AttackerID = attackerID,
             DefenderID = defenderID
         });
+
+        NetworkConnection conn = _lobbyConductor.ConnectionsByPlayerID[attackerID];
+        if(conn != null) TriggerKillAnnouncer(conn, Channel.Reliable);
+    }
+
+    [TargetRpc]
+    private void TriggerKillAnnouncer(NetworkConnection conn, Channel channel)
+    {
+        // TODO: Trigger Kill Announcer SFX
     }
 
     [Server]
