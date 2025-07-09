@@ -15,6 +15,6 @@ public class ShipEditorCurrencyDisplay : MonoBehaviour
         {
             return;
         }
-        currency.text = $"Currency: {playerData.ResourceCount.Value}";
+        currency.text = $"{playerData.ResourceCount.Value}";
     }
 }
