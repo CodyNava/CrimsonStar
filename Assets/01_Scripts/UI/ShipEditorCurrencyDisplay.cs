@@ -7,22 +7,14 @@ public class ShipEditorCurrencyDisplay : MonoBehaviour
 {
     [SerializeField] private ShipEditor shipEditor;
     [SerializeField] private TMP_Text currency;
-    private StringBuilder stringBuilder = new();
 
     void Update()
     {
-        NetShipEditorData netShipEditorData = shipEditor.NetShipEditorData;
-        if (netShipEditorData == null)
+        NetMatchPlayer playerData = shipEditor.PlayerData;
+        if (playerData == null)
         {
             return;
         }
-        stringBuilder.Clear();
-        foreach (int currencyNumber in Enum.GetValues(typeof(NetCurrencyType)))
-        {
-            NetCurrencyType currencyType = (NetCurrencyType)currencyNumber;
-            int count = netShipEditorData.ResourceStorage.C_GetRemainingResourceCount(currencyType);
-            stringBuilder.AppendLine($"{count}");
-        }
-        currency.text = stringBuilder.ToString();
+        currency.text = $"{playerData.ResourceCount.Value}";
     }
 }

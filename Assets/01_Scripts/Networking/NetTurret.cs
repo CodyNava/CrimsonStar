@@ -1,18 +1,22 @@
-﻿using FishNet.Object;
+﻿using System;
+using System.Collections.Generic;
+using FishNet.Object;
+using FMODUnity;
+using Steamworks;
 using UnityEngine;
-using UnityEngine.VFX; 
+using UnityEngine.InputSystem;
+using UnityEngine.VFX;
+
 public class NetTurret : NetworkBehaviour
 {
     [SerializeField] private NetTurretData netTurretData;
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransformA, spawnTransformB;
     [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
-    [SerializeField] private AudioSource shootingSound;
+    [SerializeField] private StudioEventEmitter shotEvent;
     private const float MaxPassedTime = 0.3f;
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
-    
-
     private float _accumulatedTime;
 
     public override void OnStartClient()
@@ -25,14 +29,15 @@ public class NetTurret : NetworkBehaviour
         _nextMuzzleFlash = muzzleFlashA;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (!IsOwner) return;
         _accumulatedTime += Time.deltaTime;
         _accumulatedTime = Mathf.Min(_accumulatedTime, netTurretData.Cooldown);
 
         if (_accumulatedTime < netTurretData.Cooldown) return;
-        if (!Keybinds.Actions.Player.Attack.IsPressed()) return;
+
+        // if (!C_IsAttacking()) return;
 
         if (_nextSpawnTransform == spawnTransformA)
         {
@@ -45,8 +50,31 @@ public class NetTurret : NetworkBehaviour
             _nextMuzzleFlash = muzzleFlashA;
         }
 
-        C_ClientFire();
-        _accumulatedTime -= netTurretData.Cooldown;
+        if (C_IsAttacking())
+        {
+            C_ClientFire();
+            _accumulatedTime = 0f;
+        }
+    }
+
+    private bool C_IsAttacking()
+    {
+        if (!InputManager.Instance.IsGamepadUsed)
+        {
+            switch (turretModule.WeaponGroup)
+            {
+                case 2: return Keybinds.Actions.Player.Attack2.IsPressed();
+                case 3: return Keybinds.Actions.Player.Attack3.IsPressed();
+                default:
+                case 1: return Keybinds.Actions.Player.Attack.IsPressed();
+            }
+        }
+        else
+        {
+            Vector2 input = Keybinds.Actions.Player.GamepadAim.ReadValue<Vector2>();
+            // TODO: The stick deadzone is implemented hardcoded via magic number. Consider to use dedicated Stick deadzone preprocessor in InputActions
+            return input.magnitude > 0.2f;
+        }
     }
 
     private void C_ClientFire()
@@ -56,37 +84,42 @@ public class NetTurret : NetworkBehaviour
 
         if (!IsHostInitialized)
         {
-            C_SpawnProjectile(position, direction, 0f);
+            C_SpawnProjectile(position, direction, 0f, PlayerData.PlayerID);
         }
-        S_ServerFire(position, direction, TimeManager.Tick);
+
+        S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID);
         _nextMuzzleFlash.Play();
-        shootingSound.Play();
+        shotEvent.Play();
     }
 
-    private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime)
+    private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
         NetPredictedProjectile pp = Instantiate(netTurretData.Projectile, position, Quaternion.identity);
-        pp.Initialize(direction, passedTime, turretModule.NetTeamID);
+        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge);
     }
 
     [ServerRpc]
-    private void S_ServerFire(Vector3 position, Vector3 direction, uint tick)
+    private void S_ServerFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime / 2f, passedTime);
 
-        C_SpawnProjectile(position, direction, passedTime);
-        C_ObserversFire(position, direction, tick);
+        if (IsOwner)
+        {
+            C_SpawnProjectile(position, direction, passedTime, senderID);
+        }
+
+        C_ObserversFire(position, direction, tick, senderID);
     }
 
     [ObserversRpc(ExcludeOwner = true)]
-    private void C_ObserversFire(Vector3 position, Vector3 direction, uint tick)
+    private void C_ObserversFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
-        C_SpawnProjectile(position, direction, passedTime);
+        C_SpawnProjectile(position, direction, passedTime, senderID);
         _nextMuzzleFlash.Play();
-
+        shotEvent.Play();
         if (_nextMuzzleFlash == muzzleFlashA)
         {
             _nextMuzzleFlash = muzzleFlashB;

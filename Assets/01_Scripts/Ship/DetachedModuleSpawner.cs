@@ -19,5 +19,22 @@ namespace _01_Scripts.Ship
         {
             return SpawnDetachedModule(moduleID, transform, Vector2.zero);
         }
+        
+// #if UNITY_EDITOR
+         [SerializeField] private Vector2 _debugVelocity;
+         [SerializeField] private NetModuleID _debugModuleID;
+
+         private void Update()
+         {
+             if (Input.GetKeyDown(KeyCode.O))
+             {
+                 for (int i = 0; i < 10; ++i)
+                 {
+                     int moduleID = Random.Range(2, (int)NetModuleID.TurretRocket);
+                     SpawnDetachedModule((NetModuleID)moduleID, transform, Random.onUnitSphere);
+                 }
+             }
+         }
+// #endif
     }
 }

@@ -55,8 +55,31 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 1349169098673917716}
   <ModuleID>k__BackingField: 2
   <VisualTransform>k__BackingField: {fileID: 1444197679776078048}
-  deathVFX: {fileID: 1316573703697364532, guid: 5c22353f35ed8ab479f53a6b33af00e3, type: 3}
+  <WeaponGroup>k__BackingField: 0
+  deathVFX: {fileID: 3855630418371909128, guid: a48c47118e70ca4408d122c10549bf2e, type: 3}
   damagedVFX: {fileID: 6509340592068427856}
+  damagedMaterial: {fileID: 306806624908010383}
+  hitFeedbackSFX:
+    Guid:
+      Data1: -1123778214
+      Data2: 1199229707
+      Data3: 1083911852
+      Data4: -821422648
+    Path: event:/SFX/HitEnemyFeedback_SFX
+  gotHitFeedbackSFX:
+    Guid:
+      Data1: 1507108982
+      Data2: 1326065546
+      Data3: 36086663
+      Data4: 611758014
+    Path: event:/SFX/GetDamage_SFX
+  lowHealthAlarmSFX:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   _detachmentForce: 0
 --- !u!114 &1349169098673917716
 MonoBehaviour:
@@ -278,6 +301,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e1dfea3d6f09c7343b7deca90c1b1dc9, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0ce405b6b789e9f4d9ee4a9f06a35fab, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: 'm_Materials.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ebcf81e07a2410f43b89ad13d2b76734, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: 'm_Materials.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ebcf81e07a2410f43b89ad13d2b76734, type: 2}
+    - target: {fileID: -5754084199372789682, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 5397065356779488769, guid: 6ac3306ebef9814479eac3c44badde9c, type: 3}
     - target: {fileID: 919132149155446097, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
       propertyPath: m_Name
       value: SM_Module_Armour1_BO
@@ -291,6 +338,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+--- !u!23 &306806624908010383 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
+  m_PrefabInstance: {fileID: 1405241135860973323}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1444197679776078048 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 85bab0b289ee1c748a85f811b183a9fb, type: 3}
@@ -314,7 +366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1729894039049434911, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 1729894039049434911, guid: 44a16cfab2b4c404fbb1405d127d190c, type: 3}
       propertyPath: m_LocalRotation.w

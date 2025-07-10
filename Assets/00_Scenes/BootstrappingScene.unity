@@ -150,8 +150,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   <ModuleDB>k__BackingField: {fileID: 11400000, guid: a95d865cb5043e649b8bc170e9fb7a58, type: 2}
-  <DefaultEditorResources>k__BackingField: {fileID: 11400000, guid: 6feb4951a67086941947de07078313ad, type: 2}
-  <CurrencyConfig>k__BackingField: {fileID: 11400000, guid: a06d377e37ab80a4382fe0911f0a1640, type: 2}
+  <GameModeConfig>k__BackingField: {fileID: 11400000, guid: 67dc85c9f7afee841975a14a2f2d0b75, type: 2}
+  customGameMode:
+    BaseCurrency: 150
+    CurrencyAddedPerRound: 150
 --- !u!4 &866459518
 Transform:
   m_ObjectHideFlags: 0
@@ -179,8 +181,10 @@ GameObject:
   - component: {fileID: 1211956699}
   - component: {fileID: 1211956698}
   - component: {fileID: 1211956697}
-  - component: {fileID: 1211956696}
   - component: {fileID: 1211956695}
+  - component: {fileID: 1211956703}
+  - component: {fileID: 1211956696}
+  - component: {fileID: 1211956702}
   - component: {fileID: 1211956694}
   - component: {fileID: 1211956693}
   - component: {fileID: 1211956701}
@@ -239,7 +243,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34e4a322dca349547989b14021da4e23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Transport: {fileID: 1211956696}
+  Transport: {fileID: 1211956703}
   _intermediateLayer: {fileID: 0}
   _latencySimulator:
     _enabled: 0
@@ -276,7 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 211a9f6ec51ddc14f908f5acc0cd0423, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPrefab: {fileID: 4295610133503069225, guid: acae87e8575d321408d259dd2205290d, type: 3}
+  _playerPrefab: {fileID: 0}
   _addToDefaultScene: 1
   Spawns: []
 --- !u!114 &1211956698
@@ -345,6 +349,43 @@ MonoBehaviour:
   _lightProbeUpdating: 0
   _moveClientObjects: 1
   _setActiveScene: 1
+--- !u!114 &1211956702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211956692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f48f002b825cbd45a19bd96d90f9edb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stopSocketsOnThread: 0
+  _dontRoute: 0
+  _unreliableMtu: 1023
+  _ipv4BindAddress: 
+  _enableIpv6: 0
+  _ipv6BindAddress: 
+  _port: 7771
+  _maximumClients: 4095
+  _clientAddress: localhost
+--- !u!114 &1211956703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211956692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 314b449d3505bd24487ba69b61c2fda5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalServerActions: 1
+  _transports:
+  - {fileID: 1211956696}
+  - {fileID: 1211956702}
 --- !u!1 &2073234903
 GameObject:
   m_ObjectHideFlags: 0

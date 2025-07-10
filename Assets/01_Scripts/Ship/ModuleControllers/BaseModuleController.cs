@@ -16,6 +16,7 @@ namespace _01_Scripts.Ship.ModuleControllers
         private float currentHp;
 
         protected ShipController _shipController;
+        public ShipController ShipController => _shipController;
 
         // TODO: Reduce OnCombatState Hooks into ShipController
         
@@ -67,7 +68,7 @@ namespace _01_Scripts.Ship.ModuleControllers
             {
                 Destroy(other);
 
-                float updatedHP = Mathf.Max(currentHp - projectile._BaseProjectileObject.Damage, 0f);
+                float updatedHP = Mathf.Max(currentHp - projectile._BaseProjectileObject.ProjectileDamage, 0f);
                 float deltaHP = updatedHP - currentHp;
                 _shipController.UpdateCurrentHP(deltaHP);
                 currentHp = updatedHP;

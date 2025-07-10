@@ -2,6 +2,12 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
+using _01_Scripts.Ship;
+using _01_Scripts.Ship.ModuleControllers;
+using FishNet.Component.Prediction;
+using FishNet.Connection;
+using FishNet.Transporting;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -13,36 +19,50 @@ public class NetBridge : NetworkBehaviour
 
     [SerializeField] private GameObject deathVFX;
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
+    private readonly SyncVar<string> _displayName = new();
+    private readonly SyncVar<ulong> _playerId = new();
+    public CameraZoom cameraZoom;
     public NetModuleBaseStats BaseStats => _baseStats.Value;
+    public string DisplayName => _displayName.Value;
+    public ulong PlayerID => _playerId.Value;
 
     private Dictionary<HexCoordinate, NetGameplayModule> _modules = new();
+    private Dictionary<HexCoordinate, int> _powerGrid = new();
+    public Dictionary<HexCoordinate, int> PowerGrid => _powerGrid;
     public NetGameplayModule BridgeModule => _modules[HexCoordinate.Zero];
 
+    private NetworkCollision2D _networkCollision2D;
+
+    [SerializeField] private StudioListener fmodListener;
+
+    [Server]
     public void S_AttachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         _baseStats.Value = _baseStats.Value.Combine(module.ModuleID.GetModuleData().BaseStats);
-        module.ModuleID.GetModuleData().GetLocalHexCoordinates();
-        AddModuleCoordinates(module, rootCoordinate);
+        S_AddModuleCoordinates(module, rootCoordinate);
     }
 
+    [Server]
     public void S_DetachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
         _baseStats.Value = _baseStats.Value.Subtract(module.ModuleID.GetModuleData().BaseStats);
-        RemoveModuleCoordinates(module, rootCoordinate);
+        S_RemoveModuleCoordinates(module, rootCoordinate);
 
         if (module.ModuleID == NetModuleID.Bridge)
         {
-            Dictionary<HexCoordinate, NetGameplayModule> modules = new Dictionary<HexCoordinate, NetGameplayModule>(_modules);
+            Dictionary<HexCoordinate, NetGameplayModule> modules =
+                new Dictionary<HexCoordinate, NetGameplayModule>(_modules);
             foreach (var (c, m) in modules)
             {
                 m.S_DetachModule();
             }
 
-            InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath();
+            InstanceFinder.GetInstance<NetGameplayConductor>().S_RegisterPlayerDeath(NetworkObject.Owner);
             Despawn(NetworkObject);
         }
     }
 
+    [Server]
     public void S_DetachLooseModules()
     {
         var looseModules = GetLooseModules();
@@ -52,26 +72,76 @@ public class NetBridge : NetworkBehaviour
         }
     }
 
-    private void AddModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
+    [Server]
+    private void S_AddModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
-        var localHexCoordinates = module.ModuleID.GetModuleData().GetLocalHexCoordinates();
+        var moduleData = module.ModuleID.GetModuleData();
+        var localHexCoordinates = moduleData.GetLocalHexCoordinates();
         foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
         {
-            Assert.IsFalse(_modules.ContainsKey(localHexCoordinate + rootCoordinate), "Placement check failed! Tried to add Module that overlaps already occupied HexCoordinate!");
+            HexCoordinate coordinate = localHexCoordinate + rootCoordinate;
+            Assert.IsFalse(_modules.ContainsKey(coordinate),
+                "Placement check failed! Tried to add Module that overlaps already occupied HexCoordinate!");
             // We add each localHexCoordinate that the module occupies to the list
             // As the localHexCoordinates are only in module local space, we add the rootCoordinate as an offset
-            _modules.Add(localHexCoordinate + rootCoordinate, module);
+            _modules.Add(coordinate, module);
+        }
+
+        if (module.ModuleID == NetModuleID.Reactor)
+        {
+            foreach (var coordinate in rootCoordinate.CoordinatesInRange(moduleData.EffectRange))
+            {
+                int power = _powerGrid.GetValueOrDefault(coordinate);
+                _powerGrid[coordinate] = power + 1;
+            }
+
+            C_AddToPowerGrid(rootCoordinate, moduleData.EffectRange);
         }
     }
 
-    private void RemoveModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
+    [ObserversRpc]
+    [Client]
+    private void C_AddToPowerGrid(HexCoordinate rootCoordinate, int range)
     {
-        var localHexCoordinates = module.ModuleID.GetModuleData().GetLocalHexCoordinates();
+        foreach (var coordinate in rootCoordinate.CoordinatesInRange(range))
+        {
+            int power = _powerGrid.GetValueOrDefault(coordinate);
+            _powerGrid[coordinate] = power + 1;
+        }
+    }
+    [Server]
+    private void S_RemoveModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
+    {
+        var moduleData = module.ModuleID.GetModuleData();
+        var localHexCoordinates = moduleData.GetLocalHexCoordinates();
         foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
         {
+            HexCoordinate coordinate = localHexCoordinate + rootCoordinate;
             // We remove each localHexCoordinate that the module occupies to the list
             // As the localHexCoordinates are only in module local space, we add the rootCoordinate as an offset
-            _modules.Remove(localHexCoordinate + rootCoordinate);
+            _modules.Remove(coordinate);
+        }
+
+        if (module.ModuleID == NetModuleID.Reactor)
+        {
+            foreach (var coordinate in rootCoordinate.CoordinatesInRange(2))
+            {
+                int power = _powerGrid.GetValueOrDefault(coordinate);
+                _powerGrid[coordinate] = power - 1;
+            }
+
+            C_RemovePowerFromGrid(rootCoordinate, moduleData.EffectRange);
+        }
+    }
+
+    [ObserversRpc]
+    [Client]
+    private void C_RemovePowerFromGrid(HexCoordinate rootCoordinate, int range)
+    {
+        foreach (HexCoordinate coordinate in rootCoordinate.CoordinatesInRange(range))
+        {
+            int power = _powerGrid.GetValueOrDefault(coordinate);
+            _powerGrid[coordinate] = power - 1;
         }
     }
 
@@ -85,6 +155,10 @@ public class NetBridge : NetworkBehaviour
             if (module.ModuleID == NetModuleID.Bridge) continue;
             looseModules.Add(module);
         }
+
+        // If the Bridge isn't present anymore, everything else is a loose module
+        if (!_modules.ContainsKey(HexCoordinate.Zero)) return looseModules;
+
 
         HashSet<HexCoordinate> handledCoordinates = new HashSet<HexCoordinate>();
         Queue<HexCoordinate> checkingCoordinates = new Queue<HexCoordinate>();
@@ -138,15 +212,23 @@ public class NetBridge : NetworkBehaviour
     {
         if (IsOwner)
         {
+            cameraZoom = FindFirstObjectByType<CameraZoom>();
             FindFirstObjectByType<CameraFollow>().SetTargetFollow(VisualRootTransform);
+            fmodListener.enabled = true;
+        }
+        else
+        {
+            fmodListener.enabled = false;
         }
     }
+
     public override void OnStopClient()
     {
         if (IsOwner)
         {
             FindFirstObjectByType<CameraFollow>()?.SetTargetFollow(null);
         }
+
         Instantiate(deathVFX, VisualRootTransform.position, Quaternion.identity);
         Destroy(VisualRootTransform.gameObject);
     }
@@ -170,12 +252,103 @@ public class NetBridge : NetworkBehaviour
     {
         return BridgeConfig.LinearDampingCoefficient;
     }
+
     public float GetMaxMoveSpeed()
     {
         return BridgeConfig.MaxMovementSpeed / (1 + _baseStats.Value.mass);
     }
+
     public float GetMaxAngularVelocity()
     {
         return BridgeConfig.MaxAngularSpeed / (1 + _baseStats.Value.mass);
+    }
+
+    [Server]
+    public void S_SetDisplayName(string displayName)
+    {
+        _displayName.Value = displayName;
+    }
+
+    [Server]
+    public void S_SetPlayerID(ulong playerID)
+    {
+        _playerId.Value = playerID;
+    }
+
+    [ObserversRpc(ExcludeOwner = false)]
+    public void HandleEndOfRound()
+    {
+        // Todo: Perhaps replace ship with non-networked copy and despawn networked version w/o playing explosions
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        OnEnterCollision2D(collision.collider);
+    }
+
+
+    private void OnEnterCollision2D(Collider2D collider)
+    {
+        // Only the server should handle collision damage
+        if (!IsServerInitialized) return;
+
+        NetGameplayModule module = collider.gameObject.GetComponent<NetGameplayModule>();
+        BaseModuleController moduleController = collider.gameObject.GetComponent<BaseModuleController>();
+
+        if (module == null && moduleController == null) return;
+
+        if (module == null || module.Bridge != this)
+        {
+            S_HandleCollision(collider);
+        }
+    }
+
+    [Server]
+    private void S_HandleCollision(Collider2D collider)
+    {
+        // TODO: Make magic number not magic anymore
+        float kineticEnergyConstant = 1f;
+        float velocityThreshold = 1f;
+        float impactEnergyModifier = 3.5f;
+
+        ContactPoint2D[] contacts = new ContactPoint2D[1];
+        if (collider.GetContacts(contacts) < 1) return;
+
+        ContactPoint2D contactPoint = contacts[0];
+        Vector2 relVel = -contactPoint.relativeVelocity;
+
+        if (relVel.magnitude < velocityThreshold) return;
+
+
+        float massA = BaseStats.mass;
+        Vector2 impactNormal = contactPoint.normal;
+
+        Rigidbody2D localBody2D = contactPoint.rigidbody;
+        Rigidbody2D remoteBody2D = contactPoint.otherRigidbody;
+        Collider2D localCollider = contactPoint.collider;
+
+        // Currently disabled, as the damage calculation doesnt accounts for ship alignment toward impact normal
+        // float dotA = Mathf.Abs(Vector2.Dot(localBody2D.linearVelocity.normalized, impactNormal));
+
+        NetGameplayModule otherGameplayModule = remoteBody2D.gameObject.GetComponent<NetGameplayModule>();
+        if (otherGameplayModule == null || otherGameplayModule.Bridge == this) return;
+        float massB = otherGameplayModule.Bridge.BaseStats.mass;
+
+        // Energy calculations
+        float impactEnergy = impactEnergyModifier * kineticEnergyConstant * (massA * massB / (massA + massB)) *
+                             relVel.sqrMagnitude;
+
+        // Damage calculations
+        float damage = impactEnergy * (massB / (massA + massB));
+
+        NetGameplayModule gameplayModule = localCollider.gameObject.GetComponent<NetGameplayModule>();
+
+        // TODO: Probably causes issues on damageDealt, which causes Dealt and Received not to align
+        gameplayModule.S_InflictDamage(damage, _playerId.Value);
+    }
+
+    public bool PositionHasEnergy(HexCoordinate coord)
+    {
+        return _powerGrid.GetValueOrDefault(coord) > 0;
     }
 }

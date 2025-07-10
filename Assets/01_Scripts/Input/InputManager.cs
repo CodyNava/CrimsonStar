@@ -10,15 +10,19 @@ public class InputManager : SceneSingleton<InputManager>
     protected override void Init()
     {
         playerInput.actions = Keybinds.Actions.asset;
+        Keybinds.Actions.UI.Enable();
+        Keybinds.Actions.ShipEditor.Enable();
     }
 
     public static void EnableGameControls()
     {
         Keybinds.Actions.Player.Enable();
+        Keybinds.Actions.Camera.Enable();
     }
 
     public static void DisableGameControls()
     {
         Keybinds.Actions.Player.Disable();
+        Keybinds.Actions.Camera.Disable();
     }
 }

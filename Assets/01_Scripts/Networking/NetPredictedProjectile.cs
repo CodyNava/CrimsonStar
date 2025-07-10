@@ -1,33 +1,38 @@
-﻿using FishNet;
+﻿using _01_Scripts.Projectiles;
+using FishNet;
+using Steamworks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
 
 public class NetPredictedProjectile : MonoBehaviour
 {
-    [SerializeField] private float projectileSpeed;
-    [SerializeField] private float projectileDamage;
-    [SerializeField] private float projectileTimer;
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
+    [SerializeField] public BaseProjectileObject baseProjectileObject;
     
-    public float ProjectileSpeed => projectileSpeed;
-    public float ProjectileDamage => projectileDamage;
-    public float ProjectileTimer => projectileTimer;
-
+    private ulong _attackerID;
     private NetTeamID _netTeamID;
     private Vector3 _direction;
     private float _passedTime = 0f;
+    private NetBridge _bridgeOrigin;
 
-    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID)
+    private NetLobbyConductor _lobbyConductor;
+    
+    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID, NetBridge bridgeOrigin)
     {
         _direction = direction;
         _passedTime = passedTime;
         _netTeamID = netTeamID;
-        Destroy(gameObject, projectileTimer);
+        _attackerID = attackerID;
+        _bridgeOrigin = bridgeOrigin;
+        Destroy(gameObject, baseProjectileObject.ProjectileTimer);
         if (bulletVFX.HasVector3("DirectionVector_position"))
         {
             bulletVFX.SetVector3("DirectionVector_position", _direction);
         }
+
+        InstanceFinder.TryGetInstance(out _lobbyConductor);
     }
 
     private void Update()
@@ -49,23 +54,32 @@ public class NetPredictedProjectile : MonoBehaviour
             passedDt = step;
         }
 
-        transform.position += _direction * (projectileSpeed * (dt + passedDt));
+        transform.position += _direction * (baseProjectileObject.ProjectileSpeed * (dt + passedDt));
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.NetTeamID == _netTeamID) return;
+        if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.Bridge == _bridgeOrigin) return;
+
+        if (!_lobbyConductor.IsUnityNull())
+        {
+            if (module.NetTeamID == _netTeamID && _lobbyConductor.FriendlyFireID == NetFirendlyFireID.Off) return;
+        }
 
         if (InstanceFinder.IsClientStarted)
         {
-            // Visual and Audio
+            Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
         }
 
         if (InstanceFinder.IsServerStarted)
         {
-            module.S_InflictDamage(projectileDamage);
+            float friendlyFireDamageMult = 1f;
+            if (module.NetTeamID == _netTeamID) friendlyFireDamageMult = _lobbyConductor.FriendlyFireDamageMult;
+            
+            module.S_InflictDamage(baseProjectileObject.ProjectileDamage * friendlyFireDamageMult, _attackerID);
+            Debug.Log("damage inflicted 2 : ");
         }
-        Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
+        
         Destroy(gameObject);
     }
 }

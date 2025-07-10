@@ -104,6 +104,18 @@ public struct HexCoordinate : IEquatable<HexCoordinate>
         }
     }
 
+    public IEnumerable<HexCoordinate> CoordinatesInRange(int range)
+    {
+        for (int q = -range; q <= range; q++)
+        {
+            for (int r = Mathf.Max(-range, -q - range); r <= Mathf.Min(range, -q + range); r++)
+            {
+                int s = -q - r;
+                yield return this + new HexCoordinate(q, r, s);
+            }
+        }
+    }
+
     public bool Equals(HexCoordinate other)
     {
         return Q == other.Q && R == other.R && S == other.S;

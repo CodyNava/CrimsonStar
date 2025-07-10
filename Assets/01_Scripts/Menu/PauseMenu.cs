@@ -1,14 +1,17 @@
 using _01_Scripts.GameState.States;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] GameObject pauseMenuUI;
-    [SerializeField] GameObject settingsMenuUI;
-    [SerializeField] GameObject deathScreenUi;
+    [SerializeField] private GameObject pauseMenuUI;
+    [SerializeField] private GameObject panel;
+    [SerializeField] private GameObject settingsMenuUI;
+    [SerializeField] private GameObject deathScreenUi;
+    [SerializeField] private Image brightness;
 
-    [SerializeField] bool paused = false;
+    [SerializeField] private bool paused = false;
 
     private void Awake()
     {
@@ -34,7 +37,7 @@ public class PauseMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (!paused)
             {
@@ -50,8 +53,8 @@ public class PauseMenu : MonoBehaviour
     private void Pause()
     {
         paused = true;
+        panel.SetActive(true);
         pauseMenuUI.SetActive(true);
-        Time.timeScale = 0f;
     }
 
     public void Resume()
@@ -59,13 +62,13 @@ public class PauseMenu : MonoBehaviour
         paused = false;
         pauseMenuUI.SetActive(false);
         settingsMenuUI.SetActive(false);
-        Time.timeScale = 1.0f;
     }
 
     public void BackToMenu()
     {
         Resume();
-        //GameStateController.Instance.ChangeState(new MainMenu_GameState());
+        NetModuleWeaponGroupData.ClearAllWeaponGroupKeys();
+        ShipEditorHealthOverlay.ClearHealthMap();
         SceneManager.LoadScene("MainMenu");
     }
 

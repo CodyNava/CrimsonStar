@@ -1,5 +1,6 @@
 ﻿using FishNet;
 using FishNet.Transporting;
+using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,34 +8,103 @@ using UnityEngine.UI;
 
 public class LobbyUI : MonoBehaviour
 {
-    [SerializeField] private TMP_Text[] nameList;
-    [SerializeField] private Button startGameButton;
+    [SerializeField] private PlayerPlateDisplay[] playerPlates;
+    [SerializeField] private GameSettingsHost hostSettings;
+    [SerializeField] private Button startGameButton, readyButton;
+    [SerializeField] private TMP_Text readyButtonText;
+    [SerializeField] private SwitchTeamsButton switchTeamsButton;
+
+    private NetTeamModeID _currentTeamMode;
     
+    private bool _ready;
+
+    public void Update()
+    {
+        switchTeamsButton.SetPlayerID(PlayerData.PlayerID); // temp fix 
+    }
+
     private void OnEnable()
     {
         InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
+        InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
+        InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(OnTeamModeChanged);
+        InstanceFinder.ClientManager.RegisterBroadcast<NetLobbyBroadcasts.PreviewUIElements>(SyncPreview);
+        switchTeamsButton.SetPlayerID(PlayerData.PlayerID);
+    }
+
+    private void OnTeamModeChanged(NetLobbyBroadcasts.SetTeamMode msg, Channel channel)
+    {
+        hostSettings.UpdateGameModeDisplay(msg);
+    }
+
+    private void OnGameModeChanged(NetLobbyBroadcasts.SetGameMode msg, Channel channel)
+    {
+        hostSettings.UpdateGameSettingsDisplay(msg);
     }
 
     private void OnPlayerListUpdate(NetLobbyBroadcasts.PlayerListUpdate msg, Channel channel)
     {
-        if (SteamPlayer.IsLobbyHost)
+        if (PlayerData.IsLobbyHost)
         {
             startGameButton.gameObject.SetActive(true);
         }
+        else
+        {
+            readyButton.gameObject.SetActive(true);
+        }
         
         ClearNames();
-
+        
+        int teamAIndice = 0;
+        int teamBIndice = 0;
         for (int i = 0; i < msg.Players.Length; i++)
         {
-            nameList[i].text = msg.Players[i].playerDisplayName;
+            if (hostSettings.CurrentSelectedTeamMode == NetTeamModeID.TeamMode)
+            {
+                switch (msg.Players[i].playerTeamID)
+                {
+                    case NetTeamID.Team1:
+                        playerPlates[teamAIndice].UpdateDisplay(msg.Players[i], msg.TeamMode);
+                        teamAIndice++;
+                        break;
+                    case NetTeamID.Team2:
+                        playerPlates[4+teamBIndice].UpdateDisplay(msg.Players[i], msg.TeamMode);
+                        teamBIndice++;
+                        break;
+                }
+            }
+            else
+            {
+                playerPlates[i].UpdateDisplay(msg.Players[i], msg.TeamMode);
+            }
+            
+            if (msg.Players[i].playerID == PlayerData.PlayerID)
+            {
+                switchTeamsButton.UpdateTeamID(msg.Players[i].playerTeamID);
+            }
         }
+    }
+
+    private void SyncPreview(NetLobbyBroadcasts.PreviewUIElements msg, Channel channel)
+    {
+        hostSettings.UpdatePreviewText(msg);
+    }
+
+    public void ToggleReady()
+    {
+        _ready = !_ready;
+        readyButtonText.text = _ready ? "Unready" : "Ready";
+        InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.SetReadyState
+        {
+            ReadyState = _ready
+        });
     }
 
     private void ClearNames()
     {
-        foreach (TMP_Text label in nameList)
+        foreach (PlayerPlateDisplay display in playerPlates)
         {
-            label.text = string.Empty;
+            display.ResetDisplay();
         }
     }
 
@@ -45,12 +115,20 @@ public class LobbyUI : MonoBehaviour
     
     public void LeaveLobby()
     {
-        NetSteamBootstrapper.LeaveLobby();
+        if (PlayerData.CurrentLobbyID != CSteamID.Nil)
+            NetGameBootstrapper.LeaveLobby();
+        else
+        {
+            NetGameBootstrapper.LeaveLobbyLocal();
+        }
         SceneManager.LoadScene("MainMenu");
     }
 
     private void OnDisable()
     {
         InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerListUpdate>(OnPlayerListUpdate);
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.SetGameMode>(OnGameModeChanged);
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(OnTeamModeChanged);
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetLobbyBroadcasts.PreviewUIElements>(SyncPreview);
     }
 }

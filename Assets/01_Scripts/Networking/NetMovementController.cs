@@ -3,6 +3,7 @@ using FishNet.Object.Prediction;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public struct MoveReplicateData : IReplicateData
 {
@@ -14,7 +15,11 @@ public struct MoveReplicateData : IReplicateData
     }
 
     private uint _tick;
-    public void Dispose() { }
+
+    public void Dispose()
+    {
+    }
+
     public uint GetTick() => _tick;
     public void SetTick(uint tick) => _tick = tick;
 }
@@ -29,7 +34,11 @@ public struct MoveReconcileData : IReconcileData
     }
 
     private uint _tick;
-    public void Dispose() { }
+
+    public void Dispose()
+    {
+    }
+
     public uint GetTick() => _tick;
     public void SetTick(uint tick) => _tick = tick;
 }
@@ -37,12 +46,12 @@ public struct MoveReconcileData : IReconcileData
 public class NetMovementController : NetworkBehaviour
 {
     [SerializeField] private NetBridge bridge;
-    [SerializeField] private AudioSource thrusterSound;
+    [SerializeField] private VisualEffect startDustVFX;
 
     public PredictionRigidbody2D PredictionRB;
 
     private readonly SyncVar<float> _inputThrust = new();
-    
+
     public float InputThrust => _inputThrust.Value;
 
     private Vector2 _input;
@@ -80,8 +89,9 @@ public class NetMovementController : NetworkBehaviour
     {
         if (IsOwner)
         {
-            SetInputThrust();
+            S_SetInputThrust(_input.y);
         }
+
         RunInputs(CreateReplicateData());
     }
 
@@ -105,8 +115,8 @@ public class NetMovementController : NetworkBehaviour
         if (Mathf.Abs(inputSteer) > 0.2f)
         {
             angularVelocity += inputSteer * bridge.ComputeRotationSpeed() * deltaTime;
-            angularVelocity = Mathf.Clamp(angularVelocity, -bridge.GetMaxAngularVelocity(), bridge.GetMaxAngularVelocity());
-
+            angularVelocity = Mathf.Clamp(angularVelocity, -bridge.GetMaxAngularVelocity(),
+                bridge.GetMaxAngularVelocity());
         }
         else
         {
@@ -130,6 +140,7 @@ public class NetMovementController : NetworkBehaviour
             {
                 dampingX *= 2f;
             }
+
             linearVelocity.x *= 1f - dampingX;
             linearVelocity.y *= 1f - dampingY;
         }
@@ -141,6 +152,16 @@ public class NetMovementController : NetworkBehaviour
         PredictionRB.AngularVelocity(angularVelocity);
         PredictionRB.Velocity(linearVelocity);
         PredictionRB.Simulate();
+       // CalculateStarDust(linearVelocity);
+        Debug.Log("_______________"+linearVelocity);
+        
+    }
+
+    private void CalculateStarDust(Vector2 linearVelocity)
+    {
+        startDustVFX.SetFloat("Set_SpeedInput", linearVelocity.magnitude / bridge.BridgeModule.Bridge.GetMaxMoveSpeed());
+        if (!bridge.cameraZoom) return;
+        startDustVFX.SetFloat("Set_CameraZoom", bridge.cameraZoom.CameraFollow.OffSet.magnitude / bridge.cameraZoom.CameraZoomSettings.MaxDistance);
     }
 
     private void OnPostTick()
@@ -172,25 +193,17 @@ public class NetMovementController : NetworkBehaviour
         if (IsOwner)
         {
             _input = _inputAsset.Player.Move.ReadValue<Vector2>();
-            if (_input.y > 0.2f)
+            if (_input.y < 0)
             {
-                if (!thrusterSound.isPlaying)
-                {
-                    thrusterSound.PlayOneShot(thrusterSound.clip);
-                    
-                }
-            }
-            else
-            {
-                thrusterSound.Stop();
+                _input *= new Vector2(1f, 0.5f);
             }
         }
     }
 
     [ServerRpc]
-    public void SetInputThrust()
+    public void S_SetInputThrust(float thrust)
     {
-        _inputThrust.Value = _input.y;
+        _inputThrust.Value = thrust;
     }
 
     private void OnDestroy()

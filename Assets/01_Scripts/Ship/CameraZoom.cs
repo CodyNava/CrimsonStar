@@ -9,37 +9,40 @@ namespace _01_Scripts.Ship
     {
         [SerializeField] private CameraZoomSettings _cameraZoomSettings;
         [SerializeField] private CameraFollow _cameraFollow;
-        [SerializeField] private InputActionAsset _inputActionAsset;
-
-        private InputAction _cameraZoomAction;
+        public CameraFollow CameraFollow => _cameraFollow;
+        public CameraZoomSettings CameraZoomSettings => _cameraZoomSettings;
 
         public Action<float> OnChangeZoomDistance;
 
         public void Awake()
         {
             Assert.IsNotNull(_cameraFollow, "CameraFollow Component needs to be referenced");
-            Assert.IsNotNull(_inputActionAsset, "InputActionAssets needs to be set");
-
-            InputActionMap cameraMap = _inputActionAsset.FindActionMap("Camera", true);
-            _cameraZoomAction = cameraMap.FindAction("CameraZoom", true);
         }
 
-        public void OnEnable()
+        // public void OnEnable()
+        // {
+        //     Keybinds.Actions.Camera.CameraZoom.performed -= OnCameraZoomPerformed;
+        //     Keybinds.Actions.Camera.CameraZoom.performed += OnCameraZoomPerformed;
+        // }
+        //
+        // public void OnDisable()
+        // {
+        //     Keybinds.Actions.Camera.CameraZoom.performed -= OnCameraZoomPerformed;
+        // }
+
+        public void Update()
         {
-            _cameraZoomAction.performed += OnCameraZoomPerformed;
+            float scrollValue = -Keybinds.Actions.Camera.CameraZoom.ReadValue<float>();
+            if (Mathf.Abs(scrollValue) <= 0.01f) return;
+            OnCameraZoomPerformed(scrollValue);
         }
 
-        public void OnDisable()
-        {
-            _cameraZoomAction.performed -= OnCameraZoomPerformed;
-        }
-
-        private void OnCameraZoomPerformed(InputAction.CallbackContext ctx)
+        private void OnCameraZoomPerformed(float scrollValue)
         {
             float minDist = _cameraZoomSettings.MinDistance;
             float maxDist = _cameraZoomSettings.MaxDistance;
+
             
-            float scrollValue = -ctx.ReadValue<float>();
             float currentDistance = -_cameraFollow.CameraDistance;
 
             float distanceDelta = scrollValue * _cameraZoomSettings.ZoomSpeedFactor;

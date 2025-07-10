@@ -1,54 +1,247 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FishNet;
 using FishNet.Connection;
-using FishNet.Managing.Scened;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using Steamworks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 [System.Serializable]
-public struct LobbyPlayerData
+public class NetLobbyData
 {
-    public CSteamID playerSteamID;
+    public ulong playerID;
     public string playerDisplayName;
+    public NetTeamID playerTeamID;
+    public bool isReady;
 }
 
-public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
+public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
 {
+    [SerializeField] private NetMatchPlayer matchPrefab;
     [SerializeField] private NetShipEditorConductor netShipEditorConductor;
-    
-    private readonly Dictionary<NetworkConnection, LobbyPlayerData> _connectionPlayerMap = new();
+    [SerializeField] private NetGameplayConductor netGameplayConductor;
 
-    public override void OnStartNetwork()
+    public NetworkObject[] Players { get; private set; }
+    public Dictionary<ulong, NetMatchPlayer> PlayersByID { get; private set; }
+    private readonly SyncDictionary<NetworkConnection, NetMatchPlayer> _playersByConnection = new();
+    public SyncDictionary<NetworkConnection, NetMatchPlayer> PlayersByConnection => _playersByConnection;
+    private readonly SyncDictionary<ulong, NetworkConnection> _connectionsByPlayerID = new();
+    public SyncDictionary<ulong, NetworkConnection> ConnectionsByPlayerID => _connectionsByPlayerID;
+    public Dictionary<NetworkConnection, NetLobbyData> ConnectionPlayerMap { get; } = new();
+
+    private NetworkConnection _hostConnection;
+    private NetGameModeID _selectedGameMode = NetGameModeID.DefaultMode;
+    private NetTeamModeID _selectedTeamMode;
+
+    private float _updateAccumulator;
+
+    // LobbySettings
+    private readonly SyncVar<NetRefundModuleID> _refundModuleSetting = new();
+    private readonly SyncVar<NetFirendlyFireID> _friendlyFireSetting = new();
+    private readonly SyncVar<int> _roundCount = new();
+    private readonly SyncVar<float> _editorTimerDuration = new();
+
+
+    // Settings Accessors
+    public NetFirendlyFireID FriendlyFireID
     {
-        InstanceFinder.RegisterInstance(this);
-        
-        if (IsServerInitialized)
+        get => _friendlyFireSetting.Value;
+        set
         {
-            ServerManager.OnRemoteConnectionState += S_OnConnectionStateChange;
-            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified, false);
-            ServerManager.RegisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested, false);
+            if (IsServerInitialized) _friendlyFireSetting.Value = value;
+        }
+    }
+    
+    public float FriendlyFireDamageMult
+    {
+        get
+        {
+            return FriendlyFireID switch
+            {
+                NetFirendlyFireID.Half => 0.5f,
+                NetFirendlyFireID.Quarter => 0.25f,
+                NetFirendlyFireID.Off => 0f,
+                _ => 1f
+            };
+        }
+    }
+    
+    
+    public NetRefundModuleID RefundModuleID
+    {
+        get => _refundModuleSetting.Value;
+        set
+        {
+            if (IsServerInitialized) _refundModuleSetting.Value = value;
         }
     }
 
-    private void S_OnPlayerIdentified(NetworkConnection conn, NetLobbyBroadcasts.PlayerIdentified msg, Channel channel)
+    public float RefundModule
     {
-        _connectionPlayerMap[conn] = new LobbyPlayerData
+        get
         {
-            playerSteamID = msg.SteamID,
-            playerDisplayName = msg.DisplayName
-        };
-        S_SendPlayerDataUpdate();
+            return RefundModuleID switch
+            {
+                NetRefundModuleID.Half => 0.5f,
+                NetRefundModuleID.Quarter => 0.25f,
+                NetRefundModuleID.Off => 0f,
+                _ => 1f
+            };
+        }
     }
 
+    public int RoundCount
+    {
+        get => _roundCount.Value;
+        set
+        {
+            if (IsServerInitialized) _roundCount.Value = value;
+        }
+    }
+
+    public float EditorTimerDuration
+    {
+        get => _editorTimerDuration.Value;
+        set
+        {
+            if (IsServerInitialized) _editorTimerDuration.Value = value;
+        }
+    }
+
+
+    public override string ConductedSceneName => "NetLobby";
+
+    protected override void OnNetworkStarted()
+    {
+        var shipEditorConductor = Instantiate(netShipEditorConductor);
+        var gameplayConductor = Instantiate(netGameplayConductor);
+        ServerManager.Spawn(shipEditorConductor.gameObject);
+        ServerManager.Spawn(gameplayConductor.gameObject);
+
+        ServerManager.OnRemoteConnectionState += S_OnConnectionStateChange;
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified, false);
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.PlayerTeamChangeRequested>(S_OnPlayerTeamChangeRequested,
+            false);
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetGameMode>(S_OnGameModeChangeRequested, false);
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(S_OnTeamModeChangeRequested, false);
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged, false);
+        ServerManager.RegisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested, false);
+    }
+
+    private void Update()
+    {
+        if (!IsServerStarted) return;
+        _updateAccumulator += Time.deltaTime;
+        if (_updateAccumulator > 0.5f)
+        {
+            S_SendLobbySettingsUpdate();
+            S_SendPlayerDataUpdate();
+            _updateAccumulator -= 0.5f;
+        }
+    }
+
+    private void S_OnTeamModeChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetTeamMode msg,
+        Channel channel)
+    {
+        NetTeamID teamID = NetTeamID.Team1;
+        foreach (var playerData in ConnectionPlayerMap.Values)
+        {
+            if (playerData.playerTeamID == NetTeamID.Observer) continue;
+
+            if (msg.TeamMode == NetTeamModeID.FreeForAll)
+            {
+                playerData.playerTeamID = teamID;
+                teamID++;
+            }
+            else
+            {
+                playerData.playerTeamID = NetTeamID.Team1;
+            }
+        }
+
+        _selectedTeamMode = msg.TeamMode;
+    }
+
+    [Server]
+    private void S_SetTeamsFreeForAll()
+    {
+        NetTeamID teamID = NetTeamID.Team1;
+        foreach (var playerData in ConnectionPlayerMap.Values)
+        {
+            if (playerData.playerTeamID == NetTeamID.Observer) continue;
+            playerData.playerTeamID = teamID;
+            teamID++;
+        }
+    }
+
+    [Server]
+    private void S_OnPlayerReadyStateChanged(NetworkConnection conn, NetLobbyBroadcasts.SetReadyState msg,
+        Channel channel)
+    {
+        if (!ConnectionPlayerMap.TryGetValue(conn, out var playerData))
+            return;
+        playerData.isReady = msg.ReadyState;
+    }
+
+    [Server]
+    private void S_OnGameModeChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.SetGameMode msg,
+        Channel channel)
+    {
+        if (conn != _hostConnection) return;
+        _selectedGameMode = msg.GameMode;
+    }
+
+    [Server]
+    private void S_OnPlayerTeamChangeRequested(NetworkConnection conn, NetLobbyBroadcasts.PlayerTeamChangeRequested msg,
+        Channel channel)
+    {
+        foreach (var (connection, data) in ConnectionPlayerMap)
+        {
+            if (data.playerID != msg.PlayerID) continue;
+            if (conn != connection && conn != _hostConnection) return;
+            data.playerTeamID = msg.NewTeamID;
+        }
+    }
+
+    [Server]
+    private void S_OnPlayerIdentified(NetworkConnection conn, NetLobbyBroadcasts.PlayerIdentified msg, Channel channel)
+    {
+        ConnectionPlayerMap[conn] = new NetLobbyData
+        {
+            playerID = msg.PlayerID,
+            playerDisplayName = msg.DisplayName,
+            playerTeamID = NetTeamID.Team1
+        };
+
+        if (_selectedTeamMode == NetTeamModeID.FreeForAll)
+        {
+            S_SetTeamsFreeForAll();
+        }
+
+        if (msg.IsHost)
+        {
+            _hostConnection = conn;
+            ConnectionPlayerMap[conn].isReady = true;
+        }
+    }
+
+    [Server]
+    public void S_SyncPreview(NetLobbyBroadcasts.PreviewUIElements preview)
+    {
+            ServerManager.Broadcast(preview, false);
+    }
+
+    [Server]
     private void S_OnConnectionStateChange(NetworkConnection connection, RemoteConnectionStateArgs args)
     {
         if (args.ConnectionState == RemoteConnectionState.Started)
         {
-            _connectionPlayerMap[connection] = new LobbyPlayerData
+            ConnectionPlayerMap[connection] = new NetLobbyData
             {
                 playerDisplayName = "Connecting..."
             };
@@ -56,41 +249,110 @@ public class NetLobbyConductor : NetworkSingleton<NetLobbyConductor>
 
         if (args.ConnectionState == RemoteConnectionState.Stopped)
         {
-            _connectionPlayerMap.Remove(connection);
+            ConnectionPlayerMap.Remove(connection);
         }
-
-        S_SendPlayerDataUpdate();
     }
 
+    [Server]
     private void S_SendPlayerDataUpdate()
     {
         ServerManager.Broadcast(new NetLobbyBroadcasts.PlayerListUpdate
         {
-            Players = _connectionPlayerMap.Values.ToArray()
+            Players = ConnectionPlayerMap.Values.ToArray(),
+            TeamMode = _selectedTeamMode
         }, false);
     }
 
-    private void S_OnGameStartRequested(NetworkConnection connection, NetLobbyBroadcasts.GameStartRequested msg, Channel channel)
+    [Server]
+    private void S_SendLobbySettingsUpdate()
     {
-        SceneLoadData sceneData = new("NetShipEditor");
-        sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
-        SceneUnloadData unloadData = new("NetLobby");
-        SceneManager.LoadGlobalScenes(sceneData);
-        SceneManager.UnloadGlobalScenes(unloadData);
-
-        GameObject shipEditor = Instantiate(netShipEditorConductor).gameObject;
-        ServerManager.Spawn(shipEditor);
+        ServerManager.Broadcast(new NetLobbyBroadcasts.SetGameMode
+        {
+            GameMode = _selectedGameMode,
+            BaseCurrency = DataProvider.GetStartingCurrency(_selectedGameMode),
+            CurrencyAddedPerRound = DataProvider.GetCurrencyAddedPerRound(_selectedGameMode)
+        }, false);
+        ServerManager.Broadcast(new NetLobbyBroadcasts.SetTeamMode
+        {
+            TeamMode = _selectedTeamMode
+        }, false);
     }
 
-    public override void OnStopNetwork()
+    [Server]
+    private void S_OnGameStartRequested(NetworkConnection connection, NetLobbyBroadcasts.GameStartRequested msg,
+        Channel channel)
     {
-        InstanceFinder.UnregisterInstance<NetLobbyConductor>();
-        
-        if (IsServerInitialized)
+        if (!ConnectionPlayerMap.Values.All(player => player.isReady)) return;
+        S_SetUpMatchPlayers();
+        SceneAudioManager.instance.StopMainMusic();
+        SceneAudioManager.instance.StartInGameMusic();
+        C_TriggerSwapMusic();
+        InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(this, Players);
+    }
+
+
+    [ObserversRpc]
+    [Client]
+    private void C_TriggerSwapMusic()
+    {
+        SwapMusic();
+    }
+
+    private void SwapMusic()
+    {
+        SceneAudioManager.instance.StopMainMusic();
+        SceneAudioManager.instance.StartInGameMusic();
+    }
+
+    [Server]
+    private void S_SetUpMatchPlayers()
+    {
+        if (Players != null)
         {
-            ServerManager.OnRemoteConnectionState -= S_OnConnectionStateChange;
-            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified);
-            ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested);
+            foreach (NetworkObject player in Players)
+            {
+                if (player != null)
+                {
+                    ServerManager.Despawn(player.gameObject);
+                }
+            }
+        }
+
+        Players = new NetworkObject[ConnectionPlayerMap.Count];
+        PlayersByID = new Dictionary<ulong, NetMatchPlayer>();
+        _playersByConnection.Clear();
+        _connectionsByPlayerID.Clear();
+        int count = 0;
+        foreach (var (conn, lobbyData) in ConnectionPlayerMap)
+        {
+            var player = Instantiate(matchPrefab);
+            ServerManager.Spawn(player.gameObject, conn);
+            player.S_Init(lobbyData, _selectedGameMode);
+            Players[count++] = player.NetworkObject;
+            PlayersByID.Add(player.PlayerID.Value, player);
+            PlayersByConnection.Add(conn, player);
+            ConnectionsByPlayerID.Add(player.PlayerID.Value, conn);
         }
     }
+
+    protected override void OnNetworkStopped()
+    {
+        ServerManager.OnRemoteConnectionState -= S_OnConnectionStateChange;
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerIdentified>(S_OnPlayerIdentified);
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.GameStartRequested>(S_OnGameStartRequested);
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.PlayerTeamChangeRequested>(S_OnPlayerTeamChangeRequested);
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetGameMode>(S_OnGameModeChangeRequested);
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetTeamMode>(S_OnTeamModeChangeRequested);
+        ServerManager.UnregisterBroadcast<NetLobbyBroadcasts.SetReadyState>(S_OnPlayerReadyStateChanged);
+    }
+
+   [Server]
+    public int S_GetRoundCount() => _roundCount.Value;
+
+    [Server]
+    public int S_GetResourcePerRound() =>
+        DataProvider.Instance.GameModeConfig.GetCurrencyAddedPerRound(_selectedGameMode);
+
+    [Server]
+    public int S_GetInitialResourceCount() => DataProvider.Instance.GameModeConfig.GetBaseCurrency(_selectedGameMode);
 }

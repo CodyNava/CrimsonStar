@@ -1,74 +1,130 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using FishNet;
 using FishNet.Connection;
-using FishNet.Managing.Scened;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class NetShipEditorConductor : NetworkSingleton<NetShipEditorConductor>
+public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
 {
-    [SerializeField] private NetGameplayConductor netGameplayConductor;
-    [SerializeField] private NetShipEditorData shipEditorDataPrefab;
+    [SerializeField] private int minimumResourceCount;
+    [SerializeField] private float shipEditorTimerDuration;
+    [SerializeField] private FMODUnity.StudioEventEmitter intro;
+
+    public override string ConductedSceneName => "NetShipEditor";
+
     private Dictionary<NetworkConnection, bool> _playersReady = new();
+    private readonly SyncTimer _editorTimer = new();
 
-    public Dictionary<NetworkConnection, NetShipEditorData> PlayerShipEditors { get; } = new();
+    private NetLobbyConductor _lobbyConductor;
 
-    public override void OnStartNetwork()
+    public float TimeRemaining => _editorTimer.Remaining;
+
+
+    protected override void OnNetworkStarted()
     {
-        InstanceFinder.RegisterInstance(this);
-        
-        if (IsServerInitialized)
+        C_TriggerSwapMusic();
+        StartCoroutine(LoadDependencies());
+    }
+
+    private IEnumerator LoadDependencies()
+    {
+        if (!InstanceFinder.TryGetInstance(out _lobbyConductor))
         {
-            SceneManager.OnClientPresenceChangeStart += S_OnSceneChange;
+            yield return null;
         }
     }
 
-    public override void OnStopNetwork()
+    public override void ProcessClientAddition(NetworkConnection connection, Scene scene)
     {
-        InstanceFinder.UnregisterInstance<NetShipEditorConductor>();
-        
-        if (IsServerInitialized)
+        if (_playersReady.Count == 0)
         {
-            SceneManager.OnClientPresenceChangeStart -= S_OnSceneChange;
+            _editorTimer.StartTimer(_lobbyConductor.EditorTimerDuration);
+            _editorTimer.OnChange += OnTimerChange;
         }
+
+        _playersReady.Add(connection, false);
     }
 
-    private void S_OnSceneChange(ClientPresenceChangeEventArgs args)
+    private void Update()
     {
-        var defaultResources = DataProvider.Instance.DefaultEditorResources;
-        
-        if (args.Scene.name == "NetShipEditor" && args.Added)
+        _editorTimer.Update(Time.deltaTime);
+    }
+
+    private void OnTimerChange(SyncTimerOperation op, float prev, float next, bool asServer)
+    {
+        if (asServer && op == SyncTimerOperation.Finished)
         {
-            var shipEditor = Instantiate(shipEditorDataPrefab);
-            shipEditor.S_SetResourceCounts(defaultResources.DefaultResourceCounts);
-            ServerManager.Spawn(shipEditor.gameObject, args.Connection, args.Scene);
-            PlayerShipEditors.Add(args.Connection, shipEditor);
-            _playersReady.Add(args.Connection, false);
+            StartCoroutine(AdvanceToGameplayScene());
+            _editorTimer.OnChange -= OnTimerChange;
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
+    [Server]
     public void S_SignalReady(Channel channel = Channel.Reliable, NetworkConnection conn = null)
     {
         _playersReady[conn!] = true;
 
         if (S_AllPlayersReady())
         {
-            SceneLoadData sceneData = new("NetGameplayScene");
-            sceneData.PreferredActiveScene = new PreferredScene(sceneData.SceneLookupDatas[0]);
-            SceneUnloadData unloadData = new("NetShipEditor");
-            SceneManager.LoadGlobalScenes(sceneData);
-            SceneManager.UnloadGlobalScenes(unloadData);
-
-            GameObject gameConductor = Instantiate(netGameplayConductor).gameObject;
-            ServerManager.Spawn(gameConductor);
+            StartCoroutine(AdvanceToGameplayScene());
         }
+    }
+
+    [ObserversRpc]
+    [Client]
+    private void C_TriggerSwapMusic()
+    {
+        SwapMusic();
+    }
+
+    private void SwapMusic()
+    {
+        SceneAudioManager.instance.StopMainMusic();
+        SceneAudioManager.instance.StartInGameMusic();
+    }
+
+
+    [ObserversRpc]
+    [Client]
+    private void C_TriggerIntroSound()
+    {
+        TriggerIntroSound();
+    }
+
+    private void TriggerIntroSound()
+    {
+        intro.Play();
+    }
+
+    private IEnumerator AdvanceToGameplayScene()
+    {
+        C_TriggerIntroSound();
+        TriggerIntroSound();
+        yield return new WaitForSecondsRealtime(6.5f);
+
+        InstanceFinder.GetInstance<NetGameplayConductor>().MoveToScene(this, _lobbyConductor.Players);
+        _playersReady.Clear();
     }
 
     private bool S_AllPlayersReady()
     {
         return _playersReady.Values.All(ready => ready);
+    }
+
+    public void S_SetupNewEditPhase()
+    {
+        int resourceAdded = _lobbyConductor.S_GetResourcePerRound();
+
+        foreach (NetMatchPlayer matchPlayer in _lobbyConductor.PlayersByID.Values)
+        {
+            matchPlayer.ResourceCount.Value += resourceAdded;
+        }
     }
 }

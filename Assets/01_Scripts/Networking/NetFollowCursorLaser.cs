@@ -8,6 +8,8 @@ public class NetFollowCursorLaser : NetworkBehaviour
 	private Plane _plane = new Plane(Vector3.back, Vector3.zero);
 	private Camera _camera;
 	private Vector2 _input;
+	public float directionSmoothSpeed = 20f;
+	private Vector2 _smoothedDirection = Vector2.up;
 
 	public override void OnStartClient()
 	{
@@ -23,14 +25,18 @@ public class NetFollowCursorLaser : NetworkBehaviour
 
 	private void Update()
 	{
-		_input = Keybinds.Actions.Player.Look.ReadValue<Vector2>();
-		
-		if (_input.magnitude > 0.2f && InputManager.Instance.IsGamepadUsed)
+		if (InputManager.Instance.IsGamepadUsed)
 		{
+			_input = Keybinds.Actions.Player.GamepadAim.ReadValue<Vector2>();
+			
+			// TODO: The stick deadzone is implemented hardcoded via magic number. Consider to use dedicated Stick deadzone preprocessor in InputActions
+			if (_input.magnitude <= 0.2f) return;
+
 			transform.up = _input.normalized;
 		}
-		else if (Gamepad.current == null)
+		else if (!InputManager.Instance.IsGamepadUsed)
 		{
+			_input = Keybinds.Actions.Player.MouseAim.ReadValue<Vector2>();
 			C_LookAtMouse();
 		}
 	}
@@ -38,12 +44,24 @@ public class NetFollowCursorLaser : NetworkBehaviour
 	private void C_LookAtMouse()
 	{
 		if (!_camera) return;
-		if (Keybinds.Actions.Player.Attack.IsPressed()) return;
 		Ray ray = _camera.ScreenPointToRay(_input);
 		_plane.Raycast(ray, out float distance);
 	
 		Vector3 mouseWorldPos = ray.GetPoint(distance);
 		Vector2 direction = (mouseWorldPos - transform.position).normalized;
-		transform.up = direction;
+		_smoothedDirection = Vector2.Lerp(_smoothedDirection, direction, Time.deltaTime * directionSmoothSpeed);
+
+
+		if (Keybinds.Actions.Player.Attack.IsPressed())
+		{
+			transform.up = _smoothedDirection;
+		}
+		else
+		{
+			transform.up = direction;
+		}
+		
+		
+		
 	}
 }
