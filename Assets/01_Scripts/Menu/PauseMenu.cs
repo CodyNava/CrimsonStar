@@ -7,13 +7,10 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private GameObject settingsMenu;
     [SerializeField] private GameObject resolutionSettings;
     [SerializeField] private Button backButton;
-    private EventSystem _eventSystem;
+    [SerializeField] private Button teeHeeButton;
+    [SerializeField] private EventSystem eventSystem;
+    
     private bool _settingsActive;
-
-    private void Awake()
-    {
-        _eventSystem = FindFirstObjectByType<EventSystem>();
-    }
 
     public void ToggleSettings()
     {
@@ -22,18 +19,19 @@ public class PauseMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Keybinds.Actions.Player.PauseGame.WasPressedThisFrame() && !_settingsActive)
+        if (Keybinds.Actions.UI.PauseGame.WasPressedThisFrame() && !_settingsActive)
         {
-            settingsMenu.SetActive(true);
-            _eventSystem.SetSelectedGameObject(resolutionSettings);
+            //settingsMenu.SetActive(true);
+            teeHeeButton.onClick.Invoke();
+            InputManager.DisableGameControls();
             _settingsActive = true;
             return;
         }
 
-        if (Keybinds.Actions.Player.PauseGame.WasPressedThisFrame() && _settingsActive)
+        if (Keybinds.Actions.UI.PauseGame.WasPressedThisFrame() && _settingsActive)
         {
             backButton.onClick.Invoke();
-            _eventSystem.SetSelectedGameObject(null);
+            InputManager.EnableGameControls();
         }
     }
 }
