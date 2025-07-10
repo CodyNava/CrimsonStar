@@ -1254,6 +1254,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Ready",
+                    "type": "Button",
+                    "id": "e45736c7-f5e3-4f3e-8553-0ed9bcf4ac67",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1348,10 +1357,10 @@
                 {
                     "name": "",
                     "id": "876b2734-cb07-4b2f-97b4-7ae7bd585f0f",
-                    "path": "<Gamepad>/leftStickPress",
+                    "path": "<XInputController>/buttonWest",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Gamepad",
                     "action": "EnergyOverview",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1362,7 +1371,7 @@
                     "path": "<Keyboard>/#(C)",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "EnergyOverview",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1370,10 +1379,10 @@
                 {
                     "name": "",
                     "id": "a9e09050-fb22-4e10-8f11-311d3817f624",
-                    "path": "<Gamepad>/rightStickPress",
+                    "path": "<XInputController>/buttonNorth",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Gamepad",
                     "action": "HealthOverview",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1384,7 +1393,7 @@
                     "path": "<Keyboard>/#(V)",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "HealthOverview",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1452,6 +1461,17 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "WeaponGroupSelectGP",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b8594117-0769-4036-81c0-9b48ec8299fb",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Ready",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

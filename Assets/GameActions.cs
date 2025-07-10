@@ -1340,6 +1340,15 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ready"",
+                    ""type"": ""Button"",
+                    ""id"": ""e45736c7-f5e3-4f3e-8553-0ed9bcf4ac67"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1434,10 +1443,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""876b2734-cb07-4b2f-97b4-7ae7bd585f0f"",
-                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""path"": ""<XInputController>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Gamepad"",
                     ""action"": ""EnergyOverview"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1448,7 +1457,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/#(C)"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""EnergyOverview"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1456,10 +1465,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a9e09050-fb22-4e10-8f11-311d3817f624"",
-                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""path"": ""<XInputController>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Gamepad"",
                     ""action"": ""HealthOverview"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1470,7 +1479,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/#(V)"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""HealthOverview"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1538,6 +1547,17 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""WeaponGroupSelectGP"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b8594117-0769-4036-81c0-9b48ec8299fb"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Ready"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1618,6 +1638,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_ShipEditor_MoveModule = m_ShipEditor.FindAction("MoveModule", throwIfNotFound: true);
         m_ShipEditor_WeaponGroupSelect = m_ShipEditor.FindAction("WeaponGroupSelect", throwIfNotFound: true);
         m_ShipEditor_WeaponGroupSelectGP = m_ShipEditor.FindAction("WeaponGroupSelectGP", throwIfNotFound: true);
+        m_ShipEditor_Ready = m_ShipEditor.FindAction("Ready", throwIfNotFound: true);
     }
 
     ~@GameActions()
@@ -2262,6 +2283,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_ShipEditor_MoveModule;
     private readonly InputAction m_ShipEditor_WeaponGroupSelect;
     private readonly InputAction m_ShipEditor_WeaponGroupSelectGP;
+    private readonly InputAction m_ShipEditor_Ready;
     /// <summary>
     /// Provides access to input actions defined in input action map "ShipEditor".
     /// </summary>
@@ -2309,6 +2331,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "ShipEditor/WeaponGroupSelectGP".
         /// </summary>
         public InputAction @WeaponGroupSelectGP => m_Wrapper.m_ShipEditor_WeaponGroupSelectGP;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/Ready".
+        /// </summary>
+        public InputAction @Ready => m_Wrapper.m_ShipEditor_Ready;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -2362,6 +2388,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @WeaponGroupSelectGP.started += instance.OnWeaponGroupSelectGP;
             @WeaponGroupSelectGP.performed += instance.OnWeaponGroupSelectGP;
             @WeaponGroupSelectGP.canceled += instance.OnWeaponGroupSelectGP;
+            @Ready.started += instance.OnReady;
+            @Ready.performed += instance.OnReady;
+            @Ready.canceled += instance.OnReady;
         }
 
         /// <summary>
@@ -2400,6 +2429,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @WeaponGroupSelectGP.started -= instance.OnWeaponGroupSelectGP;
             @WeaponGroupSelectGP.performed -= instance.OnWeaponGroupSelectGP;
             @WeaponGroupSelectGP.canceled -= instance.OnWeaponGroupSelectGP;
+            @Ready.started -= instance.OnReady;
+            @Ready.performed -= instance.OnReady;
+            @Ready.canceled -= instance.OnReady;
         }
 
         /// <summary>
@@ -2742,5 +2774,12 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnWeaponGroupSelectGP(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Ready" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnReady(InputAction.CallbackContext context);
     }
 }

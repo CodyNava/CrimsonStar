@@ -10,6 +10,7 @@ public class ModuleCategoryButton : MonoBehaviour
     public void ButtonClick()
     {
         categoryContainer.SetModuleCategory(moduleCategory);
+        if (InputManager.Instance.IsGamepadUsed) return;
         this.GetComponent<Button>().interactable = false;
         foreach (var button in otherCategoryButton)
         {

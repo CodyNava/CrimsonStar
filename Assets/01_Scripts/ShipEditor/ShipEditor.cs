@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AYellowpaper.SerializedCollections;
+using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
 
@@ -27,6 +29,7 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private Vector2 moveInput;
     [SerializeField] private GameObject lastSelected;
     [SerializeField] private float moduleMoveSpeedGP;
+    [SerializeField] List<GameObject> gamePadSwitches = new List<GameObject>();
 
     [Header("HealthView")] [SerializeField]
     public TextMeshProUGUI healthViewModeText;
@@ -78,17 +81,35 @@ public class ShipEditor : MonoBehaviour
                 return;
             }
 
+
             ModueHoldingGamePad();
         }
         else
         {
             ModuleHoldingKeyboard();
         }
+
+        ToggleGamePadSwitches();
+        ToggleViewsViaKeys();
     }
 
     private void LateUpdate()
     {
         IsPowerableInRangeOfReactor();
+    }
+
+    public void LeaveEditor()
+    {
+        if (global::PlayerData.CurrentLobbyID != CSteamID.Nil)
+            NetGameBootstrapper.LeaveLobby();
+        else
+        {
+            NetGameBootstrapper.LeaveLobbyLocal();
+        }
+        
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
+        SceneManager.LoadScene("MainMenu");
     }
 
     private void Start()
@@ -203,6 +224,14 @@ public class ShipEditor : MonoBehaviour
         PlayerData.C_PayForModule(moduleID);
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
         return true;
+    }
+
+    private void ToggleGamePadSwitches()
+    {
+        foreach (var switches in gamePadSwitches)
+        {
+            switches.SetActive(InputManager.Instance.IsGamepadUsed);
+        }
     }
 
     private void ModueHoldingGamePad() // Important for radial menu
@@ -481,6 +510,24 @@ public class ShipEditor : MonoBehaviour
         return false;
     }
 
+    public void ToggleViewsViaKeys()
+    {
+        if (Keybinds.Actions.ShipEditor.EnergyOverview.WasPerformedThisFrame())
+        {
+            ToggleEnergyView();
+        }
+
+        if (Keybinds.Actions.ShipEditor.HealthOverview.WasPerformedThisFrame())
+        {
+            ToggleHealthView();
+        }
+
+        if (Keybinds.Actions.ShipEditor.Ready.WasPerformedThisFrame())
+        {
+            SignalReady();
+        }
+    }
+
     public void ToggleEnergyView()
     {
         inEnergyView = !inEnergyView;
@@ -557,37 +604,12 @@ public class ShipEditor : MonoBehaviour
         float range = max - min;
         float pseudoRange = Mathf.Max(range, 20f);
 
+        netEditorBridgeRef.TotalHealthChangeOverLayColour();
         foreach (NetEditorModule module in _editorModulesMap.Values)
         {
             if (ShipEditorHealthOverlay.HealthMap.TryGetValue(module.PlacedLocation, out var value))
             {
-                if (inPercentageHealthView)
-                {
-                    float colorShift = (value - min) / pseudoRange;
-                    colorShift = Mathf.Clamp01(colorShift);
-
-                    if (values.Count == 1)
-                        colorShift = 1; //this module is always green otherwise it would be red when alone
-                    float smoothShift = Mathf.Pow(colorShift, 0.5f);
-                    module.PercentageHealthChangeOverLayColour(smoothShift);
-
-
-                    if (ShipEditorHealthOverlay.HealthMap.TryGetValue(netEditorBridgeRef.PlacedLocation, out value))
-                    {
-                        float bridgeColorShift = (value - min) / pseudoRange;
-                        bridgeColorShift = Mathf.Clamp01(bridgeColorShift);
-
-                        if (values.Count == 1)
-                            bridgeColorShift = 1; //this module is always green otherwise it would be red when alone
-                        float bridgeSmoothShift = Mathf.Pow(bridgeColorShift, 0.5f);
-                        netEditorBridgeRef.PercentageHealthChangeOverLayColour(bridgeSmoothShift);
-                    }
-                }
-                else if (!inPercentageHealthView)
-                {
-                    module.TotalHealthChangeOverLayColour();
-                    netEditorBridgeRef.TotalHealthChangeOverLayColour();
-                }
+                module.TotalHealthChangeOverLayColour();
             }
         }
     }
