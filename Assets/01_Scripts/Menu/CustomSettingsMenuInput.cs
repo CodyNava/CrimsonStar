@@ -16,6 +16,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
 
     [SerializeField] private Button audioButton;
     [SerializeField] private Button graphicsButton;
+    [SerializeField] private Button settingsBackButton;
 
     [Header("Graphics")]
     [SerializeField] private GameObject graphicsContainer;
@@ -69,13 +70,11 @@ public class CustomSettingsMenuInput : MonoBehaviour
             {
                 if (audioContainer.activeSelf)
                 {
-                    _eventSystem.SetSelectedGameObject(null);
                     graphicsButton.onClick.Invoke();
                     _eventSystem.SetSelectedGameObject(resolution);
                 }
                 else
                 {
-                    _eventSystem.SetSelectedGameObject(null);
                     audioButton.onClick.Invoke();
                     _eventSystem.SetSelectedGameObject(master);
                 }
@@ -85,17 +84,21 @@ public class CustomSettingsMenuInput : MonoBehaviour
             {
                 if (graphicsContainer.activeSelf)
                 {
-                    _eventSystem.SetSelectedGameObject(null);
                     audioButton.onClick.Invoke();
                     _eventSystem.SetSelectedGameObject(master);
                 }
                 else
                 {
-                    _eventSystem.SetSelectedGameObject(null);
                     graphicsButton.onClick.Invoke();
                     _eventSystem.SetSelectedGameObject(resolution);
                 }
             }
+
+            //TODO: Implement BackButton on Other Scripts
+            /*if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
+            {
+                settingsBackButton.onClick.Invoke();
+            }*/
 
             if (Keybinds.Actions.UI.Decrease.IsPressed() && !_cooldownStarted)
             {
