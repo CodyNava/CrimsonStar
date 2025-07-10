@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AYellowpaper.SerializedCollections;
+using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
 
 public class ShipEditor : MonoBehaviour
@@ -22,18 +25,27 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private ShipEditorStats shipEditorStats;
     [SerializeField] private NetEditorModule netEditorBridgeRef;
     [SerializeField] private ShipEditorWeaponGroups weaponGroupManager;
-    [SerializeField] private Button energyViewToggleButton;
     [SerializeField] private Material outlineShader;
     [SerializeField] private Vector2 moveInput;
     [SerializeField] private GameObject lastSelected;
     [SerializeField] private float moduleMoveSpeedGP;
-    [SerializeField] public bool inEnergyView;
+    [SerializeField] List<GameObject> gamePadSwitches = new List<GameObject>();
 
     [Header("HealthView")] [SerializeField]
     public TextMeshProUGUI healthViewModeText;
 
+    [SerializeField] private Button healthViewToggleButton;
+    [SerializeField] private Sprite healthViewImageToggled;
+    [SerializeField] private Sprite healthViewImageNormal;
     [SerializeField] public bool inHealthView;
     [SerializeField] public bool inPercentageHealthView;
+
+    [Header("EnergyView")] [SerializeField]
+    private Button energyViewToggleButton;
+
+    [SerializeField] private Sprite energyViewButtonImageToggled;
+    [SerializeField] private Sprite energyViewButtonImageNormal;
+    [SerializeField] public bool inEnergyView;
     [SerializeField] public bool inEnergyViewParentToggle;
     [SerializeField] public bool joiningEditor;
 
@@ -69,17 +81,35 @@ public class ShipEditor : MonoBehaviour
                 return;
             }
 
+
             ModueHoldingGamePad();
         }
         else
         {
             ModuleHoldingKeyboard();
         }
+
+        ToggleGamePadSwitches();
+        ToggleViewsViaKeys();
     }
 
     private void LateUpdate()
     {
         IsPowerableInRangeOfReactor();
+    }
+
+    public void LeaveEditor()
+    {
+        if (global::PlayerData.CurrentLobbyID != CSteamID.Nil)
+            NetGameBootstrapper.LeaveLobby();
+        else
+        {
+            NetGameBootstrapper.LeaveLobbyLocal();
+        }
+        
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
+        SceneManager.LoadScene("MainMenu");
     }
 
     private void Start()
@@ -194,6 +224,14 @@ public class ShipEditor : MonoBehaviour
         PlayerData.C_PayForModule(moduleID);
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
         return true;
+    }
+
+    private void ToggleGamePadSwitches()
+    {
+        foreach (var switches in gamePadSwitches)
+        {
+            switches.SetActive(InputManager.Instance.IsGamepadUsed);
+        }
     }
 
     private void ModueHoldingGamePad() // Important for radial menu
@@ -472,10 +510,29 @@ public class ShipEditor : MonoBehaviour
         return false;
     }
 
+    public void ToggleViewsViaKeys()
+    {
+        if (Keybinds.Actions.ShipEditor.EnergyOverview.WasPerformedThisFrame())
+        {
+            ToggleEnergyView();
+        }
+
+        if (Keybinds.Actions.ShipEditor.HealthOverview.WasPerformedThisFrame())
+        {
+            ToggleHealthView();
+        }
+
+        if (Keybinds.Actions.ShipEditor.Ready.WasPerformedThisFrame())
+        {
+            SignalReady();
+        }
+    }
+
     public void ToggleEnergyView()
     {
         inEnergyView = !inEnergyView;
         inEnergyViewParentToggle = !inEnergyViewParentToggle;
+        ToggleEnergyViewButtonImage();
     }
 
     public void ToggleHealthView()
@@ -487,6 +544,7 @@ public class ShipEditor : MonoBehaviour
         editCamera.cullingMask = layerToggled
             ? editCamera.cullingMask &= ~(1 << layer)
             : editCamera.cullingMask |= 1 << layer;
+        ToggleHealthViewButtonImage();
         if (inHealthView) SetOverLayModulesColourViaHealthMap();
     }
 
@@ -495,6 +553,46 @@ public class ShipEditor : MonoBehaviour
         inPercentageHealthView = !inPercentageHealthView;
         healthViewModeText.text = inPercentageHealthView ? "%" : "Total";
         if (inHealthView) SetOverLayModulesColourViaHealthMap();
+    }
+
+    private void ToggleHealthViewButtonImage()
+    {
+        var healthButtonImage = healthViewToggleButton.GetComponent<Image>();
+        healthButtonImage.sprite = inHealthView ? healthViewImageToggled : healthViewImageNormal;
+        if (!InputManager.Instance.IsGamepadUsed) EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    private void ToggleOnEnergyViewBasedOnModule()
+    {
+        if (!inEnergyView && !inEnergyViewParentToggle && _heldNetEditorModule.ModuleID == NetModuleID.Reactor
+            || _heldNetEditorModule.ModuleData.CanBePowered)
+        {
+            inEnergyView = true;
+            ToggleEnergyViewButtonImage();
+        }
+    }
+
+    private void ToggleOffEnergyViewBasedOnModule()
+    {
+        if (inEnergyView && _heldNetEditorModule.ModuleID == NetModuleID.Reactor
+            || _heldNetEditorModule.ModuleData.CanBePowered)
+        {
+            inEnergyView = inEnergyViewParentToggle;
+            ToggleEnergyViewButtonImage();
+        }
+    }
+
+    private void ToggleEnergyViewButtonImage()
+    {
+        var baseImage = energyViewToggleButton.GetComponent<Image>();
+        baseImage.sprite = inEnergyView ? energyViewButtonImageToggled : energyViewButtonImageNormal;
+        if (!InputManager.Instance.IsGamepadUsed) EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    public void HandleHeldEnergyModule(HexCoordinate coord)
+    {
+        if (_heldNetEditorModule.ModuleData.CanBePowered)
+            _heldNetEditorModule.PlacedLocation = coord;
     }
 
     private void SetOverLayModulesColourViaHealthMap()
@@ -506,65 +604,16 @@ public class ShipEditor : MonoBehaviour
         float range = max - min;
         float pseudoRange = Mathf.Max(range, 20f);
 
+        netEditorBridgeRef.TotalHealthChangeOverLayColour();
         foreach (NetEditorModule module in _editorModulesMap.Values)
         {
             if (ShipEditorHealthOverlay.HealthMap.TryGetValue(module.PlacedLocation, out var value))
             {
-                if (inPercentageHealthView)
-                {
-                    float colorShift = (value - min) / pseudoRange;
-                    colorShift = Mathf.Clamp01(colorShift);
-
-                    if (values.Count == 1)
-                        colorShift = 1; //this module is always green otherwise it would be red when alone
-                    float smoothShift = Mathf.Pow(colorShift, 0.5f);
-                    module.PercentageHealthChangeOverLayColour(smoothShift);
-                    
-                    
-                    if (ShipEditorHealthOverlay.HealthMap.TryGetValue(netEditorBridgeRef.PlacedLocation, out value))
-                    {
-                        float bridgeColorShift = (value - min) / pseudoRange;
-                        bridgeColorShift = Mathf.Clamp01(bridgeColorShift);
-
-                        if (values.Count == 1)
-                            bridgeColorShift = 1; //this module is always green otherwise it would be red when alone
-                        float bridgeSmoothShift = Mathf.Pow(bridgeColorShift, 0.5f);
-                        netEditorBridgeRef.PercentageHealthChangeOverLayColour(bridgeSmoothShift);
-                    }
-                }
-                else if (!inPercentageHealthView)
-                {
-                    module.TotalHealthChangeOverLayColour();
-                    netEditorBridgeRef.TotalHealthChangeOverLayColour();
-                }
+                module.TotalHealthChangeOverLayColour();
             }
         }
     }
 
-
-    private void ToggleOnEnergyViewBasedOnModule()
-    {
-        if (!inEnergyView && !inEnergyViewParentToggle && _heldNetEditorModule.ModuleID == NetModuleID.Reactor
-            || _heldNetEditorModule.ModuleData.CanBePowered)
-        {
-            inEnergyView = true;
-        }
-    }
-
-    private void ToggleOffEnergyViewBasedOnModule()
-    {
-        if (inEnergyView && _heldNetEditorModule.ModuleID == NetModuleID.Reactor
-            || _heldNetEditorModule.ModuleData.CanBePowered)
-        {
-            inEnergyView = inEnergyViewParentToggle;
-        }
-    }
-
-    public void HandleHeldEnergyModule(HexCoordinate coord)
-    {
-        if (_heldNetEditorModule.ModuleData.CanBePowered)
-            _heldNetEditorModule.PlacedLocation = coord;
-    }
 
     public void PlaceModule(HexCoordinate rootCoord)
     {

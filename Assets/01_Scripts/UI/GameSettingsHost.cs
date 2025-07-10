@@ -170,8 +170,8 @@ public class GameSettingsHost : MonoBehaviour
         increaseCurrencyPerRound.gameObject.SetActive(PlayerData.IsLobbyHost);
         decreaseCurrencyPerRound.gameObject.SetActive(PlayerData.IsLobbyHost);
 
-        increaseModuleRefund.gameObject.SetActive(PlayerData.IsLobbyHost);
-        decreaseModuleRefund.gameObject.SetActive(PlayerData.IsLobbyHost);
+        //increaseModuleRefund.gameObject.SetActive(PlayerData.IsLobbyHost);
+        //decreaseModuleRefund.gameObject.SetActive(PlayerData.IsLobbyHost);
         
         playersLT.SetActive(PlayerData.IsLobbyHost);
         playersRT.SetActive(PlayerData.IsLobbyHost);
@@ -206,7 +206,7 @@ public class GameSettingsHost : MonoBehaviour
         timerPreview.text = _timerCounter[_currentSelectedTimeIndex].ToString();
         resourceModeText.text = _resourceMode[_currentResourceMode];
         resourceModePreview.text = _resourceMode[_currentResourceMode];
-        moduleRefundText.text = _lobbyConductor.RefundModuleID.ToString();
+       // moduleRefundText.text = _lobbyConductor.RefundModuleID.ToString();
 
         gameModeText.text = "Free For All";
         gameModePreview.text = "Free For All";
@@ -675,7 +675,7 @@ public class GameSettingsHost : MonoBehaviour
         _currentModuleRefund++;
         _currentModuleRefund %= 4;
         _lobbyConductor.RefundModuleID = (NetRefundModuleID)_currentModuleRefund;
-        moduleRefundText.text = _lobbyConductor.RefundModuleID.ToString();
+       // moduleRefundText.text = _lobbyConductor.RefundModuleID.ToString();
     }
 
     public void DecreaseModuleRefund()
@@ -689,7 +689,7 @@ public class GameSettingsHost : MonoBehaviour
             _currentModuleRefund--;
         }
         _lobbyConductor.RefundModuleID = (NetRefundModuleID)_currentModuleRefund;
-        moduleRefundText.text = _lobbyConductor.RefundModuleID.ToString();
+        //moduleRefundText.text = _lobbyConductor.RefundModuleID.ToString();
     }
 
     #endregion
