@@ -308,8 +308,8 @@ MonoBehaviour:
   turretModule: {fileID: 138746299594672162}
   spawnTransformA: {fileID: 8287526850846769230}
   spawnTransformB: {fileID: 2325673180195939571}
-  muzzleFlashA: {fileID: 2394617733928845454}
-  muzzleFlashB: {fileID: 2728971953574796844}
+  muzzleFlashA: {fileID: 0}
+  muzzleFlashB: {fileID: 0}
   shotSound: {fileID: 7740271789994968576}
 --- !u!114 &7740271789994968576
 MonoBehaviour:
@@ -710,7 +710,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6769408483115806515, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.62
+      value: -1.83
       objectReference: {fileID: 0}
     - target: {fileID: 6769408483115806515, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -866,11 +866,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6769408483115806515, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
   m_PrefabInstance: {fileID: 5452939447255877714}
   m_PrefabAsset: {fileID: 0}
---- !u!2083052967 &2728971953574796844 stripped
-VisualEffect:
-  m_CorrespondingSourceObject: {fileID: 7958979849663714942, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
-  m_PrefabInstance: {fileID: 5452939447255877714}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5712990010984929008
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -883,13 +878,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_MuzzleFlash_Missile_BackFire
       objectReference: {fileID: 0}
+    - target: {fileID: 5594456276877528820, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5594456276877528820, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5594456276877528820, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6769408483115806515, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.072
+      value: 1.19
       objectReference: {fileID: 0}
     - target: {fileID: 6769408483115806515, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.62
+      value: -1.77
       objectReference: {fileID: 0}
     - target: {fileID: 6769408483115806515, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -991,11 +998,6 @@ PrefabInstance:
 --- !u!4 &1349209632718895555 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6769408483115806515, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
-  m_PrefabInstance: {fileID: 5712990010984929008}
-  m_PrefabAsset: {fileID: 0}
---- !u!2083052967 &2394617733928845454 stripped
-VisualEffect:
-  m_CorrespondingSourceObject: {fileID: 7958979849663714942, guid: 339cf4571350b3140bda16408b2bda1c, type: 3}
   m_PrefabInstance: {fileID: 5712990010984929008}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8608950685524996494
