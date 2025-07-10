@@ -112,7 +112,7 @@ public class SettingsBehaviour : MonoBehaviour
 
         _resolution = _uniqueResolution[_currentResolutionIndex];
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
-        Save();
+        Apply();
     }
 
     public void DecreaseResolution()
@@ -126,7 +126,7 @@ public class SettingsBehaviour : MonoBehaviour
 
         _resolution = _uniqueResolution[_currentResolutionIndex];
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
-        Save();
+        Apply();
     }
 
     public void IncreaseFrameCap()
@@ -135,7 +135,7 @@ public class SettingsBehaviour : MonoBehaviour
         _frameCapIndex %= _frameCap.Length;
 
         frameCounter.text = _frameCap[_frameCapIndex].Equals(-1) ? "Unlimited" : _frameCap[_frameCapIndex].ToString();
-        Save();
+        Apply();
     }
 
     public void DecreaseFrameCap()
@@ -150,7 +150,7 @@ public class SettingsBehaviour : MonoBehaviour
             _frameCapIndex--;
             frameCounter.text = _frameCap[_frameCapIndex].ToString();
         }
-        Save();
+        Apply();
     }
     
     public void IncreaseVsync()
@@ -160,7 +160,7 @@ public class SettingsBehaviour : MonoBehaviour
         else
             _vSyncIndex++;
         vSyncMode.text = _vSync[_vSyncIndex];
-        Save();
+        Apply();
     }
     
     public void DecreaseVsync()
@@ -170,42 +170,46 @@ public class SettingsBehaviour : MonoBehaviour
         else
             _vSyncIndex--;
         vSyncMode.text = _vSync[_vSyncIndex];
-        Save();
+        Apply();
     }
 
     public void AdjustBrightness()
     {
         brightness.color = new Color(0f, 0f, 0f, brightnessSlider.value);
-        Save();
+        Apply();
     }
     
     public void IncreaseBrightness()
     {
         brightnessSlider.value -= 0.05f;
+        Apply();
     }
     
     public void DecreaseBrightness()
     {
         brightnessSlider.value += 0.05f;
+        Apply();
     }
 
     public void AdjustGamma()
     {
         _gamma.gamma.value = new Vector4(1f, 1f, 1f, gammaSlider.value);
-        Save();
+        Apply();
     }
 
     public void IncreaseGamma()
     {
         gammaSlider.value += 0.05f;
+        Apply();
     }
     
     public void DecreaseGamma()
     {
         gammaSlider.value -= 0.05f;
+        Apply();
     }
 
-    public void Apply()
+    private void Apply()
     {
         Screen.SetResolution(_resolution.width, _resolution.height,Screen.fullScreen);
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
