@@ -20,7 +20,16 @@ public class LobbyUI : MonoBehaviour
 
     public void Update()
     {
-        switchTeamsButton.SetPlayerID(PlayerData.PlayerID); // temp fix 
+        switchTeamsButton.SetPlayerID(PlayerData.PlayerID); // temp fix #
+        if (PlayerData.IsLobbyHost && Keybinds.Actions.UI.Ready.WasPressedThisFrame())
+        {
+            startGameButton.onClick.Invoke();
+        }
+
+        if (!PlayerData.IsLobbyHost && Keybinds.Actions.UI.Ready.WasPressedThisFrame())
+        {
+            readyButton.onClick.Invoke();
+        }
     }
 
     private void OnEnable()

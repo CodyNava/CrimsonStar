@@ -215,6 +215,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "PauseGame",
+                    "type": "Button",
+                    "id": "21705b76-77a0-431d-9374-f44ae733e35e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "MouseAim",
                     "type": "Value",
                     "id": "6b444451-8a00-4d00-a97e-f47457f736a8",
@@ -254,15 +263,6 @@
                     "name": "Attack3",
                     "type": "Button",
                     "id": "d8416697-3e1b-42bc-b51c-8ee9f6fc09e2",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "PauseGame",
-                    "type": "Button",
-                    "id": "2239ca54-b88c-4771-ba1b-5bde5031dda9",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -382,6 +382,28 @@
                 },
                 {
                     "name": "",
+                    "id": "0b8ac19d-c379-4ea5-a290-ffb88ffad4d9",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "PauseGame",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8dce00c7-2b12-4e25-b49d-1ad2ba0aeb52",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "PauseGame",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "29f6c9a8-ec32-4d5a-b6d4-150a8b4a4c7f",
                     "path": "<Mouse>/position",
                     "interactions": "",
@@ -465,28 +487,6 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Attack3",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "37f61f7f-7669-4b2d-aa23-e5c87fe25252",
-                    "path": "<Gamepad>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "PauseGame",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "310b78a5-7f7f-4732-9fd0-b0e86ce25423",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "PauseGame",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -644,6 +644,15 @@
                     "name": "LeftTrigger",
                     "type": "Button",
                     "id": "dca2195d-e5bd-4aa3-a8d8-3db9f4483f08",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Ready",
+                    "type": "Button",
+                    "id": "623c3b62-57f6-43f4-887a-dd434a17c199",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1165,6 +1174,17 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "LeftTrigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "715c6eb7-566d-44ec-85d6-facc135ff6af",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Ready",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
