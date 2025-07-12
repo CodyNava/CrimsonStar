@@ -11,6 +11,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [Range(0, 1)]
     [SerializeField] private float scrollSpeedSeconds;
 
+    [Header("DO NOT TOUCH")]
     [SerializeField] private GameObject settingsContainer;
     private EventSystem _eventSystem;
 
@@ -58,8 +59,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
 
     private void Awake()
     {
-        settingsContainer = GameObject.Find("SettingsCanvas");
-        _eventSystem = FindFirstObjectByType<EventSystem>();
+        _eventSystem = EventSystem.current;
     }
 
     private void Update()
@@ -71,12 +71,10 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 if (audioContainer.activeSelf)
                 {
                     graphicsButton.onClick.Invoke();
-                    _eventSystem.SetSelectedGameObject(resolution);
                 }
                 else
                 {
                     audioButton.onClick.Invoke();
-                    _eventSystem.SetSelectedGameObject(master);
                 }
             }
 
@@ -85,20 +83,12 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 if (graphicsContainer.activeSelf)
                 {
                     audioButton.onClick.Invoke();
-                    _eventSystem.SetSelectedGameObject(master);
                 }
                 else
                 {
                     graphicsButton.onClick.Invoke();
-                    _eventSystem.SetSelectedGameObject(resolution);
                 }
             }
-
-            //TODO: Implement BackButton on Other Scripts
-            /*if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
-            {
-                settingsBackButton.onClick.Invoke();
-            }*/
 
             if (Keybinds.Actions.UI.Decrease.IsPressed() && !_cooldownStarted)
             {
