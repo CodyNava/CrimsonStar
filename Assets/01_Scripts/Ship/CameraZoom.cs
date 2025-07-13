@@ -16,8 +16,6 @@ namespace _01_Scripts.Ship
 
         private float _zoomDistance;
         private float _shipSpeedZoomDistance;
-        
-        public Action<float> OnChangeZoomDistance;
 
         public void Awake()
         {
@@ -26,17 +24,24 @@ namespace _01_Scripts.Ship
 
         private void OnEnable()
         {
-            if(!_cameraFollow.IsUnityNull()) _cameraFollow.OnTargetChanged += OnCameraTargetChanged;
-            _zoomDistance = _cameraFollow.CameraDistance;
+            if (_cameraFollow.IsUnityNull()) return; 
+            _cameraFollow.OnTargetChanged += OnCameraTargetChanged;
+            _zoomDistance = -_cameraFollow.CameraDistance;
         }
 
         private void OnDisable()
         {
-            if(!_cameraFollow.IsUnityNull()) _cameraFollow.OnTargetChanged -= OnCameraTargetChanged;
+            if (_cameraFollow.IsUnityNull()) return; 
+            _cameraFollow.OnTargetChanged -= OnCameraTargetChanged;
         }
 
         private void OnCameraTargetChanged(NetBridge target)
         {
+            if (target.IsUnityNull())
+            {
+                _targetRB = null;
+                return;
+            }
             _targetRB = target.GetComponent<Rigidbody2D>();
         } 
 
@@ -50,9 +55,6 @@ namespace _01_Scripts.Ship
         {
             float minDist = _cameraZoomSettings.MinDistance;
             float maxDist = _cameraZoomSettings.MaxDistance;
-
-            
-            // float currentDistance = -_cameraFollow.CameraDistance;
 
             float distanceDelta = scrollValue * _cameraZoomSettings.ZoomSpeedFactor;
 
@@ -76,12 +78,6 @@ namespace _01_Scripts.Ship
             }
 
             _cameraFollow.CameraDistance = -(_zoomDistance + _shipSpeedZoomDistance);
-        }
-
-        public void ZoomCamera()
-        {
-            
-            OnChangeZoomDistance?.Invoke(_cameraFollow.CameraDistance);
         }
     }
 }

@@ -41,8 +41,9 @@ public class CameraFollow : MonoBehaviour
         OnTargetChanged?.Invoke(_target);
     }
 
-    public void Start()
+    public void OnEnable()
     {
+
         if (InstanceFinder.TryGetInstance(out _gameplayConductor))
         {
             _gameplayConductor.OnLocalPlayerDeath += OnLocalPlayerDeath;
