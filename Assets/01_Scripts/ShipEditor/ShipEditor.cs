@@ -60,8 +60,8 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
     [SerializeField] private FMODUnity.EventReference moduleRefundEvent;
     [SerializeField] private FMODUnity.EventReference moduleBuyEvent;
-    
-    
+    [Header("ColorPresets")]
+    [SerializeField] public ColorPresetData presetData;
     [SerializeField] public List<Color> colorList = new List<Color>();
     public NetMatchPlayer PlayerData { get; private set; }
 
@@ -122,6 +122,7 @@ public class ShipEditor : MonoBehaviour
         ModuleSelectionButton.ModuleSelected += SpawnPart;
         ColorPresetButton.ColorSelected -= ChangeColors;
         ColorPresetButton.ColorSelected += ChangeColors;
+        colorList = presetData.presetColor1;
         _editorModuleList = new List<NetEditorModule> // collection initialization syntax uwu
         {
             netEditorBridgeRef

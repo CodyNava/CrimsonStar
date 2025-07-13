@@ -83,12 +83,16 @@ public class NetEditorModule : MonoBehaviour
         PresetMat1 = PresetObject.GetComponent<MeshRenderer>().materials[0];
         PresetMat2 = PresetObject.GetComponent<MeshRenderer>().materials[1];
         PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[2];
+        if (ModuleID == NetModuleID.Reactor)
+            PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[3];
 
         if (!PresetObjectHead) return;
 
         PresetMatHead1 = PresetObjectHead.GetComponent<MeshRenderer>().materials[0];
         PresetMatHead2 = PresetObjectHead.GetComponent<MeshRenderer>().materials[1];
         PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
+        if (ModuleID == NetModuleID.TurretLaser)
+            PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[3];
     }
 
     public void SetMaterialsBasedOnPreset()
@@ -96,7 +100,6 @@ public class NetEditorModule : MonoBehaviour
         PresetColor1 = shipEditor.colorList[0];
         PresetColor2 = shipEditor.colorList[1];
         PresetColor3 = shipEditor.colorList[2];
-        
     }
 
     private void UpdateMaterialPresets()
