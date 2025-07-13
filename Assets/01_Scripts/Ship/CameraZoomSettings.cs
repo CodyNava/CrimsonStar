@@ -6,7 +6,7 @@ namespace _01_Scripts.Ship
     [CreateAssetMenu(fileName = "CameraZoomSettings", menuName = "Settings/CameraZoom")]
     public class CameraZoomSettings : ScriptableObject
     {
-        [field:Tooltip("Sets the closes distances zoomed in in Unity Units ")]
+        [field:Tooltip("Sets the closes distances zoomed in in Unity Units")]
         [AbsoluteValue] [field:SerializeField] public float MinDistance { get; private set; }
         
         [field:Tooltip("Sets the farthest distance zoomed out in Unity Units")]
@@ -21,6 +21,11 @@ namespace _01_Scripts.Ship
         [field:Tooltip("Sets the minimum zoom speed factor even if zoomed very closely")]
         [AbsoluteValue] [field:SerializeField] public float ExpZoomMinSpeed { get; private set; }
         
+        [field:Tooltip("Enables extra zoom outwards depending on ship speed")]
+        [field:SerializeField] public bool EnableShipSpeedZoom { get; private set; }
         
+        [field:Tooltip("Sets the maximum extra zoom outwards relative to ship max speed")]
+        [Range(0f,1f)] [field:SerializeField] public float ShipSpeedZoomDistFactor { get; private set; }
+
     }
 }
