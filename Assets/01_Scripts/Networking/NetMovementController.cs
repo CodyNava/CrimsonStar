@@ -2,6 +2,7 @@
 using FishNet.Object.Prediction;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -160,8 +161,8 @@ public class NetMovementController : NetworkBehaviour
     private void CalculateStarDust(Vector2 linearVelocity)
     {
         startDustVFX.SetFloat("Set_SpeedInput", linearVelocity.magnitude / bridge.BridgeModule.Bridge.GetMaxMoveSpeed());
-        if (!bridge.cameraZoom) return;
-        startDustVFX.SetFloat("Set_CameraZoom", bridge.cameraZoom.CameraFollow.OffSet.magnitude / bridge.cameraZoom.CameraZoomSettings.MaxDistance);
+        if (bridge.CameraZoom.IsUnityNull()) return;
+        startDustVFX.SetFloat("Set_CameraZoom", bridge.CameraZoom.CameraFollow.OffSet.magnitude / bridge.CameraZoom.CameraZoomSettings.MaxDistance);
     }
 
     private void OnPostTick()
