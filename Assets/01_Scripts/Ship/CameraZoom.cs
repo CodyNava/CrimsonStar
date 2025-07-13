@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
@@ -11,7 +12,11 @@ namespace _01_Scripts.Ship
         [SerializeField] private CameraFollow _cameraFollow;
         public CameraFollow CameraFollow => _cameraFollow;
         public CameraZoomSettings CameraZoomSettings => _cameraZoomSettings;
+        private Rigidbody2D _targetRB;
 
+        private float _zoomDistance;
+        private float _shipSpeedZoomDistance;
+        
         public Action<float> OnChangeZoomDistance;
 
         public void Awake()
@@ -19,21 +24,25 @@ namespace _01_Scripts.Ship
             Assert.IsNotNull(_cameraFollow, "CameraFollow Component needs to be referenced");
         }
 
-        // public void OnEnable()
-        // {
-        //     Keybinds.Actions.Camera.CameraZoom.performed -= OnCameraZoomPerformed;
-        //     Keybinds.Actions.Camera.CameraZoom.performed += OnCameraZoomPerformed;
-        // }
-        //
-        // public void OnDisable()
-        // {
-        //     Keybinds.Actions.Camera.CameraZoom.performed -= OnCameraZoomPerformed;
-        // }
+        private void OnEnable()
+        {
+            if(!_cameraFollow.IsUnityNull()) _cameraFollow.OnTargetChanged += OnCameraTargetChanged;
+            _zoomDistance = _cameraFollow.CameraDistance;
+        }
+
+        private void OnDisable()
+        {
+            if(!_cameraFollow.IsUnityNull()) _cameraFollow.OnTargetChanged -= OnCameraTargetChanged;
+        }
+
+        private void OnCameraTargetChanged(NetBridge target)
+        {
+            _targetRB = target.GetComponent<Rigidbody2D>();
+        } 
 
         public void Update()
         {
             float scrollValue = -Keybinds.Actions.Camera.CameraZoom.ReadValue<float>();
-            if (Mathf.Abs(scrollValue) <= 0.01f) return;
             OnCameraZoomPerformed(scrollValue);
         }
 
@@ -43,22 +52,30 @@ namespace _01_Scripts.Ship
             float maxDist = _cameraZoomSettings.MaxDistance;
 
             
-            float currentDistance = -_cameraFollow.CameraDistance;
+            // float currentDistance = -_cameraFollow.CameraDistance;
 
             float distanceDelta = scrollValue * _cameraZoomSettings.ZoomSpeedFactor;
 
             if (_cameraZoomSettings.ExpZoomSpeed)
             {
-                float currentDistFactor = (currentDistance - minDist) / (maxDist - minDist);
+                float currentDistFactor = (_zoomDistance - minDist) / (maxDist - minDist);
                 distanceDelta *= Mathf.Max(_cameraZoomSettings.ExpZoomMinSpeed, currentDistFactor);
             }
 
-            currentDistance += distanceDelta;
+            _zoomDistance += distanceDelta;
 
-            currentDistance = Mathf.Min(_cameraZoomSettings.MaxDistance,
-                Mathf.Max(_cameraZoomSettings.MinDistance, currentDistance));
+            _zoomDistance = Mathf.Clamp(_zoomDistance, _cameraZoomSettings.MinDistance,
+                _cameraZoomSettings.MaxDistance);
 
-            _cameraFollow.CameraDistance = -currentDistance;
+            if (_cameraZoomSettings.EnableShipSpeedZoom && !_targetRB.IsUnityNull())
+            {
+                float velocityMag = _targetRB.linearVelocity.magnitude;
+                float maxSpeedPerc = Mathf.Clamp(velocityMag / _cameraFollow.Target.GetMaxMoveSpeed(), 0f, 1f);
+                _shipSpeedZoomDistance = (_cameraZoomSettings.MaxDistance * _cameraZoomSettings.ShipSpeedZoomDistFactor) *
+                                   maxSpeedPerc;
+            }
+
+            _cameraFollow.CameraDistance = -(_zoomDistance + _shipSpeedZoomDistance);
         }
 
         public void ZoomCamera()

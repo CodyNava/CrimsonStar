@@ -79,6 +79,6 @@ public class SpectatorPlayerPanel : MonoBehaviour
     public void OnPlayerPanelClicked(NetBridge bridge)
     {
         if (_cameraFollow.IsUnityNull()) return;
-        _cameraFollow.SetTarget(bridge.VisualRootTransform);
+        _cameraFollow.SetTarget(bridge);
     }
 }

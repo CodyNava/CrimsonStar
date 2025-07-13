@@ -2,10 +2,13 @@ using FishNet;
 using FishNet.Connection;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CameraFollow : MonoBehaviour
 {
-    private Transform _target;
+    private NetBridge _target;
+    public NetBridge Target => _target;
+    public Transform TargetTransform => _target.VisualRootTransform;
     [Header("References")]
     [SerializeField] private Camera cam;
     
@@ -23,13 +26,20 @@ public class CameraFollow : MonoBehaviour
 
     private bool _isSpectatorMode = false;
 
+
+    public event UnityAction<NetBridge> OnTargetChanged; 
+
     public float CameraDistance
     {
         get => offset.z;
         set => offset.z = value;
     }
 
-    public void SetTarget(Transform target) => _target = target;
+    public void SetTarget(NetBridge target)
+    {
+        _target = target;
+        OnTargetChanged?.Invoke(_target);
+    }
 
     public void Start()
     {
@@ -57,7 +67,7 @@ public class CameraFollow : MonoBehaviour
     {
         if (!_target.IsUnityNull())
         {
-            Vector3 targetPos = _target.position + offset;
+            Vector3 targetPos = TargetTransform.position + offset;
             transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref velocity, smoothTime);
 
             if (_isSpectatorMode && Keybinds.Actions.Camera.CameraPan.ReadValue<Vector2>().sqrMagnitude > 0) _target = null;
@@ -72,9 +82,5 @@ public class CameraFollow : MonoBehaviour
             Vector3 targetPos = new (pos.x + input.x, pos.y + input.y, offset.z);
             transform.position = Vector3.SmoothDamp(pos, targetPos, ref velocity, smoothTime);
         }
-    }
-    public void SetTargetFollow(Transform target)
-    {
-        _target = target;
     }
 }
