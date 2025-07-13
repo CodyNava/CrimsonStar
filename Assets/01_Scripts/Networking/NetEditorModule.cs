@@ -6,6 +6,7 @@ using UnityEngine;
 public class NetEditorModule : MonoBehaviour
 {
     private static readonly int ColourShift = Shader.PropertyToID("_EmissionColor");
+    private static readonly int Shift = Shader.PropertyToID("_ColourShift");
     [field: SerializeField] public NetModuleID ModuleID { get; private set; }
     [field: SerializeField] public Transform VisualTransform { get; private set; }
     [HideInInspector] public bool IsSelected { get; set; }
@@ -17,12 +18,25 @@ public class NetEditorModule : MonoBehaviour
     [HideInInspector] public bool IsPowered { get; set; }
     [field: SerializeField] private GameObject PowerMaterialGameObject { get; set; }
     [field: SerializeField] private Material PowerMaterial { get; set; }
-    private ShipEditor ShipEditor { get; set; }
+    [field: SerializeField] private List<Material> MaterialsToColor { get; set; }
+    private ShipEditor shipEditor { get; set; }
     private ShipEditorWeaponGroups WeaponGroupManager { get; set; }
     private int CurrentGroup => WeaponGroupManager.currentGroup;
     [SerializeField] private int _insideCurrentGroup;
     [SerializeField] private GameObject healthOverLayObject;
     [SerializeField] private Color _healthOverLayObjectColour;
+    [field: SerializeField] private Vector4 PresetColor1 { get; set; }
+    [field: SerializeField] private Vector4 PresetColor2 { get; set; }
+    [field: SerializeField] private Vector4 PresetColor3 { get; set; }
+    [field: SerializeField] private Material PresetMat1 { get; set; }
+    [field: SerializeField] private Material PresetMat2 { get; set; }
+    [field: SerializeField] private Material PresetMat3 { get; set; }
+    [field: SerializeField] private Material PresetMatHead1 { get; set; }
+    [field: SerializeField] private Material PresetMatHead2 { get; set; }
+    [field: SerializeField] private Material PresetMatHead3 { get; set; }
+    [field: SerializeField] private GameObject PresetObject { get; set; }
+    [field: SerializeField] private GameObject PresetObjectHead { get; set; }
+
 
     [Tooltip("poweredColor is only Relevant if it can be Powered")] [field: SerializeField]
     private Color poweredColor;
@@ -46,25 +60,67 @@ public class NetEditorModule : MonoBehaviour
 
     public void Awake()
     {
-        ShipEditor = FindFirstObjectByType<ShipEditor>();
+        shipEditor = FindFirstObjectByType<ShipEditor>();
         WeaponGroupManager = FindFirstObjectByType<ShipEditorWeaponGroups>();
         if (ModuleData.ModuleID == NetModuleID.Bridge)
             ShipEditorHealthOverlay.WriteHealthMap(PlacedLocation, ModuleData.BaseStats.health);
 
+        GetPresetMaterials();
+        GetPowerMaterial();
+    }
+
+
+    public void GetPowerMaterial()
+    {
         if (!ModuleData.CanBePowered) return;
         PowerMaterial = PowerMaterialGameObject.GetComponent<MeshRenderer>().materials[2];
         _originalColor = PowerMaterial.GetColor(ColourShift);
         _originalColorIntensity = Mathf.Max(_originalColor.r, _originalColor.g, _originalColor.b);
     }
 
+    public void GetPresetMaterials()
+    {
+        PresetMat1 = PresetObject.GetComponent<MeshRenderer>().materials[0];
+        PresetMat2 = PresetObject.GetComponent<MeshRenderer>().materials[1];
+        PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[2];
+
+        if (!PresetObjectHead) return;
+
+        PresetMatHead1 = PresetObjectHead.GetComponent<MeshRenderer>().materials[0];
+        PresetMatHead2 = PresetObjectHead.GetComponent<MeshRenderer>().materials[1];
+        PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
+    }
+
+    public void SetMaterialsBasedOnPreset()
+    {
+        PresetColor1 = shipEditor.colorList[0];
+        PresetColor2 = shipEditor.colorList[1];
+        PresetColor3 = shipEditor.colorList[2];
+        
+    }
+
+    private void UpdateMaterialPresets()
+    {
+        SetMaterialsBasedOnPreset();
+        PresetMat1.SetVector(Shift, PresetColor1);
+        PresetMat2.SetVector(Shift, PresetColor2);
+        PresetMat3.SetVector(Shift, PresetColor3);
+        if (PresetMatHead1 && PresetMatHead2 && PresetMatHead3)
+        {
+            PresetMatHead1.SetVector(Shift, PresetColor1);
+            PresetMatHead2.SetVector(Shift, PresetColor2);
+            PresetMatHead3.SetVector(Shift, PresetColor3);
+        }
+    }
+
     public void PickUpModule()
     {
-        ShipEditor.RemoveModule(this);
+        shipEditor.RemoveModule(this);
     }
 
     public void ModuleSelected()
     {
-        ShipEditor.moduleFirstSelectedGP = true;
+        shipEditor.moduleFirstSelectedGP = true;
         VisualTransform.gameObject.layer =
             IsSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
     }
@@ -110,6 +166,7 @@ public class NetEditorModule : MonoBehaviour
     {
         if (ModuleData.CanBePowered) ChangeMaterialAndCheckPowerAlways();
         if (ModuleData.ModuleCategory == NetModuleCategory.Weapons) ChangeLayerBasedOnWeaponGroup();
+        UpdateMaterialPresets();
     }
 
     public void TotalHealthChangeOverLayColour()
@@ -140,6 +197,7 @@ public class NetEditorModule : MonoBehaviour
         Debug.Log("ColorValue ===  " + colorValue);
     }
 
+
     private void ChangeMaterialAndCheckPowerAlways()
     {
         if (EnergyViewEnable())
@@ -165,7 +223,7 @@ public class NetEditorModule : MonoBehaviour
 
         AddToListWhenReconstructing();
 
-        if (!ShipEditor.EditorModuleList.Contains(this)) return;
+        if (!shipEditor.EditorModuleList.Contains(this)) return;
         var inGroupOneAndGroupActive = _insideCurrentGroup == 1 && CurrentGroup == 1 && !IsSelected;
         var inGroupTwoAndGroupActive = _insideCurrentGroup == 2 && CurrentGroup == 2 && !IsSelected;
         var inGroupThreeAndGroupActive = _insideCurrentGroup == 3 && CurrentGroup == 3 && !IsSelected;
@@ -182,7 +240,7 @@ public class NetEditorModule : MonoBehaviour
 
     public void AddToListWhenReconstructing()
     {
-        if (!ShipEditor.joiningEditor) return;
+        if (!shipEditor.joiningEditor) return;
         bool notInAnyList = !WeaponGroupManager.weaponGroupOne.Contains(this) &&
                             !WeaponGroupManager.weaponGroupTwo.Contains(this) &&
                             !WeaponGroupManager.weaponGroupThree.Contains(this);
@@ -209,6 +267,6 @@ public class NetEditorModule : MonoBehaviour
         }
     }
 
-    public bool EnergyViewEnable() => ShipEditor.inEnergyView;
-    public bool Powered() => ShipEditor.CheckIfPowered(PlacedLocation);
+    public bool EnergyViewEnable() => shipEditor.inEnergyView;
+    public bool Powered() => shipEditor.CheckIfPowered(PlacedLocation);
 }

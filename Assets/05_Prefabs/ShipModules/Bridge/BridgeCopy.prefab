@@ -139,10 +139,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 7395573517986551264}
   - {fileID: 12732445774338757}
   - {fileID: 2894461625664356007}
   - {fileID: 6626034837539333356}
+  - {fileID: 7395573517986551264}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7126793065188569584
@@ -176,11 +176,23 @@ MonoBehaviour:
   <ModuleID>k__BackingField: 1
   <VisualTransform>k__BackingField: {fileID: 8869851105163984641}
   healthOverLayData: {fileID: 11400000, guid: 33600992c09abf445bc880d26cf214c4, type: 2}
-  <PowerMaterialGameObject>k__BackingField: {fileID: 0}
+  <PowerMaterialGameObject>k__BackingField: {fileID: 821604270233092223}
   <PowerMaterial>k__BackingField: {fileID: 0}
+  <MaterialsToColor>k__BackingField: []
   _insideCurrentGroup: 0
   healthOverLayObject: {fileID: 733845401287228772}
   _healthOverLayObjectColour: {r: 0, g: 0, b: 0, a: 0}
+  <PresetColor1>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
+  <PresetColor2>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
+  <PresetColor3>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
+  <PresetMat1>k__BackingField: {fileID: 0}
+  <PresetMat2>k__BackingField: {fileID: 0}
+  <PresetMat3>k__BackingField: {fileID: 0}
+  <PresetMatHead1>k__BackingField: {fileID: 0}
+  <PresetMatHead2>k__BackingField: {fileID: 0}
+  <PresetMatHead3>k__BackingField: {fileID: 0}
+  <PresetObject>k__BackingField: {fileID: 821604270233092223}
+  <PresetObjectHead>k__BackingField: {fileID: 9203570203669170207}
   poweredColor: {r: 0, g: 0, b: 0, a: 0}
   notPoweredColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1001 &149373995769429950
@@ -191,14 +203,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8869851105163984641}
     m_Modifications:
-    - target: {fileID: 5682243684440478403, guid: c6d53121ea66c534aaac0a4c26ccab95, type: 3}
-      propertyPath: 'm_Materials.Array.data[1]'
-      value: 
-      objectReference: {fileID: 2100000, guid: e1dfea3d6f09c7343b7deca90c1b1dc9, type: 2}
-    - target: {fileID: 5682243684440478403, guid: c6d53121ea66c534aaac0a4c26ccab95, type: 3}
-      propertyPath: 'm_Materials.Array.data[3]'
-      value: 
-      objectReference: {fileID: 2100000, guid: e1dfea3d6f09c7343b7deca90c1b1dc9, type: 2}
     - target: {fileID: 6478086457513827154, guid: c6d53121ea66c534aaac0a4c26ccab95, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -251,6 +255,11 @@ PrefabInstance:
 --- !u!4 &6626034837539333356 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6478086457513827154, guid: c6d53121ea66c534aaac0a4c26ccab95, type: 3}
+  m_PrefabInstance: {fileID: 149373995769429950}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &9203570203669170207 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9055340881662867361, guid: c6d53121ea66c534aaac0a4c26ccab95, type: 3}
   m_PrefabInstance: {fileID: 149373995769429950}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &551556173803633966
@@ -341,6 +350,11 @@ PrefabInstance:
 --- !u!4 &12732445774338757 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 291e74bb06e208b459023ab0f15e37b8, type: 3}
+  m_PrefabInstance: {fileID: 551556173803633966}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &821604270233092223 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 291e74bb06e208b459023ab0f15e37b8, type: 3}
   m_PrefabInstance: {fileID: 551556173803633966}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8496446612326589354

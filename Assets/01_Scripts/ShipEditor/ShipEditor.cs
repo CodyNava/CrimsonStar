@@ -60,6 +60,9 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
     [SerializeField] private FMODUnity.EventReference moduleRefundEvent;
     [SerializeField] private FMODUnity.EventReference moduleBuyEvent;
+    
+    
+    [SerializeField] public List<Color> colorList = new List<Color>();
     public NetMatchPlayer PlayerData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
@@ -117,6 +120,8 @@ public class ShipEditor : MonoBehaviour
         editCamera ??= Camera.main;
         ModuleSelectionButton.ModuleSelected -= SpawnPart;
         ModuleSelectionButton.ModuleSelected += SpawnPart;
+        ColorPresetButton.ColorSelected -= ChangeColors;
+        ColorPresetButton.ColorSelected += ChangeColors;
         _editorModuleList = new List<NetEditorModule> // collection initialization syntax uwu
         {
             netEditorBridgeRef
@@ -153,6 +158,7 @@ public class ShipEditor : MonoBehaviour
     private void OnDestroy()
     {
         ModuleSelectionButton.ModuleSelected -= SpawnPart;
+        ColorPresetButton.ColorSelected -= ChangeColors;
     }
 
     public void SpawnPart(NetModuleID moduleID)
@@ -162,6 +168,11 @@ public class ShipEditor : MonoBehaviour
         {
             StartCoroutine(NotEnoughMoneyPopUp());
         }
+    }
+
+    public void ChangeColors(List<Color> colors)
+    {
+        colorList = colors;
     }
 
     private IEnumerator NotEnoughMoneyPopUp()
@@ -429,11 +440,6 @@ public class ShipEditor : MonoBehaviour
         }
 
         return false;
-    }
-
-
-    public void ChangeLayerOnEachModule()
-    {
     }
 
     private bool IsSomethingBelowThruster(HexCoordinate coord)

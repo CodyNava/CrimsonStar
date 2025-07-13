@@ -5,6 +5,7 @@ public enum NetModuleCategory
     Armor = 1,
     Engines = 2,
     Weapons = 3,
-    Energy = 4
+    Energy = 4,
+    ColorPresets = 5
 }
 
