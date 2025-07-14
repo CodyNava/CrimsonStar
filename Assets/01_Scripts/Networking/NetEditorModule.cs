@@ -84,7 +84,7 @@ public class NetEditorModule : MonoBehaviour
         PresetMat2 = PresetObject.GetComponent<MeshRenderer>().materials[1];
         PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[2];
         if (ModuleID == NetModuleID.Reactor)
-            PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[3];
+            PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[3];//
 
         if (!PresetObjectHead) return;
 
@@ -92,7 +92,7 @@ public class NetEditorModule : MonoBehaviour
         PresetMatHead2 = PresetObjectHead.GetComponent<MeshRenderer>().materials[1];
         PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
         if (ModuleID == NetModuleID.TurretLaser)
-            PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[3];
+            PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[3];//
     }
 
     public void SetMaterialsBasedOnPreset()
@@ -141,6 +141,7 @@ public class NetEditorModule : MonoBehaviour
             PlacedRotation -= 6;
         }
 
+        Debug.Log(PlacedRotation);
         C_UpdateRotation();
     }
 
@@ -156,7 +157,6 @@ public class NetEditorModule : MonoBehaviour
         {
             PlacedRotation += 6;
         }
-
         C_UpdateRotation();
     }
 

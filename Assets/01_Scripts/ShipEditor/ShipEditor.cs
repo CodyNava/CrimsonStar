@@ -60,8 +60,10 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
     [SerializeField] private FMODUnity.EventReference moduleRefundEvent;
     [SerializeField] private FMODUnity.EventReference moduleBuyEvent;
-    [Header("ColorPresets")]
-    [SerializeField] public ColorPresetData presetData;
+
+    [Header("ColorPresets")] [SerializeField]
+    public ColorPresetData presetData;
+
     [SerializeField] public List<Color> colorList = new List<Color>();
     public NetMatchPlayer PlayerData { get; private set; }
 
@@ -109,7 +111,7 @@ public class ShipEditor : MonoBehaviour
         {
             NetGameBootstrapper.LeaveLobbyLocal();
         }
-        
+
         SceneAudioManager.instance.StopInGameMusic();
         SceneAudioManager.instance.ResetMusicProgress();
         SceneManager.LoadScene("MainMenu");
@@ -127,6 +129,8 @@ public class ShipEditor : MonoBehaviour
         {
             netEditorBridgeRef
         };
+        _editorModulesMap.Add(HexCoordinate.Zero, netEditorBridgeRef);
+        _editorModulesMap.Add(HexCoordinate.Direction(HexDirection.North), netEditorBridgeRef);
         StartCoroutine(LinkPlayerRoutine());
         shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
         // energyViewToggleButton.onClick.AddListener(ToggleEnergyView);
@@ -397,9 +401,12 @@ public class ShipEditor : MonoBehaviour
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
             HexCoordinate coord = rootCoord + localCoord;
+
+            Debug.Log(CantPlaceHullPlating(coord, _heldNetEditorModule));
             var moduleID = _heldNetEditorModule.ModuleID;
             var condition = GetPlacementConditionForModule(moduleID);
             if (PlayerData.ModuleStorage.SC_IsCoordinateOccupied(coord) || condition(rootCoord) ||
+                CantPlaceHullPlating(coord, _heldNetEditorModule) ||
                 IsThrusterAbove(coord))
             {
                 return false;
@@ -434,7 +441,6 @@ public class ShipEditor : MonoBehaviour
             {
                 if (module.ModuleID == NetModuleID.Thruster)
                 {
-                    Debug.Log("is Above" + module);
                     return true;
                 }
             }
@@ -443,6 +449,50 @@ public class ShipEditor : MonoBehaviour
         return false;
     }
 
+
+    private bool BlockNeighborsHull(HexCoordinate coord)
+    {
+        return false;
+    }
+
+
+    private static readonly Dictionary<int, HexDirection[]> HullDirections = new()
+    {
+        { 0, new[] { HexDirection.South, HexDirection.SouthEast, HexDirection.SouthWest } },
+        { 1, new[] { HexDirection.SouthWest, HexDirection.South, HexDirection.NorthWest } },
+        { 2, new[] { HexDirection.NorthWest, HexDirection.SouthWest, HexDirection.North } },
+        { 3, new[] { HexDirection.North, HexDirection.NorthWest, HexDirection.NorthEast } },
+        { 4, new[] { HexDirection.NorthEast, HexDirection.North, HexDirection.SouthEast } },
+        { 5, new[] { HexDirection.SouthEast, HexDirection.NorthEast, HexDirection.South } }
+    };
+    private bool CantPlaceHullPlating(HexCoordinate coordinate, NetEditorModule module)
+    {
+        if (module.ModuleID != NetModuleID.HullPlating && module.ModuleID != NetModuleID.HullFinish)
+            return false;
+
+        var hullFinish = module.ModuleID == NetModuleID.HullFinish;
+        var rotation = _heldNetEditorModule.PlacedRotation;
+
+        if (!HullDirections.TryGetValue(rotation, out var directions))
+        {
+            return false;
+        }
+
+        int directionsToCheck = hullFinish ? 2 : 3;
+
+        for (int i = 0; i < directionsToCheck; i++)
+        {
+            var neighborCoord = HexCoordinate.Neighbor(coordinate, directions[i]);
+            if (_editorModulesMap.TryGetValue(neighborCoord, out var neighborModule))
+            {
+                Debug.Log(neighborModule.ModuleID);
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
     private bool IsSomethingBelowThruster(HexCoordinate coord)
     {
         const int maxDistance = 3;
@@ -670,8 +720,7 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = moduleToRemove.PlacedLocation + localCoord;
             _editorModulesMap.Remove(coord);
         }
-
-
+        
         PlayerData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
         _editorModuleList.Remove(_heldNetEditorModule);
         weaponGroupManager.RemoveModuleFromWeaponGroup(_heldNetEditorModule, moduleToRemove.PlacedLocation);
