@@ -10,7 +10,7 @@ public class NetEditorModule : MonoBehaviour
     [field: SerializeField] public NetModuleID ModuleID { get; private set; }
     [field: SerializeField] public Transform VisualTransform { get; private set; }
     [HideInInspector] public bool IsSelected { get; set; }
-    public HexCoordinate PlacedLocation { get; set; }
+    [field: SerializeField] public HexCoordinate PlacedLocation { get; set; }
     [field: SerializeField] public int PlacedRotation { get; set; }
     public NetModuleData ModuleData => ModuleID.GetModuleData();
     [field: SerializeField] public HealthOverLayData healthOverLayData;
@@ -150,8 +150,7 @@ public class NetEditorModule : MonoBehaviour
         {
             PlacedRotation -= 6;
         }
-
-        Debug.Log(PlacedRotation);
+        
         C_UpdateRotation();
     }
 
@@ -208,7 +207,6 @@ public class NetEditorModule : MonoBehaviour
             colorValue);
         _healthOverLayObjectColour = newColor;
         healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
-        Debug.Log("ColorValue ===  " + colorValue);
     }
 
 

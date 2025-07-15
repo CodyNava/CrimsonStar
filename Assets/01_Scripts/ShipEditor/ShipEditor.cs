@@ -238,9 +238,10 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab,
                 editCamera.ScreenToWorldPoint(Input.mousePosition).xy(),
                 transform.rotation);
+            _heldNetEditorModule.TotalHealthChangeOverLayColour();
             for (int i = 0; i < tempRotation; i++)
             {
-                _heldNetEditorModule.C_RotateClockwise();
+                if (_heldNetEditorModule.ModuleData.CanRotate) _heldNetEditorModule.C_RotateClockwise();
             }
         }
 
@@ -265,7 +266,6 @@ public class ShipEditor : MonoBehaviour
         var v = moduleMoveSpeedGP;
         moveInput = Keybinds.Actions.ShipEditor.MoveModule.ReadValue<Vector2>();
         moveInput.Normalize();
-        Debug.Log(moveInput);
 
         if (_heldNetEditorModule != null)
         {
@@ -403,15 +403,12 @@ public class ShipEditor : MonoBehaviour
         bool isAttached = false;
         if (IsReactorInRangeOfReactor(rootCoord))
         {
-            Debug.Log("ReactorInRange");
             return false;
         }
 
         foreach (HexCoordinate localCoord in _heldNetEditorModule.LocalCoordinates)
         {
             HexCoordinate coord = rootCoord + localCoord;
-
-            Debug.Log(CantPlaceHullPlating(coord, _heldNetEditorModule));
             var moduleID = _heldNetEditorModule.ModuleID;
             var condition = GetPlacementConditionForModule(moduleID);
             if (PlayerData.ModuleStorage.SC_IsCoordinateOccupied(coord) || condition(rootCoord) ||
@@ -511,7 +508,6 @@ public class ShipEditor : MonoBehaviour
             coord = HexCoordinate.Neighbor(coord, HexDirection.South);
             if (_editorModulesMap.TryGetValue(coord, out var value))
             {
-                Debug.Log("is below" + value);
                 return true;
             }
         }
@@ -696,6 +692,7 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = rootCoord + localCoord;
             _editorModulesMap[coord] = _heldNetEditorModule;
         }
+
 
         if (!joiningEditor)
         {
