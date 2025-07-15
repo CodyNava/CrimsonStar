@@ -23,8 +23,12 @@ public class Tooltip : MonoBehaviour
         Vector3 screenPos = _camera.WorldToScreenPoint(topRightWorld);
         if (message == String.Empty) return;
         TooltipBehaviour.Instance.ShowToolTip(message);
-        TooltipBehaviour.Instance.ShowAdvancedToolTip(advancedMessage);
+        TooltipBehaviour.Instance.transform.position = screenPos;
+        if (healthMessage == String.Empty) return;
         TooltipBehaviour.Instance.ShowHealthTip(healthMessage);
+        TooltipBehaviour.Instance.transform.position = screenPos;
+        if (advancedMessage == String.Empty) return;
+        TooltipBehaviour.Instance.ShowAdvancedToolTip(advancedMessage);
         TooltipBehaviour.Instance.transform.position = screenPos;
     }
 

@@ -14,11 +14,9 @@ public class GameSettingsHost : MonoBehaviour
 
     [SerializeField] private Button leave;
     [SerializeField] private Button players;
-    [SerializeField] private GameObject playersRT;
-    [SerializeField] private GameObject playersLT;
+    [SerializeField] private GameObject rT;
+    [SerializeField] private GameObject lT;
     [SerializeField] private Button options;
-    [SerializeField] private GameObject optionsRT;
-    [SerializeField] private GameObject optionsLT;
 
     [SerializeField] private GameObject playerContainer;
     [SerializeField] private GameObject optionsContainer;
@@ -173,8 +171,8 @@ public class GameSettingsHost : MonoBehaviour
         //increaseModuleRefund.gameObject.SetActive(PlayerData.IsLobbyHost);
         //decreaseModuleRefund.gameObject.SetActive(PlayerData.IsLobbyHost);
         
-        playersLT.SetActive(PlayerData.IsLobbyHost);
-        playersRT.SetActive(PlayerData.IsLobbyHost);
+        lT.SetActive(PlayerData.IsLobbyHost && InputManager.Instance.IsGamepadUsed);
+        rT.SetActive(PlayerData.IsLobbyHost && InputManager.Instance.IsGamepadUsed);
 
         _eventSystem.SetSelectedGameObject(player1);
 
@@ -231,8 +229,8 @@ public class GameSettingsHost : MonoBehaviour
             //inviteKeyboard.SetActive(true);
             //kickKeyboard.SetActive(PlayerData.IsLobbyHost);
             
-            playersLT.SetActive(false);
-            playersRT.SetActive(false);
+            lT.SetActive(false);
+            rT.SetActive(false);
             return;
         }
         
@@ -257,6 +255,9 @@ public class GameSettingsHost : MonoBehaviour
         if (!PlayerData.IsLobbyHost) return;
 
         if (_eventSystem.currentSelectedGameObject.IsUnityNull()) return;
+        
+        lT.SetActive(true);
+        rT.SetActive(true);
 
         if (PlayerData.IsLobbyHost)
         {
@@ -265,18 +266,10 @@ public class GameSettingsHost : MonoBehaviour
                 if (optionsContainer.activeSelf)
                 {
                     players.onClick.Invoke();
-                    playersLT.SetActive(true);
-                    playersRT.SetActive(true);
-                    optionsLT.SetActive(false);
-                    optionsRT.SetActive(false);
                 }
                 else
                 {
                     options.onClick.Invoke();
-                    playersLT.SetActive(false);
-                    playersRT.SetActive(false);
-                    optionsLT.SetActive(true);
-                    optionsRT.SetActive(true);
                 }
             }
 
@@ -285,18 +278,10 @@ public class GameSettingsHost : MonoBehaviour
                 if (playerContainer.activeSelf)
                 {
                     options.onClick.Invoke();
-                    playersLT.SetActive(false);
-                    playersRT.SetActive(false);
-                    optionsLT.SetActive(true);
-                    optionsRT.SetActive(true);
                 }
                 else
                 {
                     players.onClick.Invoke();
-                    playersLT.SetActive(true);
-                    playersRT.SetActive(true);
-                    optionsLT.SetActive(false);
-                    optionsRT.SetActive(false);
                 }
             }
 
