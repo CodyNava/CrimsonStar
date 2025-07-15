@@ -11,29 +11,31 @@ public class NetEditorModule : MonoBehaviour
     [field: SerializeField] public Transform VisualTransform { get; private set; }
     [HideInInspector] public bool IsSelected { get; set; }
     public HexCoordinate PlacedLocation { get; set; }
-    public int PlacedRotation { get; set; }
+    [field: SerializeField] public int PlacedRotation { get; set; }
     public NetModuleData ModuleData => ModuleID.GetModuleData();
     [field: SerializeField] public HealthOverLayData healthOverLayData;
-    public List<HexCoordinate> LocalCoordinates { get; private set; }
+    [field: SerializeField] public List<HexCoordinate> LocalCoordinates { get; private set; }
     [HideInInspector] public bool IsPowered { get; set; }
-    [field: SerializeField] private GameObject PowerMaterialGameObject { get; set; }
-    [field: SerializeField] private Material PowerMaterial { get; set; }
-    [field: SerializeField] private List<Material> MaterialsToColor { get; set; }
     private ShipEditor shipEditor { get; set; }
     private ShipEditorWeaponGroups WeaponGroupManager { get; set; }
     private int CurrentGroup => WeaponGroupManager.currentGroup;
     [SerializeField] private int _insideCurrentGroup;
     [SerializeField] private GameObject healthOverLayObject;
     [SerializeField] private Color _healthOverLayObjectColour;
-    [field: SerializeField] private Vector4 PresetColor1 { get; set; }
-    [field: SerializeField] private Vector4 PresetColor2 { get; set; }
-    [field: SerializeField] private Vector4 PresetColor3 { get; set; }
-    [field: SerializeField] private Material PresetMat1 { get; set; }
-    [field: SerializeField] private Material PresetMat2 { get; set; }
-    [field: SerializeField] private Material PresetMat3 { get; set; }
-    [field: SerializeField] private Material PresetMatHead1 { get; set; }
-    [field: SerializeField] private Material PresetMatHead2 { get; set; }
-    [field: SerializeField] private Material PresetMatHead3 { get; set; }
+    private Vector4 PresetColor1 { get; set; }
+    private Vector4 PresetColor2 { get; set; }
+    private Vector4 PresetColor3 { get; set; }
+    private Material PresetMat1 { get; set; }
+    private Material PresetMat2 { get; set; }
+    private Material PresetMat3 { get; set; }
+    private Material PresetMatHead1 { get; set; }
+    private Material PresetMatHead2 { get; set; }
+    private Material PresetMatHead3 { get; set; }
+    [field: SerializeField] private GameObject PowerMaterialGameObject { get; set; }
+    [field: SerializeField] private Material PowerMaterial { get; set; }
+    [field: SerializeField] private List<Material> MaterialsToColor { get; set; }
+    [field: SerializeField] private List<Material> powerSocketMaterials = new();
+    [field: SerializeField] private List<GameObject> powerMaterialSocketsGameObject = new();
     [field: SerializeField] private GameObject PresetObject { get; set; }
     [field: SerializeField] private GameObject PresetObjectHead { get; set; }
 
@@ -76,6 +78,13 @@ public class NetEditorModule : MonoBehaviour
         PowerMaterial = PowerMaterialGameObject.GetComponent<MeshRenderer>().materials[2];
         _originalColor = PowerMaterial.GetColor(ColourShift);
         _originalColorIntensity = Mathf.Max(_originalColor.r, _originalColor.g, _originalColor.b);
+
+        if (ModuleID != NetModuleID.TurretLaser) return;
+        foreach (var mesh in powerMaterialSocketsGameObject)
+        {
+            var socketMat = mesh.GetComponent<MeshRenderer>().materials[0];
+            powerSocketMaterials.Add(socketMat);
+        }
     }
 
     public void GetPresetMaterials()
@@ -84,7 +93,7 @@ public class NetEditorModule : MonoBehaviour
         PresetMat2 = PresetObject.GetComponent<MeshRenderer>().materials[1];
         PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[2];
         if (ModuleID == NetModuleID.Reactor)
-            PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[3];//
+            PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[3]; //
 
         if (!PresetObjectHead) return;
 
@@ -92,7 +101,7 @@ public class NetEditorModule : MonoBehaviour
         PresetMatHead2 = PresetObjectHead.GetComponent<MeshRenderer>().materials[1];
         PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
         if (ModuleID == NetModuleID.TurretLaser)
-            PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[3];//
+            PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[3]; //
     }
 
     public void SetMaterialsBasedOnPreset()
@@ -128,6 +137,7 @@ public class NetEditorModule : MonoBehaviour
             IsSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
     }
 
+
     public void C_RotateClockwise()
     {
         for (int i = 0; i < LocalCoordinates.Count; i++)
@@ -157,6 +167,7 @@ public class NetEditorModule : MonoBehaviour
         {
             PlacedRotation += 6;
         }
+
         C_UpdateRotation();
     }
 
@@ -210,11 +221,22 @@ public class NetEditorModule : MonoBehaviour
                 PowerMaterial.SetColor(ColourShift, IsPowered
                     ? poweredColor * _originalColorIntensity
                     : notPoweredColor * _originalColorIntensity);
+                
+                foreach (var mat in powerSocketMaterials)
+                {
+                    mat.SetColor(ColourShift,
+                        IsPowered ? poweredColor * _originalColorIntensity 
+                            : notPoweredColor * _originalColorIntensity);
+                }
             }
         }
         else if (PowerMaterial.GetColor(ColourShift) != _originalColor)
         {
             PowerMaterial.SetColor(ColourShift, _originalColor);
+            foreach (var mat in powerSocketMaterials)
+            {
+                mat.SetColor(ColourShift, _originalColor);
+            }
         }
 
         IsPowered = Powered();

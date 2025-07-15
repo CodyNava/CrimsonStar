@@ -31,6 +31,9 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private float moduleMoveSpeedGP;
     [SerializeField] List<GameObject> gamePadSwitches = new List<GameObject>();
 
+    private Dictionary<HexCoordinate, NetEditorModule> _blockedCoordinates =
+        new Dictionary<HexCoordinate, NetEditorModule>();
+
     [Header("HealthView")] [SerializeField]
     public TextMeshProUGUI healthViewModeText;
 
@@ -49,10 +52,11 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] public bool inEnergyViewParentToggle;
     [SerializeField] public bool joiningEditor;
 
+    [SerializeField] public int tempRotation;
+
 
     [SerializeField] public bool moduleSpawnedInGP;
     [SerializeField] public bool moduleFirstSelectedGP;
-    [SerializeField] public bool reactorIsNearby;
 
     private Color originalOutlineShaderColor;
     private float originalOutlineShaderStrenght;
@@ -64,6 +68,7 @@ public class ShipEditor : MonoBehaviour
     [Header("ColorPresets")] [SerializeField]
     public ColorPresetData presetData;
 
+    //[SerializeField] public List<ColorPreset> presetList = new List<ColorPreset>();
     [SerializeField] public List<Color> colorList = new List<Color>();
     public NetMatchPlayer PlayerData { get; private set; }
 
@@ -124,13 +129,13 @@ public class ShipEditor : MonoBehaviour
         ModuleSelectionButton.ModuleSelected += SpawnPart;
         ColorPresetButton.ColorSelected -= ChangeColors;
         ColorPresetButton.ColorSelected += ChangeColors;
-        colorList = presetData.presetColor1;
+        colorList = presetData.presets[0].colors;
         _editorModuleList = new List<NetEditorModule> // collection initialization syntax uwu
         {
             netEditorBridgeRef
         };
-        _editorModulesMap.Add(HexCoordinate.Zero, netEditorBridgeRef);
-        _editorModulesMap.Add(HexCoordinate.Direction(HexDirection.North), netEditorBridgeRef);
+        _blockedCoordinates.Add(HexCoordinate.Zero, netEditorBridgeRef);
+        _blockedCoordinates.Add(HexCoordinate.Direction(HexDirection.North), netEditorBridgeRef);
         StartCoroutine(LinkPlayerRoutine());
         shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
         // energyViewToggleButton.onClick.AddListener(ToggleEnergyView);
@@ -233,6 +238,10 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab,
                 editCamera.ScreenToWorldPoint(Input.mousePosition).xy(),
                 transform.rotation);
+            for (int i = 0; i < tempRotation; i++)
+            {
+                _heldNetEditorModule.C_RotateClockwise();
+            }
         }
 
         FMODUnity.RuntimeManager.PlayOneShot(moduleBuyEvent, _heldNetEditorModule.transform.position);
@@ -407,7 +416,7 @@ public class ShipEditor : MonoBehaviour
             var condition = GetPlacementConditionForModule(moduleID);
             if (PlayerData.ModuleStorage.SC_IsCoordinateOccupied(coord) || condition(rootCoord) ||
                 CantPlaceHullPlating(coord, _heldNetEditorModule) ||
-                IsThrusterAbove(coord))
+                IsThrusterAbove(coord) || !coord.IsWithinBounds())
             {
                 return false;
             }
@@ -465,6 +474,7 @@ public class ShipEditor : MonoBehaviour
         { 4, new[] { HexDirection.NorthEast, HexDirection.North, HexDirection.SouthEast } },
         { 5, new[] { HexDirection.SouthEast, HexDirection.NorthEast, HexDirection.South } }
     };
+
     private bool CantPlaceHullPlating(HexCoordinate coordinate, NetEditorModule module)
     {
         if (module.ModuleID != NetModuleID.HullPlating && module.ModuleID != NetModuleID.HullFinish)
@@ -483,16 +493,16 @@ public class ShipEditor : MonoBehaviour
         for (int i = 0; i < directionsToCheck; i++)
         {
             var neighborCoord = HexCoordinate.Neighbor(coordinate, directions[i]);
-            if (_editorModulesMap.TryGetValue(neighborCoord, out var neighborModule))
+            if (_editorModulesMap.TryGetValue(neighborCoord, out var neighborModule) ||
+                _blockedCoordinates.ContainsKey(neighborCoord))
             {
-                Debug.Log(neighborModule.ModuleID);
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     private bool IsSomethingBelowThruster(HexCoordinate coord)
     {
         const int maxDistance = 3;
@@ -700,6 +710,8 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Modules");
         }
 
+        tempRotation = _heldNetEditorModule.PlacedRotation;
+
         _editorModuleList.Add(_heldNetEditorModule);
         shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
         _heldNetEditorModule = null;
@@ -720,7 +732,7 @@ public class ShipEditor : MonoBehaviour
             HexCoordinate coord = moduleToRemove.PlacedLocation + localCoord;
             _editorModulesMap.Remove(coord);
         }
-        
+
         PlayerData.ModuleStorage.C_RemoveModule(moduleToRemove.PlacedLocation);
         _editorModuleList.Remove(_heldNetEditorModule);
         weaponGroupManager.RemoveModuleFromWeaponGroup(_heldNetEditorModule, moduleToRemove.PlacedLocation);

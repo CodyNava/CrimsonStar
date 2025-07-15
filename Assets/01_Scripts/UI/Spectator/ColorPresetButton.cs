@@ -28,8 +28,8 @@ public class ColorPresetButton : MonoBehaviour
             currentPreset = data;
             
     }
-    public void SetName(ColorPresetData data ,int nameindex)
+    public void SetName(string name)
     {
-        presetName.text = data.presetNames[nameindex];
+        presetName.text = name;
     }
 }

@@ -15,39 +15,15 @@ public class ModuleCategoryContainer : MonoBehaviour
     public void SetModuleCategory(NetModuleCategory category)
     {
         ClearButtons();
-
-
+        
         if (category == NetModuleCategory.ColorPresets)
         {
-            var colorPresets = new List<List<Color>>
+            foreach (var data in presetData.presets)
             {
-                presetData.presetColor1,
-                presetData.presetColor2,
-                presetData.presetColor3,
-                presetData.presetColor4,
-                presetData.presetColor5,
-                presetData.presetColor6
-            };
-
-
-            for (int i = 0; i < colorPresets.Count; i++)
-            {
-                switch (i)
-                {
-                    case 0: colorPresetButton.SetColor(presetData.presetColor1); break;
-                    case 1: colorPresetButton.SetColor(presetData.presetColor2); break;
-                    case 2: colorPresetButton.SetColor(presetData.presetColor3); break;
-                    case 3: colorPresetButton.SetColor(presetData.presetColor4); break;
-                    case 4: colorPresetButton.SetColor(presetData.presetColor5); break;
-                    case 5: colorPresetButton.SetColor(presetData.presetColor6); break;
-                }
-                colorPresetButton.SetName( presetData, i);
+                colorPresetButton.SetColor(data.colors);
+                colorPresetButton.SetName(data.presetName);
                 Instantiate(colorPresetContainer, container.transform);
             }
-            
-            
-
-
             return;
         }
 

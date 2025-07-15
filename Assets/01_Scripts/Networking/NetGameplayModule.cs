@@ -28,6 +28,20 @@ public class NetGameplayModule : NetworkBehaviour
     [SerializeField] private EventReference lowHealthAlarmSFX;
     private EventInstance _lowHealthAlarmInstance;
 
+    [Header("ColorPresets")] private static readonly int Shift = Shader.PropertyToID("_ColourShift");
+    [field: SerializeField] private Vector4 PresetColor1 { get; set; }
+    [field: SerializeField] private Vector4 PresetColor2 { get; set; }
+    [field: SerializeField] private Vector4 PresetColor3 { get; set; }
+    [field: SerializeField] private Material PresetMat1 { get; set; }
+    [field: SerializeField] private Material PresetMat2 { get; set; }
+    [field: SerializeField] private Material PresetMat3 { get; set; }
+    [field: SerializeField] private Material PresetMatHead1 { get; set; }
+    [field: SerializeField] private Material PresetMatHead2 { get; set; }
+    [field: SerializeField] private Material PresetMatHead3 { get; set; }
+    [field: SerializeField] private GameObject PresetObject { get; set; }
+    [field: SerializeField] private GameObject PresetObjectHead { get; set; }
+    [field: SerializeField] private ColorPresetData PresetData { get; set; }
+
     [Header("Detachment Settings")] [SerializeField]
     private float _detachmentForce;
 
@@ -82,10 +96,53 @@ public class NetGameplayModule : NetworkBehaviour
             _lowHealthAlarmInstance = RuntimeManager.CreateInstance(lowHealthAlarmSFX);
         }
 
+        GetPresetMaterials();
+       // UpdateMaterialPresets();
+
         if (IsOwner)
         {
+            //UpdateMaterialPresets();
             int weaponGroupValue = NetModuleWeaponGroupData.WeaponGroupMap.GetValueOrDefault(coord);
             WeaponGroup = weaponGroupValue;
+        }
+    }
+
+    public void GetPresetMaterials()
+    {
+        PresetMat1 = PresetObject.GetComponent<MeshRenderer>().materials[0];
+        PresetMat2 = PresetObject.GetComponent<MeshRenderer>().materials[1];
+        PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[2];
+        if (ModuleID == NetModuleID.Reactor)
+            PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[3]; //
+
+        if (!PresetObjectHead) return;
+
+        PresetMatHead1 = PresetObjectHead.GetComponent<MeshRenderer>().materials[0];
+        PresetMatHead2 = PresetObjectHead.GetComponent<MeshRenderer>().materials[1];
+        PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
+        if (ModuleID == NetModuleID.TurretLaser)
+            PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[3]; //
+    }
+
+    public void SetColorsBasedOnPreset()
+    {
+        //PresetColor1 = player.ColorList.Value[0];
+        //PresetColor2 = player.ColorList.Value[1];
+        //PresetColor3 = player.ColorList.Value[2];
+        // todo set colors here
+    }
+
+    private void UpdateMaterialPresets()
+    {
+        SetColorsBasedOnPreset();
+        PresetMat1.SetVector(Shift, PresetColor1);
+        PresetMat2.SetVector(Shift, PresetColor2);
+        PresetMat3.SetVector(Shift, PresetColor3);
+        if (PresetMatHead1 && PresetMatHead2 && PresetMatHead3)
+        {
+            PresetMatHead1.SetVector(Shift, PresetColor1);
+            PresetMatHead2.SetVector(Shift, PresetColor2);
+            PresetMatHead3.SetVector(Shift, PresetColor3);
         }
     }
 
@@ -142,7 +199,7 @@ public class NetGameplayModule : NetworkBehaviour
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         if (IsOwner)
         {
-           RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
+            RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
             if (lowHealthAlarmSFX.IsNull == false)
             {
                 if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.35f)

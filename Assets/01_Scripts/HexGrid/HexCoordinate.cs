@@ -48,7 +48,12 @@ public struct HexCoordinate : IEquatable<HexCoordinate>
         S = coords.z;
         Assert.IsTrue(S == -Q - R, "Illegal coordinates found in Module Data Scriptable Object.");
     }
-
+    
+    public bool IsWithinBounds(int limit = 4)
+    {
+        return Mathf.Abs(Q) <= limit && Mathf.Abs(R) <= limit && Mathf.Abs(S) <= limit;
+    }
+    
     public static bool operator ==(HexCoordinate lhs, HexCoordinate rhs)
     {
         return lhs.Q == rhs.Q && lhs.R == rhs.R;
