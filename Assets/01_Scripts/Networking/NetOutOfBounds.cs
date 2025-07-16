@@ -15,7 +15,7 @@ public class NetOutOfBounds : MonoBehaviour
             yield return new WaitForSeconds(1f);
             i--;
         }
-        _module.S_InflictDamage(9999, _module.Bridge.PlayerID);
+        _module.S_InflictDamage(9999, PlayerData.PlayerID);
     }
 
     private void OnTriggerExit2D(Collider2D other)
