@@ -1,5 +1,4 @@
 using System.Collections;
-using FishNet;
 using UnityEngine;
 
 public class NetOutOfBounds : MonoBehaviour
@@ -16,10 +15,7 @@ public class NetOutOfBounds : MonoBehaviour
             yield return new WaitForSeconds(1f);
             i--;
         }
-
-        InstanceFinder.TryGetInstance(out NetGameplayConductor conn);
-        conn.S_ReportKillInstance(_module.Bridge.PlayerID, _module.Bridge.PlayerID);
-        _module.S_InflictDamage(9999, 0);
+        _module.S_InflictDamage(9999, _module.Bridge.PlayerID);
     }
 
     private void OnTriggerExit2D(Collider2D other)
