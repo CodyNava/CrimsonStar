@@ -64,8 +64,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: 144
     y: -167
-    width: 1322
-    height: 1926
+    width: 1320
+    height: 1906
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -76,7 +76,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d4c867f6b72b714dbb5fd1780afe208, type: 3}
-  m_Name: VFXGraph_Explosion_Anticipation_Modular
+  m_Name: VFXGraph_M_Master_Explosion_Anticipation
   m_EditorClassIdentifier: 
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 0}
@@ -442,7 +442,7 @@ VisualEffectResource:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VFXGraph_Explosion_Anticipation_Modular
+  m_Name: VFXGraph_M_Master_Explosion_Anticipation
   m_Graph: {fileID: 114350483966674976}
   m_Infos:
     m_RendererSettings:
@@ -457,7 +457,7 @@ VisualEffectResource:
     m_PreWarmDeltaTime: 0.05
     m_PreWarmStepCount: 0
     m_InitialEventName: OnPlay
-    m_InstancingMode: 1
+    m_InstancingMode: 0
     m_InstancingCapacity: 512
 --- !u!114 &8926484042661614544
 MonoBehaviour:
@@ -581,7 +581,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614549}
   m_ExposedName: ToggleGlow
   m_Exposed: 1
-  m_Order: 0
+  m_Order: 1
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -662,7 +662,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614551}
   m_ExposedName: ToggleShockWave
   m_Exposed: 1
-  m_Order: 14
+  m_Order: 17
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -743,7 +743,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614553}
   m_ExposedName: ToggleImpactGlow
   m_Exposed: 1
-  m_Order: 20
+  m_Order: 22
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -824,7 +824,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614565}
   m_ExposedName: Color_Glow
   m_Exposed: 1
-  m_Order: 0
+  m_Order: 2
   m_Category: Color
   m_Min:
     m_Type:
@@ -1041,7 +1041,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614571}
   m_ExposedName: Gradient
   m_Exposed: 0
-  m_Order: 5
+  m_Order: 15
   m_Category: Color
   m_Min:
     m_Type:
@@ -1113,7 +1113,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614573}
   m_ExposedName: EmissionIntensity
   m_Exposed: 0
-  m_Order: 4
+  m_Order: 13
   m_Category: Color
   m_Min:
     m_Type:
@@ -1185,7 +1185,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614575}
   m_ExposedName: SpawnRate
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 7
   m_Category: General
   m_Min:
     m_Type:
@@ -1284,7 +1284,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614579}
   m_ExposedName: Lifetime_ShockWave
   m_Exposed: 1
-  m_Order: 11
+  m_Order: 16
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -1365,7 +1365,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614583}
   m_ExposedName: ToggleLooping
   m_Exposed: 1
-  m_Order: 17
+  m_Order: 19
   m_Category: General
   m_Min:
     m_Type:
@@ -2360,7 +2360,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614614}
   m_ExposedName: Size_Glow
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 8
   m_Category: Size
   m_Min:
     m_Type:
@@ -2441,7 +2441,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614616}
   m_ExposedName: ColorOverLife_Glow
   m_Exposed: 0
-  m_Order: 3
+  m_Order: 10
   m_Category: Color
   m_Min:
     m_Type:
@@ -2659,7 +2659,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614649}
   m_ExposedName: Size_ShockWave
   m_Exposed: 1
-  m_Order: 3
+  m_Order: 11
   m_Category: Size
   m_Min:
     m_Type:
@@ -2774,7 +2774,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614661}
   m_ExposedName: Lifetime_Glow
   m_Exposed: 1
-  m_Order: 3
+  m_Order: 12
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -4528,7 +4528,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614718}
   m_ExposedName: Lifetime_ImpactGlow
   m_Exposed: 1
-  m_Order: 4
+  m_Order: 14
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -4609,7 +4609,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614720}
   m_ExposedName: Size_ImpactGlow
   m_Exposed: 1
-  m_Order: 1
+  m_Order: 5
   m_Category: Size
   m_Min:
     m_Type:
@@ -4827,7 +4827,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614726}
   m_ExposedName: Color_ShockWave 2
   m_Exposed: 0
-  m_Order: 2
+  m_Order: 9
   m_Category: Color
   m_Min:
     m_Type:
@@ -4908,7 +4908,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614728}
   m_ExposedName: Color_ImpactGlow
   m_Exposed: 0
-  m_Order: 1
+  m_Order: 6
   m_Category: Color
   m_Min:
     m_Type:
@@ -4989,7 +4989,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614730}
   m_ExposedName: TextureWave
   m_Exposed: 0
-  m_Order: 19
+  m_Order: 21
   m_Category: Specific
   m_Min:
     m_Type:
@@ -5070,7 +5070,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614732}
   m_ExposedName: TextureGlow
   m_Exposed: 0
-  m_Order: 16
+  m_Order: 18
   m_Category: Specific
   m_Min:
     m_Type:
@@ -5151,7 +5151,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614734}
   m_ExposedName: TextureImpactGlow
   m_Exposed: 0
-  m_Order: 18
+  m_Order: 20
   m_Category: Specific
   m_Min:
     m_Type:
@@ -5538,7 +5538,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614754}
   m_ExposedName: Color_ShockWave
   m_Exposed: 1
-  m_Order: 0
+  m_Order: 3
   m_Category: Color
   m_Min:
     m_Type:
@@ -5755,7 +5755,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614760}
   m_ExposedName: Color_ImpactGlow 2
   m_Exposed: 1
-  m_Order: 0
+  m_Order: 4
   m_Category: Color
   m_Min:
     m_Type:

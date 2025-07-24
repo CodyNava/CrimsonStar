@@ -41,7 +41,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 357699026080523039}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: d8bc318c94e005c41a22a904be860c99, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: b86eef398100b994486cc2ecc33e65e5, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -221,7 +221,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2451965054877065137}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: e7932e390d9abe44083274d3342a3dca, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: 76f5804eedde2fa49aa2fbd8898b054a, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -258,7 +258,7 @@ VisualEffect:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 1.56, y: 0.57989526, z: 0.1878534, w: 0}
+      - m_Value: {x: 0.367, y: 0.13496129, z: 0.04261936, w: 0}
         m_Name: Color_Glow
         m_Overridden: 1
       - m_Value: {x: 12.480001, y: 4.6391625, z: 1.5028274, w: 0}
@@ -280,6 +280,9 @@ VisualEffect:
       m_Array:
       - m_Value: 0
         m_Name: ToggleShockWave
+        m_Overridden: 1
+      - m_Value: 1
+        m_Name: ToggleImpactGlow
         m_Overridden: 1
 --- !u!73398921 &5052538780206425966
 VFXRenderer:
@@ -619,7 +622,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8220794575269128855}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: d8f2c6cf13e543546bcc8410acb03414, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: 812c18c82a9748245b7863f8ce9e4108, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -647,10 +650,10 @@ VisualEffect:
       - m_Value: 0.2
         m_Name: Lifetime_BurstParticle
         m_Overridden: 1
-      - m_Value: 5
+      - m_Value: 10
         m_Name: Size_ImpactParticle
         m_Overridden: 1
-      - m_Value: 0.2
+      - m_Value: 0.3
         m_Name: Lifetime_FlashImpact
         m_Overridden: 1
     m_Vector2f:
@@ -668,7 +671,7 @@ VisualEffect:
       - m_Value: {x: 2.1185474, y: 0.77085423, z: 0.22183736, w: 0}
         m_Name: Color_ShockWave
         m_Overridden: 1
-      - m_Value: {x: 0.16078429, y: 0.2894966, z: 0.8, w: 0}
+      - m_Value: {x: 1.2043059, y: 2.1683865, z: 5.992157, w: 0}
         m_Name: Color_FlashImpact
         m_Overridden: 1
     m_Uint:
