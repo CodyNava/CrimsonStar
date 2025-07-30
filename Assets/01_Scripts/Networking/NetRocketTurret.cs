@@ -35,21 +35,12 @@ public class NetRocketTurret : NetworkBehaviour
 
     private bool C_IsAttacking()
     {
-        if (!InputManager.Instance.IsGamepadUsed)
+        switch (turretModule.WeaponGroup)
         {
-            switch (turretModule.WeaponGroup)
-            {
-                case 2: return Keybinds.Actions.Player.Attack2.IsPressed();
-                case 3: return Keybinds.Actions.Player.Attack3.IsPressed();
-                default:
-                case 1: return Keybinds.Actions.Player.Attack.IsPressed();
-            }
-        }
-        else
-        {
-            Vector2 input = Keybinds.Actions.Player.GamepadAim.ReadValue<Vector2>();
-            // TODO: The stick deadzone is implemented hardcoded via magic number. Consider to use dedicated Stick deadzone preprocessor in InputActions
-            return input.magnitude > 0.2f;
+            case 2: return Keybinds.Actions.Player.Attack2.IsPressed();
+            case 3: return Keybinds.Actions.Player.Attack3.IsPressed();
+            default:
+            case 1: return Keybinds.Actions.Player.Attack.IsPressed();
         }
     }
 

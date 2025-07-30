@@ -153,8 +153,6 @@ public class NetMovementController : NetworkBehaviour
         PredictionRB.Velocity(linearVelocity);
         PredictionRB.Simulate();
        // CalculateStarDust(linearVelocity);
-        Debug.Log("_______________"+linearVelocity);
-        
     }
 
     private void CalculateStarDust(Vector2 linearVelocity)
