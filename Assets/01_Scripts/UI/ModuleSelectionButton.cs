@@ -43,7 +43,7 @@ public class ModuleSelectionButton : MonoBehaviour
 
         toolTip.statFour = data.BaseStats.mass.ToString();
         toolTip.statFourImage = testSprite;
-
+        
         toolTip.statFive = data.BaseStats.thrust > 0 ? data.BaseStats.thrust.ToString() : string.Empty;
         toolTip.statFiveImage = data.BaseStats.thrust > 0 ? testSprite : null;
 
