@@ -21,7 +21,8 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [SerializeField] private Button settingsBackButton;
     [SerializeField] private Button applyButton;
 
-    [Header("Graphics")] [SerializeField] private GameObject graphicsContainer;
+    [Header("Graphics")]
+    [SerializeField] private GameObject graphicsContainer;
     [SerializeField] private GameObject resolution;
     [SerializeField] private GameObject frameCap;
     [SerializeField] private GameObject vSync;
@@ -42,7 +43,8 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [SerializeField] private Button increaseGamma;
     [SerializeField] private Button decreaseGamma;
 
-    [Header("Sound")] [SerializeField] private GameObject audioContainer;
+    [Header("Sound")]
+    [SerializeField] private GameObject audioContainer;
     [SerializeField] private GameObject master;
     [SerializeField] private GameObject music;
     [SerializeField] private GameObject sfx;
