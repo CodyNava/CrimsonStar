@@ -25,7 +25,7 @@ public class PreventDeselecting : MonoBehaviour
         }
         else
         {
-            eventSystem.SetSelectedGameObject(null);
+            // eventSystem.SetSelectedGameObject(null);
         }
     }
 

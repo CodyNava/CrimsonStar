@@ -8,6 +8,7 @@ using FishNet.Component.Prediction;
 using FishNet.Connection;
 using FishNet.Transporting;
 using FMODUnity;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -21,7 +22,8 @@ public class NetBridge : NetworkBehaviour
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
     private readonly SyncVar<string> _displayName = new();
     private readonly SyncVar<ulong> _playerId = new();
-    public CameraZoom cameraZoom;
+    public CameraZoom CameraZoom { get; private set; }
+    public CameraFollow CameraFollow { get; private set; }
     public NetModuleBaseStats BaseStats => _baseStats.Value;
     public string DisplayName => _displayName.Value;
     public ulong PlayerID => _playerId.Value;
@@ -212,8 +214,9 @@ public class NetBridge : NetworkBehaviour
     {
         if (IsOwner)
         {
-            cameraZoom = FindFirstObjectByType<CameraZoom>();
-            FindFirstObjectByType<CameraFollow>().SetTargetFollow(VisualRootTransform);
+            CameraZoom = FindFirstObjectByType<CameraZoom>();
+            CameraFollow = FindFirstObjectByType<CameraFollow>();
+            CameraFollow.SetTarget(this);
             fmodListener.enabled = true;
         }
         else
@@ -224,10 +227,7 @@ public class NetBridge : NetworkBehaviour
 
     public override void OnStopClient()
     {
-        if (IsOwner)
-        {
-            FindFirstObjectByType<CameraFollow>()?.SetTargetFollow(null);
-        }
+        if (IsOwner && !CameraFollow.IsUnityNull()) CameraFollow.SetTarget(null);
 
         Instantiate(deathVFX, VisualRootTransform.position, Quaternion.identity);
         Destroy(VisualRootTransform.gameObject);

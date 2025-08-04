@@ -8,14 +8,25 @@ public class NetRocketTurret : NetworkBehaviour
 {
     [SerializeField] private NetRocketTurretData netRocketTurretData;
     [SerializeField] private NetGameplayModule turretModule;
-    [SerializeField] private Transform spawnTransform;
-    [SerializeField] private VisualEffect muzzleFlash;
+    [SerializeField] private Transform spawnTransformA, spawnTransformB;
+    [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
+    private VisualEffect _nextMuzzleFlash;
     [SerializeField] private StudioEventEmitter shotSound;
     private const float MaxPassedTime = 0.3f;
-
+    private Transform _nextSpawnTransform;
     private float _accumulatedTime;
     private float _cooldownTime;
 
+    
+    public override void OnStartClient()
+    {
+        if (IsOwner)
+        {
+            _nextSpawnTransform = spawnTransformA;
+        }
+
+        _nextMuzzleFlash = muzzleFlashA;
+    }
 
     private void Update()
     {
@@ -35,28 +46,19 @@ public class NetRocketTurret : NetworkBehaviour
 
     private bool C_IsAttacking()
     {
-        if (!InputManager.Instance.IsGamepadUsed)
+        switch (turretModule.WeaponGroup)
         {
-            switch (turretModule.WeaponGroup)
-            {
-                case 2: return Keybinds.Actions.Player.Attack2.IsPressed();
-                case 3: return Keybinds.Actions.Player.Attack3.IsPressed();
-                default:
-                case 1: return Keybinds.Actions.Player.Attack.IsPressed();
-            }
-        }
-        else
-        {
-            Vector2 input = Keybinds.Actions.Player.GamepadAim.ReadValue<Vector2>();
-            // TODO: The stick deadzone is implemented hardcoded via magic number. Consider to use dedicated Stick deadzone preprocessor in InputActions
-            return input.magnitude > 0.2f;
+            case 2: return Keybinds.Actions.Player.Attack2.IsPressed();
+            case 3: return Keybinds.Actions.Player.Attack3.IsPressed();
+            default:
+            case 1: return Keybinds.Actions.Player.Attack.IsPressed();
         }
     }
 
     private void C_ClientFire()
     {
-        Vector3 position = spawnTransform.position;
-        Vector3 direction = spawnTransform.up;
+        Vector3 position = _nextSpawnTransform.position;
+        Vector3 direction = _nextSpawnTransform.up;
 
         // if (!IsHostInitialized)
         // {
@@ -70,9 +72,30 @@ public class NetRocketTurret : NetworkBehaviour
         {
             S_ServerFire(position, direction, TimeManager.Tick, PlayerData.PlayerID, turretModule.Bridge);
         }
-
-        muzzleFlash.Play();
+        
+        if (_nextSpawnTransform == spawnTransformA)
+        {
+            _nextSpawnTransform = spawnTransformB;
+            _nextMuzzleFlash = muzzleFlashB;
+        }
+        else
+        {
+            _nextSpawnTransform = spawnTransformA;
+            _nextMuzzleFlash = muzzleFlashA;
+        }
+        
+        if (_nextMuzzleFlash == muzzleFlashA)
+        {
+            _nextMuzzleFlash = muzzleFlashB;
+        }
+        else
+        {
+            _nextMuzzleFlash = muzzleFlashA;
+        }
+        
+        _nextMuzzleFlash.Play();
         shotSound.Play();
+        
     }
 
     [Server]

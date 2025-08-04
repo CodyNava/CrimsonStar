@@ -21,8 +21,8 @@ VisualEffectResource:
     m_PreWarmDeltaTime: 0.05
     m_PreWarmStepCount: 0
     m_InitialEventName: OnPlay
-    m_InstancingMode: 0
-    m_InstancingCapacity: 64
+    m_InstancingMode: 1
+    m_InstancingCapacity: 512
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3749,7 +3749,8 @@ MonoBehaviour:
     - outputSlot: {fileID: 114350483966675123}
       inputSlot: {fileID: 114350483966675098}
     position: {x: 1889.3333, y: 2072.8335}
-    expandedSlots: []
+    expandedSlots:
+    - {fileID: 114350483966675123}
     expanded: 1
     supecollapsed: 0
 --- !u!114 &114350483966675123

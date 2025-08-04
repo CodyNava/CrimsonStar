@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using FMOD.Studio;
+using Steamworks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SettingsBehaviour : MonoBehaviour
 {
-    [Header("Graphics")]
-    [SerializeField] private TMP_Text resolutionText;
+    [Header("Graphics")] [SerializeField] private TMP_Text resolutionText;
     private List<string> _resolutionOptions;
     private List<Resolution> _uniqueResolution;
     private Resolution[] _resolutions;
@@ -19,26 +20,25 @@ public class SettingsBehaviour : MonoBehaviour
     private int _uniqueResolutionIndex;
 
     [SerializeField] private TMP_Text frameCounter;
-    private readonly int[] _frameCap = {30, 60, 90, 120, 144, 180, -1};
+    private readonly int[] _frameCap = { 30, 60, 90, 120, 144, 180, -1 };
     private int _frameCapIndex;
 
     [SerializeField] private TMP_Text vSyncMode;
-    private readonly string[] _vSync = {"Off", "On"};
+    private readonly string[] _vSync = { "Off", "On" };
     private int _vSyncIndex;
-    
+
     [SerializeField] private Volume volume;
     private LiftGammaGain _gamma;
     [SerializeField] private Slider gammaSlider;
     [SerializeField] private Slider brightnessSlider;
     [SerializeField] private Image brightness;
-    
-    [Header("Sound")]
-    [SerializeField] private Slider masterSlider;
+
+    [Header("Sound")] [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
     [SerializeField] private Slider uiSlider;
     [SerializeField] private Slider announcerSlider;
-    
+
     private const string MasterVolumePref = "MasterVolume";
     private const string MusicVolumePref = "MusicVolume";
     private const string SfxVolumePref = "SFXVolume";
@@ -61,6 +61,20 @@ public class SettingsBehaviour : MonoBehaviour
         volume.profile.TryGet(out _gamma);
     }
 
+    public void LeaveGame()
+    {
+        if (global::PlayerData.CurrentLobbyID != CSteamID.Nil)
+            NetGameBootstrapper.LeaveLobby();
+        else
+        {
+            NetGameBootstrapper.LeaveLobbyLocal();
+        }
+        
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
+        SceneManager.LoadScene("MainMenu");
+    }
+
     private void Start()
     {
         _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
@@ -74,27 +88,30 @@ public class SettingsBehaviour : MonoBehaviour
         _uniqueResolution = new List<Resolution>();
         _uniqueResolutionIndex = 0;
         _currentResolutionIndex = 0;
-        
+
         for (int i = 0; i < _resolutions.Length; i++)
         {
             if (_resolution.IsUnityNull())
             {
                 _resolution = Screen.currentResolution;
             }
+
             string resolutionOption =
                 $"{_resolutions[i].width} x {_resolutions[i].height}";
             if (_resolutionOptions.Contains(resolutionOption))
             {
                 continue;
             }
+
             _resolutionOptions.Add(resolutionOption);
             _uniqueResolution.Add(_resolutions[i]);
-            
+
             if (_resolutions[i].width == Screen.currentResolution.width &&
                 _resolutions[i].height == Screen.currentResolution.height)
             {
                 _currentResolutionIndex = _uniqueResolutionIndex;
             }
+
             _uniqueResolutionIndex++;
         }
 
@@ -112,7 +129,7 @@ public class SettingsBehaviour : MonoBehaviour
 
         _resolution = _uniqueResolution[_currentResolutionIndex];
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
-        Save();
+        Apply();
     }
 
     public void DecreaseResolution()
@@ -126,7 +143,7 @@ public class SettingsBehaviour : MonoBehaviour
 
         _resolution = _uniqueResolution[_currentResolutionIndex];
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
-        Save();
+        Apply();
     }
 
     public void IncreaseFrameCap()
@@ -135,7 +152,7 @@ public class SettingsBehaviour : MonoBehaviour
         _frameCapIndex %= _frameCap.Length;
 
         frameCounter.text = _frameCap[_frameCapIndex].Equals(-1) ? "Unlimited" : _frameCap[_frameCapIndex].ToString();
-        Save();
+        Apply();
     }
 
     public void DecreaseFrameCap()
@@ -150,9 +167,10 @@ public class SettingsBehaviour : MonoBehaviour
             _frameCapIndex--;
             frameCounter.text = _frameCap[_frameCapIndex].ToString();
         }
-        Save();
+
+        Apply();
     }
-    
+
     public void IncreaseVsync()
     {
         if (_vSyncIndex == 1)
@@ -160,9 +178,9 @@ public class SettingsBehaviour : MonoBehaviour
         else
             _vSyncIndex++;
         vSyncMode.text = _vSync[_vSyncIndex];
-        Save();
+        Apply();
     }
-    
+
     public void DecreaseVsync()
     {
         if (_vSyncIndex == 0)
@@ -170,44 +188,48 @@ public class SettingsBehaviour : MonoBehaviour
         else
             _vSyncIndex--;
         vSyncMode.text = _vSync[_vSyncIndex];
-        Save();
+        Apply();
     }
 
     public void AdjustBrightness()
     {
         brightness.color = new Color(0f, 0f, 0f, brightnessSlider.value);
-        Save();
+        Apply();
     }
-    
+
     public void IncreaseBrightness()
     {
         brightnessSlider.value -= 0.05f;
+        Apply();
     }
-    
+
     public void DecreaseBrightness()
     {
         brightnessSlider.value += 0.05f;
+        Apply();
     }
 
     public void AdjustGamma()
     {
         _gamma.gamma.value = new Vector4(1f, 1f, 1f, gammaSlider.value);
-        Save();
+        Apply();
     }
 
     public void IncreaseGamma()
     {
         gammaSlider.value += 0.05f;
+        Apply();
     }
-    
+
     public void DecreaseGamma()
     {
         gammaSlider.value -= 0.05f;
+        Apply();
     }
 
-    public void Apply()
+    private void Apply()
     {
-        Screen.SetResolution(_resolution.width, _resolution.height,Screen.fullScreen);
+        Screen.SetResolution(_resolution.width, _resolution.height, Screen.fullScreen);
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
         Application.targetFrameRate = _frameCap[_frameCapIndex];
         frameCounter.text = _frameCap[_frameCapIndex].Equals(-1) ? "Unlimited" : _frameCap[_frameCapIndex].ToString();
@@ -215,7 +237,7 @@ public class SettingsBehaviour : MonoBehaviour
         vSyncMode.text = _vSync[_vSyncIndex];
         Save();
     }
-    
+
     #endregion
 
     #region Sound
@@ -239,7 +261,7 @@ public class SettingsBehaviour : MonoBehaviour
     {
         ApplyVolume(_musicBus, musicSlider.value);
     }
-    
+
     public void IncreaseMusic()
     {
         musicSlider.value += 0.05f;
@@ -254,7 +276,7 @@ public class SettingsBehaviour : MonoBehaviour
     {
         ApplyVolume(_sfxBus, sfxSlider.value);
     }
-    
+
     public void IncreaseSfx()
     {
         sfxSlider.value += 0.05f;
@@ -279,12 +301,12 @@ public class SettingsBehaviour : MonoBehaviour
     {
         uiSlider.value -= 0.05f;
     }
-    
+
     public void AnnouncerVolume()
     {
         ApplyVolume(_announcerBus, announcerSlider.value);
     }
-    
+
     public void IncreaseAnnouncer()
     {
         announcerSlider.value += 0.05f;
@@ -317,7 +339,7 @@ public class SettingsBehaviour : MonoBehaviour
         PlayerPrefs.SetInt(ResolutionPref, _currentResolutionIndex);
     }
 
-    private void Load()
+    public void Load()
     {
         masterSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(MasterVolumePref, 0.5f));
         musicSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(MusicVolumePref, 0.5f));

@@ -103,6 +103,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         bridge.S_SetPlayerID(matchPlayer.PlayerID.Value);
         bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, matchPlayer.Team.Value, HexCoordinate.Zero);
         S_ConstructPlayerShip(connection, matchPlayer.Team.Value, bridge, matchPlayer.ModuleStorage, scene);
+        this.transform.localScale = new Vector3(3 + PlayerCount / 2, 3 + PlayerCount / 2, 0);
         var spawnPoint = S_GetSpawnTransform();
         bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
 
@@ -130,15 +131,17 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Remove(owner);
         _eliminatedPlayers.Add(owner);
 
-
+        
         if (_eliminatedPlayers.Count >= PlayerCount * 0.34f)
         {
             SceneAudioManager.instance.IncreaseMusicProgress();
             C_TriggerIncreaseMusicProgress();
-        }
-
-        C_TriggerOnRegisterPlayerDeath(owner);
-        TriggerOnRegisterPlayerDeath(owner);
+        } 
+        
+        ServerManager.Broadcast(new NetGameplayBroadcasts.PlayerDeath
+        {
+            conn = owner   
+        });
 
         if (S_IsMatchComplete())
         {
@@ -246,7 +249,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         C_TriggerResetMusic();
     }
 
-
+    
     [ObserversRpc]
     [Client]
     private void C_TriggerIncreaseMusicProgress()

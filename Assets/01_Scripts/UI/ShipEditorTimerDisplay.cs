@@ -8,7 +8,9 @@ using TMPro;
 public class ShipEditorTimerDisplay : MonoBehaviour
 {
     [SerializeField] private TMP_Text timerDisplay;
-
+    [SerializeField] private Image timerButtonSprite;
+    [SerializeField] private float noTimeColorThreshold;
+    
     public void Update()
     {
         DisplayTimer();
@@ -20,6 +22,11 @@ public class ShipEditorTimerDisplay : MonoBehaviour
         {
             float remainingTime = NetShipEditorConductor.Instance.TimeRemaining;
             timerDisplay.text = $"{remainingTime:0}";
+            if (remainingTime < noTimeColorThreshold)
+            {
+                timerButtonSprite.color = Color.white;
+            }
+            else timerButtonSprite.color = Color.grey;
         }
     }
 }

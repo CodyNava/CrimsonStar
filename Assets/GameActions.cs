@@ -344,6 +344,15 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PauseGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""2239ca54-b88c-4771-ba1b-5bde5031dda9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -544,6 +553,28 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""action"": ""Attack3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""37f61f7f-7669-4b2d-aa23-e5c87fe25252"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""PauseGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""310b78a5-7f7f-4732-9fd0-b0e86ce25423"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""PauseGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -699,6 +730,15 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""name"": ""LeftTrigger"",
                     ""type"": ""Button"",
                     ""id"": ""dca2195d-e5bd-4aa3-a8d8-3db9f4483f08"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ready"",
+                    ""type"": ""Button"",
+                    ""id"": ""74c5b219-286c-4b09-98b5-5643234f5feb"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1222,6 +1262,17 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""action"": ""LeftTrigger"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0442e1c3-32bd-49c9-a4ab-afd75b2ca05c"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Ready"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1305,6 +1356,15 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""name"": ""WeaponGroupSelectGP"",
                     ""type"": ""Button"",
                     ""id"": ""57fd24a6-c6e9-493c-8ca7-9e92a982e4f8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ready"",
+                    ""type"": ""Button"",
+                    ""id"": ""e45736c7-f5e3-4f3e-8553-0ed9bcf4ac67"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1403,10 +1463,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""876b2734-cb07-4b2f-97b4-7ae7bd585f0f"",
-                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""path"": ""<XInputController>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Gamepad"",
                     ""action"": ""EnergyOverview"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1417,7 +1477,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/#(C)"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""EnergyOverview"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1425,10 +1485,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a9e09050-fb22-4e10-8f11-311d3817f624"",
-                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""path"": ""<XInputController>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Gamepad"",
                     ""action"": ""HealthOverview"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1439,7 +1499,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/#(V)"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""HealthOverview"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1509,6 +1569,17 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""action"": ""WeaponGroupSelectGP"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b8594117-0769-4036-81c0-9b48ec8299fb"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Ready"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1556,6 +1627,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_Attack2 = m_Player.FindAction("Attack2", throwIfNotFound: true);
         m_Player_Attack3 = m_Player.FindAction("Attack3", throwIfNotFound: true);
+        m_Player_PauseGame = m_Player.FindAction("PauseGame", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1575,6 +1647,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_UI_Save = m_UI.FindAction("Save", throwIfNotFound: true);
         m_UI_RightTrigger = m_UI.FindAction("RightTrigger", throwIfNotFound: true);
         m_UI_LeftTrigger = m_UI.FindAction("LeftTrigger", throwIfNotFound: true);
+        m_UI_Ready = m_UI.FindAction("Ready", throwIfNotFound: true);
         // ShipEditor
         m_ShipEditor = asset.FindActionMap("ShipEditor", throwIfNotFound: true);
         m_ShipEditor_ModulePickOrDrop = m_ShipEditor.FindAction("ModulePickOrDrop", throwIfNotFound: true);
@@ -1586,6 +1659,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_ShipEditor_MoveModule = m_ShipEditor.FindAction("MoveModule", throwIfNotFound: true);
         m_ShipEditor_WeaponGroupSelect = m_ShipEditor.FindAction("WeaponGroupSelect", throwIfNotFound: true);
         m_ShipEditor_WeaponGroupSelectGP = m_ShipEditor.FindAction("WeaponGroupSelectGP", throwIfNotFound: true);
+        m_ShipEditor_Ready = m_ShipEditor.FindAction("Ready", throwIfNotFound: true);
     }
 
     ~@GameActions()
@@ -1793,6 +1867,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_Attack2;
     private readonly InputAction m_Player_Attack3;
+    private readonly InputAction m_Player_PauseGame;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1828,6 +1903,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Attack3".
         /// </summary>
         public InputAction @Attack3 => m_Wrapper.m_Player_Attack3;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/PauseGame".
+        /// </summary>
+        public InputAction @PauseGame => m_Wrapper.m_Player_PauseGame;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1872,6 +1951,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @Attack3.started += instance.OnAttack3;
             @Attack3.performed += instance.OnAttack3;
             @Attack3.canceled += instance.OnAttack3;
+            @PauseGame.started += instance.OnPauseGame;
+            @PauseGame.performed += instance.OnPauseGame;
+            @PauseGame.canceled += instance.OnPauseGame;
         }
 
         /// <summary>
@@ -1901,6 +1983,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @Attack3.started -= instance.OnAttack3;
             @Attack3.performed -= instance.OnAttack3;
             @Attack3.canceled -= instance.OnAttack3;
+            @PauseGame.started -= instance.OnPauseGame;
+            @PauseGame.performed -= instance.OnPauseGame;
+            @PauseGame.canceled -= instance.OnPauseGame;
         }
 
         /// <summary>
@@ -1955,6 +2040,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Save;
     private readonly InputAction m_UI_RightTrigger;
     private readonly InputAction m_UI_LeftTrigger;
+    private readonly InputAction m_UI_Ready;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -2035,6 +2121,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @LeftTrigger => m_Wrapper.m_UI_LeftTrigger;
         /// <summary>
+        /// Provides access to the underlying input action "UI/Ready".
+        /// </summary>
+        public InputAction @Ready => m_Wrapper.m_UI_Ready;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_UI; }
@@ -2111,6 +2201,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @LeftTrigger.started += instance.OnLeftTrigger;
             @LeftTrigger.performed += instance.OnLeftTrigger;
             @LeftTrigger.canceled += instance.OnLeftTrigger;
+            @Ready.started += instance.OnReady;
+            @Ready.performed += instance.OnReady;
+            @Ready.canceled += instance.OnReady;
         }
 
         /// <summary>
@@ -2173,6 +2266,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @LeftTrigger.started -= instance.OnLeftTrigger;
             @LeftTrigger.performed -= instance.OnLeftTrigger;
             @LeftTrigger.canceled -= instance.OnLeftTrigger;
+            @Ready.started -= instance.OnReady;
+            @Ready.performed -= instance.OnReady;
+            @Ready.canceled -= instance.OnReady;
         }
 
         /// <summary>
@@ -2219,6 +2315,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_ShipEditor_MoveModule;
     private readonly InputAction m_ShipEditor_WeaponGroupSelect;
     private readonly InputAction m_ShipEditor_WeaponGroupSelectGP;
+    private readonly InputAction m_ShipEditor_Ready;
     /// <summary>
     /// Provides access to input actions defined in input action map "ShipEditor".
     /// </summary>
@@ -2266,6 +2363,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "ShipEditor/WeaponGroupSelectGP".
         /// </summary>
         public InputAction @WeaponGroupSelectGP => m_Wrapper.m_ShipEditor_WeaponGroupSelectGP;
+        /// <summary>
+        /// Provides access to the underlying input action "ShipEditor/Ready".
+        /// </summary>
+        public InputAction @Ready => m_Wrapper.m_ShipEditor_Ready;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -2319,6 +2420,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @WeaponGroupSelectGP.started += instance.OnWeaponGroupSelectGP;
             @WeaponGroupSelectGP.performed += instance.OnWeaponGroupSelectGP;
             @WeaponGroupSelectGP.canceled += instance.OnWeaponGroupSelectGP;
+            @Ready.started += instance.OnReady;
+            @Ready.performed += instance.OnReady;
+            @Ready.canceled += instance.OnReady;
         }
 
         /// <summary>
@@ -2357,6 +2461,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @WeaponGroupSelectGP.started -= instance.OnWeaponGroupSelectGP;
             @WeaponGroupSelectGP.performed -= instance.OnWeaponGroupSelectGP;
             @WeaponGroupSelectGP.canceled -= instance.OnWeaponGroupSelectGP;
+            @Ready.started -= instance.OnReady;
+            @Ready.performed -= instance.OnReady;
+            @Ready.canceled -= instance.OnReady;
         }
 
         /// <summary>
@@ -2494,6 +2601,13 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAttack3(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PauseGame" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPauseGame(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
@@ -2621,6 +2735,13 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLeftTrigger(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Ready" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnReady(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ShipEditor" which allows adding and removing callbacks.
@@ -2692,5 +2813,12 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnWeaponGroupSelectGP(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Ready" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnReady(InputAction.CallbackContext context);
     }
 }

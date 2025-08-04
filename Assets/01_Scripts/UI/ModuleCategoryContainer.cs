@@ -1,13 +1,31 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ModuleCategoryContainer : MonoBehaviour
 {
     [SerializeField] private GameObject container;
     [SerializeField] private ModuleSelectionButton selectionButton;
+    [SerializeField] private ColorPresetButton colorPresetButton;
+    [SerializeField] private ColorPresetData presetData;
+    [SerializeField] private GameObject colorPresetContainer;
+    private string _currentName;
+
+
     public void SetModuleCategory(NetModuleCategory category)
     {
         ClearButtons();
+        
+        if (category == NetModuleCategory.ColorPresets)
+        {
+            foreach (var data in presetData.presets)
+            {
+                colorPresetButton.SetColor(data.colors);
+                colorPresetButton.SetName(data.presetName);
+                Instantiate(colorPresetContainer, container.transform);
+            }
+            return;
+        }
 
         foreach (int idInt in Enum.GetValues(typeof(NetModuleID)))
         {
@@ -16,6 +34,7 @@ public class ModuleCategoryContainer : MonoBehaviour
             {
                 continue;
             }
+
             NetModuleData moduleData = id.GetModuleData();
             if (!moduleData) continue;
             if (moduleData.ModuleCategory != category)
@@ -27,6 +46,7 @@ public class ModuleCategoryContainer : MonoBehaviour
             selectedButton.Configure(moduleData);
         }
     }
+
     public void ClearButtons()
     {
         int containerChildren = container.transform.childCount;

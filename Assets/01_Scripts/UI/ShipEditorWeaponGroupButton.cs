@@ -5,13 +5,10 @@ using UnityEngine.UI;
 public class ShipEditorWeaponGroupButton : MonoBehaviour
 {
     private float SizeIncrease => shipWeaponGroupManager.buttonSelectedSizeIncrease;
-    private Color SelectedColor => shipWeaponGroupManager.selectedColor;
-    private Color DeselectedColor => shipWeaponGroupManager.deSelectedColor;
 
     [SerializeField] private ShipEditorWeaponGroups shipWeaponGroupManager;
     [SerializeField] public bool buttonToggle;
     [SerializeField] public int buttonID;
-    [SerializeField] private Image buttonImageColorRef;
     [SerializeField] private Vector2 rectVector;
     [SerializeField] private RectTransform rectTransform;
     private int _indexGp;
@@ -19,7 +16,6 @@ public class ShipEditorWeaponGroupButton : MonoBehaviour
     public void Awake()
     {
         shipWeaponGroupManager.weaponGroupButtons.Add(this);
-        buttonImageColorRef.color = DeselectedColor;
         rectTransform = gameObject.GetComponent<RectTransform>();
         rectVector = new Vector2(rectTransform.sizeDelta.x, rectTransform.sizeDelta.y);
         _indexGp = 1;
@@ -89,18 +85,16 @@ public class ShipEditorWeaponGroupButton : MonoBehaviour
     {
         buttonToggle = true;
         shipWeaponGroupManager.DeselectButtonsExcept(this);
+        this.GetComponent<Button>().interactable = false;
         rectTransform.sizeDelta = rectVector * SizeIncrease;
-        buttonImageColorRef.color = SelectedColor;
         shipWeaponGroupManager.SetWeaponGroup(buttonID);
-        Debug.Log("Bigger");
     }
 
     public void ChangeToUnselected()
     {
         if (!buttonToggle) return;
         buttonToggle = false;
+        this.GetComponent<Button>().interactable = true;
         rectTransform.sizeDelta = rectVector;
-        buttonImageColorRef.color = DeselectedColor;
-        Debug.Log("Smaller");
     }
 }

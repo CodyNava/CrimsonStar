@@ -55,7 +55,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d4c867f6b72b714dbb5fd1780afe208, type: 3}
-  m_Name: SG_Core_VelocityParticle_WS_02
+  m_Name: SG_Core_WS_VelocityParticle
   m_EditorClassIdentifier: 
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 0}
@@ -526,7 +526,7 @@ VisualEffectResource:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SG_Core_VelocityParticle_WS_02
+  m_Name: SG_Core_WS_VelocityParticle
   m_Graph: {fileID: 114350483966674976}
   m_Infos:
     m_RendererSettings:
@@ -541,8 +541,8 @@ VisualEffectResource:
     m_PreWarmDeltaTime: 0.05
     m_PreWarmStepCount: 0
     m_InitialEventName: OnPlay
-    m_InstancingMode: 0
-    m_InstancingCapacity: 64
+    m_InstancingMode: 1
+    m_InstancingCapacity: 512
 --- !u!114 &8926484042661614541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1463,7 +1463,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614572}
   - {fileID: 8926484042661614576}
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
+  m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_MasterSlot: {fileID: 8926484042661614571}
   m_MasterData:
@@ -1472,7 +1472,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.AABox, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"center":{"x":0.0,"y":0.0,"z":0.0},"size":{"x":1.0,"y":1.0,"z":1.0}}'
+      m_SerializableObject: '{"center":{"x":0.0,"y":0.0,"z":0.0},"size":{"x":20.0,"y":20.0,"z":1.0}}'
     m_Space: 0
   m_Property:
     name: bounds
@@ -3279,7 +3279,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614626}
   m_ExposedName: spawnRate
   m_Exposed: 1
-  m_Order: 0
+  m_Order: 1
   m_Category: 
   m_Min:
     m_Type:
@@ -3360,7 +3360,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614628}
   m_ExposedName: toggleLoop
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 3
   m_Category: Toggle
   m_Min:
     m_Type:
@@ -3441,7 +3441,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614630}
   m_ExposedName: toggleSubgraph
   m_Exposed: 1
-  m_Order: 3
+  m_Order: 5
   m_Category: Toggle
   m_Min:
     m_Type:
@@ -3522,7 +3522,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614632}
   m_ExposedName: lifetime
   m_Exposed: 1
-  m_Order: 1
+  m_Order: 2
   m_Category: 
   m_Min:
     m_Type:
@@ -3603,7 +3603,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614634}
   m_ExposedName: size
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 4
   m_Category: 
   m_Min:
     m_Type:
@@ -3684,7 +3684,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614636}
   m_ExposedName: 2DScale
   m_Exposed: 1
-  m_Order: 3
+  m_Order: 6
   m_Category: 
   m_Min:
     m_Type:
@@ -3833,7 +3833,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614640}
   m_ExposedName: position
   m_Exposed: 1
-  m_Order: 4
+  m_Order: 7
   m_Category: 
   m_Min:
     m_Type:
@@ -4019,7 +4019,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614645}
   m_ExposedName: texture2D
   m_Exposed: 1
-  m_Order: 5
+  m_Order: 8
   m_Category: 
   m_Min:
     m_Type:
@@ -4100,7 +4100,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614647}
   m_ExposedName: toggleColorOverLife
   m_Exposed: 1
-  m_Order: 9
+  m_Order: 12
   m_Category: Toggle
   m_Min:
     m_Type:
@@ -4181,7 +4181,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614649}
   m_ExposedName: colorOverLife
   m_Exposed: 1
-  m_Order: 12
+  m_Order: 18
   m_Category: Color
   m_Min:
     m_Type:
@@ -4262,7 +4262,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614651}
   m_ExposedName: alpha
   m_Exposed: 0
-  m_Order: 13
+  m_Order: 20
   m_Category: Color
   m_Min:
     m_Type:
@@ -4343,7 +4343,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614653}
   m_ExposedName: toggleSizeOverLife
   m_Exposed: 1
-  m_Order: 10
+  m_Order: 14
   m_Category: Toggle
   m_Min:
     m_Type:
@@ -4424,7 +4424,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614655}
   m_ExposedName: alphaOverLife
   m_Exposed: 0
-  m_Order: 14
+  m_Order: 22
   m_Category: Color
   m_Min:
     m_Type:
@@ -4505,7 +4505,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614660}
   m_ExposedName: color
   m_Exposed: 1
-  m_Order: 11
+  m_Order: 16
   m_Category: Color
   m_Min:
     m_Type:
@@ -4921,7 +4921,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614672}
   m_ExposedName: sizeOverLife
   m_Exposed: 1
-  m_Order: 6
+  m_Order: 9
   m_Category: 
   m_Min:
     m_Type:
@@ -5371,7 +5371,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614704}
   m_ExposedName: velocitySphericalRandom
   m_Exposed: 0
-  m_Order: 7
+  m_Order: 10
   m_Category: 
   m_Min:
     m_Type:
@@ -5756,7 +5756,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614715}
   m_ExposedName: velocity
   m_Exposed: 1
-  m_Order: 8
+  m_Order: 11
   m_Category: 
   m_Min:
     m_Type:
@@ -5974,7 +5974,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614721}
   m_ExposedName: delay
   m_Exposed: 1
-  m_Order: 9
+  m_Order: 13
   m_Category: 
   m_Min:
     m_Type:
@@ -6149,7 +6149,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614726}
   m_ExposedName: toggleDrag
   m_Exposed: 1
-  m_Order: 13
+  m_Order: 21
   m_Category: 
   m_Min:
     m_Type:
@@ -6230,7 +6230,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614728}
   m_ExposedName: drag
   m_Exposed: 1
-  m_Order: 14
+  m_Order: 23
   m_Category: 
   m_Min:
     m_Type:
@@ -6963,7 +6963,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614749}
   m_ExposedName: coneBaseRadius
   m_Exposed: 1
-  m_Order: 11
+  m_Order: 17
   m_Category: 
   m_Min:
     m_Type:
@@ -7044,7 +7044,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614751}
   m_ExposedName: coneTopRadius
   m_Exposed: 1
-  m_Order: 12
+  m_Order: 19
   m_Category: 
   m_Min:
     m_Type:
@@ -7125,7 +7125,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614784}
   m_ExposedName: coneAngle
   m_Exposed: 1
-  m_Order: 10
+  m_Order: 15
   m_Category: 
   m_Min:
     m_Type:
@@ -7308,7 +7308,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614789}
   m_ExposedName: radiusYCone
   m_Exposed: 1
-  m_Order: 16
+  m_Order: 25
   m_Category: 
   m_Min:
     m_Type:
@@ -7389,7 +7389,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614791}
   m_ExposedName: radiusXCone
   m_Exposed: 1
-  m_Order: 15
+  m_Order: 24
   m_Category: 
   m_Min:
     m_Type:
@@ -7567,7 +7567,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614800}
   m_ExposedName: angle
   m_Exposed: 1
-  m_Order: 17
+  m_Order: 26
   m_Category: 
   m_Min:
     m_Type:

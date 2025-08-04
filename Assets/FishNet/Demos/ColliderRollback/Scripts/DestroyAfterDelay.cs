@@ -1,17 +1,30 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.VFX;
 
-namespace FishNet.Example.ColliderRollbacks
+public class DestroyAfterDelay : MonoBehaviour
 {
-    public class DestroyAfterDelay : MonoBehaviour
+    [SerializeField]
+    private float _delay = 1f;
+
+    private IEnumerator _destroyDelayCoroutine;
+
+    private void Awake()
     {
-        [SerializeField]
-        private float _delay = 1f;
+        StartCoroutine(DestroyDelayCoroutine());
+    }
 
-        private void Awake()
+    private IEnumerator DestroyDelayCoroutine()
+    {
+        yield return new WaitForSeconds(_delay);
+        
+        foreach (VisualEffect visualEffect in gameObject.GetComponentsInChildren<VisualEffect>())
         {
-            Destroy(gameObject, _delay);
+            visualEffect.Stop();
         }
-
+        Destroy(gameObject);
+        yield return 0f;
     }
 
 }
