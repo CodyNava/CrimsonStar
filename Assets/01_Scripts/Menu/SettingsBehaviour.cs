@@ -250,11 +250,13 @@ public class SettingsBehaviour : MonoBehaviour
     public void IncreaseMaster()
     {
         masterSlider.value += 0.05f;
+        MasterVolume();
     }
 
     public void DecreaseMaster()
     {
         masterSlider.value -= 0.05f;
+        MasterVolume();
     }
 
     public void MusicVolume()
@@ -265,11 +267,13 @@ public class SettingsBehaviour : MonoBehaviour
     public void IncreaseMusic()
     {
         musicSlider.value += 0.05f;
+        MusicVolume();
     }
 
     public void DecreaseMusic()
     {
         musicSlider.value -= 0.05f;
+        MusicVolume();
     }
 
     public void SfxVolume()
@@ -280,11 +284,13 @@ public class SettingsBehaviour : MonoBehaviour
     public void IncreaseSfx()
     {
         sfxSlider.value += 0.05f;
+        SfxVolume();
     }
 
     public void DecreaseSfx()
     {
         sfxSlider.value -= 0.05f;
+        SfxVolume();
     }
 
     public void UIVolume()
@@ -295,11 +301,13 @@ public class SettingsBehaviour : MonoBehaviour
     public void IncreaseUI()
     {
         uiSlider.value += 0.05f;
+        UIVolume();
     }
 
     public void DecreaseUI()
     {
         uiSlider.value -= 0.05f;
+        UIVolume();
     }
 
     public void AnnouncerVolume()
@@ -310,11 +318,13 @@ public class SettingsBehaviour : MonoBehaviour
     public void IncreaseAnnouncer()
     {
         announcerSlider.value += 0.05f;
+        AnnouncerVolume();
     }
 
     public void DecreaseAnnouncer()
     {
         announcerSlider.value -= 0.05f;
+        AnnouncerVolume();
     }
 
     private void ApplyVolume(Bus bus, float newVolume)
@@ -339,7 +349,7 @@ public class SettingsBehaviour : MonoBehaviour
         PlayerPrefs.SetInt(ResolutionPref, _currentResolutionIndex);
     }
 
-    public void Load()
+    private void Load()
     {
         masterSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(MasterVolumePref, 0.5f));
         musicSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(MusicVolumePref, 0.5f));
