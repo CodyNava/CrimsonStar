@@ -46,7 +46,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         {
             bulletVFX.SetVector3("DirectionVector_position", _direction);
         }
-
+        
         InstanceFinder.TryGetInstance(out _lobbyConductor);
     }
 
@@ -76,6 +76,9 @@ public class NetPredictedProjectileLaser : MonoBehaviour
                 Destroy(gameObject);
             }
         }
+        //lock in place
+        gameObject.transform.localPosition = new Vector3(0f,0f, -3);
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)
