@@ -78,7 +78,7 @@ public class NetLaserTurret : NetworkBehaviour
 
             _isCharging = false;
             muzzleCharge.Stop();
-            _chargeTime = Mathf.Lerp(_chargeTime, 0, Time.deltaTime);
+            _chargeTime = Mathf.Lerp(_chargeTime, 0, Time.deltaTime * 2);
             if (shotSound.IsPlaying()) shotSound.Stop();
         }
     }

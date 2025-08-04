@@ -35,6 +35,8 @@ public class NetModuleData : ScriptableObject
     
     [Header("UI")]
     [field: SerializeField] public Sprite Icon { get; private set; }
+    [field: SerializeField] public List<Sprite> HexSizeIcon { get; private set; }
+    
     [field: SerializeField] public string DisplayName { get; private set; }
     [field: SerializeField] public float HexagonSize { get; private set; }
     
