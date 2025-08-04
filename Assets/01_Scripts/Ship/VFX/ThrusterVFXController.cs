@@ -21,13 +21,26 @@ public class ThrusterVFXController : MonoBehaviour
 
     public void SetThrusterStrenghtIfInput()
     {
-        if (thrusterEffect == null)
+        if (thrusterEffect == null || netMovementController == null)
             return;
-        float input = netMovementController.InputThrust;
-        bool isThrusting = input > 0.2f;
+
+        bool isGamepad = Gamepad.current != null && Gamepad.current.leftStick.ReadValue().sqrMagnitude > 0.01f;
+
+        float thrustCheck = 0f;
+        if (isGamepad)
+        {
+            Vector2 gamepadInput = Gamepad.current.leftStick.ReadValue();
+            thrustCheck = gamepadInput.magnitude;
+        }
+        else
+        {
+            thrustCheck = netMovementController.InputThrust;
+        }
+
+        bool isThrusting = thrustCheck > 0.2f;
         float targetStrength = isThrusting ? 1f : 0f;
+
         _currentStrength = Mathf.MoveTowards(_currentStrength, targetStrength, changeSpeed * Time.deltaTime);
         thrusterEffect.SetFloat("ThrusterStrength", _currentStrength);
-       
     }
 }

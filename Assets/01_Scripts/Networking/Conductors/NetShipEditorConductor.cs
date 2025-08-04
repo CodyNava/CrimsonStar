@@ -7,6 +7,7 @@ using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
+using GameKit.Dependencies.Utilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,6 +16,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     [SerializeField] private int minimumResourceCount;
     [SerializeField] private float shipEditorTimerDuration;
     [SerializeField] private FMODUnity.StudioEventEmitter intro;
+    [SerializeField] private bool inEditorPhase = true;
 
     public override string ConductedSceneName => "NetShipEditor";
 
@@ -44,6 +46,8 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     {
         if (_playersReady.Count == 0)
         {
+            inEditorPhase = true;
+            C_ToggleInEditorBool();
             _editorTimer.StartTimer(_lobbyConductor.EditorTimerDuration);
             _editorTimer.OnChange += OnTimerChange;
         }
@@ -53,6 +57,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
 
     private void Update()
     {
+        if (!inEditorPhase) return;
         _editorTimer.Update(Time.deltaTime);
     }
 
@@ -96,11 +101,20 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     private void C_TriggerIntroSound()
     {
         TriggerIntroSound();
+        inEditorPhase = false;
     }
 
     private void TriggerIntroSound()
     {
         intro.Play();
+        inEditorPhase = false;
+    }
+
+    [ObserversRpc]
+    [Client]
+    private void C_ToggleInEditorBool()
+    {
+        inEditorPhase = true;
     }
 
     private IEnumerator AdvanceToGameplayScene()
@@ -108,7 +122,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
         C_TriggerIntroSound();
         TriggerIntroSound();
         yield return new WaitForSecondsRealtime(6.5f);
-
+        _editorTimer.StartTimer(_lobbyConductor.EditorTimerDuration);
         InstanceFinder.GetInstance<NetGameplayConductor>().MoveToScene(this, _lobbyConductor.Players);
         _playersReady.Clear();
     }
@@ -121,7 +135,8 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     public void S_SetupNewEditPhase()
     {
         int resourceAdded = _lobbyConductor.S_GetResourcePerRound();
-
+        inEditorPhase = true;
+        C_ToggleInEditorBool();
         foreach (NetMatchPlayer matchPlayer in _lobbyConductor.PlayersByID.Values)
         {
             matchPlayer.ResourceCount.Value += resourceAdded;

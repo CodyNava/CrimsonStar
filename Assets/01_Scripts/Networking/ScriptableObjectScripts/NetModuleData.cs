@@ -18,6 +18,9 @@ public class NetModuleData : ScriptableObject
 
     [field: SerializeField] public int Cost { get; private set; }
     [field: SerializeField] public NetModuleBaseStats BaseStats { get; private set; }
+    
+    [Header("ToolTip")]
+    
     [field: SerializeField] public bool CanRotate { get; private set; }
     
     [field: SerializeField] public bool CanBePowered { get; private set; }
@@ -26,11 +29,15 @@ public class NetModuleData : ScriptableObject
     [field: SerializeField] public NetEditorModule ShipEditorPrefab { get; private set; }
     [field: SerializeField] public NetGameplayModule GameplayPrefab { get; private set; }
     [field: SerializeField] public GameObject VisualModelPrefab { get; private set; }
+    [field: SerializeField] public NetLaserTurretData LaserData { get; private set; }
+    [field: SerializeField] public NetRocketTurretData RocketData { get; private set; }
+    [field: SerializeField] public NetTurretData TurretData { get; private set; }
     
     [Header("UI")]
     [field: SerializeField] public Sprite Icon { get; private set; }
     [field: SerializeField] public string DisplayName { get; private set; }
     [field: SerializeField] public float HexagonSize { get; private set; }
+    
     
     
     public IEnumerable<HexCoordinate> GetLocalHexCoordinates() =>

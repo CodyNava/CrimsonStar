@@ -28,8 +28,17 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private Material outlineShader;
     [SerializeField] private Vector2 moveInput;
     [SerializeField] private GameObject lastSelected;
+    [SerializeField] private GameObject forceSelected;
     [SerializeField] private float moduleMoveSpeedGP;
     [SerializeField] List<GameObject> gamePadSwitches = new List<GameObject>();
+    [SerializeField] private TextMeshProUGUI wg1Header, wg2Header, wg3Header;
+
+    private bool _gamePadSwitchSelectToggle;
+
+    [Header("ReadyBlockadge")] [SerializeField]
+    private GameObject blockingPlane;
+
+    [SerializeField] private bool gamepadEnabled;
 
     private Dictionary<HexCoordinate, NetEditorModule> _blockedCoordinates =
         new Dictionary<HexCoordinate, NetEditorModule>();
@@ -40,23 +49,23 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private Button healthViewToggleButton;
     [SerializeField] private Sprite healthViewImageToggled;
     [SerializeField] private Sprite healthViewImageNormal;
-    [SerializeField] public bool inHealthView;
-    [SerializeField] public bool inPercentageHealthView;
+    [HideInInspector] public bool inHealthView;
+    [HideInInspector] public bool inPercentageHealthView;
 
     [Header("EnergyView")] [SerializeField]
     private Button energyViewToggleButton;
 
     [SerializeField] private Sprite energyViewButtonImageToggled;
     [SerializeField] private Sprite energyViewButtonImageNormal;
-    [SerializeField] public bool inEnergyView;
-    [SerializeField] public bool inEnergyViewParentToggle;
-    [SerializeField] public bool joiningEditor;
+    [HideInInspector] public bool inEnergyView;
+    [HideInInspector] public bool inEnergyViewParentToggle;
+    [HideInInspector] public bool joiningEditor;
 
-    [SerializeField] public int tempRotation;
+    [HideInInspector] public int tempRotation;
 
 
-    [SerializeField] public bool moduleSpawnedInGP;
-    [SerializeField] public bool moduleFirstSelectedGP;
+    [HideInInspector] public bool moduleSpawnedInGP;
+    [HideInInspector] public bool moduleFirstSelectedGP;
 
     private Color originalOutlineShaderColor;
     private float originalOutlineShaderStrenght;
@@ -81,6 +90,7 @@ public class ShipEditor : MonoBehaviour
     private List<NetEditorModule> _editorModuleList;
     public IReadOnlyList<NetEditorModule> EditorModuleList => _editorModuleList;
 
+
     private void Update()
     {
         if (InputManager.Instance.IsGamepadUsed)
@@ -91,11 +101,17 @@ public class ShipEditor : MonoBehaviour
                 return;
             }
 
+            if (!_gamePadSwitchSelectToggle)
+            {
+                _gamePadSwitchSelectToggle = true;
+                EventSystem.current.SetSelectedGameObject(lastSelected ? lastSelected : forceSelected);
+            }
 
             ModueHoldingGamePad();
         }
         else
         {
+            _gamePadSwitchSelectToggle = false;
             ModuleHoldingKeyboard();
         }
 
@@ -258,10 +274,60 @@ public class ShipEditor : MonoBehaviour
         {
             switches.SetActive(InputManager.Instance.IsGamepadUsed);
         }
+
+        wg1Header.text = InputManager.Instance.IsGamepadUsed
+            ? $"Weapon Group 1 '{GetShortGamepadBinding(Keybinds.Actions.Player.Attack)}'"
+            : $"Weapon Group 1 '{GetShortMouseAndKeyBoardBinding(Keybinds.Actions.Player.Attack)}'";
+        wg2Header.text = InputManager.Instance.IsGamepadUsed
+            ? $"Weapon Group 2 '{GetShortGamepadBinding(Keybinds.Actions.Player.Attack2)}'"
+            : $"Weapon Group 2 '{GetShortMouseAndKeyBoardBinding(Keybinds.Actions.Player.Attack2)}'";
+        wg3Header.text = InputManager.Instance.IsGamepadUsed
+            ? $"Weapon Group 3 '{GetShortGamepadBinding(Keybinds.Actions.Player.Attack3)}'"
+            : $"Weapon Group 3 '{GetShortMouseAndKeyBoardBinding(Keybinds.Actions.Player.Attack3)}'";
     }
+
+
+    string GetShortGamepadBinding(InputAction action)
+    {
+        var binding = action.bindings.FirstOrDefault(b =>
+            b.effectivePath != null && b.effectivePath.Contains("Gamepad"));
+        if (binding != default)
+        {
+            var controlName = binding.effectivePath.Split('/').Last();
+            return ControlsShortFormsLib.GamepadShortNames.GetValueOrDefault(controlName, controlName);
+        }
+
+        return "404";
+    }
+
+    string GetShortMouseAndKeyBoardBinding(InputAction action)
+    {
+        var mouseBinding = action.bindings.FirstOrDefault(b =>
+            b.effectivePath != null && b.effectivePath.Contains("Mouse"));
+
+        if (mouseBinding != default)
+        {
+            var mouseControlName = mouseBinding.effectivePath.Split('/').Last();
+            return ControlsShortFormsLib.KeyboardMouseShortNames.GetValueOrDefault(mouseControlName, mouseControlName);
+        }
+
+        var keyboardBinding = action.bindings.FirstOrDefault(b =>
+            b.effectivePath != null && b.effectivePath.Contains("Keyboard"));
+
+        if (keyboardBinding != default)
+        {
+            var keyboardControlName = keyboardBinding.effectivePath.Split('/').Last();
+            return ControlsShortFormsLib.KeyboardMouseShortNames.GetValueOrDefault(keyboardControlName,
+                keyboardControlName);
+        }
+
+        return "404";
+    }
+
 
     private void ModueHoldingGamePad() // Important for radial menu
     {
+        if (!gamepadEnabled) return;
         var t = Time.deltaTime;
         var v = moduleMoveSpeedGP;
         moveInput = Keybinds.Actions.ShipEditor.MoveModule.ReadValue<Vector2>();
@@ -454,13 +520,6 @@ public class ShipEditor : MonoBehaviour
 
         return false;
     }
-
-
-    private bool BlockNeighborsHull(HexCoordinate coord)
-    {
-        return false;
-    }
-
 
     private static readonly Dictionary<int, HexDirection[]> HullDirections = new()
     {
@@ -712,6 +771,7 @@ public class ShipEditor : MonoBehaviour
         _editorModuleList.Add(_heldNetEditorModule);
         shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
         _heldNetEditorModule = null;
+        if (!InputManager.Instance.IsGamepadUsed) return;
         EventSystem.current.SetSelectedGameObject(lastSelected);
     }
 
@@ -742,13 +802,17 @@ public class ShipEditor : MonoBehaviour
     {
         if (PlayerData.C_SignalReady())
         {
-            gameObject.SetActive(false);
+            blockingPlane.gameObject.SetActive(true);
+            gamepadEnabled = false;
+            //gameObject.SetActive(false);
         }
     }
 
     public void ReconstructShip(IEnumerable<ModulePlacementData> uniqueModules)
     {
         joiningEditor = true;
+        blockingPlane.gameObject.SetActive(false);
+        gamepadEnabled = true;
         foreach (ModulePlacementData uniqueModule in uniqueModules)
         {
             _heldNetEditorModule = Instantiate(uniqueModule.ModuleID.GetModuleData().ShipEditorPrefab,

@@ -1,13 +1,23 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Tooltip : MonoBehaviour
 {
     [Header("Tooltip")]
     [Tooltip("Enter your Tooltip here")]
-    public string message;
-    public string healthMessage;
-    public string advancedMessage;
+    public string statOne;
+    public string statTwo;
+    public string statThree;
+    public string statFour;
+    public string statFive;
+    public string statSix;
+    public Sprite statOneImage;
+    public Sprite statTwoImage;
+    public Sprite statThreeImage;
+    public Sprite statFourImage;
+    public Sprite statFiveImage;
+    public Sprite statSixImage;
 
     [Header("DO not Touch")]
     [SerializeField] private RectTransform buttonRectTransform;
@@ -15,25 +25,36 @@ public class Tooltip : MonoBehaviour
     
     public void OnMouseEnter()
     {
+        Debug.Log("OnMouseEnter");
         _camera = FindFirstObjectByType<Camera>();
         Vector3[] corners = new Vector3[4];
         buttonRectTransform.GetWorldCorners(corners);
         Vector3 topRightWorld = corners[2];
 
         Vector3 screenPos = _camera.WorldToScreenPoint(topRightWorld);
-        if (message == String.Empty) return;
-        TooltipBehaviour.Instance.ShowToolTip(message);
+        if (statOne == String.Empty) return;
+        TooltipBehaviour.Instance.ShowToolTipOne(statOne, statOneImage);
         TooltipBehaviour.Instance.transform.position = screenPos;
-        if (healthMessage == String.Empty) return;
-        TooltipBehaviour.Instance.ShowHealthTip(healthMessage);
+        if (statTwo == String.Empty) return;
+        TooltipBehaviour.Instance.ShowToolTipTwo(statTwo, statTwoImage);
         TooltipBehaviour.Instance.transform.position = screenPos;
-        if (advancedMessage == String.Empty) return;
-        TooltipBehaviour.Instance.ShowAdvancedToolTip(advancedMessage);
+        if (statThree == String.Empty) return;
+        TooltipBehaviour.Instance.ShowToolTipThree(statThree, statThreeImage);
+        TooltipBehaviour.Instance.transform.position = screenPos;
+        if (statFour == String.Empty) return;
+        TooltipBehaviour.Instance.ShowToolTipFour(statFour, statFourImage);
+        TooltipBehaviour.Instance.transform.position = screenPos;
+        if (statFive == String.Empty) return;
+        TooltipBehaviour.Instance.ShowToolTipFive(statFive, statFiveImage);
+        TooltipBehaviour.Instance.transform.position = screenPos;
+        if (statSix == String.Empty) return;
+        TooltipBehaviour.Instance.ShowToolTipSix(statSix, statSixImage);
         TooltipBehaviour.Instance.transform.position = screenPos;
     }
 
     public void OnMouseExit()
     {
+        Debug.Log("OnMouseEnter");
         TooltipBehaviour.Instance.HideToolTip();
     }
 }

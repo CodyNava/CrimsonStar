@@ -1,5 +1,6 @@
 using FMODUnity;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ThrusterSFXController : MonoBehaviour
 {
@@ -15,8 +16,19 @@ public class ThrusterSFXController : MonoBehaviour
 
     private void SetThrusterSFXStrenght()
     {
-        float input = netMovementController.InputThrust;
-        bool isThrusting = input > 0.2f;
+        bool isGamepad = Gamepad.current != null && Gamepad.current.leftStick.ReadValue().sqrMagnitude > 0.01f;
+
+        float thrustCheck = 0f;
+        if (isGamepad)
+        {
+            Vector2 gamepadInput = Gamepad.current.leftStick.ReadValue();
+            thrustCheck = gamepadInput.magnitude;
+        }
+        else
+        {
+            thrustCheck = netMovementController.InputThrust;
+        }
+        bool isThrusting = thrustCheck > 0.01f;
         float targetStrenght = isThrusting ? 1f : 0f;
         _currentStrength = Mathf.MoveTowards(_currentStrength, targetStrenght, changeSpeed * Time.deltaTime);
         thrusterSound.SetParameter("Thrust", _currentStrength);
