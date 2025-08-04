@@ -85,7 +85,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d4c867f6b72b714dbb5fd1780afe208, type: 3}
-  m_Name: VFXGraph_M_Master_Explosion_ClimaxSmoke
+  m_Name: VFXGraph_M_BridgeExplosion_ClimaxSmoke
   m_EditorClassIdentifier: 
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 0}
@@ -445,7 +445,7 @@ VisualEffectResource:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VFXGraph_M_Master_Explosion_ClimaxSmoke
+  m_Name: VFXGraph_M_BridgeExplosion_ClimaxSmoke
   m_Graph: {fileID: 114350483966674976}
   m_Infos:
     m_RendererSettings:
@@ -461,7 +461,7 @@ VisualEffectResource:
     m_PreWarmStepCount: 0
     m_InitialEventName: OnPlay
     m_InstancingMode: 0
-    m_InstancingCapacity: 64
+    m_InstancingCapacity: 512
 --- !u!114 &8926484042661614925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8921,7 +8921,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615190}
   m_ExposedName: Lifetime_Smoke
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 0
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -9002,7 +9002,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615192}
   m_ExposedName: Delay
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 1
   m_Category: General
   m_Min:
     m_Type:
@@ -9092,7 +9092,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615194}
   m_ExposedName: SpawnRate_Smoke
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 2
   m_Category: SpawnRate
   m_Min:
     m_Type:
@@ -9173,7 +9173,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615196}
   m_ExposedName: ToggleLooping
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 3
   m_Category: General
   m_Min:
     m_Type:
@@ -9263,7 +9263,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615198}
   m_ExposedName: Toggle_Smoke
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 4
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -9344,7 +9344,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615200}
   m_ExposedName: HexRange
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 5
   m_Category: Size
   m_Min:
     m_Type:
@@ -9452,7 +9452,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615202}
   m_ExposedName: SizeRandom_Smoke
   m_Exposed: 0
-  m_Order: 19
+  m_Order: 6
   m_Category: General
   m_Min:
     m_Type:
@@ -9618,7 +9618,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615206}
   m_ExposedName: Size
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 7
   m_Category: Size
   m_Min:
     m_Type:
@@ -9708,7 +9708,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615208}
   m_ExposedName: AngleZ
   m_Exposed: 0
-  m_Order: 19
+  m_Order: 8
   m_Category: General
   m_Min:
     m_Type:
@@ -9874,7 +9874,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615212}
   m_ExposedName: GradientColor_Smoke
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 9
   m_Category: Color
   m_Min:
     m_Type:
@@ -9955,7 +9955,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615214}
   m_ExposedName: Lifetime_Emission
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 10
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -10036,7 +10036,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615216}
   m_ExposedName: Toggle_EmissionSmoke
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 11
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -10117,7 +10117,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615218}
   m_ExposedName: SpawnRate_Emission
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 12
   m_Category: SpawnRate
   m_Min:
     m_Type:
@@ -10198,7 +10198,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615220}
   m_ExposedName: flipBookSize
   m_Exposed: 0
-  m_Order: 19
+  m_Order: 13
   m_Category: Specific
   m_Min:
     m_Type:
@@ -10362,7 +10362,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615224}
   m_ExposedName: GradientColorOverLife_Smoke
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 14
   m_Category: Color
   m_Min:
     m_Type:
@@ -10452,7 +10452,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615226}
   m_ExposedName: Position_Smoke
   m_Exposed: 0
-  m_Order: 19
+  m_Order: 15
   m_Category: Specific
   m_Min:
     m_Type:
@@ -10638,7 +10638,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615231}
   m_ExposedName: GradientColor_Emission
   m_Exposed: 1
-  m_Order: 19
+  m_Order: 16
   m_Category: Color
   m_Min:
     m_Type:
