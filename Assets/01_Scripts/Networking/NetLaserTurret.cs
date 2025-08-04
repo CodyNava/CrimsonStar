@@ -13,7 +13,7 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private NetLaserTurretData netLaserTurretData;
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
-    [SerializeField] private VisualEffect muzzleCharge, muzzleImpact;
+    [SerializeField] private VisualEffect muzzleCharge;
     [SerializeField] private StudioEventEmitter shotSound;
     [SerializeField] private List<Vector4> originalMuzzleChargeColor;
 
@@ -35,7 +35,7 @@ public class NetLaserTurret : NetworkBehaviour
     private void Start()
     {
         muzzleCharge.SetFloat("Get_ChargeTime", netLaserTurretData.ChargeTime);
-        muzzleImpact.SetFloat("Delay", netLaserTurretData.ChargeTime);
+        //muzzleImpact.SetFloat("Delay", netLaserTurretData.ChargeTime);
         originalMuzzleChargeColor.Add(muzzleCharge.GetVector4("Color_Blur"));
         originalMuzzleChargeColor.Add(muzzleCharge.GetVector4("Color_LightningBall"));
     }
@@ -52,11 +52,10 @@ public class NetLaserTurret : NetworkBehaviour
 
         if (C_IsAttacking())
         {
+            if (!_isCharging ) muzzleCharge.Play();
             _isCharging = true;
             _chargeTime += Time.deltaTime;
             print(_chargeTime);
-            muzzleCharge.Play();
-            muzzleImpact.Play();
             if (!shotSound.IsPlaying()) shotSound.Play();
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
@@ -79,7 +78,6 @@ public class NetLaserTurret : NetworkBehaviour
 
             _isCharging = false;
             muzzleCharge.Stop();
-            muzzleImpact.Stop();
             _chargeTime = Mathf.Lerp(_chargeTime, 0, Time.deltaTime);
             if (shotSound.IsPlaying()) shotSound.Stop();
         }
@@ -143,7 +141,6 @@ public class NetLaserTurret : NetworkBehaviour
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
-        muzzleCharge.Play();
         shotSound.Play();
     }
 }
