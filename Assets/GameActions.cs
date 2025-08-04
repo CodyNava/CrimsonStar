@@ -734,6 +734,15 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ready"",
+                    ""type"": ""Button"",
+                    ""id"": ""74c5b219-286c-4b09-98b5-5643234f5feb"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1253,6 +1262,17 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""action"": ""LeftTrigger"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0442e1c3-32bd-49c9-a4ab-afd75b2ca05c"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Ready"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1627,6 +1647,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_UI_Save = m_UI.FindAction("Save", throwIfNotFound: true);
         m_UI_RightTrigger = m_UI.FindAction("RightTrigger", throwIfNotFound: true);
         m_UI_LeftTrigger = m_UI.FindAction("LeftTrigger", throwIfNotFound: true);
+        m_UI_Ready = m_UI.FindAction("Ready", throwIfNotFound: true);
         // ShipEditor
         m_ShipEditor = asset.FindActionMap("ShipEditor", throwIfNotFound: true);
         m_ShipEditor_ModulePickOrDrop = m_ShipEditor.FindAction("ModulePickOrDrop", throwIfNotFound: true);
@@ -2019,6 +2040,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Save;
     private readonly InputAction m_UI_RightTrigger;
     private readonly InputAction m_UI_LeftTrigger;
+    private readonly InputAction m_UI_Ready;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -2099,6 +2121,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @LeftTrigger => m_Wrapper.m_UI_LeftTrigger;
         /// <summary>
+        /// Provides access to the underlying input action "UI/Ready".
+        /// </summary>
+        public InputAction @Ready => m_Wrapper.m_UI_Ready;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_UI; }
@@ -2175,6 +2201,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @LeftTrigger.started += instance.OnLeftTrigger;
             @LeftTrigger.performed += instance.OnLeftTrigger;
             @LeftTrigger.canceled += instance.OnLeftTrigger;
+            @Ready.started += instance.OnReady;
+            @Ready.performed += instance.OnReady;
+            @Ready.canceled += instance.OnReady;
         }
 
         /// <summary>
@@ -2237,6 +2266,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @LeftTrigger.started -= instance.OnLeftTrigger;
             @LeftTrigger.performed -= instance.OnLeftTrigger;
             @LeftTrigger.canceled -= instance.OnLeftTrigger;
+            @Ready.started -= instance.OnReady;
+            @Ready.performed -= instance.OnReady;
+            @Ready.canceled -= instance.OnReady;
         }
 
         /// <summary>
@@ -2703,6 +2735,13 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLeftTrigger(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Ready" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnReady(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ShipEditor" which allows adding and removing callbacks.
