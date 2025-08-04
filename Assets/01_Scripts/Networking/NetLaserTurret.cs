@@ -16,11 +16,11 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private VisualEffect muzzleCharge, muzzleImpact;
     [SerializeField] private StudioEventEmitter shotSound;
     [SerializeField] private List<Vector4> originalMuzzleChargeColor;
-    [SerializeField] private bool isCharging;
 
 
     private const float MaxPassedTime = 0.3f;
 
+    private bool _isCharging;
     private float _accumulatedTime;
     private float _cooldownTime;
     private float _chargeTime;
@@ -52,7 +52,7 @@ public class NetLaserTurret : NetworkBehaviour
 
         if (C_IsAttacking())
         {
-            isCharging = true;
+            _isCharging = true;
             _chargeTime += Time.deltaTime;
             print(_chargeTime);
             muzzleCharge.Play();
@@ -68,7 +68,7 @@ public class NetLaserTurret : NetworkBehaviour
         {
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
-                isCharging = false;
+                _isCharging = false;
                 _accumulatedTime = 0;
                 _chargeTime = 0;
                 _cooldownTime = 0;
@@ -77,7 +77,7 @@ public class NetLaserTurret : NetworkBehaviour
                 return;
             }
 
-            isCharging = false;
+            _isCharging = false;
             muzzleCharge.Stop();
             muzzleImpact.Stop();
             _chargeTime = Mathf.Lerp(_chargeTime, 0, Time.deltaTime);
@@ -120,7 +120,7 @@ public class NetLaserTurret : NetworkBehaviour
     {
         NetPredictedProjectileLaser pp = Instantiate(netLaserTurretData.Projectile, position, Quaternion.identity);
         pp.transform.SetParent(this.transform); 
-        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge);
+        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge, spawnTransform.transform);
     }
 
     [ServerRpc]

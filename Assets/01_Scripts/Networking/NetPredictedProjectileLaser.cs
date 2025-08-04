@@ -11,10 +11,13 @@ public class NetPredictedProjectileLaser : MonoBehaviour
     [SerializeField] private GameObject hitFeedbackVFX;
     [SerializeField] public GameObject hitBox;
     [SerializeField] public LaserProjectileObject laserProjectileObject;
+    [SerializeField] public Transform turretTransform;
+    
     
 
     private NetTeamID _netTeamID;
     private Vector3 _direction;
+    private Vector3 _endPoint;
     private NetBridge _bridgeOrigin;
     private NetLobbyConductor _lobbyConductor;
     
@@ -28,7 +31,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
     private bool _fullyGrown = false;
     private float _lifetimeTimer = 0f;
     
-    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID, NetBridge bridgeOrigin)
+    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID, NetBridge bridgeOrigin, Transform spawnTransform)
     {
         bulletVFX.Play();
         _direction = direction.normalized;
@@ -36,6 +39,8 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         _attackerID = attackerID;
         _bridgeOrigin = bridgeOrigin;
         _initialWidth = laserProjectileObject.LaserWidth;
+        turretTransform = spawnTransform;
+        _endPoint = turretTransform.position + (_direction * laserProjectileObject.MaxLength);
         
         transform.rotation = Quaternion.LookRotation(Vector3.forward, _direction);
         
@@ -54,11 +59,18 @@ public class NetPredictedProjectileLaser : MonoBehaviour
     {
         float dt = Time.deltaTime;
         
+        //laser locking
+        Vector3 startPos = turretTransform.position;
+        Vector3 direction = _endPoint - startPos;
+        float length = direction.magnitude;
+        transform.position = startPos;
+        transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+        //
         if (!_fullyGrown)
         {
             _growProgress += laserProjectileObject.GrowSpeed * dt;
             _growProgress = Mathf.Clamp01(_growProgress);
-            _currentLength = Mathf.Lerp(0f, laserProjectileObject.MaxLength, _growProgress);
+            _currentLength = Mathf.Lerp(0f, length, _growProgress);
             //transform.localScale = new Vector3(_initialScale.x, _currentLength, _initialScale.z);
             hitBox.transform.localScale = new Vector2(_initialWidth, _currentLength);
 
@@ -76,8 +88,6 @@ public class NetPredictedProjectileLaser : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-        //lock in place
-        gameObject.transform.localPosition = new Vector3(0f,0f, -3);
 
     }
 
