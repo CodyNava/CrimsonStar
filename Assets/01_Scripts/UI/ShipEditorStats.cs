@@ -101,7 +101,7 @@ public class ShipEditorStats : MonoBehaviour
             _mass += modules.ModuleData.BaseStats.mass;
             _thrust += modules.ModuleData.BaseStats.thrust;
             _maxSpeed = netBridge.MaxMovementSpeed / (1 + _mass);
-            _acceleration = (netBridge.BaseMovementSpeed + _thrust) * 1.6f;
+            _acceleration = netBridge.BaseMovementSpeed + _thrust;
             _maneuverability = netBridge.MaxAngularSpeed / (1 + _mass);
         }
         

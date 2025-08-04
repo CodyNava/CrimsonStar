@@ -16,6 +16,8 @@ public class GameSettingsHost : MonoBehaviour
     [SerializeField] private Button players;
     [SerializeField] private GameObject rT;
     [SerializeField] private GameObject lT;
+    [SerializeField] private GameObject start;
+    [SerializeField] private GameObject back;
     [SerializeField] private Button options;
 
     [SerializeField] private GameObject playerContainer;
@@ -231,6 +233,8 @@ public class GameSettingsHost : MonoBehaviour
             
             lT.SetActive(false);
             rT.SetActive(false);
+            start.SetActive(false);
+            back.SetActive(false);
             return;
         }
         
@@ -251,14 +255,17 @@ public class GameSettingsHost : MonoBehaviour
         {
             switchTeam.onClick.Invoke();
         }
-
+        start.SetActive(true);
+        back.SetActive(true);
+        
         if (!PlayerData.IsLobbyHost) return;
 
         if (_eventSystem.currentSelectedGameObject.IsUnityNull()) return;
         
         lT.SetActive(true);
         rT.SetActive(true);
-
+        
+        
         if (PlayerData.IsLobbyHost)
         {
             if (Keybinds.Actions.UI.RightTrigger.WasPressedThisFrame())

@@ -1,12 +1,22 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class TooltipBehaviour : MonoBehaviour
 {
     public static TooltipBehaviour Instance;
-    [SerializeField] private TextMeshProUGUI tooltipText;
-    [SerializeField] private TextMeshProUGUI advancedTooltipText;
-    [SerializeField] private TextMeshProUGUI healthTooltipText;
+    [SerializeField] private TextMeshProUGUI statOneText;
+    [SerializeField] private TextMeshProUGUI statTwoText;
+    [SerializeField] private TextMeshProUGUI statThreeText;
+    [SerializeField] private TextMeshProUGUI statFourText;
+    [SerializeField] private TextMeshProUGUI statFiveText;
+    [SerializeField] private TextMeshProUGUI statSixText;
+    [SerializeField] private GameObject statOneImage;
+    [SerializeField] private GameObject statTwoImage;
+    [SerializeField] private GameObject statThreeImage;
+    [SerializeField] private GameObject statFourImage;
+    [SerializeField] private GameObject statFiveImage;
+    [SerializeField] private GameObject statSixImage;
     //[SerializeField] private Sprite moduleIconToolTip;
 
     private void Awake()
@@ -25,30 +35,72 @@ public class TooltipBehaviour : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-    
 
-    public void ShowToolTip (string tooltip)
+
+    public void ShowToolTipOne(string tooltip, Sprite tooltipImage)
     {
-        tooltipText.text = tooltip;
+        statOneText.text = tooltip;
+        statOneImage.SetActive(true);
+        statOneImage.GetComponent<Image>().sprite = tooltipImage;
         gameObject.SetActive(true);
     }
-    public void ShowAdvancedToolTip (string tooltip)
+
+    public void ShowToolTipTwo(string tooltip, Sprite tooltipImage)
     {
-        advancedTooltipText.text = tooltip;
+        statTwoText.text = tooltip;
+        statTwoImage.SetActive(true);
+        statTwoImage.GetComponent<Image>().sprite = tooltipImage;
         gameObject.SetActive(true);
     }
-    public void ShowHealthTip (string tooltip)
+
+    public void ShowToolTipThree(string tooltip, Sprite tooltipImage)
     {
-        healthTooltipText.text = tooltip;
+        statThreeText.text = tooltip;
+        statThreeImage.SetActive(true);
+        statThreeImage.GetComponent<Image>().sprite = tooltipImage;
+        gameObject.SetActive(true);
+    }
+
+    public void ShowToolTipFour(string tooltip, Sprite tooltipImage)
+    {
+        statFourText.text = tooltip;
+        statFourImage.SetActive(true);
+        statFourImage.GetComponent<Image>().sprite = tooltipImage;
+        gameObject.SetActive(true);
+    }
+
+    public void ShowToolTipFive(string tooltip, Sprite tooltipImage)
+    {
+        statFiveText.text = tooltip;
+        statFiveImage.SetActive(true);
+        statFiveImage.GetComponent<Image>().sprite = tooltipImage;
+        gameObject.SetActive(true);
+    }
+
+    public void ShowToolTipSix(string tooltip, Sprite tooltipImage)
+    {
+        statSixText.text = tooltip;
+        statSixImage.SetActive(true);
+        statSixImage.GetComponent<Image>().sprite = tooltipImage;
         gameObject.SetActive(true);
     }
 
     public void HideToolTip()
     {
         gameObject.SetActive(false);
-        tooltipText.text = string.Empty;
-        advancedTooltipText.text = string.Empty;
-        healthTooltipText.text = string.Empty;
-        //moduleIconToolTip = null;
+        statOneText.text = string.Empty;
+        statTwoText.text = string.Empty;
+        statThreeText.text = string.Empty;
+        statFourText.text = string.Empty;
+        statFiveText.text = string.Empty;
+        statSixText.text = string.Empty;
+        statOneImage.SetActive(false);
+        statTwoImage.SetActive(false);
+        statThreeImage.SetActive(false);
+        statFourImage.SetActive(false);
+        statFiveImage.SetActive(false);
+        statSixImage.SetActive(false);
+        
+        
     }
 }
