@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,39 +8,41 @@ public class CustomSettingsMenuInput : MonoBehaviour
 {
     private bool _cooldownStarted;
 
-    [Tooltip("Scroll Speed in SECONDS. Use values smaller than 1. PLEASE I BEG YOU.")]
-    [Range(0, 1)]
-    [SerializeField] private float scrollSpeedSeconds;
+    [Tooltip("Scroll Speed in SECONDS. Use values smaller than 1. PLEASE I BEG YOU.")] [Range(0, 1)] [SerializeField]
+    private float scrollSpeedSeconds;
 
-    [Header("DO NOT TOUCH")]
-    [SerializeField] private GameObject settingsContainer;
+    [Header("DO NOT TOUCH")] [SerializeField]
+    private GameObject settingsContainer;
+
     private EventSystem _eventSystem;
 
     [SerializeField] private Button audioButton;
     [SerializeField] private Button graphicsButton;
     [SerializeField] private Button settingsBackButton;
+    [SerializeField] private Button applyButton;
 
-    [Header("Graphics")]
-    [SerializeField] private GameObject graphicsContainer;
+    [Header("Graphics")] [SerializeField] private GameObject graphicsContainer;
     [SerializeField] private GameObject resolution;
     [SerializeField] private GameObject frameCap;
     [SerializeField] private GameObject vSync;
+    [SerializeField] private GameObject qualityPref;
     [SerializeField] private GameObject brightness;
     [SerializeField] private GameObject gamma;
-    
+
     [SerializeField] private Button increaseResolution;
     [SerializeField] private Button decreaseResolution;
     [SerializeField] private Button increaseFrameCap;
     [SerializeField] private Button decreaseFrameCap;
     [SerializeField] private Button increaseVsync;
     [SerializeField] private Button decreaseVsync;
+    [SerializeField] private Button increaseQuality;
+    [SerializeField] private Button decreaseQuality;
     [SerializeField] private Button increaseBrightness;
     [SerializeField] private Button decreaseBrightness;
     [SerializeField] private Button increaseGamma;
     [SerializeField] private Button decreaseGamma;
 
-    [Header("Sound")]
-    [SerializeField] private GameObject audioContainer;
+    [Header("Sound")] [SerializeField] private GameObject audioContainer;
     [SerializeField] private GameObject master;
     [SerializeField] private GameObject music;
     [SerializeField] private GameObject sfx;
@@ -78,6 +81,11 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 }
             }
 
+            if (Keybinds.Actions.UI.Save.WasPressedThisFrame() && applyButton.GameObject().activeSelf)
+            {
+                applyButton.onClick.Invoke();
+            }
+
             if (Keybinds.Actions.UI.LeftTrigger.WasPressedThisFrame())
             {
                 if (graphicsContainer.activeSelf)
@@ -105,6 +113,11 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 if (_eventSystem.currentSelectedGameObject.Equals(vSync))
                 {
                     decreaseVsync.onClick.Invoke();
+                }
+
+                if (_eventSystem.currentSelectedGameObject.Equals(qualityPref))
+                {
+                    decreaseQuality.onClick.Invoke();
                 }
 
                 if (_eventSystem.currentSelectedGameObject.Equals(brightness))
@@ -160,6 +173,11 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 if (_eventSystem.currentSelectedGameObject.Equals(vSync))
                 {
                     increaseVsync.onClick.Invoke();
+                }
+                
+                if (_eventSystem.currentSelectedGameObject.Equals(qualityPref))
+                {
+                    increaseQuality.onClick.Invoke();
                 }
 
                 if (_eventSystem.currentSelectedGameObject.Equals(brightness))
