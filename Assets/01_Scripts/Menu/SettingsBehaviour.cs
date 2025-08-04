@@ -252,37 +252,37 @@ public class SettingsBehaviour : MonoBehaviour
     public void AdjustBrightness()
     {
         brightness.color = new Color(0f, 0f, 0f, brightnessSlider.value);
-        Apply();
+        ApplyGraphicsSlider();
     }
 
     public void IncreaseBrightness()
     {
         brightnessSlider.value -= 0.05f;
-        Apply();
+        AdjustBrightness();
     }
 
     public void DecreaseBrightness()
     {
         brightnessSlider.value += 0.05f;
-        Apply();
+        AdjustBrightness();
     }
 
     public void AdjustGamma()
     {
         _gamma.gamma.value = new Vector4(1f, 1f, 1f, gammaSlider.value);
-        Apply();
+        ApplyGraphicsSlider();
     }
 
     public void IncreaseGamma()
     {
         gammaSlider.value += 0.05f;
-        Apply();
+        AdjustGamma();
     }
 
     public void DecreaseGamma()
     {
         gammaSlider.value -= 0.05f;
-        Apply();
+        AdjustGamma();
     }
 
     public void Apply()
@@ -296,6 +296,12 @@ public class SettingsBehaviour : MonoBehaviour
         QualitySettings.renderPipeline = qualityPrefabs[_qualityPrefIndex];
         qualityPrefab.text = qualityPrefabs[_qualityPrefIndex].name;
         Save();
+    }
+    
+    private void ApplyGraphicsSlider()
+    {
+        PlayerPrefs.SetFloat(GammaValuePref, gammaSlider.value);
+        PlayerPrefs.SetFloat(BrightnessValuePref, brightnessSlider.value);
     }
 
     #endregion
@@ -402,15 +408,13 @@ public class SettingsBehaviour : MonoBehaviour
         PlayerPrefs.SetFloat(SfxVolumePref, sfxSlider.value);
         PlayerPrefs.SetFloat(UiVolumePref, uiSlider.value);
         PlayerPrefs.SetFloat(VoiceVolumePref, announcerSlider.value);
-        PlayerPrefs.SetFloat(GammaValuePref, gammaSlider.value);
-        PlayerPrefs.SetFloat(BrightnessValuePref, brightnessSlider.value);
         PlayerPrefs.SetInt(VSyncPref, _vSyncIndex);
         PlayerPrefs.SetInt(FrameCapPref, _frameCapIndex);
         PlayerPrefs.SetInt(ResolutionPref, _currentResolutionIndex);
         PlayerPrefs.SetInt(QualityPref, _qualityPrefIndex);
     }
 
-    private void Load()
+    public void Load()
     {
         masterSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(MasterVolumePref, 0.5f));
         musicSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat(MusicVolumePref, 0.5f));
