@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf2edee5c58d82540a51f03df9d42094, type: 3}
-  m_Name: Low
+  m_Name: Medium
   m_EditorClassIdentifier: 
   k_AssetVersion: 12
   k_AssetPreviousVersion: 12
@@ -25,7 +25,7 @@ MonoBehaviour:
   m_SupportsTerrainHoles: 1
   m_SupportsHDR: 1
   m_HDRColorBufferPrecision: 0
-  m_MSAA: 1
+  m_MSAA: 4
   m_RenderScale: 1
   m_UpscalingFilter: 0
   m_FsrOverrideSharpness: 0
@@ -43,17 +43,17 @@ MonoBehaviour:
   m_ProbeVolumeSHBands: 1
   m_MainLightRenderingMode: 1
   m_MainLightShadowsSupported: 1
-  m_MainLightShadowmapResolution: 2048
+  m_MainLightShadowmapResolution: 1024
   m_AdditionalLightsRenderingMode: 1
   m_AdditionalLightsPerObjectLimit: 4
   m_AdditionalLightShadowsSupported: 1
-  m_AdditionalLightsShadowmapResolution: 2048
-  m_AdditionalLightsShadowResolutionTierLow: 256
-  m_AdditionalLightsShadowResolutionTierMedium: 512
-  m_AdditionalLightsShadowResolutionTierHigh: 1024
+  m_AdditionalLightsShadowmapResolution: 1024
+  m_AdditionalLightsShadowResolutionTierLow: 512
+  m_AdditionalLightsShadowResolutionTierMedium: 1024
+  m_AdditionalLightsShadowResolutionTierHigh: 2048
   m_ReflectionProbeBlending: 1
   m_ReflectionProbeBoxProjection: 1
-  m_ShadowDistance: 50
+  m_ShadowDistance: 60
   m_ShadowCascadeCount: 4
   m_Cascade2Split: 0.25
   m_Cascade3Split: {x: 0.1, y: 0.3}
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_ConservativeEnclosingSphere: 1
   m_NumIterationsEnclosingSphere: 64
   m_SoftShadowQuality: 3
-  m_AdditionalLightsCookieResolution: 2048
+  m_AdditionalLightsCookieResolution: 1024
   m_AdditionalLightsCookieFormat: 3
   m_UseSRPBatcher: 1
   m_SupportsDynamicBatching: 0
@@ -76,10 +76,10 @@ MonoBehaviour:
   m_DebugLevel: 0
   m_StoreActionsOptimization: 0
   m_UseAdaptivePerformance: 1
-  m_ColorGradingMode: 0
-  m_ColorGradingLutSize: 32
+  m_ColorGradingMode: 1
+  m_ColorGradingLutSize: 16
   m_AllowPostProcessAlphaOutput: 0
-  m_UseFastSRGBLinearConversion: 0
+  m_UseFastSRGBLinearConversion: 1
   m_SupportDataDrivenLensFlare: 1
   m_SupportScreenSpaceLensFlare: 1
   m_GPUResidentDrawerMode: 0
