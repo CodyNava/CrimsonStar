@@ -5465,8 +5465,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.09, y: 0}
-  m_SizeDelta: {x: 123.99, y: 50}
+  m_AnchoredPosition: {x: -0.09, y: -1.21}
+  m_SizeDelta: {x: 123.99, y: 101.57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &616013371
 MonoBehaviour:
@@ -5488,7 +5488,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Start
+  m_text: "\u25BA"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: deb76d5fb59329e4ca25148040158781, type: 2}
   m_sharedMaterial: {fileID: 3074716034560243664, guid: deb76d5fb59329e4ca25148040158781, type: 2}
@@ -5515,10 +5515,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
+  m_fontSize: 72
   m_fontSizeBase: 50
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 17
@@ -10079,7 +10079,7 @@ MonoBehaviour:
   moveInput: {x: 0, y: 0}
   lastSelected: {fileID: 1088968091}
   forceSelected: {fileID: 1088968091}
-  moduleMoveSpeedGP: 10
+  moduleMoveSpeedGP: 15
   gamePadSwitches:
   - {fileID: 1992913162}
   - {fileID: 53057865}
@@ -12169,6 +12169,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 436179936567689483, guid: d264334d4fd1c2e46bd1f7f5388364ed, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6a592b2c33bc9cf4a9b5a5a406f44c86, type: 3}
     - target: {fileID: 1026161152778818426, guid: d264334d4fd1c2e46bd1f7f5388364ed, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -12373,6 +12377,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7300642704556639746, guid: d264334d4fd1c2e46bd1f7f5388364ed, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2482959f434ca0a42a1614e564768461, type: 3}
+    - target: {fileID: 7891081739936332737, guid: d264334d4fd1c2e46bd1f7f5388364ed, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 64facef78bc50d341bbd4cc6ca384468, type: 3}
     - target: {fileID: 8771208744220910357, guid: d264334d4fd1c2e46bd1f7f5388364ed, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -18265,7 +18277,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 759973953007481852, guid: f00e7402640878a46868702d41f18b7c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1167849754429103599, guid: f00e7402640878a46868702d41f18b7c, type: 3}
       propertyPath: m_AnchorMax.x
@@ -18357,7 +18369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815906612425360831, guid: f00e7402640878a46868702d41f18b7c, type: 3}
       propertyPath: m_PresetInfoIsWorld
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4037638846270217354, guid: f00e7402640878a46868702d41f18b7c, type: 3}
       propertyPath: panel
@@ -20213,7 +20225,6 @@ SceneRoots:
   - {fileID: 191142854}
   - {fileID: 1895696612}
   - {fileID: 1442168709}
-  - {fileID: 2002627779}
   - {fileID: 167079970}
   - {fileID: 1606381838}
   - {fileID: 7362360416407474515}
@@ -20223,3 +20234,4 @@ SceneRoots:
   - {fileID: 1401103629}
   - {fileID: 1452318193}
   - {fileID: 1213812593}
+  - {fileID: 2002627779}
