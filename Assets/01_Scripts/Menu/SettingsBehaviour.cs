@@ -223,7 +223,7 @@ public class SettingsBehaviour : MonoBehaviour
 
     public void IncreaseQualityPref()
     {
-        if (_qualityPrefIndex == 2)
+        if (_qualityPrefIndex == qualityPrefabs.Count -1)
         {
             _qualityPrefIndex = 0;
         }
