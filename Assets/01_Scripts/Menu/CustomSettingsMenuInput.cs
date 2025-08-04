@@ -11,8 +11,8 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [Tooltip("Scroll Speed in SECONDS. Use values smaller than 1. PLEASE I BEG YOU.")] [Range(0, 1)] [SerializeField]
     private float scrollSpeedSeconds;
 
-    [Header("DO NOT TOUCH")] [SerializeField]
-    private GameObject settingsContainer;
+    [Header("DO NOT TOUCH")]
+    [SerializeField] private GameObject settingsContainer;
 
     private EventSystem _eventSystem;
 
@@ -81,11 +81,6 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 }
             }
 
-            if (Keybinds.Actions.UI.Save.WasPressedThisFrame() && applyButton.GameObject().activeSelf)
-            {
-                applyButton.onClick.Invoke();
-            }
-
             if (Keybinds.Actions.UI.LeftTrigger.WasPressedThisFrame())
             {
                 if (graphicsContainer.activeSelf)
@@ -96,6 +91,11 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 {
                     graphicsButton.onClick.Invoke();
                 }
+            }
+            
+            if (Keybinds.Actions.UI.Save.WasPressedThisFrame() && applyButton.GameObject().activeSelf)
+            {
+                applyButton.onClick.Invoke();
             }
 
             if (Keybinds.Actions.UI.Decrease.IsPressed() && !_cooldownStarted)
@@ -217,6 +217,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
 
                 StartCoroutine(HoldCooldown());
             }
+
         }
     }
 

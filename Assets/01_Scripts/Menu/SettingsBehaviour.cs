@@ -11,6 +11,8 @@ using UnityEngine.UI;
 
 public class SettingsBehaviour : MonoBehaviour
 {
+    [SerializeField] private List <GameObject> controllerPrompts;
+    
     [Header("Graphics")]
     [SerializeField] private TMP_Text resolutionText;
     private List<string> _resolutionOptions;
@@ -37,6 +39,7 @@ public class SettingsBehaviour : MonoBehaviour
     [SerializeField] private Slider brightnessSlider;
     [SerializeField] private Image brightness;
     [SerializeField] private GameObject apply;
+    [SerializeField] private GameObject applyPrompt;
 
     [Header("Sound")]
     [SerializeField] private Slider masterSlider;
@@ -71,8 +74,10 @@ public class SettingsBehaviour : MonoBehaviour
 
     public void LeaveGame()
     {
-        if (global::PlayerData.CurrentLobbyID != CSteamID.Nil)
+        if (PlayerData.CurrentLobbyID != CSteamID.Nil)
+        {
             NetGameBootstrapper.LeaveLobby();
+        }
         else
         {
             NetGameBootstrapper.LeaveLobbyLocal();
@@ -82,7 +87,6 @@ public class SettingsBehaviour : MonoBehaviour
         SceneAudioManager.instance.ResetMusicProgress();
         SceneManager.LoadScene("MainMenu");
     }
-
     private void Start()
     {
         _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
@@ -126,6 +130,15 @@ public class SettingsBehaviour : MonoBehaviour
         _resolution = Screen.currentResolution;
 
         Load();
+    }
+
+    private void Update()
+    {
+        foreach (var prompt in controllerPrompts)
+        {
+            prompt.SetActive(InputManager.Instance.IsGamepadUsed);
+        }
+        applyPrompt.SetActive(InputManager.Instance.IsGamepadUsed && apply.activeSelf);
     }
 
     #region Graphics
