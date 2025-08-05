@@ -81,6 +81,7 @@ public class NetLaserTurret : NetworkBehaviour
             _isCharging = false;
             _chargeTime = Mathf.Lerp(_chargeTime, 0, Time.deltaTime * 2);
             _accumulatedTimeVFX = _chargeTime;
+            muzzleCharge.SendEvent("ChargeDown");
             if (shotSound.IsPlaying()) shotSound.Stop();
         }
     }
