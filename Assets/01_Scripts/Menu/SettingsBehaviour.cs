@@ -11,7 +11,10 @@ using UnityEngine.UI;
 
 public class SettingsBehaviour : MonoBehaviour
 {
-    [Header("Graphics")] [SerializeField] private TMP_Text resolutionText;
+    [SerializeField] private List <GameObject> controllerPrompts;
+    
+    [Header("Graphics")]
+    [SerializeField] private TMP_Text resolutionText;
     private List<string> _resolutionOptions;
     private List<Resolution> _uniqueResolution;
     private Resolution[] _resolutions;
@@ -27,13 +30,19 @@ public class SettingsBehaviour : MonoBehaviour
     private readonly string[] _vSync = { "Off", "On" };
     private int _vSyncIndex;
 
+    [SerializeField] private TMP_Text qualityPrefab;
+    [SerializeField] List<RenderPipelineAsset> qualityPrefabs;
+    private int _qualityPrefIndex;
     [SerializeField] private Volume volume;
     private LiftGammaGain _gamma;
     [SerializeField] private Slider gammaSlider;
     [SerializeField] private Slider brightnessSlider;
     [SerializeField] private Image brightness;
+    [SerializeField] private GameObject apply;
+    [SerializeField] private GameObject applyPrompt;
 
-    [Header("Sound")] [SerializeField] private Slider masterSlider;
+    [Header("Sound")]
+    [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
     [SerializeField] private Slider uiSlider;
@@ -49,6 +58,7 @@ public class SettingsBehaviour : MonoBehaviour
     private const string VSyncPref = "VSync";
     private const string FrameCapPref = "FrameCap";
     private const string ResolutionPref = "Resolution";
+    private const string QualityPref = "QualitySettings";
 
     private Bus _masterBus;
     private Bus _musicBus;
@@ -59,22 +69,24 @@ public class SettingsBehaviour : MonoBehaviour
     private void Awake()
     {
         volume.profile.TryGet(out _gamma);
+        apply.SetActive(false);
     }
 
     public void LeaveGame()
     {
-        if (global::PlayerData.CurrentLobbyID != CSteamID.Nil)
+        if (PlayerData.CurrentLobbyID != CSteamID.Nil)
+        {
             NetGameBootstrapper.LeaveLobby();
+        }
         else
         {
             NetGameBootstrapper.LeaveLobbyLocal();
         }
-        
+
         SceneAudioManager.instance.StopInGameMusic();
         SceneAudioManager.instance.ResetMusicProgress();
         SceneManager.LoadScene("MainMenu");
     }
-
     private void Start()
     {
         _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
@@ -120,6 +132,15 @@ public class SettingsBehaviour : MonoBehaviour
         Load();
     }
 
+    private void Update()
+    {
+        foreach (var prompt in controllerPrompts)
+        {
+            prompt.SetActive(InputManager.Instance.IsGamepadUsed);
+        }
+        applyPrompt.SetActive(InputManager.Instance.IsGamepadUsed && apply.activeSelf);
+    }
+
     #region Graphics
 
     public void IncreaseResolution()
@@ -129,7 +150,7 @@ public class SettingsBehaviour : MonoBehaviour
 
         _resolution = _uniqueResolution[_currentResolutionIndex];
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
-        Apply();
+        apply.SetActive(true);
     }
 
     public void DecreaseResolution()
@@ -139,11 +160,13 @@ public class SettingsBehaviour : MonoBehaviour
             _currentResolutionIndex = _uniqueResolution.Count - 1;
         }
         else
+        {
             _currentResolutionIndex--;
+        }
 
         _resolution = _uniqueResolution[_currentResolutionIndex];
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
-        Apply();
+        apply.SetActive(true);
     }
 
     public void IncreaseFrameCap()
@@ -152,7 +175,7 @@ public class SettingsBehaviour : MonoBehaviour
         _frameCapIndex %= _frameCap.Length;
 
         frameCounter.text = _frameCap[_frameCapIndex].Equals(-1) ? "Unlimited" : _frameCap[_frameCapIndex].ToString();
-        Apply();
+        apply.SetActive(true);
     }
 
     public void DecreaseFrameCap()
@@ -167,67 +190,102 @@ public class SettingsBehaviour : MonoBehaviour
             _frameCapIndex--;
             frameCounter.text = _frameCap[_frameCapIndex].ToString();
         }
-
-        Apply();
+        apply.SetActive(true);
     }
 
     public void IncreaseVsync()
     {
         if (_vSyncIndex == 1)
+        {
             _vSyncIndex = 0;
+        }
         else
+        {
             _vSyncIndex++;
+        }
         vSyncMode.text = _vSync[_vSyncIndex];
-        Apply();
+        apply.SetActive(true);
     }
 
     public void DecreaseVsync()
     {
         if (_vSyncIndex == 0)
+        {
             _vSyncIndex = _vSync.Length - 1;
+        }
         else
+        {
             _vSyncIndex--;
+        }
         vSyncMode.text = _vSync[_vSyncIndex];
-        Apply();
+        apply.SetActive(true);
+    }
+
+    public void IncreaseQualityPref()
+    {
+        if (_qualityPrefIndex == qualityPrefabs.Count -1)
+        {
+            _qualityPrefIndex = 0;
+        }
+        else
+        {
+            _qualityPrefIndex++;
+        }
+        qualityPrefab.text = qualityPrefabs[_qualityPrefIndex].name;
+        apply.SetActive(true);
+    }
+
+    public void DecreaseQualityPref()
+    {
+        if (_qualityPrefIndex == 0)
+        {
+            _qualityPrefIndex = qualityPrefabs.Count - 1;
+        }
+        else
+        {
+            _qualityPrefIndex--;
+        }
+        qualityPrefab.text = qualityPrefabs[_qualityPrefIndex].name;
+        apply.SetActive(true);
     }
 
     public void AdjustBrightness()
     {
         brightness.color = new Color(0f, 0f, 0f, brightnessSlider.value);
-        Apply();
+        ApplyGraphicsSlider();
     }
 
     public void IncreaseBrightness()
     {
         brightnessSlider.value -= 0.05f;
-        Apply();
+        AdjustBrightness();
     }
 
     public void DecreaseBrightness()
     {
         brightnessSlider.value += 0.05f;
-        Apply();
+        AdjustBrightness();
     }
 
     public void AdjustGamma()
     {
         _gamma.gamma.value = new Vector4(1f, 1f, 1f, gammaSlider.value);
-        Apply();
+        ApplyGraphicsSlider();
     }
 
     public void IncreaseGamma()
     {
         gammaSlider.value += 0.05f;
-        Apply();
+        AdjustGamma();
     }
 
     public void DecreaseGamma()
     {
         gammaSlider.value -= 0.05f;
-        Apply();
+        AdjustGamma();
     }
 
-    private void Apply()
+    public void Apply()
     {
         Screen.SetResolution(_resolution.width, _resolution.height, Screen.fullScreen);
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
@@ -235,7 +293,15 @@ public class SettingsBehaviour : MonoBehaviour
         frameCounter.text = _frameCap[_frameCapIndex].Equals(-1) ? "Unlimited" : _frameCap[_frameCapIndex].ToString();
         QualitySettings.vSyncCount = _vSyncIndex;
         vSyncMode.text = _vSync[_vSyncIndex];
+        QualitySettings.renderPipeline = qualityPrefabs[_qualityPrefIndex];
+        qualityPrefab.text = qualityPrefabs[_qualityPrefIndex].name;
         Save();
+    }
+    
+    private void ApplyGraphicsSlider()
+    {
+        PlayerPrefs.SetFloat(GammaValuePref, gammaSlider.value);
+        PlayerPrefs.SetFloat(BrightnessValuePref, brightnessSlider.value);
     }
 
     #endregion
@@ -250,11 +316,13 @@ public class SettingsBehaviour : MonoBehaviour
     public void IncreaseMaster()
     {
         masterSlider.value += 0.05f;
+        MasterVolume();
     }
 
     public void DecreaseMaster()
     {
         masterSlider.value -= 0.05f;
+        MasterVolume();
     }
 
     public void MusicVolume()
@@ -265,11 +333,13 @@ public class SettingsBehaviour : MonoBehaviour
     public void IncreaseMusic()
     {
         musicSlider.value += 0.05f;
+        MusicVolume();
     }
 
     public void DecreaseMusic()
     {
         musicSlider.value -= 0.05f;
+        MusicVolume();
     }
 
     public void SfxVolume()
@@ -280,11 +350,13 @@ public class SettingsBehaviour : MonoBehaviour
     public void IncreaseSfx()
     {
         sfxSlider.value += 0.05f;
+        SfxVolume();
     }
 
     public void DecreaseSfx()
     {
         sfxSlider.value -= 0.05f;
+        SfxVolume();
     }
 
     public void UIVolume()
@@ -295,11 +367,13 @@ public class SettingsBehaviour : MonoBehaviour
     public void IncreaseUI()
     {
         uiSlider.value += 0.05f;
+        UIVolume();
     }
 
     public void DecreaseUI()
     {
         uiSlider.value -= 0.05f;
+        UIVolume();
     }
 
     public void AnnouncerVolume()
@@ -310,11 +384,13 @@ public class SettingsBehaviour : MonoBehaviour
     public void IncreaseAnnouncer()
     {
         announcerSlider.value += 0.05f;
+        AnnouncerVolume();
     }
 
     public void DecreaseAnnouncer()
     {
         announcerSlider.value -= 0.05f;
+        AnnouncerVolume();
     }
 
     private void ApplyVolume(Bus bus, float newVolume)
@@ -332,11 +408,10 @@ public class SettingsBehaviour : MonoBehaviour
         PlayerPrefs.SetFloat(SfxVolumePref, sfxSlider.value);
         PlayerPrefs.SetFloat(UiVolumePref, uiSlider.value);
         PlayerPrefs.SetFloat(VoiceVolumePref, announcerSlider.value);
-        PlayerPrefs.SetFloat(GammaValuePref, gammaSlider.value);
-        PlayerPrefs.SetFloat(BrightnessValuePref, brightnessSlider.value);
         PlayerPrefs.SetInt(VSyncPref, _vSyncIndex);
         PlayerPrefs.SetInt(FrameCapPref, _frameCapIndex);
         PlayerPrefs.SetInt(ResolutionPref, _currentResolutionIndex);
+        PlayerPrefs.SetInt(QualityPref, _qualityPrefIndex);
     }
 
     public void Load()
@@ -351,6 +426,7 @@ public class SettingsBehaviour : MonoBehaviour
         _vSyncIndex = PlayerPrefs.GetInt(VSyncPref, 1);
         _frameCapIndex = PlayerPrefs.GetInt(FrameCapPref, 1);
         _currentResolutionIndex = PlayerPrefs.GetInt(ResolutionPref, _uniqueResolution.Count - 1);
+        _qualityPrefIndex = PlayerPrefs.GetInt(QualityPref, qualityPrefabs.Count - 1);
         MasterVolume();
         MusicVolume();
         SfxVolume();
