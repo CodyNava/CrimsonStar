@@ -223,6 +223,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Clear();
         yield return new WaitForSecondsRealtime(3f);
         ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult());
+        _kills = 1;
         SceneAudioManager.instance.StopInGameMusic();
         SceneAudioManager.instance.ResetMusicProgress();
         C_TriggerStopMusic();
@@ -243,6 +244,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _editorConductor.S_SetupNewEditPhase();
         InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(this, _lobbyConductor.Players);
         _isMatchConcluded.Value = false;
+        _kills = 1;
         SceneAudioManager.instance.StopInGameMusic();
         SceneAudioManager.instance.ResetMusicProgress();
         SceneAudioManager.instance.StartInGameMusic();
