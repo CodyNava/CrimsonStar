@@ -60,6 +60,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
         if (!inEditorPhase) return;
         _editorTimer.Update(Time.deltaTime);
     }
+    
 
     private void OnTimerChange(SyncTimerOperation op, float prev, float next, bool asServer)
     {

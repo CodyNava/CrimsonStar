@@ -73,7 +73,8 @@ public class SpectatorPlayerPanel : MonoBehaviour
 
     public void OnDestroy()
     {
-        InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerDeath>(OnPlayerDeath);
+        if(InstanceFinder.ClientManager)
+            InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerDeath>(OnPlayerDeath);
     }
 
     public void OnPlayerPanelClicked(NetBridge bridge)

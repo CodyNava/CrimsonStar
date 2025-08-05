@@ -1,3 +1,4 @@
+using System.Collections;
 using FishNet;
 using FishNet.Managing;
 using FishNet.Managing.Transporting;
@@ -7,6 +8,7 @@ using FishNet.Transporting.Tugboat;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR;
 using Fishy = FishySteamworks.FishySteamworks;
 
 public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
@@ -17,6 +19,8 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
     [SerializeField] private string mainMenuSceneName;
     [Header("Conductors")]
     [SerializeField] private NetLobbyConductor netLobbyConductor;
+
+    private NetLobbyConductor _lobbyConductorInstance;
     
     protected Callback<LobbyCreated_t> SteamLobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> SteamLobbyJoinRequested;
@@ -29,12 +33,14 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
     
     private void OnEnable()
     {
-        InstanceFinder.TransportManager.Transport.OnClientConnectionState += OnConnectionState;
+        if(InstanceFinder.TransportManager.Transport)
+            InstanceFinder.TransportManager.Transport.OnClientConnectionState += OnConnectionState;
     }
 
     private void OnDisable()
     {
-        InstanceFinder.TransportManager.Transport.OnClientConnectionState -= OnConnectionState;
+        if(InstanceFinder.TransportManager != null && InstanceFinder.TransportManager.Transport != null)
+            InstanceFinder.TransportManager.Transport.OnClientConnectionState -= OnConnectionState;
     }
 
     private void OnConnectionState(ClientConnectionStateArgs args)
@@ -98,6 +104,54 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
     public static void CreateLobby()
     {
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, 9);
+    }
+
+    public void CreatePrivateLobby()
+    {
+        // Create local session
+        PlayerData.SetPlayerIDFromRandom();
+        PlayerData.SetLobbyHost(true);
+        InstanceFinder.TransportManager.Transport.StartConnection(true);
+        _lobbyConductorInstance = Instantiate(Instance.netLobbyConductor);
+        var lobbyConductorGo = _lobbyConductorInstance.gameObject;
+        InstanceFinder.ServerManager.Spawn(lobbyConductorGo);
+
+        // Setup local session settings
+        _lobbyConductorInstance.RoundCount = 99;
+        _lobbyConductorInstance.RefundModuleID = NetRefundModuleID.Full;
+        _lobbyConductorInstance.EditorTimerDuration = 999;
+        _lobbyConductorInstance.FriendlyFireID = NetFirendlyFireID.Off;
+
+        var gameplayConductor = InstanceFinder.GetInstance<NetGameplayConductor>();
+        if(gameplayConductor) gameplayConductor.SetGameplayScene("TrainingsGround");
+
+        InstanceFinder.TransportManager.Transport.OnClientConnectionState += HandlePrivateSessionConnection;
+        
+        // On join local session
+        Multipass mp = InstanceFinder.TransportManager.GetTransport<Multipass>();
+        mp.SetClientTransport<Tugboat>();
+        InstanceFinder.TransportManager.Transport.StartConnection(false);
+    }
+    
+    private void HandlePrivateSessionConnection(ClientConnectionStateArgs args)
+    {
+        if (args.ConnectionState == LocalConnectionState.Started)
+        {
+            InstanceFinder.TransportManager.Transport.OnClientConnectionState -= HandlePrivateSessionConnection;
+            InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.PlayerIdentified
+            {
+                PlayerID = PlayerData.PlayerID,
+                DisplayName = PlayerData.DisplayName,
+                IsHost = PlayerData.IsLobbyHost
+            });
+            _lobbyConductorInstance.S_SetGameMode(NetGameModeID.TestingMode);
+
+            _lobbyConductorInstance.PrepareGame();
+            InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(_lobbyConductorInstance.Players);
+            var scene = SceneManager.GetSceneByName("BootstrappingScene");
+            if(scene.IsValid()) SceneManager.UnloadSceneAsync("BootstrappingScene");
+            SceneManager.UnloadSceneAsync("MainMenu");
+        }
     }
 
     public static void LeaveLobby()

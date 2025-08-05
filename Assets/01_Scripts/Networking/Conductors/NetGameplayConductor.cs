@@ -59,7 +59,13 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     private int PlayerCount => _lobbyConductor.Players.Length;
     private int _spawnedPlayers = 0;
 
-    public override string ConductedSceneName => "NetGameplayScene";
+    private string _conductedSceneName = "NetGameplayScene";
+
+    public void SetGameplayScene(string sceneName)
+    {
+        if (IsServerInitialized) _conductedSceneName = sceneName;
+    }
+    public override string ConductedSceneName => _conductedSceneName;
 
 
     public event UnityAction<RegisterPlayerDeathEventArgs> OnRegisterPlayerDeath;
@@ -69,7 +75,6 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         _elapsedTime += Time.deltaTime;
     }
-
 
     protected override void OnNetworkStarted()
     {
@@ -210,6 +215,15 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             _isMatchConcluded.Value = true;
             StartCoroutine(EndOfRoundRoutine());
         }
+    }
+    
+    public override void OnUnloadConductedScene()
+    {
+        _bridges.Clear();
+        _spawnedPlayers = 0;
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
+        C_TriggerResetMusic();
     }
 
     private IEnumerator EndOfMatchRoutine()
