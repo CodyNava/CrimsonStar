@@ -54,7 +54,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     private int _roundsPlayed;
 
     private float _elapsedTime;
-    private int _kills = 0;
+    private int _kills = 1;
 
     private int PlayerCount => _lobbyConductor.Players.Length;
     private int _spawnedPlayers = 0;
@@ -131,16 +131,16 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Remove(owner);
         _eliminatedPlayers.Add(owner);
 
-        
+
         if (_eliminatedPlayers.Count >= PlayerCount * 0.34f)
         {
             SceneAudioManager.instance.IncreaseMusicProgress();
             C_TriggerIncreaseMusicProgress();
-        } 
-        
+        }
+
         ServerManager.Broadcast(new NetGameplayBroadcasts.PlayerDeath
         {
-            conn = owner   
+            conn = owner
         });
 
         if (S_IsMatchComplete())
@@ -249,7 +249,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         C_TriggerResetMusic();
     }
 
-    
+
     [ObserversRpc]
     [Client]
     private void C_TriggerIncreaseMusicProgress()
@@ -346,13 +346,14 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         if (_elapsedTime >= 40f)
         {
-            _kills = 0;
+            _kills = 1;
         }
 
         SceneAudioManager.instance.PlayKillAnnouncer(_kills);
         _kills++;
         _elapsedTime = 0f;
     }
+
 
     [Server]
     private void S_CalculateRoundResults()
