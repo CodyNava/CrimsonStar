@@ -15,9 +15,10 @@ public class ExplosiveBarrel : NetworkBehaviour
         _netTeamID.Value = netTeamID;
         _attackerID = attackerID;
     }
-    
-    private void OnTriggerEnter2D(Collider2D other)
+
+    private void OnCollisionEnter2D(Collision2D collision)
     {
+        
         if (InstanceFinder.IsClientStarted)
         {
             // Visual and Audio
@@ -25,9 +26,11 @@ public class ExplosiveBarrel : NetworkBehaviour
 
         if (InstanceFinder.IsServerStarted)
         {
+            print("HIT");
             S_SpawnExplosion(transform.position, _attackerID);
         }
     }
+
     
     [Server]
     private void S_SpawnExplosion(Vector3 pos, ulong senderID)

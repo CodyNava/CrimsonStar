@@ -11,10 +11,12 @@ public class ModuleCategoryButton : MonoBehaviour
     {
         categoryContainer.SetModuleCategory(moduleCategory);
         if (InputManager.Instance.IsGamepadUsed) return;
-        this.GetComponent<Button>().interactable = false;
+        this.GetComponent<Button>().interactable = true;
         foreach (var button in otherCategoryButton)
         {
             button.interactable = true;
         }
+        // das disablen für den disabled sprite ist nicht mit keyboard + gamepad kompatible 
+        // todo die visualisierung für den disabled state anders darstellen
     }
 }

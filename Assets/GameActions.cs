@@ -734,6 +734,15 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ready"",
+                    ""type"": ""Button"",
+                    ""id"": ""74c5b219-286c-4b09-98b5-5643234f5feb"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1158,7 +1167,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0c2d075c-372f-4d65-b9c0-e445e2cafb10"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<XInputController>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -1169,7 +1178,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""5d8e5a93-9cd3-4ce1-a8da-effdb43b5c7c"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""path"": ""<XInputController>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -1251,6 +1260,17 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""LeftTrigger"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0442e1c3-32bd-49c9-a4ab-afd75b2ca05c"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Ready"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1399,7 +1419,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0bee16d5-6fab-4e0c-8536-ce41ab1c7bc5"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -1421,7 +1441,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2d504c2d-2ddf-4dba-9751-e7d4bed1ec83"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -1531,7 +1551,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a173d032-c710-45b5-89f3-0f2373cfc427"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -1542,7 +1562,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3b6f5bfd-470e-4daa-9cde-55467fbb107a"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -1627,6 +1647,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         m_UI_Save = m_UI.FindAction("Save", throwIfNotFound: true);
         m_UI_RightTrigger = m_UI.FindAction("RightTrigger", throwIfNotFound: true);
         m_UI_LeftTrigger = m_UI.FindAction("LeftTrigger", throwIfNotFound: true);
+        m_UI_Ready = m_UI.FindAction("Ready", throwIfNotFound: true);
         // ShipEditor
         m_ShipEditor = asset.FindActionMap("ShipEditor", throwIfNotFound: true);
         m_ShipEditor_ModulePickOrDrop = m_ShipEditor.FindAction("ModulePickOrDrop", throwIfNotFound: true);
@@ -2019,6 +2040,7 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Save;
     private readonly InputAction m_UI_RightTrigger;
     private readonly InputAction m_UI_LeftTrigger;
+    private readonly InputAction m_UI_Ready;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -2099,6 +2121,10 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @LeftTrigger => m_Wrapper.m_UI_LeftTrigger;
         /// <summary>
+        /// Provides access to the underlying input action "UI/Ready".
+        /// </summary>
+        public InputAction @Ready => m_Wrapper.m_UI_Ready;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_UI; }
@@ -2175,6 +2201,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @LeftTrigger.started += instance.OnLeftTrigger;
             @LeftTrigger.performed += instance.OnLeftTrigger;
             @LeftTrigger.canceled += instance.OnLeftTrigger;
+            @Ready.started += instance.OnReady;
+            @Ready.performed += instance.OnReady;
+            @Ready.canceled += instance.OnReady;
         }
 
         /// <summary>
@@ -2237,6 +2266,9 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
             @LeftTrigger.started -= instance.OnLeftTrigger;
             @LeftTrigger.performed -= instance.OnLeftTrigger;
             @LeftTrigger.canceled -= instance.OnLeftTrigger;
+            @Ready.started -= instance.OnReady;
+            @Ready.performed -= instance.OnReady;
+            @Ready.canceled -= instance.OnReady;
         }
 
         /// <summary>
@@ -2703,6 +2735,13 @@ public partial class @GameActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLeftTrigger(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Ready" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnReady(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ShipEditor" which allows adding and removing callbacks.
