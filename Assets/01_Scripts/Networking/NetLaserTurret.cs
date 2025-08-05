@@ -75,6 +75,7 @@ public class NetLaserTurret : NetworkBehaviour
                 _accumulatedTimeVFX = 0f;
                 C_ClientFire();
                 muzzleCharge.SetBool("Set_ChargeCompleted", false);
+                muzzleCharge.SendEvent("StartDissolve");
                 return;
             }
 
