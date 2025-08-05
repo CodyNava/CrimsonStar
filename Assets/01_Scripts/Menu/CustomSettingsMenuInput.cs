@@ -219,7 +219,6 @@ public class CustomSettingsMenuInput : MonoBehaviour
 
                 StartCoroutine(HoldCooldown());
             }
-
         }
     }
 
