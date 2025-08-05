@@ -71,7 +71,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
     {
         if (settingsContainer.activeSelf)
         {
-            if (Keybinds.Actions.UI.RightShoulder.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.SwapTabRight.WasPressedThisFrame())
             {
                 if (audioContainer.activeSelf)
                 {
@@ -83,7 +83,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 }
             }
 
-            if (Keybinds.Actions.UI.LeftShoulder.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.SwapTabLeft.WasPressedThisFrame())
             {
                 if (graphicsContainer.activeSelf)
                 {

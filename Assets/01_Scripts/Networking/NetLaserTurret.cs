@@ -15,13 +15,13 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private VisualEffect muzzleCharge;
     [SerializeField] private StudioEventEmitter shotSound;
-    [SerializeField] private List<Vector4> originalMuzzleChargeColor;
 
 
     private const float MaxPassedTime = 0.3f;
 
     private bool _isCharging;
     private float _accumulatedTime;
+    private float _accumulatedTimeVFX;
     private float _cooldownTime;
     private float _chargeTime;
     private bool _justShot;
@@ -36,8 +36,6 @@ public class NetLaserTurret : NetworkBehaviour
     {
         muzzleCharge.SetFloat("Get_ChargeTime", netLaserTurretData.ChargeTime);
         //muzzleImpact.SetFloat("Delay", netLaserTurretData.ChargeTime);
-        originalMuzzleChargeColor.Add(muzzleCharge.GetVector4("Color_Blur"));
-        originalMuzzleChargeColor.Add(muzzleCharge.GetVector4("Color_LightningBall"));
     }
 
     private void Update()
@@ -52,15 +50,18 @@ public class NetLaserTurret : NetworkBehaviour
 
         if (C_IsAttacking())
         {
-            if (!_isCharging ) muzzleCharge.Play();
-            _isCharging = true;
+            _accumulatedTimeVFX += Time.deltaTime;
+            if (!_isCharging && _accumulatedTimeVFX > 0.3f)
+            {
+                _isCharging = true;
+                muzzleCharge.SendEvent("ChargeUp") ;
+            }
             _chargeTime += Time.deltaTime;
-            print(_chargeTime);
             if (!shotSound.IsPlaying()) shotSound.Play();
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
-                muzzleCharge.SetVector4("Color_Blur", Color.red * 6);
-                muzzleCharge.SetVector4("Color_LightningBall", Color.red * 6);
+                muzzleCharge.SetBool("Set_ChargeCompleted", true);
+                _accumulatedTimeVFX = 0f;
             }
         }
         else
@@ -71,24 +72,23 @@ public class NetLaserTurret : NetworkBehaviour
                 _accumulatedTime = 0;
                 _chargeTime = 0;
                 _cooldownTime = 0;
+                _accumulatedTimeVFX = 0f;
                 C_ClientFire();
-                StartCoroutine(ColorChanger());
+                muzzleCharge.SetBool("Set_ChargeCompleted", false);
                 return;
             }
 
+            if (_isCharging)
+            {
+                muzzleCharge.SendEvent("ChargeDown");
+            }
             _isCharging = false;
-            muzzleCharge.Stop();
             _chargeTime = Mathf.Lerp(_chargeTime, 0, Time.deltaTime * 2);
+            _accumulatedTimeVFX = _chargeTime;
             if (shotSound.IsPlaying()) shotSound.Stop();
         }
     }
-
-    private IEnumerator ColorChanger()
-    {
-        yield return new WaitForSeconds(muzzleCharge.GetFloat("Get_ChargeTime") / 2);
-        muzzleCharge.SetVector4("Color_Blur", originalMuzzleChargeColor[0]);
-        muzzleCharge.SetVector4("Color_LightningBall", originalMuzzleChargeColor[1]);
-    }
+    
 
     private bool C_IsAttacking()
     {
