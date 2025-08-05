@@ -103,6 +103,8 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
 
     public static void CreateLobby()
     {
+        SetOnlineLobbySettings();
+
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, 9);
     }
 
@@ -122,35 +124,35 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
         _lobbyConductorInstance.EditorTimerDuration = 999;
         _lobbyConductorInstance.FriendlyFireID = NetFirendlyFireID.Off;
 
-        var gameplayConductor = InstanceFinder.GetInstance<NetGameplayConductor>();
-        if(gameplayConductor) gameplayConductor.SetGameplayScene("TrainingsGround");
+        SetTrainingsGroundSettings();
 
-        InstanceFinder.TransportManager.Transport.OnClientConnectionState += HandlePrivateSessionConnection;
-        
         // On join local session
         Multipass mp = InstanceFinder.TransportManager.GetTransport<Multipass>();
         mp.SetClientTransport<Tugboat>();
         InstanceFinder.TransportManager.Transport.StartConnection(false);
+        
+        // Await client connection
+        StartCoroutine(AwaitClientConnectionIsValid());
     }
-    
-    private void HandlePrivateSessionConnection(ClientConnectionStateArgs args)
-    {
-        if (args.ConnectionState == LocalConnectionState.Started)
-        {
-            InstanceFinder.TransportManager.Transport.OnClientConnectionState -= HandlePrivateSessionConnection;
-            InstanceFinder.ClientManager.Broadcast(new NetLobbyBroadcasts.PlayerIdentified
-            {
-                PlayerID = PlayerData.PlayerID,
-                DisplayName = PlayerData.DisplayName,
-                IsHost = PlayerData.IsLobbyHost
-            });
-            _lobbyConductorInstance.S_SetGameMode(NetGameModeID.TestingMode);
 
-            _lobbyConductorInstance.PrepareGame();
-            InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(_lobbyConductorInstance.Players);
-            if(SceneManager.GetSceneByName("BootstrappingScene").IsValid()) SceneManager.UnloadSceneAsync("BootstrappingScene");
-            SceneManager.UnloadSceneAsync("MainMenu");
-        }
+    private IEnumerator AwaitClientConnectionIsValid()
+    {
+        while (!InstanceFinder.ClientManager.Connection.IsActive)
+            yield return new WaitForSeconds(0.1f);
+        
+        _lobbyConductorInstance.AddPlayer(InstanceFinder.ClientManager.Connection,new NetLobbyBroadcasts.PlayerIdentified
+        {
+            PlayerID = PlayerData.PlayerID,
+            DisplayName = PlayerData.DisplayName,
+            IsHost = PlayerData.IsLobbyHost
+        });
+        _lobbyConductorInstance.S_SetGameMode(NetGameModeID.TestingMode);
+
+        _lobbyConductorInstance.PrepareGame();
+        InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(_lobbyConductorInstance.Players);
+        if(SceneManager.GetSceneByName("BootstrappingScene").IsValid()) SceneManager.UnloadSceneAsync("BootstrappingScene");
+        SceneManager.UnloadSceneAsync("MainMenu");
+        yield return null;
     }
 
     public static void LeaveLobby()
@@ -174,6 +176,7 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
 
     public static void CreateLobbyLocal()
     {
+        SetOnlineLobbySettings();
         PlayerData.SetPlayerIDFromRandom();
         PlayerData.SetLobbyHost(true);
         InstanceFinder.TransportManager.Transport.StartConnection(true);
@@ -195,5 +198,17 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
             PlayerData.SetDisplayName($"{PlayerData.DisplayName}#{PlayerData.PlayerID % 10000}");
         InstanceFinder.TransportManager.Transport.StartConnection(false);
         SceneManager.LoadScene("NetLobby");
+    }
+
+    private static void SetOnlineLobbySettings()
+    {
+        InstanceFinder.GetInstance<NetShipEditorConductor>().SkipAnnouncer = false;
+        InstanceFinder.GetInstance<NetGameplayConductor>().SetGameplayScene("NetGameplayScene");
+    }
+
+    private void SetTrainingsGroundSettings()
+    {
+        InstanceFinder.GetInstance<NetShipEditorConductor>().SkipAnnouncer = true;
+        InstanceFinder.GetInstance<NetGameplayConductor>().SetGameplayScene("TrainingsGround");
     }
 }

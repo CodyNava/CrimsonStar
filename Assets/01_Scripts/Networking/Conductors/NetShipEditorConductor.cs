@@ -27,6 +27,13 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
 
     public float TimeRemaining => _editorTimer.Remaining;
 
+    private bool _skipAnnouncer = false;
+    public bool SkipAnnouncer
+    {
+        get => _skipAnnouncer;
+        set => _skipAnnouncer = IsServerInitialized ? value : _skipAnnouncer;
+    }
+
 
     protected override void OnNetworkStarted()
     {
@@ -120,9 +127,12 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
 
     private IEnumerator AdvanceToGameplayScene()
     {
-        C_TriggerIntroSound();
-        TriggerIntroSound();
-        yield return new WaitForSecondsRealtime(6.5f);
+        if (!_skipAnnouncer)
+        {
+            C_TriggerIntroSound();
+            TriggerIntroSound();
+            yield return new WaitForSecondsRealtime(6.5f);   
+        }
         _editorTimer.StartTimer(_lobbyConductor.EditorTimerDuration);
         InstanceFinder.GetInstance<NetGameplayConductor>().MoveToScene(this, _lobbyConductor.Players);
         _playersReady.Clear();
