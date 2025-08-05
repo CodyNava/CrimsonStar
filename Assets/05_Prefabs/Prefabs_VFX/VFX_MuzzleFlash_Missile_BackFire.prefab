@@ -1,37 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1542212672339816546
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 9027438059050259345}
-  m_Layer: 0
-  m_Name: VFX_Thruster
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &9027438059050259345
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1542212672339816546}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5594456276877528820}
-  m_Father: {fileID: 6769408483115806515}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3787217869158415876
 GameObject:
   m_ObjectHideFlags: 0
@@ -61,7 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 9027438059050259345}
+  - {fileID: 5594456276877528820}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5615508013505872875
@@ -95,7 +63,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 9027438059050259345}
+  m_Father: {fileID: 6769408483115806515}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!2083052967 &6648678928763878823
 VisualEffect:
@@ -124,7 +92,7 @@ VisualEffect:
       - m_Value: 5.25
         m_Name: Size_Smoke
         m_Overridden: 1
-      - m_Value: 2
+      - m_Value: 7
         m_Name: Size_Fire
         m_Overridden: 1
       - m_Value: 6
@@ -151,7 +119,7 @@ VisualEffect:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 5.992157, y: 1.5522035, z: 0.59921587, w: 0}
+      - m_Value: {x: 2.9960785, y: 0.77610177, z: 0.29960793, w: 0}
         m_Name: Color_Smoke
         m_Overridden: 1
       - m_Value: {x: 23.968628, y: 6.8836884, z: 2.5098033, w: 0}

@@ -12,6 +12,7 @@ public class NetEditorModule : MonoBehaviour
     [HideInInspector] public bool IsSelected { get; set; }
     [field: SerializeField] public HexCoordinate PlacedLocation { get; set; }
     [field: SerializeField] public int PlacedRotation { get; set; }
+    [field: SerializeField] public Transform CurrentTransform { get; set; }
     public NetModuleData ModuleData => ModuleID.GetModuleData();
     [field: SerializeField] public HealthOverLayData healthOverLayData;
     [field: SerializeField] public List<HexCoordinate> LocalCoordinates { get; private set; }
@@ -67,6 +68,7 @@ public class NetEditorModule : MonoBehaviour
         if (ModuleData.ModuleID == NetModuleID.Bridge)
             ShipEditorHealthOverlay.WriteHealthMap(PlacedLocation, ModuleData.BaseStats.health);
 
+        if (ModuleData.ModuleID != NetModuleID.Bridge) UpdateCurrentTransformRotation();
         GetPresetMaterials();
         GetPowerMaterial();
     }
@@ -151,6 +153,7 @@ public class NetEditorModule : MonoBehaviour
             PlacedRotation -= 6;
         }
         
+        
         C_UpdateRotation();
     }
 
@@ -170,11 +173,20 @@ public class NetEditorModule : MonoBehaviour
         C_UpdateRotation();
     }
 
+    
+
     private void C_UpdateRotation()
     {
         transform.rotation = Quaternion.AngleAxis(PlacedRotation * 60, Vector3.back);
+        UpdateCurrentTransformRotation();
     }
 
+    private void UpdateCurrentTransformRotation()
+    {
+        CurrentTransform = gameObject.transform;
+    }
+
+    
     public void Update()
     {
         if (ModuleData.CanBePowered) ChangeMaterialAndCheckPowerAlways();
@@ -290,6 +302,7 @@ public class NetEditorModule : MonoBehaviour
         }
     }
 
+    public Transform GetRotation() =>CurrentTransform;
     public bool EnergyViewEnable() => shipEditor.inEnergyView;
     public bool Powered() => shipEditor.CheckIfPowered(PlacedLocation);
 }
