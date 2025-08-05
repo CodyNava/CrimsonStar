@@ -144,7 +144,7 @@ public class SettingsBehaviour : MonoBehaviour
             prompt.SetActive(InputManager.Instance.IsGamepadUsed);
         }
         applyPrompt.SetActive(InputManager.Instance.IsGamepadUsed && apply.activeSelf);
-        savePrompt.SetActive(InputManager.Instance.IsGamepadUsed && warningPopUp.activeSelf);
+        //savePrompt.SetActive(InputManager.Instance.IsGamepadUsed && warningPopUp.activeSelf);
         discardPrompt.SetActive(InputManager.Instance.IsGamepadUsed && warningPopUp.activeSelf);
     }
     

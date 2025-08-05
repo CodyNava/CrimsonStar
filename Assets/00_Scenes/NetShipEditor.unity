@@ -976,7 +976,7 @@ GameObject:
   - component: {fileID: 77189285}
   - component: {fileID: 77189286}
   m_Layer: 0
-  m_Name: FinishButton
+  m_Name: ReadyButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -994,16 +994,14 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1274718210}
   - {fileID: 2065478665}
   - {fileID: 1992913163}
-  - {fileID: 1276634786}
   m_Father: {fileID: 2024182891}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 1955.4}
-  m_SizeDelta: {x: 611, y: 135.6}
+  m_AnchoredPosition: {x: -202.14, y: 1955.4}
+  m_SizeDelta: {x: 408.86, y: 135.6}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &77189283
 MonoBehaviour:
@@ -1018,14 +1016,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 1}
+  m_Color: {r: 0.6603774, g: 0.6572624, b: 0.6572624, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ba33ffcc976d7004f8602ea8e2173068, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3676feeb899fc704fa19fe28cc314362, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1034,7 +1032,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 3
+  m_PixelsPerUnitMultiplier: 4
 --- !u!222 &77189284
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1062,15 +1060,15 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
+  m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
-    m_HighlightedColor: {r: 0.67058825, g: 0.67058825, b: 0.67058825, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_NormalColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 1}
+    m_HighlightedColor: {r: 0.8018868, g: 0.7981043, b: 0.7981043, a: 1}
+    m_PressedColor: {r: 0.8980392, g: 0.6039216, b: 0.6039216, a: 1}
     m_SelectedColor: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0.01
   m_SpriteState:
     m_HighlightedSprite: {fileID: -1285569817, guid: 431e77a9bc5ab414c9e6c114c9f0b7f1, type: 3}
     m_PressedSprite: {fileID: 73346528, guid: a5f04249b4a58fa4288dfcc3ae15ef25, type: 3}
@@ -1112,8 +1110,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerDisplay: {fileID: 1274718211}
-  timerButtonSprite: {fileID: 77189283}
+  timerHeader: {fileID: 2065478666}
+  timerButtonImage: {fileID: 77189283}
+  hourGlassImage: {fileID: 1276634787}
+  timerButtonSpriteEscalation: {fileID: 21300000, guid: 3676feeb899fc704fa19fe28cc314362, type: 3}
+  timerButtonStartOriginSprite: {fileID: 21300000, guid: ba33ffcc976d7004f8602ea8e2173068, type: 3}
   noTimeColorThreshold: 20
+  timerHeaderStringNotReady: ready?
+  timerHeaderStringReady: READY!
+  shipEditor: {fileID: 1213812592}
+  startColor: {r: 0.56937444, g: 0.7735849, b: 0.56559277, a: 1}
+  endColor: {r: 0.8301887, g: 0.5521538, b: 0.5637385, a: 1}
 --- !u!1 &97072551
 GameObject:
   m_ObjectHideFlags: 0
@@ -2110,7 +2117,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
-  m_Antialiasing: 3
+  m_Antialiasing: 2
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -5524,7 +5531,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 17
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -10091,6 +10098,7 @@ MonoBehaviour:
   wg1Header: {fileID: 1142048391}
   wg2Header: {fileID: 906050353}
   wg3Header: {fileID: 228028826}
+  isReady: 0
   blockingPlane: {fileID: 97072551}
   gamepadEnabled: 1
   healthViewModeText: {fileID: 232671717}
@@ -10695,13 +10703,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 77189282}
+  m_Father: {fileID: 1373813877}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -96.699974, y: 0.00011444092}
-  m_SizeDelta: {x: 178.18, y: 100}
-  m_Pivot: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -25.76, y: 0}
+  m_SizeDelta: {x: 140.62, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1274718211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10722,7 +10730,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 9999
+  m_text: 161
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: deb76d5fb59329e4ca25148040158781, type: 2}
   m_sharedMaterial: {fileID: 3074716034560243664, guid: deb76d5fb59329e4ca25148040158781, type: 2}
@@ -10756,7 +10764,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 4
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -10813,7 +10821,7 @@ GameObject:
   - component: {fileID: 1276634788}
   - component: {fileID: 1276634787}
   m_Layer: 0
-  m_Name: Image
+  m_Name: HourGlass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10828,14 +10836,14 @@ RectTransform:
   m_GameObject: {fileID: 1276634785}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.90277, y: 0.90277, z: 0.90277}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 77189282}
+  m_Father: {fileID: 1373813877}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 239.2, y: 0}
+  m_AnchoredPosition: {x: 67.1, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1276634787
@@ -10852,7 +10860,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -11635,6 +11643,83 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4486367170447044340, guid: 9a48f429ce890be489551d32fc0627b1, type: 3}
   m_PrefabInstance: {fileID: 1341429427}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1373813876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1373813877}
+  - component: {fileID: 1373813879}
+  - component: {fileID: 1373813878}
+  m_Layer: 0
+  m_Name: TimerDisplay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1373813877
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373813876}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1274718210}
+  - {fileID: 1276634786}
+  m_Father: {fileID: 2024182891}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 1818.9, y: 949.23}
+  m_SizeDelta: {x: 202.1, y: 131.1}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1373813878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373813876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 990517149c6997d459ccde2d97bce0fd, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 4.92
+--- !u!222 &1373813879
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373813876}
+  m_CullTransparentMesh: 1
 --- !u!1 &1401103628
 GameObject:
   m_ObjectHideFlags: 0
@@ -18196,7 +18281,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -285.9, y: -1}
+  m_AnchoredPosition: {x: -189.8, y: -1}
   m_SizeDelta: {x: 150, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1992913164
@@ -18835,6 +18920,7 @@ RectTransform:
   - {fileID: 1879708787}
   - {fileID: 1616998513}
   - {fileID: 77189282}
+  - {fileID: 1373813877}
   - {fileID: 272880438}
   - {fileID: 1578808181}
   - {fileID: 1702061495}
@@ -19179,8 +19265,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -93.6, y: 0}
-  m_SizeDelta: {x: 300, y: 100}
+  m_AnchoredPosition: {x: 0.5399933, y: 0}
+  m_SizeDelta: {x: 332.49, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2065478666
 MonoBehaviour:
@@ -19229,13 +19315,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 95.6
+  m_fontSize: 72
   m_fontSizeBase: 95.6
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 17
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
