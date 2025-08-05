@@ -40,6 +40,7 @@ public abstract class BaseConductor<T> : NetworkSingleton<T> where T : NetworkSi
             loadData.MovedNetworkObjects = objectsToMove;
         }
         SceneManager.LoadGlobalScenes(loadData);
+        OnLoadConductedScene();
     }
 
     public void MoveToScene<TConductor>(BaseConductor<TConductor> previous = null, NetworkObject[] objectsToMove = null) where TConductor : BaseConductor<TConductor>
@@ -51,11 +52,17 @@ public abstract class BaseConductor<T> : NetworkSingleton<T> where T : NetworkSi
             loadData.MovedNetworkObjects = objectsToMove;
         }
         SceneManager.LoadGlobalScenes(loadData);
+        OnLoadConductedScene();
 
         if (previous == null) return;
+        previous.OnUnloadConductedScene();
         SceneUnloadData unloadData = new SceneUnloadData(previous.ConductedSceneName);
         SceneManager.UnloadGlobalScenes(unloadData);
     }
+
+    public virtual void OnUnloadConductedScene(){}
+    public virtual void OnLoadConductedScene(){}
+    
     
     protected virtual void OnNetworkStarted() { }
 

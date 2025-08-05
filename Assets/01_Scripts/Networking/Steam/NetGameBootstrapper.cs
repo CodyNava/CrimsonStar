@@ -148,8 +148,7 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
 
             _lobbyConductorInstance.PrepareGame();
             InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(_lobbyConductorInstance.Players);
-            var scene = SceneManager.GetSceneByName("BootstrappingScene");
-            if(scene.IsValid()) SceneManager.UnloadSceneAsync("BootstrappingScene");
+            if(SceneManager.GetSceneByName("BootstrappingScene").IsValid()) SceneManager.UnloadSceneAsync("BootstrappingScene");
             SceneManager.UnloadSceneAsync("MainMenu");
         }
     }
