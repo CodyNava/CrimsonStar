@@ -12,12 +12,10 @@ public class GameSettingsHost : MonoBehaviour
     private EventSystem _eventSystem;
     private NetLobbyConductor _lobbyConductor;
 
+    [SerializeField] private List<GameObject> prompts;
+
     [SerializeField] private Button leave;
     [SerializeField] private Button players;
-    [SerializeField] private GameObject rT;
-    [SerializeField] private GameObject lT;
-    [SerializeField] private GameObject start;
-    [SerializeField] private GameObject back;
     [SerializeField] private Button options;
 
     [SerializeField] private GameObject playerContainer;
@@ -27,16 +25,8 @@ public class GameSettingsHost : MonoBehaviour
     [SerializeField] private GameObject player1;
     [SerializeField] private GameObject team1;
     [SerializeField] private GameObject team2;
-    [SerializeField] private Button switchTeam;
-
-    //  FOR KICK private NetMatchPlayer _playerID;
-
-    [SerializeField] private GameObject switchTeamController;
-    [SerializeField] private GameObject switchTeamKeyboard;
-    [SerializeField] private GameObject inviteController;
-    [SerializeField] private GameObject inviteKeyboard;
-    [SerializeField] private GameObject kickController;
-    [SerializeField] private GameObject kickKeyboard;
+    [SerializeField] private GameObject switchTeam;
+    [SerializeField] private Button switchTeamButton;
 
     [Header("GameMode")] 
     [SerializeField] private GameObject gameMode;
@@ -74,19 +64,19 @@ public class GameSettingsHost : MonoBehaviour
     [SerializeField] private Button decreaseFriendlyFire;
     private int _currentFriendlyFireModeIndex;
 
-    [Header("Bots")]
+    /*[Header("Bots")]
     [SerializeField] private GameObject bots;
     [SerializeField] private TMP_Text botsCount;
     [SerializeField] private Button increaseBots;
     [SerializeField] private Button decreaseBots;
-    private int _currentSelectedBotCountIndex;
+    private int _currentSelectedBotCountIndex;*/
 
-    [Header("Steam Friends Only")]
+    /*[Header("Steam Friends Only")]
     [SerializeField] private GameObject steamFriendsOnly;
     [SerializeField] private TMP_Text friendsOnlyText;
     [SerializeField] private Button increaseFriendsOnly;
     [SerializeField] private Button decreaseFriendsOnly;
-    private int _currentSelectedFriendsModeIndex;
+    private int _currentSelectedFriendsModeIndex;*/
 
     [Header("Resources")]
     [SerializeField] private GameObject resource;
@@ -115,14 +105,14 @@ public class GameSettingsHost : MonoBehaviour
     private List<int> _currencyPerRoundList;
     private int _currencyPerRoundIndex;
 
-    [Header("Module Refund")]
+    /*[Header("Module Refund")]
     [SerializeField] private GameObject moduleRefund;
     [SerializeField] private TMP_Text moduleRefundText;
     [SerializeField] private Button increaseModuleRefund;
     [SerializeField] private Button decreaseModuleRefund;
-    private int _currentModuleRefund;
+    private int _currentModuleRefund;*/
 
-    private bool _isInitialized = false;
+    private bool _isInitialized;
 
     public void Initialize()
     {
@@ -172,9 +162,6 @@ public class GameSettingsHost : MonoBehaviour
 
         //increaseModuleRefund.gameObject.SetActive(PlayerData.IsLobbyHost);
         //decreaseModuleRefund.gameObject.SetActive(PlayerData.IsLobbyHost);
-        
-        lT.SetActive(PlayerData.IsLobbyHost && InputManager.Instance.IsGamepadUsed);
-        rT.SetActive(PlayerData.IsLobbyHost && InputManager.Instance.IsGamepadUsed);
 
         _eventSystem.SetSelectedGameObject(player1);
 
@@ -191,13 +178,13 @@ public class GameSettingsHost : MonoBehaviour
         _currentSelectedTimeIndex = 11;
         _currentFriendlyFireModeIndex = 0;
         _currentRoundsToPlayIndex = 0;
-        _currentModuleRefund = 0;
+        //_currentModuleRefund = 0;
 
         _startCurrencyIndex = _currentResourceMode;
         _currencyPerRoundIndex = _currentResourceMode;
         _lobbyConductor.EditorTimerDuration = _timerCounter[_currentSelectedTimeIndex];
         _lobbyConductor.FriendlyFireID = (NetFirendlyFireID)_currentFriendlyFireModeIndex;
-        _lobbyConductor.RefundModuleID = (NetRefundModuleID)_currentModuleRefund;
+       // _lobbyConductor.RefundModuleID = (NetRefundModuleID)_currentModuleRefund;
         _lobbyConductor.RoundCount = _roundsToPlay[_currentRoundsToPlayIndex];
 
         friendlyFireText.text = _lobbyConductor.FriendlyFireID.ToString();
@@ -206,11 +193,11 @@ public class GameSettingsHost : MonoBehaviour
         timerPreview.text = _timerCounter[_currentSelectedTimeIndex].ToString();
         resourceModeText.text = _resourceMode[_currentResourceMode];
         resourceModePreview.text = _resourceMode[_currentResourceMode];
-       // moduleRefundText.text = _lobbyConductor.RefundModuleID.ToString();
+        // moduleRefundText.text = _lobbyConductor.RefundModuleID.ToString();
 
         gameModeText.text = "Free For All";
         gameModePreview.text = "Free For All";
-        
+
         SyncPreviewUI();
     }
 
@@ -221,54 +208,28 @@ public class GameSettingsHost : MonoBehaviour
             Initialize();
         }
         
-        if (!InputManager.Instance.IsGamepadUsed)
+        foreach (var prompt in prompts)
         {
-            switchTeamController.SetActive(false);
-            //inviteController.SetActive(false);
-            //kickController.SetActive(false);
-
-            switchTeamKeyboard.SetActive(_currentSelectedMode.Equals(1));
-            //inviteKeyboard.SetActive(true);
-            //kickKeyboard.SetActive(PlayerData.IsLobbyHost);
-            
-            lT.SetActive(false);
-            rT.SetActive(false);
-            start.SetActive(false);
-            back.SetActive(false);
-            return;
+            prompt.SetActive(InputManager.Instance.IsGamepadUsed);
         }
-        
-        switchTeamController.SetActive(_currentSelectedMode.Equals(1));
-        //inviteController.SetActive(true);
-        //kickController.SetActive(PlayerData.IsLobbyHost);
-
-        switchTeamKeyboard.SetActive(false);
-        //inviteKeyboard.SetActive(false);
-        //kickKeyboard.SetActive(false);
 
         if (Keybinds.Actions.UI.Cancel.WasPressedThisFrame())
         {
             leave.onClick.Invoke();
         }
 
-        if (Keybinds.Actions.UI.Submit.WasPerformedThisFrame() && playerContainer.activeSelf)
+        if (Keybinds.Actions.UI.SwitchTeam.WasPerformedThisFrame() && playerContainer.activeSelf && switchTeam.activeSelf)
         {
-            switchTeam.onClick.Invoke();
+            switchTeamButton.onClick.Invoke();
         }
-        start.SetActive(true);
-        back.SetActive(true);
         
         if (!PlayerData.IsLobbyHost) return;
 
         if (_eventSystem.currentSelectedGameObject.IsUnityNull()) return;
-        
-        lT.SetActive(true);
-        rT.SetActive(true);
-        
-        
+ 
         if (PlayerData.IsLobbyHost)
         {
-            if (Keybinds.Actions.UI.RightTrigger.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.RightShoulder.WasPressedThisFrame())
             {
                 if (optionsContainer.activeSelf)
                 {
@@ -280,7 +241,7 @@ public class GameSettingsHost : MonoBehaviour
                 }
             }
 
-            if (Keybinds.Actions.UI.LeftTrigger.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.LeftShoulder.WasPressedThisFrame())
             {
                 if (playerContainer.activeSelf)
                 {
@@ -329,10 +290,10 @@ public class GameSettingsHost : MonoBehaviour
                     increaseCurrencyPerRound.onClick.Invoke();
                 }
 
-                if (_eventSystem.currentSelectedGameObject.Equals(moduleRefund))
+                /*if (_eventSystem.currentSelectedGameObject.Equals(moduleRefund))
                 {
                     increaseModuleRefund.onClick.Invoke();
-                }
+                }*/
             }
 
             if (Keybinds.Actions.UI.Decrease.WasPerformedThisFrame())
@@ -372,10 +333,10 @@ public class GameSettingsHost : MonoBehaviour
                     decreaseCurrencyPerRound.onClick.Invoke();
                 }
 
-                if (_eventSystem.currentSelectedGameObject.Equals(moduleRefund))
+                /*if (_eventSystem.currentSelectedGameObject.Equals(moduleRefund))
                 {
                     decreaseModuleRefund.onClick.Invoke();
-                }
+                }*/
             }
 
             if (optionsContainer.activeSelf && _eventSystem.currentSelectedGameObject.Equals(resource) &&
@@ -386,9 +347,9 @@ public class GameSettingsHost : MonoBehaviour
                 return;
             }
 
+            //_eventSystem.currentSelectedGameObject.Equals(moduleRefund) for Module Refund
             if (optionsContainer.activeSelf && (_eventSystem.currentSelectedGameObject.Equals(startingCurrency) ||
-                                                _eventSystem.currentSelectedGameObject.Equals(currencyPerRound) ||
-                                                _eventSystem.currentSelectedGameObject.Equals(moduleRefund)) &&
+                                                _eventSystem.currentSelectedGameObject.Equals(currencyPerRound)) &&
                 Keybinds.Actions.UI.Submit.WasPerformedThisFrame())
             {
                 _eventSystem.SetSelectedGameObject(resource);
@@ -442,12 +403,14 @@ public class GameSettingsHost : MonoBehaviour
         {
             team1.SetActive(true);
             team2.SetActive(true);
+            switchTeam.SetActive(true);
         }
 
         if (_currentSelectedMode == 0)
         {
             team1.SetActive(false);
             team2.SetActive(false);
+            switchTeam.SetActive(false);
         }
 
         gameModeText.text = _gameMode[_currentSelectedMode];
@@ -662,7 +625,7 @@ public class GameSettingsHost : MonoBehaviour
         UpdateResourceMode((int)NetGameModeID.Custom);
     }
 
-    public void IncreaseModuleRefund()
+    /*public void IncreaseModuleRefund()
     {
         _currentModuleRefund++;
         _currentModuleRefund %= 4;
@@ -682,7 +645,6 @@ public class GameSettingsHost : MonoBehaviour
         }
         _lobbyConductor.RefundModuleID = (NetRefundModuleID)_currentModuleRefund;
         //moduleRefundText.text = _lobbyConductor.RefundModuleID.ToString();
-    }
-
+    }*/
     #endregion
 }
