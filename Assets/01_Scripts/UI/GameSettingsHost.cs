@@ -268,7 +268,7 @@ public class GameSettingsHost : MonoBehaviour
         
         if (PlayerData.IsLobbyHost)
         {
-            if (Keybinds.Actions.UI.RightTrigger.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.SwapTabRight.WasPressedThisFrame())
             {
                 if (optionsContainer.activeSelf)
                 {
@@ -280,7 +280,7 @@ public class GameSettingsHost : MonoBehaviour
                 }
             }
 
-            if (Keybinds.Actions.UI.LeftTrigger.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.SwapTabLeft.WasPressedThisFrame())
             {
                 if (playerContainer.activeSelf)
                 {
