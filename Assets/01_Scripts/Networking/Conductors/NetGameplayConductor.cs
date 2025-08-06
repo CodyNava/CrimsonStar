@@ -215,19 +215,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
         if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
         {
-            if (IsTieBreakerNeeded(out List<NetworkConnection> tiedConnections))
-            {
-                foreach ((NetworkConnection conn, NetMatchPlayer player) in _lobbyConductor.PlayersByConnection)
-                {
-                    if (!tiedConnections.Contains(conn)) player.IsSpectating.Value = true;
-                }
-                _isMatchConcluded.Value = true;
-                StartCoroutine(TieBreakerRoutine());
-            }
-            else
-            {
                 StartCoroutine(EndOfMatchRoutine());   
-            }
         }
         else
         {

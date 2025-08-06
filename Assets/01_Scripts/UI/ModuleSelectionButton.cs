@@ -2,8 +2,6 @@ using System;
 using System.Globalization;
 using _01_Scripts.Networking.ScriptableObjectScripts;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.UI;
 
