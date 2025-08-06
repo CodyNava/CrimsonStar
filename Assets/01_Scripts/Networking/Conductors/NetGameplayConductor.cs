@@ -243,7 +243,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         foreach (var (conn, _) in _bridges)
         {
             int score = _lobbyConductor.PlayersByConnection[conn].MatchScore.Value;
-            playersByScore[score] ??= new List<NetworkConnection>();
+            if(!playersByScore.ContainsKey(score)) playersByScore.Add(score, new List<NetworkConnection>());
             playersByScore[score].Add(conn);
             highestScore = Math.Max(score, highestScore);
         }
