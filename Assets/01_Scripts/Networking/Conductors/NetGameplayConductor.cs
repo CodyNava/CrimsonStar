@@ -222,7 +222,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
                     if (!tiedConnections.Contains(conn)) player.IsSpectating.Value = true;
                 }
                 _isMatchConcluded.Value = true;
-                StartCoroutine(EndOfRoundRoutine());
+                StartCoroutine(TieBreakerRoutine());
             }
             else
             {
@@ -240,9 +240,9 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         Dictionary<int, List<NetworkConnection>> playersByScore = new Dictionary<int, List<NetworkConnection>>();
         int highestScore = 0;
-        foreach (var (conn, _) in _bridges)
+        foreach (var (conn, data) in _lobbyConductor.PlayersByConnection)
         {
-            int score = _lobbyConductor.PlayersByConnection[conn].MatchScore.Value;
+            int score = data.MatchScore.Value;
             if(!playersByScore.ContainsKey(score)) playersByScore.Add(score, new List<NetworkConnection>());
             playersByScore[score].Add(conn);
             highestScore = Math.Max(score, highestScore);
@@ -291,6 +291,26 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _spawnedPlayers = 0;
         _editorConductor.S_SetupNewEditPhase();
         InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(this, _lobbyConductor.Players);
+        _isMatchConcluded.Value = false;
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
+        SceneAudioManager.instance.StartInGameMusic();
+        C_TriggerResetMusic();
+    }
+
+    private IEnumerator TieBreakerRoutine()
+    {
+        foreach (var (_, bridge) in _bridges)
+        {
+            bridge.HandleEndOfRound();
+        }
+
+        _bridges.Clear();
+        yield return new WaitForSecondsRealtime(3f);
+        ServerManager.Broadcast(new NetGameplayBroadcasts.RoundResult());
+        yield return new WaitForSecondsRealtime(endOfRoundTime);
+        _spawnedPlayers = 0;
+        InstanceFinder.GetInstance<NetGameplayConductor>().ReloadScene(_lobbyConductor.Players);
         _isMatchConcluded.Value = false;
         SceneAudioManager.instance.StopInGameMusic();
         SceneAudioManager.instance.ResetMusicProgress();
