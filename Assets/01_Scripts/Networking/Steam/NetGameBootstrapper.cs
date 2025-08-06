@@ -202,8 +202,10 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
 
     private static void SetOnlineLobbySettings()
     {
-        InstanceFinder.GetInstance<NetShipEditorConductor>().SkipAnnouncer = false;
-        InstanceFinder.GetInstance<NetGameplayConductor>().SetGameplayScene("NetGameplayScene");
+        var shipEditorConductor = InstanceFinder.GetInstance<NetShipEditorConductor>();
+        if(shipEditorConductor != null) InstanceFinder.GetInstance<NetShipEditorConductor>().SkipAnnouncer = false;
+        var gameplayConductor = InstanceFinder.GetInstance<NetGameplayConductor>();
+        if(gameplayConductor != null) InstanceFinder.GetInstance<NetGameplayConductor>().SetGameplayScene("NetGameplayScene");
     }
 
     private void SetTrainingsGroundSettings()

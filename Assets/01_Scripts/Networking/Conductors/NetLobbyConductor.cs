@@ -359,13 +359,6 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
             var player = Instantiate(matchPrefab);
             ServerManager.Spawn(player.gameObject, conn);
             player.S_Init(lobbyData, _selectedGameMode);
-            
-            // TODO: Debug Setting, Remove before commiting!!
-            if (count == 1)
-            {
-                player.IsSpectating.Value = true;
-            } 
-
             Players[count++] = player.NetworkObject;
             PlayersByID.Add(player.PlayerID.Value, player);
             PlayersByConnection.Add(conn, player);
