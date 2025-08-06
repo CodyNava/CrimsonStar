@@ -176,12 +176,12 @@ public class NetGameBootstrapper : SceneSingleton<NetGameBootstrapper>
 
     public static void CreateLobbyLocal()
     {
-        SetOnlineLobbySettings();
         PlayerData.SetPlayerIDFromRandom();
         PlayerData.SetLobbyHost(true);
         InstanceFinder.TransportManager.Transport.StartConnection(true);
         var lobbyConductorGo = Instantiate(Instance.netLobbyConductor).gameObject;
         InstanceFinder.ServerManager.Spawn(lobbyConductorGo);
+        SetOnlineLobbySettings();
         JoinLobbyLocal();
     }
 

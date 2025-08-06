@@ -15,7 +15,6 @@ namespace _01_Scripts.Ship
         private Rigidbody2D _targetRB;
 
         private float _zoomDistance;
-        private float _shipSpeedZoomDistance;
 
         public void Awake()
         {
@@ -69,15 +68,7 @@ namespace _01_Scripts.Ship
             _zoomDistance = Mathf.Clamp(_zoomDistance, _cameraZoomSettings.MinDistance,
                 _cameraZoomSettings.MaxDistance);
 
-            if (_cameraZoomSettings.EnableShipSpeedZoom && !_targetRB.IsUnityNull())
-            {
-                float velocityMag = _targetRB.linearVelocity.magnitude;
-                float maxSpeedPerc = Mathf.Clamp(velocityMag / _cameraFollow.Target.GetMaxMoveSpeed(), 0f, 1f);
-                _shipSpeedZoomDistance = (_cameraZoomSettings.MaxDistance * _cameraZoomSettings.ShipSpeedZoomDistFactor) *
-                                   maxSpeedPerc;
-            }
-
-            _cameraFollow.CameraDistance = -(_zoomDistance + _shipSpeedZoomDistance);
+            _cameraFollow.CameraDistance = -_zoomDistance;
         }
     }
 }

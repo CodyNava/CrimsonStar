@@ -98,19 +98,26 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         NetMatchPlayer matchPlayer = _lobbyConductor.PlayersByConnection[connection];
 
-        matchPlayer.S_ResetRoundStats();
-
-        var bridge = Instantiate(bridgePrefab);
-        ServerManager.Spawn(bridge.gameObject, connection);
-        _bridges.Add(connection, bridge);
-        _lobbyConductor.PlayersByConnection[connection].BridgeObject.Value = bridge;
-        bridge.S_SetDisplayName(matchPlayer.DisplayName.Value);
-        bridge.S_SetPlayerID(matchPlayer.PlayerID.Value);
-        bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, matchPlayer.Team.Value, HexCoordinate.Zero);
-        S_ConstructPlayerShip(connection, matchPlayer.Team.Value, bridge, matchPlayer.ModuleStorage, scene);
-        this.transform.localScale = new Vector3(4 + PlayerCount / 2, 4 + PlayerCount / 2, 0);
-        var spawnPoint = S_GetSpawnTransform();
-        bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+        if (!matchPlayer.IsSpectating.Value)
+        {
+            matchPlayer.S_ResetRoundStats();
+            var bridge = Instantiate(bridgePrefab);
+            ServerManager.Spawn(bridge.gameObject, connection);
+            _bridges.Add(connection, bridge);
+            _lobbyConductor.PlayersByConnection[connection].BridgeObject.Value = bridge;
+            bridge.S_SetDisplayName(matchPlayer.DisplayName.Value);
+            bridge.S_SetPlayerID(matchPlayer.PlayerID.Value);
+            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, matchPlayer.Team.Value, HexCoordinate.Zero);
+            S_ConstructPlayerShip(connection, matchPlayer.Team.Value, bridge, matchPlayer.ModuleStorage, scene);
+            this.transform.localScale = new Vector3(4 + PlayerCount / 2, 4 + PlayerCount / 2, 0);
+            var spawnPoint = S_GetSpawnTransform();
+            bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+        }
+        else
+        {
+            InstanceFinder.ServerManager.Broadcast(connection, new NetGameplayBroadcasts.PlayerSpactate());
+            _spawnedPlayers++;
+        }
 
         if (_spawnedPlayers == PlayerCount)
         {
@@ -208,13 +215,41 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
         if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
         {
-            StartCoroutine(EndOfMatchRoutine());
+            if (IsTieBreakerNeeded(out List<NetworkConnection> tiedConnections))
+            {
+                foreach ((NetworkConnection conn, NetMatchPlayer player) in _lobbyConductor.PlayersByConnection)
+                {
+                    if (!tiedConnections.Contains(conn)) player.IsSpectating.Value = true;
+                }
+                _isMatchConcluded.Value = true;
+                StartCoroutine(EndOfRoundRoutine());
+            }
+            else
+            {
+                StartCoroutine(EndOfMatchRoutine());   
+            }
         }
         else
         {
             _isMatchConcluded.Value = true;
             StartCoroutine(EndOfRoundRoutine());
         }
+    }
+
+    private bool IsTieBreakerNeeded(out List<NetworkConnection> tiedConnections)
+    {
+        Dictionary<int, List<NetworkConnection>> playersByScore = new Dictionary<int, List<NetworkConnection>>();
+        int highestScore = 0;
+        foreach (var (conn, _) in _bridges)
+        {
+            int score = _lobbyConductor.PlayersByConnection[conn].MatchScore.Value;
+            playersByScore[score] ??= new List<NetworkConnection>();
+            playersByScore[score].Add(conn);
+            highestScore = Math.Max(score, highestScore);
+        }
+
+        tiedConnections = playersByScore[highestScore];
+        return playersByScore[highestScore].Count > 1;
     }
     
     public override void OnUnloadConductedScene()
@@ -263,7 +298,6 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         C_TriggerResetMusic();
     }
 
-    
     [ObserversRpc]
     [Client]
     private void C_TriggerIncreaseMusicProgress()
