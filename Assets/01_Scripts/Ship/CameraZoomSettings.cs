@@ -20,12 +20,6 @@ namespace _01_Scripts.Ship
         
         [field:Tooltip("Sets the minimum zoom speed factor even if zoomed very closely")]
         [AbsoluteValue] [field:SerializeField] public float ExpZoomMinSpeed { get; private set; }
-        
-        [field:Tooltip("Enables extra zoom outwards depending on ship speed")]
-        [field:SerializeField] public bool EnableShipSpeedZoom { get; private set; }
-        
-        [field:Tooltip("Sets the maximum extra zoom outwards relative to ship max speed")]
-        [Range(0f,1f)] [field:SerializeField] public float ShipSpeedZoomDistFactor { get; private set; }
 
     }
 }

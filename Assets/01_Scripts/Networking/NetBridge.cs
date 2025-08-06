@@ -229,6 +229,7 @@ public class NetBridge : NetworkBehaviour
     {
         if (IsOwner && !CameraFollow.IsUnityNull()) CameraFollow.SetTarget(null);
 
+        if (VisualRootTransform.IsUnityNull()) return;
         Instantiate(deathVFX, VisualRootTransform.position, Quaternion.identity);
         Destroy(VisualRootTransform.gameObject);
     }
