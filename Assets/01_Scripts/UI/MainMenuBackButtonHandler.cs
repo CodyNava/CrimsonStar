@@ -13,6 +13,7 @@ public class MainMenuBackButtonHandler : MonoBehaviour
     [SerializeField] private Button saveButton;
     [SerializeField] private Button discardButton;
     [SerializeField] private GameObject apply;
+    [SerializeField] private PauseMenu pauseMenu;
 
     private void Awake()
     {
@@ -42,9 +43,24 @@ public class MainMenuBackButtonHandler : MonoBehaviour
             }
             
             _eventSystem.sendNavigationEvents = true;
-            mainMenuCanvas.SetActive(true);
+            if (mainMenuCanvas != null)
+            {
+                mainMenuCanvas.SetActive(true);
+            }
             apply.SetActive(false);
+
+            if (pauseMenu != null)
+            {
+                pauseMenu.ToggleSettings();
+            }
             settingsCanvas.SetActive(false);
-            _eventSystem.SetSelectedGameObject(settingsButton);
+            if (settingsButton != null)
+            {
+                _eventSystem.SetSelectedGameObject(settingsButton);
+            }
+            else
+            {
+                _eventSystem.SetSelectedGameObject(null);
+            }
     }
 }
