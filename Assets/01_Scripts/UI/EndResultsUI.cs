@@ -29,10 +29,15 @@ public class EndResultsUI : MonoBehaviour
         container.SetActive(true);
 
         List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
-        players.Sort((a, b) => a.MatchScore.Value.CompareTo(b.MatchScore.Value));
+        players.Sort((a, b) => b.MatchScore.Value.CompareTo(a.MatchScore.Value));
         for (int i = 0; i < players.Count; i++)
         {
             statsDisplays[i].SetMatchStats(players[i]);
+        }
+        
+        for (int i = players.Count; i < statsDisplays.Length; i++)
+        {
+            statsDisplays[i].TurnOffStats();
         }
         backToMainButton.gameObject.SetActive(true);
     }
@@ -45,10 +50,15 @@ public class EndResultsUI : MonoBehaviour
         container.SetActive(true);
         
         List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
-        players.Sort((a, b) => a.MatchScore.Value.CompareTo(b.MatchScore.Value));
+        players.Sort((a, b) => b.MatchScore.Value.CompareTo(a.MatchScore.Value));
         for (int i = 0; i < players.Count; i++)
         {
             statsDisplays[i].SetRoundStats(players[i]);
+        }
+
+        for (int i = players.Count; i < statsDisplays.Length; i++)
+        {
+            statsDisplays[i].TurnOffStats();
         }
     }
 
