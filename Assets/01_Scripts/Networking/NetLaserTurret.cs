@@ -60,6 +60,7 @@ public class NetLaserTurret : NetworkBehaviour
             if (!shotSound.IsPlaying()) shotSound.Play();
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
+                muzzleCharge.SetBool("Set_ChargeCompleted", true);
                 _accumulatedTimeVFX = 0f;
             }
         }
@@ -73,11 +74,15 @@ public class NetLaserTurret : NetworkBehaviour
                 _cooldownTime = 0;
                 _accumulatedTimeVFX = 0f;
                 C_ClientFire();
-                muzzleCharge.SendEvent("ChargeDown");
+                muzzleCharge.SetBool("Set_ChargeCompleted", false);
+                muzzleCharge.SendEvent("StartDissolve");
                 return;
             }
-            
-            if (_isCharging ) muzzleCharge.Stop();
+
+            if (_isCharging)
+            {
+                muzzleCharge.SendEvent("ChargeDown");
+            }
             _isCharging = false;
             _chargeTime = Mathf.Lerp(_chargeTime, 0, Time.deltaTime * 2);
             _accumulatedTimeVFX = _chargeTime;
