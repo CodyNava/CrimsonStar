@@ -25,7 +25,10 @@ public class PauseMenu : MonoBehaviour
         if (Keybinds.Actions.Player.PauseGame.WasPressedThisFrame() && !_settingsActive)
         {
             settingsMenu.SetActive(true);
-            _eventSystem.SetSelectedGameObject(resolutionSettings);
+            if (EventSystem.current != null)
+            {
+                EventSystem.current.SetSelectedGameObject(resolutionSettings);
+            }
             _settingsActive = true;
             return;
         }
@@ -33,7 +36,10 @@ public class PauseMenu : MonoBehaviour
         if (Keybinds.Actions.Player.PauseGame.WasPressedThisFrame() && _settingsActive)
         {
             backButton.onClick.Invoke();
-            _eventSystem.SetSelectedGameObject(null);
+            if (EventSystem.current != null)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+            }
         }
     }
 }
