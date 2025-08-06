@@ -1,14 +1,16 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
 
 public class ThrusterVFXController : MonoBehaviour
 {
-    [SerializeField] private VisualEffect thrusterEffect;
+    [SerializeField] private List<VisualEffect> thrusterEffect;
     [SerializeField] private float changeSpeed = 2f;
     [SerializeField] private NetMovementController netMovementController;
     private float _currentStrength = 0f;
+
     void Update()
     {
         SetThrusterStrenghtIfInput();
@@ -41,6 +43,9 @@ public class ThrusterVFXController : MonoBehaviour
         float targetStrength = isThrusting ? 1f : 0f;
 
         _currentStrength = Mathf.MoveTowards(_currentStrength, targetStrength, changeSpeed * Time.deltaTime);
-        thrusterEffect.SetFloat("ThrusterStrength", _currentStrength);
+        foreach (var vfx in thrusterEffect)
+        {
+            vfx.SetFloat("ThrusterStrength", _currentStrength);
+        }
     }
 }

@@ -145,7 +145,7 @@ public class SettingsBehaviour : MonoBehaviour
         }
         applyPrompt.SetActive(InputManager.Instance.IsGamepadUsed && apply.activeSelf);
         //savePrompt.SetActive(InputManager.Instance.IsGamepadUsed && warningPopUp.activeSelf);
-        discardPrompt.SetActive(InputManager.Instance.IsGamepadUsed && warningPopUp.activeSelf);
+        //discardPrompt.SetActive(InputManager.Instance.IsGamepadUsed && warningPopUp.activeSelf);
     }
     
     #region Graphics
