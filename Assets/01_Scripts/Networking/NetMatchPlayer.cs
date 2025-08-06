@@ -21,6 +21,14 @@ public class NetMatchPlayer : NetworkBehaviour
     public readonly SyncVar<int> MatchScore = new();
     public readonly SyncVar<bool> Survived = new();
     public readonly SyncVar<NetBridge> BridgeObject = new();
+    
+    /**
+     * <summary>
+     * Is used to determine if a player is spectating on round start
+     * </summary>
+     */
+    public readonly SyncVar<bool> IsSpectating = new();
+    
     public NetModuleStorage ModuleStorage { get; private set; }
 
     [Server]
@@ -33,6 +41,8 @@ public class NetMatchPlayer : NetworkBehaviour
         ModuleStorage.Init();
         ResourceCount.Value = DataProvider.GetStartingCurrency(gameModeID);
         Survived.Value = true;
+        IsSpectating.Value = lobbyData.playerTeamID == NetTeamID.Observer;
+        
         C_Init();
     }
     
