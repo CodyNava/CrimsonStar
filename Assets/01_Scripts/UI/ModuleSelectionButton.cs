@@ -78,7 +78,7 @@ public class ModuleSelectionButton : MonoBehaviour
         toolTip.statThreeImage = database.GetSpriteById("rotationspeed");
         
         //Mass
-        var betterMassNumbers = data.BaseStats.mass * -100f;
+        var betterMassNumbers = data.BaseStats.mass;
         toolTip.statFour = betterMassNumbers.ToString(CultureInfo.InvariantCulture) + "%";
         toolTip.statFourImage = database.GetSpriteById("maxspeed");
     }
@@ -86,7 +86,7 @@ public class ModuleSelectionButton : MonoBehaviour
     private void ArmorToolTip(NetModuleData data)
     {
         //Mass
-        var betterMassNumbers = data.BaseStats.mass * -100f;
+        var betterMassNumbers = data.BaseStats.mass;
         toolTip.statTwo = betterMassNumbers.ToString(CultureInfo.InvariantCulture) + "%";
         toolTip.statTwoImage = database.GetSpriteById("maxspeed");
     }
@@ -94,7 +94,7 @@ public class ModuleSelectionButton : MonoBehaviour
     private void ReactorToolTip(NetModuleData data)
     {
         //Mass
-        var betterMassNumbers = data.BaseStats.mass * -100f;
+        var betterMassNumbers = data.BaseStats.mass;
         toolTip.statTwo = betterMassNumbers.ToString(CultureInfo.InvariantCulture) + "%";
         toolTip.statTwoImage = database.GetSpriteById("maxspeed");
     }
@@ -111,7 +111,7 @@ public class ModuleSelectionButton : MonoBehaviour
         toolTip.statFiveImage = data.CanBePowered ? database.GetSpriteById("energy") : database.GetSpriteById("noenergy");
         toolTip.statFive = ".";
         //Mass
-        var betterMassNumbers = data.BaseStats.mass * -100f;
+        var betterMassNumbers = data.BaseStats.mass;
         toolTip.statSix = betterMassNumbers.ToString(CultureInfo.InvariantCulture) + "%";
         toolTip.statSixImage = database.GetSpriteById("maxspeed");
         
