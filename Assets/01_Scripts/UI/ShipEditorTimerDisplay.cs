@@ -35,7 +35,7 @@ public class ShipEditorTimerDisplay : MonoBehaviour
         {
             float remainingTime = NetShipEditorConductor.Instance.TimeRemaining;
             timerDisplay.text = $"{remainingTime:0}";
-            if (remainingTime == 0f) return;
+            //if (remainingTime == 0f) return;
             ChangeHourGlassAndTextColor(remainingTime);
             ChangeButtonColorConstantly(remainingTime);
             ChangeTimerHeaderText(remainingTime);
@@ -80,9 +80,9 @@ public class ShipEditorTimerDisplay : MonoBehaviour
         timerButtonImage.color = Color.Lerp(Color.white, blinkColor, sinT);
     }
 
-    private void DisableInteractions(float timer)
+    private void DisableInteractions(float timer) //
     {
-        bool disableCheck = Mathf.Approximately(timer, 0.1f) || shipEditor.IsReady;
+        bool disableCheck = timer <= 0f || shipEditor.IsReady;
         if (!_thisButton) _thisButton = GetComponent<Button>();
         _thisButton.interactable = !disableCheck;
         shipEditor.blockingPlane.gameObject.SetActive(disableCheck);

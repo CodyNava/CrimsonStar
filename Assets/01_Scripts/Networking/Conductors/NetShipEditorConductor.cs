@@ -106,7 +106,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
 
     private void TriggerIntroSound()
     {
-        intro.Play();
+        if (!intro.IsPlaying()) intro.Play();
         inEditorPhase = false;
     }
 
