@@ -131,8 +131,8 @@ GameObject:
   - component: {fileID: 2254387}
   - component: {fileID: 2254386}
   - component: {fileID: 2254385}
-  - component: {fileID: 2254388}
   - component: {fileID: 2254384}
+  - component: {fileID: 2254388}
   m_Layer: 0
   m_Name: ColorPresetSelectionButton
   m_TagString: Untagged
@@ -180,6 +180,10 @@ MonoBehaviour:
   - {fileID: 1646612839}
   - {fileID: 998740612}
   - {fileID: 174922833}
+  buttonImage: {fileID: 2254386}
+  originalButtonSprite: {fileID: 571155378, guid: b368c0cb283e9f14eb36fc7a8866b73d, type: 3}
+  selectedButtonSprite: {fileID: -115922425, guid: d448b51d1e9884541bdf1f05807910ec, type: 3}
+  highlightedButtonSprite: {fileID: -115922425, guid: d448b51d1e9884541bdf1f05807910ec, type: 3}
 --- !u!114 &2254385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,7 +203,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 7431193381544862425}
-  m_Transition: 2
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -294,6 +298,70 @@ MonoBehaviour:
         - m_Target: {fileID: 2254384}
           m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
           m_MethodName: ButtonClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2254384}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: EnableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 9
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2254384}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: EnableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 10
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2254384}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: DisableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2254384}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: DisableButtonHighLight
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1002,7 +1070,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 71.14, y: 400}
+  m_AnchoredPosition: {x: 71.14, y: 394}
   m_SizeDelta: {x: 682.14, y: 135.6}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &77189283
@@ -2213,6 +2281,10 @@ MonoBehaviour:
   - {fileID: 1646612839}
   - {fileID: 998740612}
   - {fileID: 2254385}
+  buttonImage: {fileID: 174922834}
+  originalButtonSprite: {fileID: -539671409, guid: 71385961799f0ec45a723ccbd2f2fe93, type: 3}
+  selectedButtonSprite: {fileID: 313948144, guid: 1e3e674ea35e0f24e81d41cd39332040, type: 3}
+  highlightedButtonSprite: {fileID: 313948144, guid: 1e3e674ea35e0f24e81d41cd39332040, type: 3}
 --- !u!114 &174922833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2232,7 +2304,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 7431193381544862425}
-  m_Transition: 2
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -2327,6 +2399,70 @@ MonoBehaviour:
         - m_Target: {fileID: 174922832}
           m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
           m_MethodName: ButtonClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 174922832}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: EnableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 9
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 174922832}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: EnableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 10
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 174922832}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: DisableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 174922832}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: DisableButtonHighLight
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -3743,7 +3879,7 @@ RectTransform:
   m_GameObject: {fileID: 272880437}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.3447, y: 1.3447, z: 1.3447}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1008960110}
@@ -3754,7 +3890,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1443, y: -83.6}
+  m_AnchoredPosition: {x: 1513, y: -91}
   m_SizeDelta: {x: 301.5, y: 27.13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &272880439
@@ -8150,7 +8286,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -8244,6 +8380,10 @@ MonoBehaviour:
   - {fileID: 1646612839}
   - {fileID: 174922833}
   - {fileID: 2254385}
+  buttonImage: {fileID: 998740613}
+  originalButtonSprite: {fileID: 630737206, guid: 3031d7055d130da4a9aa0f77877587b6, type: 3}
+  selectedButtonSprite: {fileID: 546229138, guid: be2ad5cf2e564c045ae1593cae3c5bed, type: 3}
+  highlightedButtonSprite: {fileID: 546229138, guid: be2ad5cf2e564c045ae1593cae3c5bed, type: 3}
 --- !u!114 &998740616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8264,6 +8404,70 @@ MonoBehaviour:
         - m_Target: {fileID: 998740615}
           m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
           m_MethodName: ButtonClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 998740615}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: EnableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 9
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 998740615}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: EnableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 10
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 998740615}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: DisableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 998740615}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: DisableButtonHighLight
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -9103,7 +9307,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 1646612839}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -9197,6 +9401,10 @@ MonoBehaviour:
   - {fileID: 998740612}
   - {fileID: 174922833}
   - {fileID: 2254385}
+  buttonImage: {fileID: 1088968094}
+  originalButtonSprite: {fileID: 1597865025, guid: d47a40047f553e646964f30fda97399d, type: 3}
+  selectedButtonSprite: {fileID: 877341780, guid: fd195d91ea1dbd249a6e6b0716edd671, type: 3}
+  highlightedButtonSprite: {fileID: 877341780, guid: fd195d91ea1dbd249a6e6b0716edd671, type: 3}
 --- !u!114 &1088968097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9217,6 +9425,70 @@ MonoBehaviour:
         - m_Target: {fileID: 1088968096}
           m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
           m_MethodName: ButtonClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1088968096}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: EnableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1088968096}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: DisableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 9
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1088968096}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: EnableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 10
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1088968096}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: DisableButtonHighLight
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -14855,7 +15127,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -14949,6 +15221,10 @@ MonoBehaviour:
   - {fileID: 998740612}
   - {fileID: 174922833}
   - {fileID: 2254385}
+  buttonImage: {fileID: 1646612840}
+  originalButtonSprite: {fileID: -2048495073, guid: b81bd977ecfa9a54caf9d87986dc62bf, type: 3}
+  selectedButtonSprite: {fileID: 1205714801, guid: 9eb6264de368b9a48aa899b80d57768e, type: 3}
+  highlightedButtonSprite: {fileID: 1205714801, guid: 9eb6264de368b9a48aa899b80d57768e, type: 3}
 --- !u!114 &1646612843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14969,6 +15245,70 @@ MonoBehaviour:
         - m_Target: {fileID: 1646612842}
           m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
           m_MethodName: ButtonClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 9
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1646612842}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: EnableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1646612842}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: EnableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1646612842}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: DisableButtonHighLight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 10
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1646612842}
+          m_TargetAssemblyTypeName: ModuleCategoryButton, Assembly-CSharp
+          m_MethodName: DisableButtonHighLight
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
