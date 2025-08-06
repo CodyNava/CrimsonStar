@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class PlayerPlateDisplay : MonoBehaviour
 {
-    //[SerializeField] private Image readyImage;
+    [SerializeField] private Sprite readySprite;
+    [SerializeField] private Sprite unreadySprite;
+    [SerializeField] private Image background;
     [SerializeField] private TMP_Text playerName;
     private NetLobbyData _lobbyData;
 
@@ -13,6 +15,7 @@ public class PlayerPlateDisplay : MonoBehaviour
     {
         _lobbyData = lobbyData;
         //readyImage.gameObject.SetActive(lobbyData.isReady);
+        background.sprite = lobbyData.isReady ? readySprite : unreadySprite;
         playerName.text = lobbyData.playerDisplayName;
         bool canEdit = lobbyData.playerID == PlayerData.PlayerID || PlayerData.IsLobbyHost;
         /*if (canEdit)
@@ -40,7 +43,7 @@ public class PlayerPlateDisplay : MonoBehaviour
 
     public void ResetDisplay()
     {
-        //readyImage.gameObject.SetActive(false);
+        background.sprite = unreadySprite;
         playerName.text = "-";
     }
 }
