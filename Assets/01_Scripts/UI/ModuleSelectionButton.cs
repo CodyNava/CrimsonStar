@@ -160,7 +160,7 @@ public class ModuleSelectionButton : MonoBehaviour
                     toolTip.statFour = ".";
                     toolTip.statFourImage = database.GetSpriteById("kinetic");
                     break;
-                case NetModuleID.TurretT2:
+                case NetModuleID.ShredderGun:
                     //DMG
                     toolTip.statTwo = data.TurretData.Projectile.baseProjectileObject.ProjectileDamage.ToString(CultureInfo.InvariantCulture);
                     

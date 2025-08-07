@@ -15,7 +15,8 @@ public enum NetModuleID
     TurretLaserT2 = 10,
     HullPlating = 11,
     HullFinish = 12,
-    NavigationThruster = 13
+    NavigationThruster = 13,
+    ShredderGun = 14
 }
 
 public static class ModuleIDExtensions
