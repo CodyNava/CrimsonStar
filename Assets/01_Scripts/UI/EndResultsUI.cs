@@ -29,7 +29,7 @@ public class EndResultsUI : MonoBehaviour
         container.SetActive(true);
 
         List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
-        players.Sort((a, b) => b.MatchScore.Value.CompareTo(a.MatchScore.Value));
+        //players.Sort((a, b) => b.MatchScore.Value.CompareTo(a.MatchScore.Value));
 
         players.OrderBy(p => p.MatchScore.Value).ThenBy(p =>p.Team.Value);
         
