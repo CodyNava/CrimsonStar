@@ -49,7 +49,7 @@ public struct HexCoordinate : IEquatable<HexCoordinate>
         Assert.IsTrue(S == -Q - R, "Illegal coordinates found in Module Data Scriptable Object.");
     }
     
-    public bool IsWithinBounds(int limit = 4)
+    public bool IsWithinBounds(int limit = 6)
     {
         return Mathf.Abs(Q) <= limit && Mathf.Abs(R) <= limit && Mathf.Abs(S) <= limit;
     }

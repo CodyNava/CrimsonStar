@@ -25,6 +25,7 @@ public class NetGameplayModule : NetworkBehaviour
 
     [SerializeField] private EventReference hitFeedbackSFX;
     [SerializeField] private EventReference gotHitFeedbackSFX;
+    [SerializeField] private EventReference bridgeGotHitFeedbackSFX;
     [SerializeField] private EventReference lowHealthAlarmSFX;
     private EventInstance _lowHealthAlarmInstance;
 
@@ -97,7 +98,7 @@ public class NetGameplayModule : NetworkBehaviour
         }
 
         GetPresetMaterials();
-       // UpdateMaterialPresets();
+        // UpdateMaterialPresets();
 
         if (IsOwner)
         {
@@ -199,15 +200,22 @@ public class NetGameplayModule : NetworkBehaviour
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         if (IsOwner)
         {
-            RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
-            if (lowHealthAlarmSFX.IsNull == false)
+            if (ModuleID == NetModuleID.Bridge)
             {
-                if (ModuleID == NetModuleID.Bridge && _health.Value <= _maxHealth * 0.35f)
+                RuntimeManager.PlayOneShot(bridgeGotHitFeedbackSFX, transform.position);
+                if (lowHealthAlarmSFX.IsNull == false)
                 {
-                    _lowHealthAlarmInstance.getPlaybackState(out PLAYBACK_STATE state);
-                    if (state == PLAYBACK_STATE.STOPPED)
-                        _lowHealthAlarmInstance.start();
+                    if (_health.Value <= _maxHealth * 0.35f)
+                    {
+                        _lowHealthAlarmInstance.getPlaybackState(out PLAYBACK_STATE state);
+                        if (state == PLAYBACK_STATE.STOPPED)
+                            _lowHealthAlarmInstance.start();
+                    }
                 }
+            }
+            else
+            {
+                RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
             }
         }
         //Todo: Implement VFX Here
@@ -218,7 +226,7 @@ public class NetGameplayModule : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void S_InflictDamage(float damage, ulong attackerID = 0)
     {
-        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor) && attackerID != 0)
+        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor))
         {
             gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
         }

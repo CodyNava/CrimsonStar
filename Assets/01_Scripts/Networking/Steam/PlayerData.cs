@@ -16,7 +16,7 @@ public static class PlayerData
     public static void SetLobbyHost(bool isHost) => IsLobbyHost = isHost;
     
     public static void SetPlayerIDFromSteam(CSteamID userID) => PlayerID = userID.m_SteamID;
-    public static void SetPlayerIDFromRandom() => PlayerID = (ulong)(Random.value * ulong.MaxValue);
+    public static void SetPlayerIDFromRandom() => PlayerID = (ulong)(Random.value * (ulong.MaxValue - 2)) + 1;
 
     public static void SetDisplayName(string displayName) => DisplayName = displayName;
 

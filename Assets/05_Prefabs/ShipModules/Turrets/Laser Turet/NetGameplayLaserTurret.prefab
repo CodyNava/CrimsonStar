@@ -105,6 +105,13 @@ MonoBehaviour:
       Data3: 36086663
       Data4: 611758014
     Path: event:/SFX/GetDamage_SFX
+  bridgeGotHitFeedbackSFX:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   lowHealthAlarmSFX:
     Guid:
       Data1: 0
@@ -320,7 +327,6 @@ MonoBehaviour:
   spawnTransform: {fileID: 8287526850846769230}
   muzzleCharge: {fileID: 5501383848182057994}
   shotSound: {fileID: -4272048423135944895}
-  originalMuzzleChargeColor: []
 --- !u!114 &-4272048423135944895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -420,6 +426,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7554994347613166308, guid: cd472f836cf9ad24797adc0236489d26, type: 3}
+      propertyPath: m_Asset
+      value: 
+      objectReference: {fileID: 8926484042661614526, guid: 438093eb630f16a43b6623a73e6aa8db, type: 3}
     - target: {fileID: 8628158328526237547, guid: cd472f836cf9ad24797adc0236489d26, type: 3}
       propertyPath: m_Name
       value: VFX_Laser_Muzzle

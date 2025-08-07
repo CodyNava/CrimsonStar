@@ -11,7 +11,6 @@ using FishNet.Transporting;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
@@ -37,6 +36,8 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [SerializeField, SerializedDictionary]
     private AYellowpaper.SerializedCollections.SerializedDictionary<int, Transform[]> spawnTransforms;
 
+    private List<Transform> _spawnTransforms = new List<Transform>();
+
     private NetLobbyConductor _lobbyConductor;
     private NetShipEditorConductor _editorConductor;
     private List<NetworkConnection> _eliminatedPlayers = new();
@@ -54,7 +55,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     private int _roundsPlayed;
 
     private float _elapsedTime;
-    private int _kills = 0;
+    private int _kills = 1;
 
     private int PlayerCount => _lobbyConductor.Players.Length;
     private int _spawnedPlayers = 0;
@@ -143,16 +144,16 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Remove(owner);
         _eliminatedPlayers.Add(owner);
 
-        
+
         if (_eliminatedPlayers.Count >= PlayerCount * 0.34f)
         {
             SceneAudioManager.instance.IncreaseMusicProgress();
             C_TriggerIncreaseMusicProgress();
-        } 
-        
+        }
+
         ServerManager.Broadcast(new NetGameplayBroadcasts.PlayerDeath
         {
-            conn = owner   
+            conn = owner
         });
 
         if (S_IsMatchComplete())
@@ -197,10 +198,14 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
         int score = _scoreBoard.GetValueOrDefault(winnerID) + 1;
         _scoreBoard[winnerID] = score;
-
+        
         foreach (var player in _lobbyConductor.PlayersByConnection.Values)
         {
             player.MatchScore.Value = _scoreBoard.GetValueOrDefault(player.Team.Value);
+            if (player.Team.Value == winnerID)
+            {
+                player.RoundWon.Value = true;
+            }
         }
 
         return true;
@@ -215,19 +220,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
         if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
         {
-            if (IsTieBreakerNeeded(out List<NetworkConnection> tiedConnections))
-            {
-                foreach ((NetworkConnection conn, NetMatchPlayer player) in _lobbyConductor.PlayersByConnection)
-                {
-                    if (!tiedConnections.Contains(conn)) player.IsSpectating.Value = true;
-                }
-                _isMatchConcluded.Value = true;
-                StartCoroutine(TieBreakerRoutine());
-            }
-            else
-            {
                 StartCoroutine(EndOfMatchRoutine());   
-            }
         }
         else
         {
@@ -272,6 +265,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Clear();
         yield return new WaitForSecondsRealtime(3f);
         ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult());
+        _kills = 1;
         SceneAudioManager.instance.StopInGameMusic();
         SceneAudioManager.instance.ResetMusicProgress();
         C_TriggerStopMusic();
@@ -292,6 +286,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _editorConductor.S_SetupNewEditPhase();
         InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(this, _lobbyConductor.Players);
         _isMatchConcluded.Value = false;
+        _kills = 1;
         SceneAudioManager.instance.StopInGameMusic();
         SceneAudioManager.instance.ResetMusicProgress();
         SceneAudioManager.instance.StartInGameMusic();
@@ -377,10 +372,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [Server]
     public void S_ReportDamageInstance(ulong attacker, ulong defender, float damageTaken)
     {
-        /*
-        Debug.Log("Damage inflicted: " + damageTaken);
-        NetworkConnection conn = _lobbyConductor.ConnectionsByPlayerID[attacker];
-        if (conn != null) TriggerEnemyHitFeedback(conn, Channel.Reliable);*/
+
         _damageInstancesRound.Add(new DamageInstance
         {
             AttackerID = attacker,
@@ -388,12 +380,6 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             DamageTaken = damageTaken
         });
     }
-/*
-    [TargetRpc]
-    private void TriggerEnemyHitFeedback(NetworkConnection conn, Channel channel)
-    {
-        SceneAudioManager.instance.EnemyHitFeedback();
-    }*/
 
     [Server]
     public void S_ReportKillInstance(ulong attackerID, ulong defenderID)
@@ -414,13 +400,14 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         if (_elapsedTime >= 40f)
         {
-            _kills = 0;
+            _kills = 1;
         }
 
         SceneAudioManager.instance.PlayKillAnnouncer(_kills);
         _kills++;
         _elapsedTime = 0f;
     }
+
 
     [Server]
     private void S_CalculateRoundResults()
@@ -429,40 +416,59 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         {
             var attacker = _lobbyConductor.PlayersByID[damageInstance.AttackerID];
             var defender = _lobbyConductor.PlayersByID[damageInstance.DefenderID];
-            attacker.DamageDealtRound.Value += damageInstance.DamageTaken;
-            attacker.DamageDealtMatch.Value += damageInstance.DamageTaken;
-            defender.DamageReceivedRound.Value += damageInstance.DamageTaken;
-            defender.DamageReceivedMatch.Value += damageInstance.DamageTaken;
+
+            if (damageInstance.AttackerID != 0)
+            {
+                attacker.DamageDealtRound.Value += damageInstance.DamageTaken;
+                attacker.DamageDealtMatch.Value += damageInstance.DamageTaken;   
+            }
+
+            if (damageInstance.DefenderID != 0)
+            {
+                defender.DamageReceivedRound.Value += damageInstance.DamageTaken;
+                defender.DamageReceivedMatch.Value += damageInstance.DamageTaken;   
+            }
         }
 
         foreach (var killInstance in _killInstancesRound)
         {
+            if(killInstance.AttackerID == 0) continue;
+            
             var attacker = _lobbyConductor.PlayersByID[killInstance.AttackerID];
-            var defender = _lobbyConductor.PlayersByID[killInstance.DefenderID];
+            // var defender = _lobbyConductor.PlayersByID[killInstance.DefenderID];
             attacker.KillsRound.Value += 1;
             attacker.KillsMatch.Value += 1;
         }
-
+        
         _damageInstancesRound.Clear();
         _killInstancesRound.Clear();
+        
+        int maxScore = _lobbyConductor.PlayersByConnection.Values.Max(player => player.MatchScore.Value);
+        foreach (var player in _lobbyConductor.PlayersByConnection.Values)
+        {
+            if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
+            {
+                player.MatchWon.Value = player.MatchScore.Value == maxScore;
+            }
+        }
     }
 
     [Server]
     private Transform S_GetSpawnTransform()
     {
-        if (!spawnTransforms.TryGetValue(PlayerCount, out Transform[] spawnPoints))
+        // SpawnPoints are taken as GameObject.Transforms of GO with Tag "SpawnPoint"
+        
+        if (_spawnTransforms.Count <= 0)
         {
-            return transform;
+            foreach (var go in GameObject.FindGameObjectsWithTag("SpawnPoint"))
+            {
+                _spawnTransforms.Add(go.transform);
+            }
         }
 
-        if (_spawnedPlayers == 0)
-        {
-            _spawnSet.AddRange(spawnPoints);
-        }
-
-        int rng = Random.Range(0, _spawnSet.Count);
-        var spawn = _spawnSet.ElementAt(rng);
-        _spawnSet.Remove(spawn);
+        int spawnPointId = Random.Range(0, _spawnTransforms.Count);
+        var spawn = _spawnTransforms.ElementAt(spawnPointId);
+        _spawnTransforms.RemoveAt(spawnPointId);
         _spawnedPlayers++;
         return spawn;
     }
