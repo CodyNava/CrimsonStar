@@ -37,6 +37,8 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [SerializeField, SerializedDictionary]
     private AYellowpaper.SerializedCollections.SerializedDictionary<int, Transform[]> spawnTransforms;
 
+    private List<Transform> _spawnTransforms;
+
     private NetLobbyConductor _lobbyConductor;
     private NetShipEditorConductor _editorConductor;
     private List<NetworkConnection> _eliminatedPlayers = new();
@@ -441,21 +443,36 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [Server]
     private Transform S_GetSpawnTransform()
     {
-        if (!spawnTransforms.TryGetValue(PlayerCount, out Transform[] spawnPoints))
+        if (_spawnTransforms.Count <= 0)
         {
-            return transform;
+            foreach (var go in GameObject.FindGameObjectsWithTag("SpawnPoint"))
+            {
+                _spawnTransforms.Add(go.transform);
+            }
         }
 
-        if (_spawnedPlayers == 0)
-        {
-            _spawnSet.AddRange(spawnPoints);
-        }
-
-        int rng = Random.Range(0, _spawnSet.Count);
-        var spawn = _spawnSet.ElementAt(rng);
-        _spawnSet.Remove(spawn);
+        int spawnPointId = Random.Range(0, _spawnTransforms.Count);
+        var spawn = _spawnTransforms.ElementAt(spawnPointId);
+        _spawnTransforms.RemoveAt(spawnPointId);
         _spawnedPlayers++;
         return spawn;
+        
+        //
+        // if (!spawnTransforms.TryGetValue(PlayerCount, out Transform[] spawnPoints))
+        // {
+        //     return transform;
+        // }
+        //
+        // if (_spawnedPlayers == 0)
+        // {
+        //     _spawnSet.AddRange(spawnPoints);
+        // }
+        //
+        // int rng = Random.Range(0, _spawnSet.Count);
+        // var spawn = _spawnSet.ElementAt(rng);
+        // _spawnSet.Remove(spawn);
+        // _spawnedPlayers++;
+        // return spawn;
     }
 
     public struct RegisterPlayerDeathEventArgs
