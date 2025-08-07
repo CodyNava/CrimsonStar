@@ -30,6 +30,9 @@ public class EndResultsUI : MonoBehaviour
 
         List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
         players.Sort((a, b) => b.MatchScore.Value.CompareTo(a.MatchScore.Value));
+
+        players.OrderBy(p => p.MatchScore.Value).ThenBy(p =>p.Team.Value);
+        
         for (int i = 0; i < players.Count; i++)
         {
             statsDisplays[i].SetMatchStats(players[i]);
