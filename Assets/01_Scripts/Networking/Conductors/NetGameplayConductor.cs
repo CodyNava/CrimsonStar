@@ -426,17 +426,16 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         foreach (var damageInstance in _damageInstancesRound)
         {
-            var attacker = _lobbyConductor.PlayersByID[damageInstance.AttackerID];
-            var defender = _lobbyConductor.PlayersByID[damageInstance.DefenderID];
-
             if (damageInstance.AttackerID != 0)
             {
+                var attacker = _lobbyConductor.PlayersByID[damageInstance.AttackerID];
                 attacker.DamageDealtRound.Value += damageInstance.DamageTaken;
                 attacker.DamageDealtMatch.Value += damageInstance.DamageTaken;   
             }
 
             if (damageInstance.DefenderID != 0)
             {
+                var defender = _lobbyConductor.PlayersByID[damageInstance.DefenderID];
                 defender.DamageReceivedRound.Value += damageInstance.DamageTaken;
                 defender.DamageReceivedMatch.Value += damageInstance.DamageTaken;   
             }
@@ -470,7 +469,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         // SpawnPoints are taken as GameObject.Transforms of GO with Tag "SpawnPoint"
         
-        if (_spawnTransforms.Count < _lobbyConductor.PlayersByConnection.Count)
+        if (_spawnTransforms.Count < _lobbyConductor.PlayersByConnection.Count - _spawnedPlayers)
         {
             _spawnTransforms.Clear();
             foreach (var go in GameObject.FindGameObjectsWithTag("SpawnPoint"))
@@ -479,7 +478,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             }
         }
 
-        int spawnPointId = Random.Range(0, _spawnTransforms.Count);
+        int spawnPointId = Random.Range(0, _spawnTransforms.Count - 1);
         var spawn = _spawnTransforms.ElementAt(spawnPointId);
         _spawnTransforms.RemoveAt(spawnPointId);
         _spawnedPlayers++;
