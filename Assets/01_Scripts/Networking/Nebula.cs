@@ -1,5 +1,4 @@
 using UnityEngine;
-using Random = System.Random;
 using FishNet;
 using System.Collections.Generic;
 
@@ -15,8 +14,7 @@ public class Nebula : MonoBehaviour
     
     public void Start()
     {
-        Random rnd = new Random();
-        int size = rnd.Next(_nebulaObject.NebulaMinSize, _nebulaObject.NebulaMaxSize+1);
+        float size = Random.Range(_nebulaObject.NebulaMinSize, _nebulaObject.NebulaMaxSize+1);
         gameObject.transform.localScale = Vector3.one * size;
     }
 
