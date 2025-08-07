@@ -77,14 +77,14 @@ public class NetEditorModule : MonoBehaviour
     public void GetPowerMaterial()
     {
         if (!ModuleData.CanBePowered) return;
-        PowerMaterial = PowerMaterialGameObject.GetComponent<MeshRenderer>().materials[2];
+        PowerMaterial = PowerMaterialGameObject.GetComponent<MeshRenderer>().materials[3];
         _originalColor = PowerMaterial.GetColor(ColourShift);
         _originalColorIntensity = Mathf.Max(_originalColor.r, _originalColor.g, _originalColor.b);
 
         if (ModuleID != NetModuleID.TurretLaser) return;
         foreach (var mesh in powerMaterialSocketsGameObject)
         {
-            var socketMat = mesh.GetComponent<MeshRenderer>().materials[0];
+            var socketMat = mesh.GetComponent<MeshRenderer>().materials[1];
             powerSocketMaterials.Add(socketMat);
         }
     }
@@ -94,16 +94,12 @@ public class NetEditorModule : MonoBehaviour
         PresetMat1 = PresetObject.GetComponent<MeshRenderer>().materials[0];
         PresetMat2 = PresetObject.GetComponent<MeshRenderer>().materials[1];
         PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[2];
-        if (ModuleID == NetModuleID.Reactor)
-            PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[3]; //
 
         if (!PresetObjectHead) return;
 
         PresetMatHead1 = PresetObjectHead.GetComponent<MeshRenderer>().materials[0];
         PresetMatHead2 = PresetObjectHead.GetComponent<MeshRenderer>().materials[1];
         PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
-        if (ModuleID == NetModuleID.TurretLaser)
-            PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[3]; //
     }
 
     public void SetMaterialsBasedOnPreset()
@@ -152,8 +148,8 @@ public class NetEditorModule : MonoBehaviour
         {
             PlacedRotation -= 6;
         }
-        
-        
+
+
         C_UpdateRotation();
     }
 
@@ -173,7 +169,6 @@ public class NetEditorModule : MonoBehaviour
         C_UpdateRotation();
     }
 
-    
 
     private void C_UpdateRotation()
     {
@@ -186,7 +181,7 @@ public class NetEditorModule : MonoBehaviour
         CurrentTransform = gameObject.transform;
     }
 
-    
+
     public void Update()
     {
         if (ModuleData.CanBePowered) ChangeMaterialAndCheckPowerAlways();
@@ -208,19 +203,14 @@ public class NetEditorModule : MonoBehaviour
         if (highTotalHealth) newColor = healthOverLayData.HighHealthColor;
         if (superHighTotalHealth) newColor = healthOverLayData.SuperHighHealthColor;
 
-        _healthOverLayObjectColour = newColor;
-        healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
-    }
+        var healthOverlayMesh = healthOverLayObject.GetComponent<MeshRenderer>();
 
-    public void PercentageHealthChangeOverLayColour(float colorValue)
-    {
-        if (!healthOverLayObject) return;
-        var newColor = Color.Lerp(healthOverLayData.LowestPercentageColor, healthOverLayData.HighestPercentageColor,
-            colorValue);
         _healthOverLayObjectColour = newColor;
-        healthOverLayObject.GetComponent<MeshRenderer>().material.color = _healthOverLayObjectColour;
+        foreach (var material in healthOverlayMesh.materials)
+        {
+            material.color = _healthOverLayObjectColour;
+        }
     }
-
 
     private void ChangeMaterialAndCheckPowerAlways()
     {
@@ -231,11 +221,12 @@ public class NetEditorModule : MonoBehaviour
                 PowerMaterial.SetColor(ColourShift, IsPowered
                     ? poweredColor * _originalColorIntensity
                     : notPoweredColor * _originalColorIntensity);
-                
+
                 foreach (var mat in powerSocketMaterials)
                 {
                     mat.SetColor(ColourShift,
-                        IsPowered ? poweredColor * _originalColorIntensity 
+                        IsPowered
+                            ? poweredColor * _originalColorIntensity
                             : notPoweredColor * _originalColorIntensity);
                 }
             }
@@ -302,7 +293,7 @@ public class NetEditorModule : MonoBehaviour
         }
     }
 
-    public Transform GetRotation() =>CurrentTransform;
+    public Transform GetRotation() => CurrentTransform;
     public bool EnergyViewEnable() => shipEditor.inEnergyView;
     public bool Powered() => shipEditor.CheckIfPowered(PlacedLocation);
 }

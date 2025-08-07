@@ -54,12 +54,18 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     private int _roundsPlayed;
 
     private float _elapsedTime;
-    private int _kills = 0;
+    private int _kills = 1;
 
     private int PlayerCount => _lobbyConductor.Players.Length;
     private int _spawnedPlayers = 0;
 
-    public override string ConductedSceneName => "NetGameplayScene";
+    private string _conductedSceneName = "NetGameplayScene";
+
+    public void SetGameplayScene(string sceneName)
+    {
+        if (IsServerInitialized) _conductedSceneName = sceneName;
+    }
+    public override string ConductedSceneName => _conductedSceneName;
 
 
     public event UnityAction<RegisterPlayerDeathEventArgs> OnRegisterPlayerDeath;
@@ -69,7 +75,6 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         _elapsedTime += Time.deltaTime;
     }
-
 
     protected override void OnNetworkStarted()
     {
@@ -93,19 +98,26 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         NetMatchPlayer matchPlayer = _lobbyConductor.PlayersByConnection[connection];
 
-        matchPlayer.S_ResetRoundStats();
-
-        var bridge = Instantiate(bridgePrefab);
-        ServerManager.Spawn(bridge.gameObject, connection);
-        _bridges.Add(connection, bridge);
-        _lobbyConductor.PlayersByConnection[connection].BridgeObject.Value = bridge;
-        bridge.S_SetDisplayName(matchPlayer.DisplayName.Value);
-        bridge.S_SetPlayerID(matchPlayer.PlayerID.Value);
-        bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, matchPlayer.Team.Value, HexCoordinate.Zero);
-        S_ConstructPlayerShip(connection, matchPlayer.Team.Value, bridge, matchPlayer.ModuleStorage, scene);
-        this.transform.localScale = new Vector3(4 + PlayerCount / 2, 4 + PlayerCount / 2, 0);
-        var spawnPoint = S_GetSpawnTransform();
-        bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+        if (!matchPlayer.IsSpectating.Value)
+        {
+            matchPlayer.S_ResetRoundStats();
+            var bridge = Instantiate(bridgePrefab);
+            ServerManager.Spawn(bridge.gameObject, connection);
+            _bridges.Add(connection, bridge);
+            _lobbyConductor.PlayersByConnection[connection].BridgeObject.Value = bridge;
+            bridge.S_SetDisplayName(matchPlayer.DisplayName.Value);
+            bridge.S_SetPlayerID(matchPlayer.PlayerID.Value);
+            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, matchPlayer.Team.Value, HexCoordinate.Zero);
+            S_ConstructPlayerShip(connection, matchPlayer.Team.Value, bridge, matchPlayer.ModuleStorage, scene);
+            this.transform.localScale = new Vector3(4 + PlayerCount / 2, 4 + PlayerCount / 2, 0);
+            var spawnPoint = S_GetSpawnTransform();
+            bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+        }
+        else
+        {
+            InstanceFinder.ServerManager.Broadcast(connection, new NetGameplayBroadcasts.PlayerSpactate());
+            _spawnedPlayers++;
+        }
 
         if (_spawnedPlayers == PlayerCount)
         {
@@ -131,16 +143,16 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Remove(owner);
         _eliminatedPlayers.Add(owner);
 
-        
+
         if (_eliminatedPlayers.Count >= PlayerCount * 0.34f)
         {
             SceneAudioManager.instance.IncreaseMusicProgress();
             C_TriggerIncreaseMusicProgress();
-        } 
-        
+        }
+
         ServerManager.Broadcast(new NetGameplayBroadcasts.PlayerDeath
         {
-            conn = owner   
+            conn = owner
         });
 
         if (S_IsMatchComplete())
@@ -203,13 +215,38 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
         if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
         {
-            StartCoroutine(EndOfMatchRoutine());
+                StartCoroutine(EndOfMatchRoutine());   
         }
         else
         {
             _isMatchConcluded.Value = true;
             StartCoroutine(EndOfRoundRoutine());
         }
+    }
+
+    private bool IsTieBreakerNeeded(out List<NetworkConnection> tiedConnections)
+    {
+        Dictionary<int, List<NetworkConnection>> playersByScore = new Dictionary<int, List<NetworkConnection>>();
+        int highestScore = 0;
+        foreach (var (conn, data) in _lobbyConductor.PlayersByConnection)
+        {
+            int score = data.MatchScore.Value;
+            if(!playersByScore.ContainsKey(score)) playersByScore.Add(score, new List<NetworkConnection>());
+            playersByScore[score].Add(conn);
+            highestScore = Math.Max(score, highestScore);
+        }
+
+        tiedConnections = playersByScore[highestScore];
+        return playersByScore[highestScore].Count > 1;
+    }
+    
+    public override void OnUnloadConductedScene()
+    {
+        _bridges.Clear();
+        _spawnedPlayers = 0;
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
+        C_TriggerResetMusic();
     }
 
     private IEnumerator EndOfMatchRoutine()
@@ -223,6 +260,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _bridges.Clear();
         yield return new WaitForSecondsRealtime(3f);
         ServerManager.Broadcast(new NetGameplayBroadcasts.MatchResult());
+        _kills = 1;
         SceneAudioManager.instance.StopInGameMusic();
         SceneAudioManager.instance.ResetMusicProgress();
         C_TriggerStopMusic();
@@ -243,13 +281,33 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _editorConductor.S_SetupNewEditPhase();
         InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(this, _lobbyConductor.Players);
         _isMatchConcluded.Value = false;
+        _kills = 1;
         SceneAudioManager.instance.StopInGameMusic();
         SceneAudioManager.instance.ResetMusicProgress();
         SceneAudioManager.instance.StartInGameMusic();
         C_TriggerResetMusic();
     }
 
-    
+    private IEnumerator TieBreakerRoutine()
+    {
+        foreach (var (_, bridge) in _bridges)
+        {
+            bridge.HandleEndOfRound();
+        }
+
+        _bridges.Clear();
+        yield return new WaitForSecondsRealtime(3f);
+        ServerManager.Broadcast(new NetGameplayBroadcasts.RoundResult());
+        yield return new WaitForSecondsRealtime(endOfRoundTime);
+        _spawnedPlayers = 0;
+        InstanceFinder.GetInstance<NetGameplayConductor>().ReloadScene(_lobbyConductor.Players);
+        _isMatchConcluded.Value = false;
+        SceneAudioManager.instance.StopInGameMusic();
+        SceneAudioManager.instance.ResetMusicProgress();
+        SceneAudioManager.instance.StartInGameMusic();
+        C_TriggerResetMusic();
+    }
+
     [ObserversRpc]
     [Client]
     private void C_TriggerIncreaseMusicProgress()
@@ -346,13 +404,14 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         if (_elapsedTime >= 40f)
         {
-            _kills = 0;
+            _kills = 1;
         }
 
         SceneAudioManager.instance.PlayKillAnnouncer(_kills);
         _kills++;
         _elapsedTime = 0f;
     }
+
 
     [Server]
     private void S_CalculateRoundResults()

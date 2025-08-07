@@ -9,6 +9,7 @@ public static class PlayerData
     public static bool IsLobbyHost { get; private set; }
     
     private static ulong _lobbySteamID;
+    public static bool IsPrivateSession { get; private set; }
 
     public static void SetLobbyID(ulong lobbyId) => _lobbySteamID = lobbyId;
 
@@ -18,4 +19,6 @@ public static class PlayerData
     public static void SetPlayerIDFromRandom() => PlayerID = (ulong)(Random.value * ulong.MaxValue);
 
     public static void SetDisplayName(string displayName) => DisplayName = displayName;
+
+    public static void SetIsPrivateSession(bool isPrivateSession) => IsPrivateSession = isPrivateSession;
 }
