@@ -229,18 +229,19 @@ public class NetBridge : NetworkBehaviour
     {
         if (IsOwner && !CameraFollow.IsUnityNull()) CameraFollow.SetTarget(null);
 
+        if (VisualRootTransform.IsUnityNull()) return;
         Instantiate(deathVFX, VisualRootTransform.position, Quaternion.identity);
         Destroy(VisualRootTransform.gameObject);
     }
 
     public float ComputeRotationSpeed()
     {
-        return BridgeConfig.BaseAngularSpeed + _baseStats.Value.angularThrust / (1 + _baseStats.Value.mass);
+        return BridgeConfig.BaseAngularSpeed + _baseStats.Value.angularThrust;
     }
 
     public float ComputeMovementSpeed()
     {
-        return BridgeConfig.BaseMovementSpeed + _baseStats.Value.thrust / (1 + _baseStats.Value.mass);
+        return BridgeConfig.BaseMovementSpeed + _baseStats.Value.thrust;
     }
 
     public float GetAngularDampingCoefficient()
@@ -255,12 +256,12 @@ public class NetBridge : NetworkBehaviour
 
     public float GetMaxMoveSpeed()
     {
-        return BridgeConfig.MaxMovementSpeed / (1 + _baseStats.Value.mass);
+        return BridgeConfig.MaxMovementSpeed * (1 + (_baseStats.Value.mass / 100f));
     }
 
     public float GetMaxAngularVelocity()
     {
-        return BridgeConfig.MaxAngularSpeed / (1 + _baseStats.Value.mass);
+        return BridgeConfig.MaxAngularSpeed * (1 + (_baseStats.Value.mass / 100f));
     }
 
     [Server]

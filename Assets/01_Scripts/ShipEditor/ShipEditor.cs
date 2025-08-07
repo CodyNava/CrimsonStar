@@ -32,11 +32,13 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private float moduleMoveSpeedGP;
     [SerializeField] List<GameObject> gamePadSwitches = new List<GameObject>();
     [SerializeField] private TextMeshProUGUI wg1Header, wg2Header, wg3Header;
+    [SerializeField] private bool isReady;
+    public bool IsReady => isReady;
 
     private bool _gamePadSwitchSelectToggle;
 
     [Header("ReadyBlockadge")] [SerializeField]
-    private GameObject blockingPlane;
+    public GameObject blockingPlane;
 
     [SerializeField] private bool gamepadEnabled;
 
@@ -159,6 +161,7 @@ public class ShipEditor : MonoBehaviour
         originalOutlineShaderStrenght = outlineShader.GetFloat("_OutlineThickness");
         inHealthView = false;
         inPercentageHealthView = false;
+        blockingPlane.gameObject.SetActive(false);
         SetOverLayModulesColourViaHealthMap();
     }
 
@@ -802,9 +805,8 @@ public class ShipEditor : MonoBehaviour
     {
         if (PlayerData.C_SignalReady())
         {
-            blockingPlane.gameObject.SetActive(true);
             gamepadEnabled = false;
-            //gameObject.SetActive(false);
+            isReady = true;
         }
     }
 
@@ -826,7 +828,7 @@ public class ShipEditor : MonoBehaviour
 
             PlaceModule(uniqueModule.RootCoordinate);
         }
-
+        isReady = false;
         StartCoroutine(WaitForReconstructShip());
     }
 

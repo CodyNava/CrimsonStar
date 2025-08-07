@@ -13,8 +13,9 @@ public class ShipEditorStats : MonoBehaviour
     private float _totalHealth;
     private float _hexCount;
 
-    [Header("WeaponGroup1")]
-    [SerializeField] private TMP_Text damagePerSecondWg1;
+    [Header("WeaponGroup1")] [SerializeField]
+    private TMP_Text damagePerSecondWg1;
+
     [SerializeField] private TMP_Text maxRangeWg1;
     [SerializeField] private TMP_Text minRangeWg1;
     private float _damagePerSecondWg1;
@@ -23,9 +24,10 @@ public class ShipEditorStats : MonoBehaviour
     private float _rocketRangeWg1;
     private float _turretRangeWg1;
     private float _laserRangeWg1;
-    
-    [Header("WeaponGroup2")]
-    [SerializeField] private TMP_Text damagePerSecondWg2;
+
+    [Header("WeaponGroup2")] [SerializeField]
+    private TMP_Text damagePerSecondWg2;
+
     [SerializeField] private TMP_Text maxRangeWg2;
     [SerializeField] private TMP_Text minRangeWg2;
     private float _damagePerSecondWg2;
@@ -34,9 +36,10 @@ public class ShipEditorStats : MonoBehaviour
     private float _rocketRangeWg2;
     private float _turretRangeWg2;
     private float _laserRangeWg2;
-    
-    [Header("WeaponGroup3")]
-    [SerializeField] private TMP_Text damagePerSecondWg3;
+
+    [Header("WeaponGroup3")] [SerializeField]
+    private TMP_Text damagePerSecondWg3;
+
     [SerializeField] private TMP_Text maxRangeWg3;
     [SerializeField] private TMP_Text minRangeWg3;
     private float _damagePerSecondWg3;
@@ -53,7 +56,9 @@ public class ShipEditorStats : MonoBehaviour
     private float _mass;
     private float _thrust;
     private float _acceleration;
-    private float _maneuverability;
+    private float _maxAngularSpeed;
+    private float _currentAngularThrust;
+    private float _angularThrust;
 
     [SerializeField] private NetBridgeConfig netBridge;
 
@@ -71,7 +76,9 @@ public class ShipEditorStats : MonoBehaviour
         _mass = 0;
         _thrust = 0;
         _acceleration = 0;
-        _maneuverability = 0;
+        _maxAngularSpeed = 0;
+        _angularThrust = 0;
+        _currentAngularThrust = 0;
         //Wg1
         _damagePerSecondWg1 = 0;
         _maxRangeWg1 = 0;
@@ -100,57 +107,59 @@ public class ShipEditorStats : MonoBehaviour
             _hexCount += modules.ModuleData.HexagonSize;
             _mass += modules.ModuleData.BaseStats.mass;
             _thrust += modules.ModuleData.BaseStats.thrust;
-            _maxSpeed = netBridge.MaxMovementSpeed / (1 + _mass);
+            _angularThrust += modules.ModuleData.BaseStats.angularThrust;
+            _maxSpeed = netBridge.MaxMovementSpeed / (1 + _mass * -1 / 100);
             _acceleration = netBridge.BaseMovementSpeed + _thrust;
-            _maneuverability = netBridge.MaxAngularSpeed / (1 + _mass);
+            _currentAngularThrust = netBridge.BaseAngularSpeed + _angularThrust;
         }
-        
+
         CalculateStatsWg1(weaponGroupListOne);
         CalculateStatsWg2(weaponGroupListTwo);
         CalculateStatsWg3(weaponGroupListThree);
-        
+
         DisplayStats();
         // todo: make the speed calcuations more clean by getting the value directly from NetBridge
     }
 
-    public void CalculateStatsWg1( List<NetEditorModule> weaponGroupOne)
+    public void CalculateStatsWg1(List<NetEditorModule> weaponGroupOne)
     {
         foreach (NetEditorModule modules in weaponGroupOne)
         {
             if (modules is NetTurretEditorModule turretModule)
             {
                 var turretProjectile = turretModule.ModuleScriptableObject.Projectile.baseProjectileObject;
-                
+
                 float projDmg = turretProjectile.ProjectileDamage;
                 float shootingCd = turretModule.ModuleScriptableObject.Cooldown;
                 float projTimer = turretProjectile.ProjectileTimer;
                 float projSpeed = turretProjectile.ProjectileSpeed;
-                
+
                 _damagePerSecondWg1 += projDmg / shootingCd;
                 _turretRangeWg1 = projSpeed * projTimer;
             }
-            
+
             if (modules is NetLaserTurretEditorModule laserTurretModule)
             {
                 var laserProjectile = laserTurretModule.ModuleScriptableObject.Projectile.laserProjectileObject;
-                
+
                 float projDmg = laserProjectile.ProjectileDamage;
-                float shootingCd = laserTurretModule.ModuleScriptableObject.Cooldown + laserTurretModule.ModuleScriptableObject.ChargeTime;
+                float shootingCd = laserTurretModule.ModuleScriptableObject.Cooldown +
+                                   laserTurretModule.ModuleScriptableObject.ChargeTime;
                 float maxHits = laserProjectile.MaxHits;
                 float maxRangeLaser = laserProjectile.MaxLength;
-                
+
                 _damagePerSecondWg1 += (projDmg * maxHits) / shootingCd;
                 _laserRangeWg1 = maxRangeLaser;
             }
-            
+
             if (modules is NetRocketEditorModule rocketEditorModule)
             {
                 //float explDmg = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject.   //todo explosion damage beachten
                 var rocketProjectile = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject;
-                
+
                 float projDmg = rocketProjectile.Explosion.ExplosionDamage;
                 float explosionSize = rocketProjectile.Explosion.ExplosionMaxSize;
-                float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown; 
+                float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown;
                 float rocketTimer = rocketProjectile.ProjectileTimer;
                 float dt = (float)InstanceFinder.TimeManager.TickDelta;
                 int numberOfTicks = Mathf.FloorToInt(rocketTimer / dt);
@@ -162,18 +171,19 @@ public class ShipEditorStats : MonoBehaviour
                     velocity += rocketSpeed * dt;
                     distanceTraveled += velocity * dt;
                 }
-                
+
                 float rocketRangeUnrounded = distanceTraveled / 10;
-                _damagePerSecondWg1 += (projDmg * (explosionSize /2) ) / shootingCd;
+                _damagePerSecondWg1 += (projDmg * (explosionSize / 2)) / shootingCd;
                 _rocketRangeWg1 = Mathf.RoundToInt(rocketRangeUnrounded) * 10;
-                
             }
-            
-            List<float> validValues = new List<float> { _rocketRangeWg1, _turretRangeWg1, _laserRangeWg1 }.Where(v => v != 0f).ToList();
+
+            List<float> validValues = new List<float> { _rocketRangeWg1, _turretRangeWg1, _laserRangeWg1 }
+                .Where(v => v != 0f).ToList();
             _maxRangeWg1 = validValues.Count > 0 ? validValues.Max() : 0f;
             _minRangeWg1 = validValues.Count > 0 ? validValues.Min() : 0f;
         }
     }
+
     public void CalculateStatsWg2(List<NetEditorModule> weaponGroupTwo)
     {
         foreach (NetEditorModule modules in weaponGroupTwo)
@@ -181,37 +191,38 @@ public class ShipEditorStats : MonoBehaviour
             if (modules is NetTurretEditorModule turretModule)
             {
                 var turretProjectile = turretModule.ModuleScriptableObject.Projectile.baseProjectileObject;
-                
+
                 float projDmg = turretProjectile.ProjectileDamage;
                 float shootingCd = turretModule.ModuleScriptableObject.Cooldown;
                 float projTimer = turretProjectile.ProjectileTimer;
                 float projSpeed = turretProjectile.ProjectileSpeed;
-                
+
                 _damagePerSecondWg2 += projDmg / shootingCd;
                 _turretRangeWg2 = projSpeed * projTimer;
             }
-            
+
             if (modules is NetLaserTurretEditorModule laserTurretModule)
             {
                 var laserProjectile = laserTurretModule.ModuleScriptableObject.Projectile.laserProjectileObject;
-                
+
                 float projDmg = laserProjectile.ProjectileDamage;
-                float shootingCd = laserTurretModule.ModuleScriptableObject.Cooldown + laserTurretModule.ModuleScriptableObject.ChargeTime;
+                float shootingCd = laserTurretModule.ModuleScriptableObject.Cooldown +
+                                   laserTurretModule.ModuleScriptableObject.ChargeTime;
                 float maxHits = laserProjectile.MaxHits;
                 float maxRangeLaser = laserProjectile.MaxLength;
-                
+
                 _damagePerSecondWg2 += (projDmg * maxHits) / shootingCd;
                 _laserRangeWg2 = maxRangeLaser;
             }
-            
+
             if (modules is NetRocketEditorModule rocketEditorModule)
             {
                 //float explDmg = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject.   //todo explosion damage beachten
                 var rocketProjectile = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject;
-                
+
                 float projDmg = rocketProjectile.Explosion.ExplosionDamage;
                 float explosionSize = rocketProjectile.Explosion.ExplosionMaxSize;
-                float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown; 
+                float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown;
                 float rocketTimer = rocketProjectile.ProjectileTimer;
                 float dt = (float)InstanceFinder.TimeManager.TickDelta;
                 int numberOfTicks = Mathf.FloorToInt(rocketTimer / dt);
@@ -223,18 +234,19 @@ public class ShipEditorStats : MonoBehaviour
                     velocity += rocketSpeed * dt;
                     distanceTraveled += velocity * dt;
                 }
-                
+
                 float rocketRangeUnrounded = distanceTraveled / 10;
-                _damagePerSecondWg2 += (projDmg * (explosionSize /2) ) / shootingCd;
+                _damagePerSecondWg2 += (projDmg * (explosionSize / 2)) / shootingCd;
                 _rocketRangeWg2 = Mathf.RoundToInt(rocketRangeUnrounded) * 10;
-                
             }
-            
-            List<float> validValues = new List<float> { _rocketRangeWg2, _turretRangeWg2, _laserRangeWg2 }.Where(v => v != 0f).ToList();
+
+            List<float> validValues = new List<float> { _rocketRangeWg2, _turretRangeWg2, _laserRangeWg2 }
+                .Where(v => v != 0f).ToList();
             _maxRangeWg2 = validValues.Count > 0 ? validValues.Max() : 0f;
             _minRangeWg2 = validValues.Count > 0 ? validValues.Min() : 0f;
         }
     }
+
     public void CalculateStatsWg3(List<NetEditorModule> weaponGroupThree)
     {
         foreach (NetEditorModule modules in weaponGroupThree)
@@ -242,37 +254,38 @@ public class ShipEditorStats : MonoBehaviour
             if (modules is NetTurretEditorModule turretModule)
             {
                 var turretProjectile = turretModule.ModuleScriptableObject.Projectile.baseProjectileObject;
-                
+
                 float projDmg = turretProjectile.ProjectileDamage;
                 float shootingCd = turretModule.ModuleScriptableObject.Cooldown;
                 float projTimer = turretProjectile.ProjectileTimer;
                 float projSpeed = turretProjectile.ProjectileSpeed;
-                
+
                 _damagePerSecondWg3 += projDmg / shootingCd;
                 _turretRangeWg3 = projSpeed * projTimer;
             }
-            
+
             if (modules is NetLaserTurretEditorModule laserTurretModule)
             {
                 var laserProjectile = laserTurretModule.ModuleScriptableObject.Projectile.laserProjectileObject;
-                
+
                 float projDmg = laserProjectile.ProjectileDamage;
-                float shootingCd = laserTurretModule.ModuleScriptableObject.Cooldown + laserTurretModule.ModuleScriptableObject.ChargeTime;
+                float shootingCd = laserTurretModule.ModuleScriptableObject.Cooldown +
+                                   laserTurretModule.ModuleScriptableObject.ChargeTime;
                 float maxHits = laserProjectile.MaxHits;
                 float maxRangeLaser = laserProjectile.MaxLength;
-                
+
                 _damagePerSecondWg3 += (projDmg * maxHits) / shootingCd;
                 _laserRangeWg3 = maxRangeLaser;
             }
-            
+
             if (modules is NetRocketEditorModule rocketEditorModule)
             {
                 //float explDmg = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject.   //todo explosion damage beachten
                 var rocketProjectile = rocketEditorModule.ModuleScriptableObject.Projectile.rocketProjectileObject;
-                
+
                 float projDmg = rocketProjectile.Explosion.ExplosionDamage;
                 float explosionSize = rocketProjectile.Explosion.ExplosionMaxSize;
-                float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown; 
+                float shootingCd = rocketEditorModule.ModuleScriptableObject.Cooldown;
                 float rocketTimer = rocketProjectile.ProjectileTimer;
                 float dt = (float)InstanceFinder.TimeManager.TickDelta;
                 int numberOfTicks = Mathf.FloorToInt(rocketTimer / dt);
@@ -284,14 +297,14 @@ public class ShipEditorStats : MonoBehaviour
                     velocity += rocketSpeed * dt;
                     distanceTraveled += velocity * dt;
                 }
-                
+
                 float rocketRangeUnrounded = distanceTraveled / 10;
-                _damagePerSecondWg3 += (projDmg * (explosionSize /2) ) / shootingCd;
+                _damagePerSecondWg3 += (projDmg * (explosionSize / 2)) / shootingCd;
                 _rocketRangeWg3 = Mathf.RoundToInt(rocketRangeUnrounded) * 10;
-                
             }
-            
-            List<float> validValues = new List<float> { _rocketRangeWg3, _turretRangeWg3, _laserRangeWg3 }.Where(v => v != 0f).ToList();
+
+            List<float> validValues = new List<float> { _rocketRangeWg3, _turretRangeWg3, _laserRangeWg3 }
+                .Where(v => v != 0f).ToList();
             _maxRangeWg3 = validValues.Count > 0 ? validValues.Max() : 0f;
             _minRangeWg3 = validValues.Count > 0 ? validValues.Min() : 0f;
         }
@@ -301,9 +314,9 @@ public class ShipEditorStats : MonoBehaviour
     {
         totalHealth.text = $"TotalHealth: {_totalHealth:0}";
         hexCount.text = $"HexCount: {_hexCount:0}";
-        maxSpeed.text = $"MaxVelocity: {_maxSpeed:0.0}";
-        acceleration.text = $"Velocity: {_acceleration:0.0}";
-        maneuverability.text = $"Maneuverability: {_maneuverability:0.0}";
+        maxSpeed.text = $"MaxSpeed: {_maxSpeed:0.0}";
+        acceleration.text = $"CurrentSpeed: {_acceleration:0.0}";
+        maneuverability.text = $"Maneuverability: {_currentAngularThrust:0.0}";
         //Wg1
         damagePerSecondWg1.text = $"DmgPerSecond: {_damagePerSecondWg1:0}";
         maxRangeWg1.text = $"MaxRange: {_maxRangeWg1:0}";
@@ -316,6 +329,5 @@ public class ShipEditorStats : MonoBehaviour
         damagePerSecondWg3.text = $"DmgPerSecond: {_damagePerSecondWg3:0}";
         maxRangeWg3.text = $"MaxRange: {_maxRangeWg3:0}";
         minRangeWg3.text = $"MinRange: {_minRangeWg3:0}";
-        
     }
 }

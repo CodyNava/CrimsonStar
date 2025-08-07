@@ -10,4 +10,6 @@ public static class NetGameplayBroadcasts
     {
         public NetworkConnection conn;
     }
+    
+    public struct PlayerSpactate : IBroadcast {}
 }

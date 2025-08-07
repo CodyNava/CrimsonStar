@@ -7,6 +7,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using Steamworks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -45,6 +46,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     private readonly SyncVar<NetFirendlyFireID> _friendlyFireSetting = new();
     private readonly SyncVar<int> _roundCount = new();
     private readonly SyncVar<float> _editorTimerDuration = new();
+    private readonly SyncVar<string> _gameplaySceneName = new();
 
 
     // Settings Accessors
@@ -112,12 +114,23 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
             if (IsServerInitialized) _editorTimerDuration.Value = value;
         }
     }
+    
+    public string GameplaySceneName
+    {
+        get => _gameplaySceneName.Value;
+        set
+        {
+            if (IsServerInitialized) _gameplaySceneName.Value = value;
+        }
+    }
 
 
     public override string ConductedSceneName => "NetLobby";
 
     protected override void OnNetworkStarted()
     {
+        _gameplaySceneName.Value = "NetGameplayScene";
+        
         var shipEditorConductor = Instantiate(netShipEditorConductor);
         var gameplayConductor = Instantiate(netGameplayConductor);
         ServerManager.Spawn(shipEditorConductor.gameObject);
@@ -193,7 +206,13 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         Channel channel)
     {
         if (conn != _hostConnection) return;
-        _selectedGameMode = msg.GameMode;
+        S_SetGameMode(msg.GameMode);
+    }
+
+    [Server]
+    public void S_SetGameMode(NetGameModeID gameModeID)
+    {
+        _selectedGameMode = gameModeID;
     }
 
     [Server]
@@ -210,6 +229,12 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
 
     [Server]
     private void S_OnPlayerIdentified(NetworkConnection conn, NetLobbyBroadcasts.PlayerIdentified msg, Channel channel)
+    {
+        AddPlayer(conn, msg);
+    }
+
+    [Server]
+    public void AddPlayer(NetworkConnection conn, NetLobbyBroadcasts.PlayerIdentified msg)
     {
         ConnectionPlayerMap[conn] = new NetLobbyData
         {
@@ -283,11 +308,17 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         Channel channel)
     {
         if (!ConnectionPlayerMap.Values.All(player => player.isReady)) return;
+        PrepareGame();
+        InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(this, Players);
+    }
+
+    [Server]
+    public void PrepareGame()
+    {
         S_SetUpMatchPlayers();
         SceneAudioManager.instance.StopMainMusic();
         SceneAudioManager.instance.StartInGameMusic();
         C_TriggerSwapMusic();
-        InstanceFinder.GetInstance<NetShipEditorConductor>().MoveToScene(this, Players);
     }
 
 

@@ -12,6 +12,9 @@ public class Tooltip : MonoBehaviour
     public string statFour;
     public string statFive;
     public string statSix;
+
+    public string moduleDescription;
+    
     public Sprite statOneImage;
     public Sprite statTwoImage;
     public Sprite statThreeImage;
@@ -32,6 +35,10 @@ public class Tooltip : MonoBehaviour
         Vector3 topRightWorld = corners[2];
 
         Vector3 screenPos = _camera.WorldToScreenPoint(topRightWorld);
+
+        if (moduleDescription == string.Empty) return;
+        TooltipBehaviour.Instance.ShowModuleDescription(moduleDescription);
+        TooltipBehaviour.Instance.transform.position = screenPos;
         if (statOne == String.Empty) return;
         TooltipBehaviour.Instance.ShowToolTipOne(statOne, statOneImage);
         TooltipBehaviour.Instance.transform.position = screenPos;
