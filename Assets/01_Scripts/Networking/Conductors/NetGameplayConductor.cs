@@ -37,7 +37,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [SerializeField, SerializedDictionary]
     private AYellowpaper.SerializedCollections.SerializedDictionary<int, Transform[]> spawnTransforms;
 
-    private List<Transform> _spawnTransforms;
+    private List<Transform> _spawnTransforms = new List<Transform>();
 
     private NetLobbyConductor _lobbyConductor;
     private NetShipEditorConductor _editorConductor;
