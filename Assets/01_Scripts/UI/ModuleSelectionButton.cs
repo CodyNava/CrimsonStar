@@ -1,5 +1,9 @@
 using System;
+using System.Globalization;
+using _01_Scripts.Networking.ScriptableObjectScripts;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,124 +13,166 @@ public class ModuleSelectionButton : MonoBehaviour
 
     [SerializeField] private TMP_Text moduleName, sizeLabel, currencyLabel;
     [SerializeField] private Sprite testSprite;
+    [SerializeField] private GameObject connectorBars;
 
     [SerializeField] Tooltip toolTip;
+    [SerializeField] SpriteDatabase database;
     public static event Action<NetModuleID> ModuleSelected;
-    private NetModuleID moduleID;
+    private NetModuleID _moduleID;
 
 
     public void SpawnModule()
     {
-        ModuleSelected?.Invoke(moduleID);
+        ModuleSelected?.Invoke(_moduleID);
+        
     }
+
+    public void EnableConnectorBars() => connectorBars.SetActive(true);
+    
+    
+    public void DisableConnectorBars() => connectorBars.SetActive(false);
+    
 
     public void Configure(NetModuleData data)
     {
-        //Base
-
+        //Base Button
         currencyLabel.text = $"{data.Cost}";
         moduleName.text = $"{data.DisplayName}";
         sizeLabel.text = $"{data.HexagonSize}";
         moduleIcon.sprite = data.Icon;
         hexSizeSprite.sprite = data.HexSizeIcon[(int)data.HexagonSize -1 ];
-        
-        moduleID = data.ModuleID;
+        _moduleID = data.ModuleID;
+        toolTip.moduleDescription = data.Description;
 
         //ToolTips basics
-
-        toolTip.statOne = data.HexagonSize.ToString();
-        toolTip.statOneImage = testSprite;
-
-        toolTip.statTwo = $"{data.BaseStats.health.ToString()}";
-        toolTip.statTwoImage = testSprite;
-
-        toolTip.statThree = data.CanRotate ? "Yes" : "No";
-        toolTip.statThreeImage = testSprite;
-
-        toolTip.statFour = data.BaseStats.mass.ToString();
-        toolTip.statFourImage = testSprite;
+        toolTip.statOne = $"{data.BaseStats.health.ToString(CultureInfo.InvariantCulture)}";
+        toolTip.statOneImage = database.GetSpriteById("health");
         
-        toolTip.statFive = data.BaseStats.thrust > 0 ? data.BaseStats.thrust.ToString() : string.Empty;
-        toolTip.statFiveImage = data.BaseStats.thrust > 0 ? testSprite : null;
-
-        toolTip.statSix = data.ShipEditorPrefab.healthOverLayData.HighHealth > 0
-            ? data.EffectRange.ToString()
-            : string.Empty;
-        toolTip.statSixImage = data.EffectRange > 0 ? testSprite : null;
-
-        //ToolTips Weapons
-
-        if (data.LaserData || data.RocketData || data.TurretData)
+        
+        switch (data.ModuleCategory)
         {
-            switch (data.ModuleID)
+            case NetModuleCategory.Weapons:
+                WeaponToolTip(data);
+                break;
+            case NetModuleCategory.Engines:
+                ThrusterToolTip(data);
+                break;
+            case NetModuleCategory.Energy:
+                ReactorToolTip(data);
+                break;
+            case NetModuleCategory.Armor:
+                ArmorToolTip(data);
+                break;
+        }
+    }
+
+
+    private void ThrusterToolTip(NetModuleData data)
+    {
+        //Thrust
+        toolTip.statTwo = data.BaseStats.thrust.ToString(CultureInfo.InvariantCulture);
+        toolTip.statTwoImage = database.GetSpriteById("thrust");
+
+        //Rotation
+        toolTip.statThree = data.BaseStats.angularThrust.ToString(CultureInfo.InvariantCulture);
+        toolTip.statThreeImage = database.GetSpriteById("rotationspeed");
+        
+        //Mass
+        var betterMassNumbers = data.BaseStats.mass;
+        toolTip.statFour = betterMassNumbers.ToString(CultureInfo.InvariantCulture) + "%";
+        toolTip.statFourImage = database.GetSpriteById("maxspeed");
+    }
+
+    private void ArmorToolTip(NetModuleData data)
+    {
+        //Mass
+        var betterMassNumbers = data.BaseStats.mass;
+        toolTip.statTwo = betterMassNumbers.ToString(CultureInfo.InvariantCulture) + "%";
+        toolTip.statTwoImage = database.GetSpriteById("maxspeed");
+    }
+
+    private void ReactorToolTip(NetModuleData data)
+    {
+        //Mass
+        var betterMassNumbers = data.BaseStats.mass;
+        toolTip.statTwo = betterMassNumbers.ToString(CultureInfo.InvariantCulture) + "%";
+        toolTip.statTwoImage = database.GetSpriteById("maxspeed");
+    }
+
+
+    private void WeaponToolTip(NetModuleData data)
+    {
+        //General 
+        //Damage
+        toolTip.statTwoImage = database.GetSpriteById("damage");
+        //Atkspeed
+        toolTip.statThreeImage = database.GetSpriteById("atkspeed");
+        //Energy
+        toolTip.statFiveImage = data.CanBePowered ? database.GetSpriteById("energy") : database.GetSpriteById("noenergy");
+        toolTip.statFive = ".";
+        //Mass
+        var betterMassNumbers = data.BaseStats.mass;
+        toolTip.statSix = betterMassNumbers.ToString(CultureInfo.InvariantCulture) + "%";
+        toolTip.statSixImage = database.GetSpriteById("maxspeed");
+        
+        //Unique
+        switch (data.ModuleID)
             {
                 case NetModuleID.TurretLaser:
-                    //COOLDOWN
-                    toolTip.statFive = data.LaserData.Cooldown > 0 ? data.LaserData.Cooldown.ToString() : string.Empty;
-                    toolTip.statFiveImage = testSprite;
-
                     //DMG
-                    toolTip.statSix = data.LaserData.Projectile.laserProjectileObject.ProjectileDamage > 0
-                        ? data.LaserData.ChargeTime.ToString()
-                        : string.Empty;
-                    toolTip.statSixImage = testSprite;
+                    toolTip.statTwo = data.LaserData.Projectile.laserProjectileObject.ProjectileDamage.ToString(CultureInfo.InvariantCulture);
+                    
+                    //COOLDOWN
+                    toolTip.statThree = data.LaserData.Cooldown.ToString(CultureInfo.InvariantCulture);
+                    
+                    //PROJECTILE TYPE
+                    toolTip.statFour = data.LaserData.Projectile.laserProjectileObject.MaxHits.ToString(CultureInfo.InvariantCulture);
+                    toolTip.statFourImage = database.GetSpriteById("piercing");
                     break;
-
                 case NetModuleID.TurretRocket:
-                    //COOLDOWN
-                    toolTip.statFive = data.RocketData.Cooldown > 0
-                        ? data.RocketData.Cooldown.ToString()
-                        : string.Empty;
-                    toolTip.statFiveImage = testSprite;
-
                     //DMG
-                    toolTip.statSix = data.RocketData.Projectile.rocketProjectileObject.Explosion.ExplosionDamage > 0
-                        ? data.RocketData.Projectile.rocketProjectileObject.Explosion.ExplosionDamage.ToString()
-                        : string.Empty;
-                    toolTip.statSixImage = testSprite;
+                    toolTip.statTwo = data.RocketData.Projectile.rocketProjectileObject.Explosion.ExplosionDamage.ToString(CultureInfo.InvariantCulture);
+                    
+                    //COOLDOWN
+                    toolTip.statThree = data.RocketData.Cooldown.ToString(CultureInfo.InvariantCulture);
+                    
+                    //PROJECTILE TYPE
+                    toolTip.statFour = data.RocketData.Projectile.rocketProjectileObject.Explosion.ExplosionMaxSize.ToString(CultureInfo.InvariantCulture);
+                    toolTip.statFourImage = database.GetSpriteById("aoe");
                     break;
                 case NetModuleID.TurretRocketT2:
-                    //COOLDOWN
-                    toolTip.statFive = data.RocketData.Cooldown > 0
-                        ? data.RocketData.Cooldown.ToString()
-                        : string.Empty;
-                    toolTip.statFiveImage = testSprite;
-
                     //DMG
-                    toolTip.statSix = data.RocketData.Projectile.rocketProjectileObject.Explosion.ExplosionDamage > 0
-                        ? data.RocketData.Projectile.rocketProjectileObject.Explosion.ExplosionDamage.ToString()
-                        : string.Empty;
-                    toolTip.statSixImage = testSprite;
+                    toolTip.statTwo = data.RocketData.Projectile.rocketProjectileObject.Explosion.ExplosionDamage.ToString(CultureInfo.InvariantCulture);
+                    
+                    //COOLDOWN
+                    toolTip.statThree = data.RocketData.Cooldown.ToString(CultureInfo.InvariantCulture);
+                    
+                    //PROJECTILE TYPE
+                    toolTip.statFour = data.RocketData.Projectile.rocketProjectileObject.Explosion.ExplosionMaxSize.ToString(CultureInfo.InvariantCulture);
+                    toolTip.statFourImage = database.GetSpriteById("aoe");
                     break;
-
                 case NetModuleID.Turret:
-                    //COOLDOWN
-                    toolTip.statFive = data.TurretData.Cooldown > 0
-                        ? data.TurretData.Cooldown.ToString()
-                        : string.Empty;
-                    toolTip.statFiveImage = testSprite;
-
                     //DMG
-                    toolTip.statSix = data.TurretData.Projectile.baseProjectileObject.ProjectileDamage > 0
-                        ? data.TurretData.Projectile.baseProjectileObject.ProjectileDamage.ToString()
-                        : string.Empty;
-                    toolTip.statSixImage = testSprite;
+                    toolTip.statTwo = data.TurretData.Projectile.baseProjectileObject.ProjectileDamage.ToString(CultureInfo.InvariantCulture);
+                    
+                    //COOLDOWN
+                    toolTip.statThree = data.TurretData.Cooldown.ToString(CultureInfo.InvariantCulture);
+                    
+                    //PROJECTILE TYPE
+                    toolTip.statFour = ".";
+                    toolTip.statFourImage = database.GetSpriteById("kinetic");
                     break;
-
                 case NetModuleID.TurretT2:
-                    //COOLDOWN
-                    toolTip.statFive = data.TurretData.Cooldown > 0
-                        ? data.TurretData.Cooldown.ToString()
-                        : string.Empty;
-                    toolTip.statFiveImage = testSprite;
-
                     //DMG
-                    toolTip.statSix = data.TurretData.Projectile.baseProjectileObject.ProjectileDamage > 0
-                        ? data.TurretData.Projectile.baseProjectileObject.ProjectileDamage.ToString()
-                        : string.Empty;
-                    toolTip.statSixImage = testSprite;
+                    toolTip.statTwo = data.TurretData.Projectile.baseProjectileObject.ProjectileDamage.ToString(CultureInfo.InvariantCulture);
+                    
+                    //COOLDOWN
+                    toolTip.statThree = data.TurretData.Cooldown.ToString(CultureInfo.InvariantCulture);
+                    
+                    //PROJECTILE TYPE
+                    toolTip.statFour = ".";
+                    toolTip.statFourImage = database.GetSpriteById("kinetic");
                     break;
             }
-        }
     }
 }
