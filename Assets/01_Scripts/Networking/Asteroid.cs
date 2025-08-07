@@ -1,6 +1,5 @@
 using UnityEngine;
 using FishNet;
-using Random = System.Random;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 
@@ -55,8 +54,7 @@ public class Asteroid : MonoBehaviour
     public void Start()
     {
         print("Spawned Asteroid");
-        Random rnd = new Random();
-        int size = rnd.Next(_asteroidObject.AsteroidMinSize, _asteroidObject.AsteroidMaxSize+1);
+        float size = Random.Range(_asteroidObject.AsteroidMinSize, _asteroidObject.AsteroidMaxSize+1);
         gameObject.transform.localScale = Vector3.one * size;
     }
 

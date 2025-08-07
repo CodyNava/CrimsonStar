@@ -372,10 +372,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [Server]
     public void S_ReportDamageInstance(ulong attacker, ulong defender, float damageTaken)
     {
-        /*
-        Debug.Log("Damage inflicted: " + damageTaken);
-        NetworkConnection conn = _lobbyConductor.ConnectionsByPlayerID[attacker];
-        if (conn != null) TriggerEnemyHitFeedback(conn, Channel.Reliable);*/
+
         _damageInstancesRound.Add(new DamageInstance
         {
             AttackerID = attacker,
@@ -383,12 +380,6 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             DamageTaken = damageTaken
         });
     }
-/*
-    [TargetRpc]
-    private void TriggerEnemyHitFeedback(NetworkConnection conn, Channel channel)
-    {
-        SceneAudioManager.instance.EnemyHitFeedback();
-    }*/
 
     [Server]
     public void S_ReportKillInstance(ulong attackerID, ulong defenderID)
@@ -425,16 +416,26 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         {
             var attacker = _lobbyConductor.PlayersByID[damageInstance.AttackerID];
             var defender = _lobbyConductor.PlayersByID[damageInstance.DefenderID];
-            attacker.DamageDealtRound.Value += damageInstance.DamageTaken;
-            attacker.DamageDealtMatch.Value += damageInstance.DamageTaken;
-            defender.DamageReceivedRound.Value += damageInstance.DamageTaken;
-            defender.DamageReceivedMatch.Value += damageInstance.DamageTaken;
+
+            if (damageInstance.AttackerID != 0)
+            {
+                attacker.DamageDealtRound.Value += damageInstance.DamageTaken;
+                attacker.DamageDealtMatch.Value += damageInstance.DamageTaken;   
+            }
+
+            if (damageInstance.DefenderID != 0)
+            {
+                defender.DamageReceivedRound.Value += damageInstance.DamageTaken;
+                defender.DamageReceivedMatch.Value += damageInstance.DamageTaken;   
+            }
         }
 
         foreach (var killInstance in _killInstancesRound)
         {
+            if(killInstance.AttackerID == 0) continue;
+            
             var attacker = _lobbyConductor.PlayersByID[killInstance.AttackerID];
-            var defender = _lobbyConductor.PlayersByID[killInstance.DefenderID];
+            // var defender = _lobbyConductor.PlayersByID[killInstance.DefenderID];
             attacker.KillsRound.Value += 1;
             attacker.KillsMatch.Value += 1;
         }
@@ -455,8 +456,11 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [Server]
     private Transform S_GetSpawnTransform()
     {
-        if (_spawnTransforms.Count <= 0)
+        // SpawnPoints are taken as GameObject.Transforms of GO with Tag "SpawnPoint"
+        
+        if (_spawnTransforms.Count < _lobbyConductor.PlayersByConnection.Count)
         {
+            _spawnTransforms.Clear();
             foreach (var go in GameObject.FindGameObjectsWithTag("SpawnPoint"))
             {
                 _spawnTransforms.Add(go.transform);
@@ -468,23 +472,6 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         _spawnTransforms.RemoveAt(spawnPointId);
         _spawnedPlayers++;
         return spawn;
-        
-        //
-        // if (!spawnTransforms.TryGetValue(PlayerCount, out Transform[] spawnPoints))
-        // {
-        //     return transform;
-        // }
-        //
-        // if (_spawnedPlayers == 0)
-        // {
-        //     _spawnSet.AddRange(spawnPoints);
-        // }
-        //
-        // int rng = Random.Range(0, _spawnSet.Count);
-        // var spawn = _spawnSet.ElementAt(rng);
-        // _spawnSet.Remove(spawn);
-        // _spawnedPlayers++;
-        // return spawn;
     }
 
     public struct RegisterPlayerDeathEventArgs

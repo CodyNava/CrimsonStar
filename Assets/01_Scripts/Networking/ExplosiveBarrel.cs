@@ -1,3 +1,4 @@
+using System;
 using FishNet;
 using UnityEngine;
 using FishNet.Object;
@@ -9,7 +10,13 @@ public class ExplosiveBarrel : NetworkBehaviour
     private readonly SyncVar<NetTeamID> _netTeamID = new SyncVar<NetTeamID>();
     private ulong _attackerID = 0;
 
-    
+
+    private void Start()
+    {
+        _netTeamID.Value = NetTeamID.Environment;
+        _attackerID = 0;
+    }
+
     public void Initialize(float passedTime, NetTeamID netTeamID, ulong attackerID = 0)
     {
         _netTeamID.Value = netTeamID;
