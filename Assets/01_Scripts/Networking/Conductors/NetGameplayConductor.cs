@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AYellowpaper.SerializedCollections;
@@ -11,7 +10,6 @@ using FishNet.Transporting;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
@@ -199,10 +197,14 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
         int score = _scoreBoard.GetValueOrDefault(winnerID) + 1;
         _scoreBoard[winnerID] = score;
-
+        
         foreach (var player in _lobbyConductor.PlayersByConnection.Values)
         {
             player.MatchScore.Value = _scoreBoard.GetValueOrDefault(player.Team.Value);
+            if (player.Team.Value == winnerID)
+            {
+                player.RoundWon.Value = true;
+            }
         }
 
         return true;
@@ -435,9 +437,18 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             attacker.KillsRound.Value += 1;
             attacker.KillsMatch.Value += 1;
         }
-
+        
         _damageInstancesRound.Clear();
         _killInstancesRound.Clear();
+        
+        int maxScore = _lobbyConductor.PlayersByConnection.Values.Max(player => player.MatchScore.Value);
+        foreach (var player in _lobbyConductor.PlayersByConnection.Values)
+        {
+            if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
+            {
+                player.MatchWon.Value = player.MatchScore.Value == maxScore;
+            }
+        }
     }
 
     [Server]

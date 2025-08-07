@@ -29,10 +29,26 @@ public class EndResultsUI : MonoBehaviour
         container.SetActive(true);
 
         List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
-        players.Sort((a, b) => a.MatchScore.Value.CompareTo(b.MatchScore.Value));
+        /*List<NetMatchPlayer> players =
+            InstanceFinder.GetInstance<NetLobbyConductor>().PlayersByConnection.Values.ToList();*/
+        //players.Sort((a, b) => b.MatchScore.Value.CompareTo(a.MatchScore.Value));
+        players = players.OrderByDescending(p => p.MatchScore.Value).
+            ThenBy(p =>p.Team.Value).
+            ThenByDescending(p => p.KillsMatch.Value).
+            ThenByDescending(p => p.DamageDealtMatch.Value).ToList();
+        var rankCounter = 1;
         for (int i = 0; i < players.Count; i++)
         {
-            statsDisplays[i].SetMatchStats(players[i]);
+            if (i >= 1 && players[i].Team.Value != players[i - 1].Team.Value)
+            {
+                rankCounter++;
+            }
+            statsDisplays[i].SetMatchStats(players[i], rankCounter);
+        }
+        
+        for (int i = players.Count; i < statsDisplays.Length; i++)
+        {
+            statsDisplays[i].TurnOffStats();
         }
         backToMainButton.gameObject.SetActive(true);
     }
@@ -45,10 +61,26 @@ public class EndResultsUI : MonoBehaviour
         container.SetActive(true);
         
         List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
-        players.Sort((a, b) => a.MatchScore.Value.CompareTo(b.MatchScore.Value));
+        /*List<NetMatchPlayer> players =
+            InstanceFinder.GetInstance<NetLobbyConductor>().PlayersByConnection.Values.ToList();*/
+        //players.Sort((a, b) => b.MatchScore.Value.CompareTo(a.MatchScore.Value));
+        players = players.OrderByDescending(p => p.MatchScore.Value).
+            ThenBy(p =>p.Team.Value).
+            ThenByDescending(p => p.KillsRound.Value).
+            ThenByDescending(p => p.DamageDealtRound.Value).ToList();
+        var rankCounter = 1;
         for (int i = 0; i < players.Count; i++)
         {
-            statsDisplays[i].SetRoundStats(players[i]);
+            if (i >= 1 && players[i].Team.Value != players[i - 1].Team.Value)
+            {
+                rankCounter++;
+            }
+            statsDisplays[i].SetRoundStats(players[i], rankCounter);
+        }
+
+        for (int i = players.Count; i < statsDisplays.Length; i++)
+        {
+            statsDisplays[i].TurnOffStats();
         }
     }
 
