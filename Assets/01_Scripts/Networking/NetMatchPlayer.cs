@@ -1,10 +1,6 @@
 ﻿using FishNet;
-using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-using Steamworks;
-using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class NetMatchPlayer : NetworkBehaviour
 {
@@ -21,6 +17,9 @@ public class NetMatchPlayer : NetworkBehaviour
     public readonly SyncVar<int> MatchScore = new();
     public readonly SyncVar<bool> Survived = new();
     public readonly SyncVar<NetBridge> BridgeObject = new();
+    public readonly SyncVar<bool> RoundWon = new();
+    public readonly SyncVar<bool> MatchWon = new();
+    
     public NetModuleStorage ModuleStorage { get; private set; }
 
     [Server]
@@ -33,6 +32,8 @@ public class NetMatchPlayer : NetworkBehaviour
         ModuleStorage.Init();
         ResourceCount.Value = DataProvider.GetStartingCurrency(gameModeID);
         Survived.Value = true;
+        RoundWon.Value = false;
+        MatchWon.Value = false;
         C_Init();
     }
     
@@ -43,6 +44,8 @@ public class NetMatchPlayer : NetworkBehaviour
         DamageReceivedRound.Value = 0;
         DamageDealtRound.Value = 0;
         Survived.Value = true;
+        RoundWon.Value = false;
+        MatchWon.Value = false;
     }
 
     [ObserversRpc][Client]
