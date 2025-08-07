@@ -145,7 +145,7 @@ public class ShipEditorStats : MonoBehaviour
                 float projDmg = laserProjectile.ProjectileDamage;
                 float shootingCd = laserTurretModule.ModuleScriptableObject.Cooldown +
                                    laserTurretModule.ModuleScriptableObject.ChargeTime;
-                float maxHits = laserProjectile.MaxHits;
+                float maxHits = laserProjectile.MaxTargetsPerHit;
                 float maxRangeLaser = laserProjectile.MaxLength;
 
                 _damagePerSecondWg1 += (projDmg * maxHits) / shootingCd;
@@ -208,7 +208,7 @@ public class ShipEditorStats : MonoBehaviour
                 float projDmg = laserProjectile.ProjectileDamage;
                 float shootingCd = laserTurretModule.ModuleScriptableObject.Cooldown +
                                    laserTurretModule.ModuleScriptableObject.ChargeTime;
-                float maxHits = laserProjectile.MaxHits;
+                float maxHits = laserProjectile.MaxTargetsPerHit;
                 float maxRangeLaser = laserProjectile.MaxLength;
 
                 _damagePerSecondWg2 += (projDmg * maxHits) / shootingCd;
@@ -271,7 +271,7 @@ public class ShipEditorStats : MonoBehaviour
                 float projDmg = laserProjectile.ProjectileDamage;
                 float shootingCd = laserTurretModule.ModuleScriptableObject.Cooldown +
                                    laserTurretModule.ModuleScriptableObject.ChargeTime;
-                float maxHits = laserProjectile.MaxHits;
+                float maxHits = laserProjectile.MaxTargetsPerHit;
                 float maxRangeLaser = laserProjectile.MaxLength;
 
                 _damagePerSecondWg3 += (projDmg * maxHits) / shootingCd;
