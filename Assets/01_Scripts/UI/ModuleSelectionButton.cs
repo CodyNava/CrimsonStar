@@ -124,7 +124,7 @@ public class ModuleSelectionButton : MonoBehaviour
                     toolTip.statThree = data.LaserData.Cooldown.ToString(CultureInfo.InvariantCulture);
                     
                     //PROJECTILE TYPE
-                    toolTip.statFour = data.LaserData.Projectile.laserProjectileObject.MaxHits.ToString(CultureInfo.InvariantCulture);
+                    toolTip.statFour = data.LaserData.Projectile.laserProjectileObject.MaxTargetsPerHit.ToString(CultureInfo.InvariantCulture);
                     toolTip.statFourImage = database.GetSpriteById("piercing");
                     break;
                 case NetModuleID.TurretRocket:
