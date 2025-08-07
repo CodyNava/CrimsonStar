@@ -3,8 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Asteroid Object", menuName = "EnvironmentModules/Asteroid Object")]
 public class AsteroidObject : ScriptableObject
 {
-    [field:SerializeField] public int AsteroidMinSize { get; private set; }
-    [field:SerializeField] public int AsteroidMaxSize { get; private set; }
+    [field:SerializeField] public float AsteroidMinSize { get; private set; }
+    [field:SerializeField] public float AsteroidMaxSize { get; private set; }
     [field:SerializeField] public float AsteroidDamage { get; private set; }
     [field: SerializeField] public Asteroid AsteroidPrefab { get; private set; }
     [field: SerializeField] public float AsteroidSpawnInterval { get; private set; }

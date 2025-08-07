@@ -1,8 +1,7 @@
-using FishNet;
 using UnityEngine;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-using FishNet.Transporting;
+using Random = UnityEngine.Random;
 
 public class AsteroidSpawner : NetworkBehaviour
 {
@@ -15,6 +14,12 @@ public class AsteroidSpawner : NetworkBehaviour
     private float timer;
     private float speed;
     private Vector3 finalDirection;
+
+    private void Start()
+    {
+        _netTeamID.Value = NetTeamID.Environment;
+        _attackerID = 0;
+    }
 
     void Update()
     {
