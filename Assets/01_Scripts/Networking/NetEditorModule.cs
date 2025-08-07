@@ -77,14 +77,14 @@ public class NetEditorModule : MonoBehaviour
     public void GetPowerMaterial()
     {
         if (!ModuleData.CanBePowered) return;
-        PowerMaterial = PowerMaterialGameObject.GetComponent<MeshRenderer>().materials[2];
+        PowerMaterial = PowerMaterialGameObject.GetComponent<MeshRenderer>().materials[3];
         _originalColor = PowerMaterial.GetColor(ColourShift);
         _originalColorIntensity = Mathf.Max(_originalColor.r, _originalColor.g, _originalColor.b);
 
         if (ModuleID != NetModuleID.TurretLaser) return;
         foreach (var mesh in powerMaterialSocketsGameObject)
         {
-            var socketMat = mesh.GetComponent<MeshRenderer>().materials[0];
+            var socketMat = mesh.GetComponent<MeshRenderer>().materials[1];
             powerSocketMaterials.Add(socketMat);
         }
     }
