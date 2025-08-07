@@ -632,7 +632,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RightTrigger",
+                    "name": "RightShoulder",
                     "type": "Button",
                     "id": "9c011d56-38b8-4e14-8f1b-707dbd1c6557",
                     "expectedControlType": "",
@@ -641,7 +641,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "LeftTrigger",
+                    "name": "LeftShoulder",
                     "type": "Button",
                     "id": "dca2195d-e5bd-4aa3-a8d8-3db9f4483f08",
                     "expectedControlType": "",
@@ -653,6 +653,15 @@
                     "name": "Ready",
                     "type": "Button",
                     "id": "74c5b219-286c-4b09-98b5-5643234f5feb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SwitchTeam",
+                    "type": "Button",
+                    "id": "0668d938-8cbf-4119-b942-06cc95af593f",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1081,7 +1090,7 @@
                 {
                     "name": "",
                     "id": "0c2d075c-372f-4d65-b9c0-e445e2cafb10",
-                    "path": "<XInputController>/rightShoulder",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
@@ -1092,7 +1101,7 @@
                 {
                     "name": "",
                     "id": "5d8e5a93-9cd3-4ce1-a8da-effdb43b5c7c",
-                    "path": "<XInputController>/leftShoulder",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
@@ -1158,22 +1167,22 @@
                 {
                     "name": "",
                     "id": "316ea6db-b085-4f67-bfe4-0d7e15b120c0",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "RightTrigger",
+                    "action": "RightShoulder",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "8ad305d8-72b0-49d1-acf9-a7f8d5902589",
-                    "path": "<Gamepad>/leftTrigger",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "LeftTrigger",
+                    "action": "LeftShoulder",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1185,6 +1194,17 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Ready",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b3b23a3b-2bf0-4c92-9fd4-3640d2f41a7d",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "SwitchTeam",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

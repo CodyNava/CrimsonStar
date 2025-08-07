@@ -11,8 +11,8 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [Tooltip("Scroll Speed in SECONDS. Use values smaller than 1. PLEASE I BEG YOU.")] [Range(0, 1)] [SerializeField]
     private float scrollSpeedSeconds;
 
-    [Header("DO NOT TOUCH")]
-    [SerializeField] private GameObject settingsContainer;
+    [Header("DO NOT TOUCH")] [SerializeField]
+    private GameObject settingsContainer;
 
     private EventSystem _eventSystem;
 
@@ -20,9 +20,9 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [SerializeField] private Button graphicsButton;
     [SerializeField] private Button settingsBackButton;
     [SerializeField] private Button applyButton;
+    [SerializeField] private Button exitButton;
 
-    [Header("Graphics")]
-    [SerializeField] private GameObject graphicsContainer;
+    [Header("Graphics")] [SerializeField] private GameObject graphicsContainer;
     [SerializeField] private GameObject resolution;
     [SerializeField] private GameObject frameCap;
     [SerializeField] private GameObject vSync;
@@ -43,8 +43,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [SerializeField] private Button increaseGamma;
     [SerializeField] private Button decreaseGamma;
 
-    [Header("Sound")]
-    [SerializeField] private GameObject audioContainer;
+    [Header("Sound")] [SerializeField] private GameObject audioContainer;
     [SerializeField] private GameObject master;
     [SerializeField] private GameObject music;
     [SerializeField] private GameObject sfx;
@@ -62,16 +61,11 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [SerializeField] private Button increaseUi;
     [SerializeField] private Button decreaseUi;
 
-    private void Awake()
-    {
-        _eventSystem = EventSystem.current;
-    }
-
     private void Update()
     {
         if (settingsContainer.activeSelf)
         {
-            if (Keybinds.Actions.UI.RightTrigger.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.SwapTabRight.WasPressedThisFrame())
             {
                 if (audioContainer.activeSelf)
                 {
@@ -83,7 +77,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 }
             }
 
-            if (Keybinds.Actions.UI.LeftTrigger.WasPressedThisFrame())
+            if (Keybinds.Actions.UI.SwapTabLeft.WasPressedThisFrame())
             {
                 if (graphicsContainer.activeSelf)
                 {
@@ -94,132 +88,139 @@ public class CustomSettingsMenuInput : MonoBehaviour
                     graphicsButton.onClick.Invoke();
                 }
             }
-            
-            if (Keybinds.Actions.UI.Save.WasPressedThisFrame() && applyButton.GameObject().activeSelf)
+
+            if (Keybinds.Actions.UI.SwitchTeam.WasPressedThisFrame() && applyButton.GameObject().activeSelf)
             {
                 applyButton.onClick.Invoke();
             }
 
-            if (Keybinds.Actions.UI.Decrease.IsPressed() && !_cooldownStarted)
+            if (Keybinds.Actions.UI.Save.WasPressedThisFrame() && exitButton != null)
             {
-                if (_eventSystem.currentSelectedGameObject.Equals(resolution))
-                {
-                    decreaseResolution.onClick.Invoke();
-                }
-
-                if (_eventSystem.currentSelectedGameObject.Equals(frameCap))
-                {
-                    decreaseFrameCap.onClick.Invoke();
-                }
-
-                if (_eventSystem.currentSelectedGameObject.Equals(vSync))
-                {
-                    decreaseVsync.onClick.Invoke();
-                }
-
-                if (_eventSystem.currentSelectedGameObject.Equals(qualityPref))
-                {
-                    decreaseQuality.onClick.Invoke();
-                }
-
-                if (_eventSystem.currentSelectedGameObject.Equals(brightness))
-                {
-                    decreaseBrightness.onClick.Invoke();
-                }
-
-                if (_eventSystem.currentSelectedGameObject.Equals(gamma))
-                {
-                    decreaseGamma.onClick.Invoke();
-                }
-
-                if (_eventSystem.currentSelectedGameObject.Equals(master))
-                {
-                    decreaseMaster.onClick.Invoke();
-                }
-
-                if (_eventSystem.currentSelectedGameObject.Equals(music))
-                {
-                    decreaseMusic.onClick.Invoke();
-                }
-
-                if (_eventSystem.currentSelectedGameObject.Equals(sfx))
-                {
-                    decreaseSfx.onClick.Invoke();
-                }
-
-                if (_eventSystem.currentSelectedGameObject.Equals(voice))
-                {
-                    decreaseVoice.onClick.Invoke();
-                }
-
-                if (_eventSystem.currentSelectedGameObject.Equals(ui))
-                {
-                    decreaseUi.onClick.Invoke();
-                }
-
-                StartCoroutine(HoldCooldown());
+                exitButton.onClick.Invoke();
             }
 
-            if (Keybinds.Actions.UI.Increase.IsPressed() && !_cooldownStarted)
+            if (EventSystem.current != null)
             {
-                if (_eventSystem.currentSelectedGameObject.Equals(resolution))
+                if (Keybinds.Actions.UI.Decrease.IsPressed() && !_cooldownStarted)
                 {
-                    increaseResolution.onClick.Invoke();
+                    if (EventSystem.current.currentSelectedGameObject.Equals(resolution))
+                    {
+                        decreaseResolution.onClick.Invoke();
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.Equals(frameCap))
+                    {
+                        decreaseFrameCap.onClick.Invoke();
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.Equals(vSync))
+                    {
+                        decreaseVsync.onClick.Invoke();
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.Equals(qualityPref))
+                    {
+                        decreaseQuality.onClick.Invoke();
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.Equals(brightness))
+                    {
+                        decreaseBrightness.onClick.Invoke();
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.Equals(gamma))
+                    {
+                        decreaseGamma.onClick.Invoke();
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.Equals(master))
+                    {
+                        decreaseMaster.onClick.Invoke();
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.Equals(music))
+                    {
+                        decreaseMusic.onClick.Invoke();
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.Equals(sfx))
+                    {
+                        decreaseSfx.onClick.Invoke();
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.Equals(voice))
+                    {
+                        decreaseVoice.onClick.Invoke();
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.Equals(ui))
+                    {
+                        decreaseUi.onClick.Invoke();
+                    }
+
+                    StartCoroutine(HoldCooldown());
                 }
 
-                if (_eventSystem.currentSelectedGameObject.Equals(frameCap))
+                if (Keybinds.Actions.UI.Increase.IsPressed() && !_cooldownStarted)
                 {
-                    increaseFrameCap.onClick.Invoke();
-                }
+                    if (EventSystem.current.currentSelectedGameObject.Equals(resolution))
+                    {
+                        increaseResolution.onClick.Invoke();
+                    }
 
-                if (_eventSystem.currentSelectedGameObject.Equals(vSync))
-                {
-                    increaseVsync.onClick.Invoke();
-                }
-                
-                if (_eventSystem.currentSelectedGameObject.Equals(qualityPref))
-                {
-                    increaseQuality.onClick.Invoke();
-                }
+                    if (EventSystem.current.currentSelectedGameObject.Equals(frameCap))
+                    {
+                        increaseFrameCap.onClick.Invoke();
+                    }
 
-                if (_eventSystem.currentSelectedGameObject.Equals(brightness))
-                {
-                    increaseBrightness.onClick.Invoke();
-                }
+                    if (EventSystem.current.currentSelectedGameObject.Equals(vSync))
+                    {
+                        increaseVsync.onClick.Invoke();
+                    }
 
-                if (_eventSystem.currentSelectedGameObject.Equals(gamma))
-                {
-                    increaseGamma.onClick.Invoke();
-                }
+                    if (EventSystem.current.currentSelectedGameObject.Equals(qualityPref))
+                    {
+                        increaseQuality.onClick.Invoke();
+                    }
 
-                if (_eventSystem.currentSelectedGameObject.Equals(master))
-                {
-                    increaseMaster.onClick.Invoke();
-                }
+                    if (EventSystem.current.currentSelectedGameObject.Equals(brightness))
+                    {
+                        increaseBrightness.onClick.Invoke();
+                    }
 
-                if (_eventSystem.currentSelectedGameObject.Equals(music))
-                {
-                    increaseMusic.onClick.Invoke();
-                }
+                    if (EventSystem.current.currentSelectedGameObject.Equals(gamma))
+                    {
+                        increaseGamma.onClick.Invoke();
+                    }
 
-                if (_eventSystem.currentSelectedGameObject.Equals(sfx))
-                {
-                    increaseSfx.onClick.Invoke();
-                }
+                    if (EventSystem.current.currentSelectedGameObject.Equals(master))
+                    {
+                        increaseMaster.onClick.Invoke();
+                    }
 
-                if (_eventSystem.currentSelectedGameObject.Equals(voice))
-                {
-                    increaseVoice.onClick.Invoke();
-                }
+                    if (EventSystem.current.currentSelectedGameObject.Equals(music))
+                    {
+                        increaseMusic.onClick.Invoke();
+                    }
 
-                if (_eventSystem.currentSelectedGameObject.Equals(ui))
-                {
-                    increaseUi.onClick.Invoke();
-                }
+                    if (EventSystem.current.currentSelectedGameObject.Equals(sfx))
+                    {
+                        increaseSfx.onClick.Invoke();
+                    }
 
-                StartCoroutine(HoldCooldown());
+                    if (EventSystem.current.currentSelectedGameObject.Equals(voice))
+                    {
+                        increaseVoice.onClick.Invoke();
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.Equals(ui))
+                    {
+                        increaseUi.onClick.Invoke();
+                    }
+
+                    StartCoroutine(HoldCooldown());
+                }
             }
-
         }
     }
 

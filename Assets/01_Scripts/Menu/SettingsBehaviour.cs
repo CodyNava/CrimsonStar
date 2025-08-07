@@ -40,6 +40,9 @@ public class SettingsBehaviour : MonoBehaviour
     [SerializeField] private Image brightness;
     [SerializeField] private GameObject apply;
     [SerializeField] private GameObject applyPrompt;
+    [SerializeField] private GameObject warningPopUp;
+    [SerializeField] private GameObject savePrompt;
+    [SerializeField] private GameObject discardPrompt;
 
     [Header("Sound")]
     [SerializeField] private Slider masterSlider;
@@ -65,6 +68,8 @@ public class SettingsBehaviour : MonoBehaviour
     private Bus _sfxBus;
     private Bus _uiBus;
     private Bus _announcerBus;
+
+    public bool unsavedChanges;
 
     private void Awake()
     {
@@ -139,8 +144,14 @@ public class SettingsBehaviour : MonoBehaviour
             prompt.SetActive(InputManager.Instance.IsGamepadUsed);
         }
         applyPrompt.SetActive(InputManager.Instance.IsGamepadUsed && apply.activeSelf);
+        if (warningPopUp.activeSelf)
+        {
+            savePrompt.SetActive(InputManager.Instance.IsGamepadUsed);
+            discardPrompt.SetActive(InputManager.Instance.IsGamepadUsed);
+            apply.SetActive(false);
+        }
     }
-
+    
     #region Graphics
 
     public void IncreaseResolution()
@@ -151,6 +162,7 @@ public class SettingsBehaviour : MonoBehaviour
         _resolution = _uniqueResolution[_currentResolutionIndex];
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
         apply.SetActive(true);
+        unsavedChanges = true;
     }
 
     public void DecreaseResolution()
@@ -167,6 +179,7 @@ public class SettingsBehaviour : MonoBehaviour
         _resolution = _uniqueResolution[_currentResolutionIndex];
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
         apply.SetActive(true);
+        unsavedChanges = true;
     }
 
     public void IncreaseFrameCap()
@@ -176,6 +189,7 @@ public class SettingsBehaviour : MonoBehaviour
 
         frameCounter.text = _frameCap[_frameCapIndex].Equals(-1) ? "Unlimited" : _frameCap[_frameCapIndex].ToString();
         apply.SetActive(true);
+        unsavedChanges = true;
     }
 
     public void DecreaseFrameCap()
@@ -191,6 +205,7 @@ public class SettingsBehaviour : MonoBehaviour
             frameCounter.text = _frameCap[_frameCapIndex].ToString();
         }
         apply.SetActive(true);
+        unsavedChanges = true;
     }
 
     public void IncreaseVsync()
@@ -205,6 +220,7 @@ public class SettingsBehaviour : MonoBehaviour
         }
         vSyncMode.text = _vSync[_vSyncIndex];
         apply.SetActive(true);
+        unsavedChanges = true;
     }
 
     public void DecreaseVsync()
@@ -219,6 +235,7 @@ public class SettingsBehaviour : MonoBehaviour
         }
         vSyncMode.text = _vSync[_vSyncIndex];
         apply.SetActive(true);
+        unsavedChanges = true;
     }
 
     public void IncreaseQualityPref()
@@ -233,6 +250,7 @@ public class SettingsBehaviour : MonoBehaviour
         }
         qualityPrefab.text = qualityPrefabs[_qualityPrefIndex].name;
         apply.SetActive(true);
+        unsavedChanges = true;
     }
 
     public void DecreaseQualityPref()
@@ -247,6 +265,7 @@ public class SettingsBehaviour : MonoBehaviour
         }
         qualityPrefab.text = qualityPrefabs[_qualityPrefIndex].name;
         apply.SetActive(true);
+        unsavedChanges = true;
     }
 
     public void AdjustBrightness()
@@ -295,6 +314,7 @@ public class SettingsBehaviour : MonoBehaviour
         vSyncMode.text = _vSync[_vSyncIndex];
         QualitySettings.renderPipeline = qualityPrefabs[_qualityPrefIndex];
         qualityPrefab.text = qualityPrefabs[_qualityPrefIndex].name;
+        unsavedChanges = false;
         Save();
     }
     

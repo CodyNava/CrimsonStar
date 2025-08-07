@@ -105,6 +105,13 @@ MonoBehaviour:
       Data3: 36086663
       Data4: 611758014
     Path: event:/SFX/GetDamage_SFX
+  bridgeGotHitFeedbackSFX:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   lowHealthAlarmSFX:
     Guid:
       Data1: 0
@@ -319,9 +326,7 @@ MonoBehaviour:
   turretModule: {fileID: 138746299594672162}
   spawnTransform: {fileID: 8287526850846769230}
   muzzleCharge: {fileID: 5501383848182057994}
-  muzzleImpact: {fileID: 0}
   shotSound: {fileID: -4272048423135944895}
-  isCharging: 0
 --- !u!114 &-4272048423135944895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -421,6 +426,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7554994347613166308, guid: cd472f836cf9ad24797adc0236489d26, type: 3}
+      propertyPath: m_Asset
+      value: 
+      objectReference: {fileID: 8926484042661614526, guid: 438093eb630f16a43b6623a73e6aa8db, type: 3}
     - target: {fileID: 8628158328526237547, guid: cd472f836cf9ad24797adc0236489d26, type: 3}
       propertyPath: m_Name
       value: VFX_Laser_Muzzle
@@ -515,11 +524,11 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: f563adc8a269db443a51f832277a99f5, type: 3}
       propertyPath: 'm_Materials.Array.data[2]'
       value: 
-      objectReference: {fileID: 2100000, guid: 0a63bf65bd5b19145b972fac71dda0fb, type: 2}
+      objectReference: {fileID: 2100000, guid: ebcf81e07a2410f43b89ad13d2b76734, type: 2}
     - target: {fileID: -7511558181221131132, guid: f563adc8a269db443a51f832277a99f5, type: 3}
       propertyPath: 'm_Materials.Array.data[3]'
       value: 
-      objectReference: {fileID: 2100000, guid: ebcf81e07a2410f43b89ad13d2b76734, type: 2}
+      objectReference: {fileID: 2100000, guid: 0a63bf65bd5b19145b972fac71dda0fb, type: 2}
     - target: {fileID: -5754084199372789682, guid: f563adc8a269db443a51f832277a99f5, type: 3}
       propertyPath: m_Mesh
       value: 

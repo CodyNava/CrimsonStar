@@ -11,6 +11,9 @@ public class TooltipBehaviour : MonoBehaviour
     [SerializeField] private TextMeshProUGUI statFourText;
     [SerializeField] private TextMeshProUGUI statFiveText;
     [SerializeField] private TextMeshProUGUI statSixText;
+    
+    [SerializeField] private TextMeshProUGUI moduleDescriptionText;
+    
     [SerializeField] private GameObject statOneImage;
     [SerializeField] private GameObject statTwoImage;
     [SerializeField] private GameObject statThreeImage;
@@ -33,6 +36,7 @@ public class TooltipBehaviour : MonoBehaviour
 
     private void Start()
     {
+        HideToolTip();
         gameObject.SetActive(false);
     }
 
@@ -82,6 +86,12 @@ public class TooltipBehaviour : MonoBehaviour
         statSixText.text = tooltip;
         statSixImage.SetActive(true);
         statSixImage.GetComponent<Image>().sprite = tooltipImage;
+        gameObject.SetActive(true);
+    }
+    
+    public void ShowModuleDescription(string tooltip)
+    {
+        moduleDescriptionText.text = tooltip;
         gameObject.SetActive(true);
     }
 

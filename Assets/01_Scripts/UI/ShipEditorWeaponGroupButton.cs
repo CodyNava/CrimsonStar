@@ -40,10 +40,10 @@ public class ShipEditorWeaponGroupButton : MonoBehaviour
         {
             switch (input.control.name)
             {
-                case "leftTrigger":
+                case "leftShoulder":
                     _indexGp--;
                     break;
-                case "rightTrigger":
+                case "rightShoulder":
                     _indexGp++;
                     break;
             }
