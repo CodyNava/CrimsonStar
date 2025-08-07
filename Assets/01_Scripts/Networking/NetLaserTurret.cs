@@ -14,8 +14,7 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private VisualEffect muzzleCharge;
-    [SerializeField] private StudioEventEmitter shotSound;
-
+    [SerializeField] private StudioEventEmitter chargeSound;
 
     private const float MaxPassedTime = 0.3f;
 
@@ -24,6 +23,7 @@ public class NetLaserTurret : NetworkBehaviour
     private float _accumulatedTimeVFX;
     private float _cooldownTime;
     private float _chargeTime;
+    private float _chargingValue;
     private bool _justShot;
 
 
@@ -35,6 +35,8 @@ public class NetLaserTurret : NetworkBehaviour
     private void Start()
     {
         muzzleCharge.SetFloat("Get_ChargeTime", netLaserTurretData.ChargeTime);
+        chargeSound.EventInstance.getParameterByName("laser-charging", out _chargingValue);
+        if (!chargeSound.IsPlaying()) chargeSound.Play();
         //muzzleImpact.SetFloat("Delay", netLaserTurretData.ChargeTime);
     }
 
@@ -50,14 +52,26 @@ public class NetLaserTurret : NetworkBehaviour
 
         if (C_IsAttacking())
         {
+            chargeSound.EventInstance.getParameterByName("laser-charging", out _chargingValue);
+
             _accumulatedTimeVFX += Time.deltaTime;
             if (!_isCharging && _accumulatedTimeVFX > 0.3f)
             {
                 _isCharging = true;
-                muzzleCharge.SendEvent("ChargeUp") ;
+                muzzleCharge.SendEvent("ChargeUp");
             }
+
+            if (_chargingValue == 1)
+            {
+                return;
+            }
+            else
+            {
+                chargeSound.EventInstance.setParameterByName("laser-charging", 1);
+                chargeSound.EventInstance.setParameterByName("laser-hold", 1);
+            }
+
             _chargeTime += Time.deltaTime;
-            if (!shotSound.IsPlaying()) shotSound.Play();
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
                 muzzleCharge.SetBool("Set_ChargeCompleted", true);
@@ -76,6 +90,8 @@ public class NetLaserTurret : NetworkBehaviour
                 C_ClientFire();
                 muzzleCharge.SetBool("Set_ChargeCompleted", false);
                 muzzleCharge.SendEvent("StartDissolve");
+                chargeSound.EventInstance.setParameterByName("laser-charging", 0);
+                chargeSound.EventInstance.setParameterByName("laser-hold", 0);
                 return;
             }
 
@@ -83,13 +99,15 @@ public class NetLaserTurret : NetworkBehaviour
             {
                 muzzleCharge.SendEvent("ChargeDown");
             }
+
             _isCharging = false;
             _chargeTime = Mathf.Lerp(_chargeTime, 0, Time.deltaTime * 2);
             _accumulatedTimeVFX = _chargeTime;
-            if (shotSound.IsPlaying()) shotSound.Stop();
+            chargeSound.EventInstance.setParameterByName("laser-charging", 2);
+            chargeSound.EventInstance.setParameterByName("laser-hold", 0);
         }
     }
-    
+
 
     private bool C_IsAttacking()
     {
@@ -118,8 +136,9 @@ public class NetLaserTurret : NetworkBehaviour
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
         NetPredictedProjectileLaser pp = Instantiate(netLaserTurretData.Projectile, position, Quaternion.identity);
-        pp.transform.SetParent(this.transform); 
-        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge, spawnTransform.transform);
+        pp.transform.SetParent(this.transform);
+        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge,
+            spawnTransform.transform);
     }
 
     [ServerRpc]
@@ -142,6 +161,5 @@ public class NetLaserTurret : NetworkBehaviour
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
-        shotSound.Play();
     }
 }
