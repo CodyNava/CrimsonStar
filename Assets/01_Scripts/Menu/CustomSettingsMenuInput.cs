@@ -11,8 +11,8 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [Tooltip("Scroll Speed in SECONDS. Use values smaller than 1. PLEASE I BEG YOU.")] [Range(0, 1)] [SerializeField]
     private float scrollSpeedSeconds;
 
-    [Header("DO NOT TOUCH")] [SerializeField]
-    private GameObject settingsContainer;
+    [Header("DO NOT TOUCH")]
+    [SerializeField] private GameObject settingsContainer;
 
     private EventSystem _eventSystem;
 
@@ -21,7 +21,8 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [SerializeField] private Button settingsBackButton;
     [SerializeField] private Button applyButton;
 
-    [Header("Graphics")] [SerializeField] private GameObject graphicsContainer;
+    [Header("Graphics")]
+    [SerializeField] private GameObject graphicsContainer;
     [SerializeField] private GameObject resolution;
     [SerializeField] private GameObject frameCap;
     [SerializeField] private GameObject vSync;
@@ -42,7 +43,8 @@ public class CustomSettingsMenuInput : MonoBehaviour
     [SerializeField] private Button increaseGamma;
     [SerializeField] private Button decreaseGamma;
 
-    [Header("Sound")] [SerializeField] private GameObject audioContainer;
+    [Header("Sound")]
+    [SerializeField] private GameObject audioContainer;
     [SerializeField] private GameObject master;
     [SerializeField] private GameObject music;
     [SerializeField] private GameObject sfx;
@@ -81,11 +83,6 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 }
             }
 
-            if (Keybinds.Actions.UI.Save.WasPressedThisFrame() && applyButton.GameObject().activeSelf)
-            {
-                applyButton.onClick.Invoke();
-            }
-
             if (Keybinds.Actions.UI.LeftTrigger.WasPressedThisFrame())
             {
                 if (graphicsContainer.activeSelf)
@@ -96,6 +93,11 @@ public class CustomSettingsMenuInput : MonoBehaviour
                 {
                     graphicsButton.onClick.Invoke();
                 }
+            }
+            
+            if (Keybinds.Actions.UI.Save.WasPressedThisFrame() && applyButton.GameObject().activeSelf)
+            {
+                applyButton.onClick.Invoke();
             }
 
             if (Keybinds.Actions.UI.Decrease.IsPressed() && !_cooldownStarted)
@@ -217,6 +219,7 @@ public class CustomSettingsMenuInput : MonoBehaviour
 
                 StartCoroutine(HoldCooldown());
             }
+
         }
     }
 

@@ -41,7 +41,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1396500876254992115}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: d8f2c6cf13e543546bcc8410acb03414, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: 03a216341a1720a47b8c5545409117b1, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -57,7 +57,7 @@ VisualEffect:
       - m_Value: 0.3
         m_Name: Size
         m_Overridden: 1
-      - m_Value: 3
+      - m_Value: 6
         m_Name: SpawnRate_BurstParticle
         m_Overridden: 1
       - m_Value: 50
@@ -72,7 +72,7 @@ VisualEffect:
       - m_Value: 0.25
         m_Name: Lifetime_ImpactShockWave
         m_Overridden: 1
-      - m_Value: 15
+      - m_Value: 23
         m_Name: Size_ImpactParticle
         m_Overridden: 1
       - m_Value: 0.2
@@ -86,7 +86,7 @@ VisualEffect:
       - m_Value: {x: 2, y: 15}
         m_Name: Size2D_BurstParticle
         m_Overridden: 1
-      - m_Value: {x: 0.4, y: 0.6}
+      - m_Value: {x: 0.8, y: 1.2}
         m_Name: Velocity_BurstParticle
         m_Overridden: 1
       - m_Value: {x: 80, y: 100}
@@ -99,10 +99,10 @@ VisualEffect:
       - m_Value: {x: 0.31372538, y: 0.990256, z: 2.9960785, w: 0}
         m_Name: Color_ShockWave
         m_Overridden: 1
-      - m_Value: {x: 4.2920003, y: 1.0336754, z: 0.35953927, w: 0}
+      - m_Value: {x: 0.57254905, y: 0.117259786, z: 0.03529412, w: 0}
         m_Name: Color_FlashImpact
         m_Overridden: 1
-      - m_Value: {x: 7.999999, y: 4.0240784, z: 0.837696, w: 0}
+      - m_Value: {x: 11.984314, y: 6.071603, z: 1.2549016, w: 0}
         m_Name: Color_BurstParticle
         m_Overridden: 1
     m_Uint:
@@ -137,7 +137,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggleDenseFlare
         m_Overridden: 1
-      - m_Value: 0
+      - m_Value: 1
         m_Name: ToggleBurstParticle
         m_Overridden: 1
 --- !u!73398921 &9066637671204424313
@@ -224,7 +224,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3153489900441895684}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: 088ee7db3fa67374499a8e1cfbbc6788, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: 480b6ede54f6fd94a878e38d3ebb2f0e, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -348,6 +348,9 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggleBackgroundSmoke
         m_Overridden: 1
+      - m_Value: 0
+        m_Name: Toggle_EmissionSmoke
+        m_Overridden: 1
 --- !u!73398921 &4029417162772400223
 VFXRenderer:
   serializedVersion: 1
@@ -438,6 +441,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delay: 3
-  _visualEffects:
-  - {fileID: 7269235666588681714}
-  - {fileID: 6150359443443014111}

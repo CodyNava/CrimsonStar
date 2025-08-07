@@ -19,9 +19,11 @@ public class SpectatorPlayerPanel : MonoBehaviour
 
     private bool _initialized;
 
-    public void Start()
+    public void Awake()
     {
+        _panelContainer.SetActive(false);
         InstanceFinder.ClientManager.RegisterBroadcast<NetGameplayBroadcasts.PlayerDeath>(OnPlayerDeath);
+        InstanceFinder.ClientManager.RegisterBroadcast<NetGameplayBroadcasts.PlayerSpactate>(OnSpectateBroadcast);
     }
 
     private void OnPlayerDeath(NetGameplayBroadcasts.PlayerDeath msg, Channel channel)
@@ -39,6 +41,10 @@ public class SpectatorPlayerPanel : MonoBehaviour
         panelObject.SetEnable = false;
     }
 
+    private void OnSpectateBroadcast(NetGameplayBroadcasts.PlayerSpactate msg, Channel channel)
+    {
+        _panelContainer.SetActive(true);
+    }
 
     private void Init()
     {
@@ -46,14 +52,16 @@ public class SpectatorPlayerPanel : MonoBehaviour
         List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
         if (players.Count != _lobbyConductor.PlayersByConnection.Count) return;
 
-        foreach (NetMatchPlayer player in players)
-        {
-            if (player.BridgeObject.Value.IsUnityNull()) return;
-        }
+        // foreach (NetMatchPlayer player in players)
+        // {
+        //     if (player.BridgeObject.Value.IsUnityNull()) return;
+        // }
         
         playerPanelEntryMap.Clear();
         foreach (NetMatchPlayer player in players)
         {
+            if(player.IsSpectating.Value) continue;
+            
             SpectatorPlayerPanelEntry entry = Instantiate(_panelEntryPrefab, _panelContainer.transform, true);
             entry.Init(player.DisplayName.Value, this, player.BridgeObject.Value);
             entry.transform.localScale = Vector3.one;
@@ -62,7 +70,6 @@ public class SpectatorPlayerPanel : MonoBehaviour
             playerPanelEntryMap.Add(player.PlayerID.Value, entry);
         }
         
-        _panelContainer.SetActive(false);
         _initialized = true;
     }
 
@@ -73,7 +80,9 @@ public class SpectatorPlayerPanel : MonoBehaviour
 
     public void OnDestroy()
     {
+        if (!InstanceFinder.ClientManager) return;
         InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerDeath>(OnPlayerDeath);
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerSpactate>(OnSpectateBroadcast);
     }
 
     public void OnPlayerPanelClicked(NetBridge bridge)

@@ -1,5 +1,6 @@
 using FishNet;
 using FishNet.Connection;
+using FishNet.Transporting;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -43,14 +44,22 @@ public class CameraFollow : MonoBehaviour
 
     public void OnEnable()
     {
-
-        if (InstanceFinder.TryGetInstance(out _gameplayConductor))
-        {
-            _gameplayConductor.OnLocalPlayerDeath += OnLocalPlayerDeath;
-        }
+        InstanceFinder.ClientManager.RegisterBroadcast<NetGameplayBroadcasts.PlayerSpactate>(OnSpectatorBroadcast);
+        InstanceFinder.ClientManager.RegisterBroadcast<NetGameplayBroadcasts.PlayerDeath>(OnPlayerDeath);
     }
 
-    private void OnLocalPlayerDeath(NetGameplayConductor.LocalPlayerDeathEventArgs arg0)
+    private void OnPlayerDeath(NetGameplayBroadcasts.PlayerDeath msg, Channel channel)
+    {
+        if (msg.conn != InstanceFinder.ClientManager.Connection) return;
+        EnableSpectator();
+    }
+
+    private void OnSpectatorBroadcast(NetGameplayBroadcasts.PlayerSpactate msg, Channel channel)
+    {
+        EnableSpectator();
+    }
+    
+    private void EnableSpectator()
     {
         _isSpectatorMode = true;
         _target = null;
@@ -58,10 +67,8 @@ public class CameraFollow : MonoBehaviour
 
     public void OnDisable()
     {
-        if (!_gameplayConductor.IsUnityNull())
-        {
-            _gameplayConductor.OnLocalPlayerDeath -= OnLocalPlayerDeath;
-        }
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerSpactate>(OnSpectatorBroadcast);
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerDeath>(OnPlayerDeath);
     }
 
     void LateUpdate()

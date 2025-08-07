@@ -51,6 +51,11 @@ public class MainMenu : MonoBehaviour
         NetGameBootstrapper.CreateLobby();
     }
 
+    public void CreatePrivateLobby()
+    {
+        NetGameBootstrapper.Instance.CreatePrivateLobby();
+    }
+
     public void CreateLobbyLocal()
     {
         NetGameBootstrapper.CreateLobbyLocal();

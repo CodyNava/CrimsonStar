@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ModuleSelectionButton : MonoBehaviour
 {
-    [SerializeField] private Image moduleIcon;
+    [SerializeField] private Image moduleIcon,  hexSizeSprite;
 
     [SerializeField] private TMP_Text moduleName, sizeLabel, currencyLabel;
     [SerializeField] private Sprite testSprite;
@@ -28,6 +28,8 @@ public class ModuleSelectionButton : MonoBehaviour
         moduleName.text = $"{data.DisplayName}";
         sizeLabel.text = $"{data.HexagonSize}";
         moduleIcon.sprite = data.Icon;
+        hexSizeSprite.sprite = data.HexSizeIcon[(int)data.HexagonSize -1 ];
+        
         moduleID = data.ModuleID;
 
         //ToolTips basics
