@@ -226,7 +226,7 @@ public class NetGameplayModule : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void S_InflictDamage(float damage, ulong attackerID = 0)
     {
-        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor) && attackerID != 0)
+        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor))
         {
             gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
         }
