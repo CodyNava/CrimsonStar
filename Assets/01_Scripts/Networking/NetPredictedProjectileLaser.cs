@@ -13,8 +13,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
     [SerializeField] public GameObject hitBox;
     [SerializeField] public LaserProjectileObject laserProjectileObject;
     [SerializeField] public Transform turretTransform;
-    
-    
+
 
     private NetTeamID _netTeamID;
     private Vector3 _direction;
@@ -28,14 +27,16 @@ public class NetPredictedProjectileLaser : MonoBehaviour
     private float _growProgress = 0f;
     private float _currentLength = 0f;
     private float _initialWidth;
-    
+    private int _currentHits;
+
     private readonly Dictionary<NetGameplayModule, float> _damageTimers = new();
-    
+
     private ulong _attackerID;
     private bool _fullyGrown = false;
     private float _lifetimeTimer = 0f;
-    
-    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID, NetBridge bridgeOrigin, Transform spawnTransform)
+
+    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID,
+        NetBridge bridgeOrigin, Transform spawnTransform)
     {
         bulletVFX.Play();
         _direction = direction.normalized;
@@ -47,34 +48,33 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         _maxTargetsPerTick = Mathf.FloorToInt(laserProjectileObject.MaxTargetsPerHit);
         _initialWidth = laserProjectileObject.LaserWidth;
         _endPoint = turretTransform.position + (_direction * laserProjectileObject.MaxLength);
-        
+
         transform.rotation = Quaternion.LookRotation(Vector3.forward, _direction);
-        
+
         //int y = bulletVFX.GetInt("y_asd");
         //y = (int)_currentLength;
-        
+
         if (bulletVFX.HasVector3("DirectionVector_position"))
         {
             bulletVFX.SetVector3("DirectionVector_position", _direction);
         }
-        
+
         InstanceFinder.TryGetInstance(out _lobbyConductor);
     }
-    
+
 
     private void Update()
     {
         float dt = Time.deltaTime;
         LaserVisuels(dt);
         TickLifetime(dt);
-        
+
         if (InstanceFinder.IsServerStarted)
             TickDamage(dt);
         if (InstanceFinder.IsClientStarted && !InstanceFinder.IsServerStarted)
             TickDamage(dt);
     }
-    
-    
+
 
     private void LaserVisuels(float dt)
     {
@@ -100,7 +100,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
             }
         }
     }
-    
+
     private void TickLifetime(float dt)
     {
         if (!_fullyGrown) return;
@@ -111,6 +111,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     private void TickDamage(float dt)
     {
         _tickTimer += dt;
@@ -118,11 +119,11 @@ public class NetPredictedProjectileLaser : MonoBehaviour
 
         _tickTimer = 0f;
 
-        int hits = 0;
+        _currentHits = 0;
 
         foreach (var module in _damageTimers.Keys)
         {
-            if (hits >= _maxTargetsPerTick)
+            if (_currentHits >= _maxTargetsPerTick)
                 break;
 
             if (module == null || module.Bridge == _bridgeOrigin)
@@ -146,8 +147,8 @@ public class NetPredictedProjectileLaser : MonoBehaviour
                 Instantiate(hitFeedbackVFX, spawnPos, Quaternion.identity);
                 // vfx.transform.SetParent(other.transform);
             }
-            
-            hits++;
+
+            _currentHits++;
         }
     }
 
@@ -158,7 +159,7 @@ public class NetPredictedProjectileLaser : MonoBehaviour
             _damageTimers.Remove(module);
         }
     }
-    
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.transform.TryGetComponent(out NetGameplayModule module) || module.Bridge == _bridgeOrigin)
@@ -166,14 +167,12 @@ public class NetPredictedProjectileLaser : MonoBehaviour
 
         if (_damageTimers.ContainsKey(module))
             return;
-        
+
         if (!_lobbyConductor.IsUnityNull() &&
             module.NetTeamID == _netTeamID &&
             _lobbyConductor.FriendlyFireID == NetFirendlyFireID.Off)
             return;
 
         _damageTimers[module] = 0f;
-        
     }
-
 }
