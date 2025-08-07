@@ -458,8 +458,9 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         // SpawnPoints are taken as GameObject.Transforms of GO with Tag "SpawnPoint"
         
-        if (_spawnTransforms.Count <= 0)
+        if (_spawnTransforms.Count < _lobbyConductor.PlayersByConnection.Count)
         {
+            _spawnTransforms.Clear();
             foreach (var go in GameObject.FindGameObjectsWithTag("SpawnPoint"))
             {
                 _spawnTransforms.Add(go.transform);
