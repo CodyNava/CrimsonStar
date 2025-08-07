@@ -116,7 +116,6 @@ public class NetPredictedProjectileLaser : MonoBehaviour
         {
             var spawnPos = new Vector3(other.transform.position.x, other.transform.position.y, other.transform.position.z - 2.5f);
             Instantiate(hitFeedbackVFX, spawnPos, Quaternion.identity);
-            hitFeedbackVFX.transform.SetParent(other.transform);
         }
         
         if (_hitModules.Count >= laserProjectileObject.MaxHits)

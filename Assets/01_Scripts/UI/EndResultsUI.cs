@@ -28,9 +28,9 @@ public class EndResultsUI : MonoBehaviour
         canvasGroup.blocksRaycasts = true;
         container.SetActive(true);
 
-        //List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
-        List<NetMatchPlayer> players =
-            InstanceFinder.GetInstance<NetLobbyConductor>().PlayersByConnection.Values.ToList();
+        List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
+        /*List<NetMatchPlayer> players =
+            InstanceFinder.GetInstance<NetLobbyConductor>().PlayersByConnection.Values.ToList();*/
         //players.Sort((a, b) => b.MatchScore.Value.CompareTo(a.MatchScore.Value));
         players = players.OrderBy(p => p.MatchScore.Value).ThenBy(p =>p.Team.Value).ToList();
         
@@ -53,9 +53,9 @@ public class EndResultsUI : MonoBehaviour
         canvasGroup.blocksRaycasts = true;
         container.SetActive(true);
         
-        //List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
-        List<NetMatchPlayer> players =
-            InstanceFinder.GetInstance<NetLobbyConductor>().PlayersByConnection.Values.ToList();
+        List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
+        /*List<NetMatchPlayer> players =
+            InstanceFinder.GetInstance<NetLobbyConductor>().PlayersByConnection.Values.ToList();*/
         //players.Sort((a, b) => b.MatchScore.Value.CompareTo(a.MatchScore.Value));
         players = players.OrderBy(p => p.MatchScore.Value).ThenBy(p =>p.Team.Value).ToList();
         for (int i = 0; i < players.Count; i++)
