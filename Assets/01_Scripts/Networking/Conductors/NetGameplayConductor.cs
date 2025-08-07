@@ -99,9 +99,9 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         NetMatchPlayer matchPlayer = _lobbyConductor.PlayersByConnection[connection];
 
+        matchPlayer.S_ResetRoundStats();
         if (!matchPlayer.IsSpectating.Value)
         {
-            matchPlayer.S_ResetRoundStats();
             var bridge = Instantiate(bridgePrefab);
             ServerManager.Spawn(bridge.gameObject, connection);
             _bridges.Add(connection, bridge);
@@ -110,7 +110,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             bridge.S_SetPlayerID(matchPlayer.PlayerID.Value);
             bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, matchPlayer.Team.Value, HexCoordinate.Zero);
             S_ConstructPlayerShip(connection, matchPlayer.Team.Value, bridge, matchPlayer.ModuleStorage, scene);
-            this.transform.localScale = new Vector3(4 + PlayerCount / 2, 4 + PlayerCount / 2, 0);
+            // this.transform.localScale = new Vector3(4 + PlayerCount / 2, 4 + PlayerCount / 2, 0);
             var spawnPoint = S_GetSpawnTransform();
             bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
         }
