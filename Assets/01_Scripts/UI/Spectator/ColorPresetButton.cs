@@ -13,6 +13,9 @@ public class ColorPresetButton : MonoBehaviour
 
     [SerializeField] private List<Color> currentPreset = new List<Color>();
 
+    [SerializeField] private Image buttonImage;
+    [SerializeField] private Sprite painterBut1, painterBut2, painterBut3;
+
     public IReadOnlyList<Color> ChangeColor() => currentPreset;
     public static event Action<List<Color>> ColorSelected;
 
@@ -20,14 +23,24 @@ public class ColorPresetButton : MonoBehaviour
     {
         ColorSelected?.Invoke(currentPreset);
     }
+
     public void SetColor(List<Color> data)
     {
-            colorOne.color = data[0];
-            colorTwo.color = data[1];
-            colorThree.color = data[2];
-            currentPreset = data;
-            
+        colorOne.color = data[0];
+        colorTwo.color = data[1];
+        colorThree.color = data[2];
+        currentPreset = data;
     }
+
+    public void SetButtonSprite()
+    {
+        buttonImage.sprite = painterBut1;
+    }
+
+    public void ChangeButtonSpriteBasedOnState() => buttonImage.sprite = buttonImage.sprite == painterBut2
+        ? painterBut1
+        : painterBut2;
+
     public void SetName(string name)
     {
         presetName.text = name;

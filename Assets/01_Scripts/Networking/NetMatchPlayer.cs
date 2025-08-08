@@ -1,10 +1,6 @@
 ﻿using FishNet;
-using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-using Steamworks;
-using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class NetMatchPlayer : NetworkBehaviour
 {
@@ -28,6 +24,8 @@ public class NetMatchPlayer : NetworkBehaviour
      * </summary>
      */
     public readonly SyncVar<bool> IsSpectating = new();
+    public readonly SyncVar<bool> RoundWon = new();
+    public readonly SyncVar<bool> MatchWon = new();
     
     public NetModuleStorage ModuleStorage { get; private set; }
 
@@ -43,6 +41,8 @@ public class NetMatchPlayer : NetworkBehaviour
         Survived.Value = true;
         IsSpectating.Value = lobbyData.playerTeamID == NetTeamID.Observer;
         
+        RoundWon.Value = false;
+        MatchWon.Value = false;
         C_Init();
     }
     
@@ -53,6 +53,8 @@ public class NetMatchPlayer : NetworkBehaviour
         DamageReceivedRound.Value = 0;
         DamageDealtRound.Value = 0;
         Survived.Value = true;
+        RoundWon.Value = false;
+        MatchWon.Value = false;
     }
 
     [ObserversRpc][Client]
