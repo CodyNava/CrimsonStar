@@ -20,6 +20,7 @@ public class ModuleCategoryContainer : MonoBehaviour
         {
             foreach (var data in presetData.presets)
             {
+                colorPresetButton.SetButtonSprite();
                 colorPresetButton.SetColor(data.colors);
                 colorPresetButton.SetName(data.presetName);
                 Instantiate(colorPresetContainer, container.transform);
