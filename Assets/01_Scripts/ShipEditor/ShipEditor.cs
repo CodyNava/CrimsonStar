@@ -564,11 +564,16 @@ public class ShipEditor : MonoBehaviour
 
     private bool IsSomethingBelowThruster(HexCoordinate coord)
     {
-        const int maxDistance = 3;
+        const int maxDistance = 10;
         for (var i = 0; i < maxDistance; i++)
         {
             coord = HexCoordinate.Neighbor(coord, HexDirection.South);
             if (_editorModulesMap.TryGetValue(coord, out var value))
+            {
+                return true;
+            }
+
+            if (_blockedCoordinates.ContainsKey(coord))
             {
                 return true;
             }
@@ -588,7 +593,18 @@ public class ShipEditor : MonoBehaviour
         }
     }
 
-    public bool CheckIfPowered(HexCoordinate coord) => energyMap.GetValueOrDefault(coord) >= 1;
+    public bool CheckIfPowered(List<HexCoordinate> coordinates)
+    {
+        foreach (var coord in coordinates)
+        {
+            if (energyMap.GetValueOrDefault(coord) >= 1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private bool IsReactorInRangeOfReactor(HexCoordinate coord)
     {
@@ -803,6 +819,17 @@ public class ShipEditor : MonoBehaviour
 
     public void SignalReady()
     {
+        if (isReady)
+        {
+            if (PlayerData.C_SignalUnready())
+            {
+                gamepadEnabled = true;
+                isReady = false;
+            }
+
+            return;
+        }
+
         if (PlayerData.C_SignalReady())
         {
             gamepadEnabled = false;
@@ -828,6 +855,7 @@ public class ShipEditor : MonoBehaviour
 
             PlaceModule(uniqueModule.RootCoordinate);
         }
+
         isReady = false;
         StartCoroutine(WaitForReconstructShip());
     }
