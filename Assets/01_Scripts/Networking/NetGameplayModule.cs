@@ -27,9 +27,11 @@ public class NetGameplayModule : NetworkBehaviour
     [SerializeField] private EventReference gotHitFeedbackSFX;
     [SerializeField] private EventReference bridgeGotHitFeedbackSFX;
     [SerializeField] private EventReference lowHealthAlarmSFX;
+    [SerializeField] private Material glassCrackedMaterial;
     private EventInstance _lowHealthAlarmInstance;
 
     [Header("ColorPresets")] private static readonly int Shift = Shader.PropertyToID("_ColourShift");
+    private static readonly int BridgeHealthInput = Shader.PropertyToID("BridgeHealthInput");
     [field: SerializeField] private Vector4 PresetColor1 { get; set; }
     [field: SerializeField] private Vector4 PresetColor2 { get; set; }
     [field: SerializeField] private Vector4 PresetColor3 { get; set; }
@@ -82,6 +84,7 @@ public class NetGameplayModule : NetworkBehaviour
         if (ModuleID != NetModuleID.Bridge) return;
         _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
         _lowHealthAlarmInstance.release();
+        glassCrackedMaterial.SetFloat(BridgeHealthInput, 0f);
     }
 
     public override void OnStartClient()
@@ -113,17 +116,14 @@ public class NetGameplayModule : NetworkBehaviour
         PresetMat1 = PresetObject.GetComponent<MeshRenderer>().materials[0];
         PresetMat2 = PresetObject.GetComponent<MeshRenderer>().materials[1];
         PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[2];
-        if (ModuleID == NetModuleID.Reactor)
-            PresetMat3 = PresetObject.GetComponent<MeshRenderer>().materials[3]; //
-
         if (!PresetObjectHead) return;
-
         PresetMatHead1 = PresetObjectHead.GetComponent<MeshRenderer>().materials[0];
         PresetMatHead2 = PresetObjectHead.GetComponent<MeshRenderer>().materials[1];
         PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
-        if (ModuleID == NetModuleID.TurretLaser)
-            PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[3]; //
     }
+
+    [Server]
+    private void SetHealth(float value) => _health.Value -= value;
 
     public void SetColorsBasedOnPreset()
     {
@@ -193,15 +193,17 @@ public class NetGameplayModule : NetworkBehaviour
 
     [ObserversRpc]
     [Client]
-    public void C_DisplayDamageObserver()
+    public void C_DisplayDamageObserver(float HealthPct)
     {
         float health = HealthPct;
+        Debug.Log("AAAAAA " + _health + "BBBBB" + HealthPct);
         damagedVFX.SetFloat("DamageInput", 1 - health);
         damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         if (IsOwner)
         {
             if (ModuleID == NetModuleID.Bridge)
             {
+                glassCrackedMaterial.SetFloat(BridgeHealthInput, 1 - health);
                 RuntimeManager.PlayOneShot(bridgeGotHitFeedbackSFX, transform.position);
                 if (lowHealthAlarmSFX.IsNull == false)
                 {
@@ -218,8 +220,6 @@ public class NetGameplayModule : NetworkBehaviour
                 RuntimeManager.PlayOneShot(gotHitFeedbackSFX, transform.position);
             }
         }
-        //Todo: Implement VFX Here
-        // VFX Basierend auf healthPCT (VFX.INtensity = 1 - health) 
     }
 
     [Server]
@@ -231,13 +231,16 @@ public class NetGameplayModule : NetworkBehaviour
             gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
         }
 
-        _health.Value -= damage;
+        SetHealth(damage);
         if (_health.Value <= 0)
         {
             if (lowHealthAlarmSFX.IsNull == false)
             {
                 _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
                 _lowHealthAlarmInstance.release();
+
+                if (this.ModuleID != NetModuleID.Bridge) return;
+                glassCrackedMaterial.SetFloat(BridgeHealthInput, 0f);
             }
 
             if (ModuleID == NetModuleID.Bridge && gameplayConductor && attackerID != 0)
@@ -249,7 +252,7 @@ public class NetGameplayModule : NetworkBehaviour
         }
 
         Debug.Log("damage inflicted: " + damage);
-
-        C_DisplayDamageObserver();
+        float newPct = Mathf.Clamp01(_health.Value / Mathf.Max(_maxHealth, Mathf.Epsilon)); // direkt die healthpct übergeben weil die syncticks zu langsam sind 
+        C_DisplayDamageObserver(newPct);
     }
 }
