@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1840815982162558663}
   - component: {fileID: -6110158522725373232}
   m_Layer: 12
-  m_Name: NetworkedProjectileShredder
+  m_Name: RailGunProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,7 +85,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletVFX: {fileID: 9099989994403282068}
   hitFeedbackVFX: {fileID: 5671986103320250904, guid: e2d233654d75a7b4c81db863eb5572d4, type: 3}
-  baseProjectileObject: {fileID: 11400000, guid: 5dbcf19d27a002e4a8aaa42e9ac6a779, type: 2}
+  baseProjectileObject: {fileID: 11400000, guid: f355c226c8d91394ab2ccb27b1793cdf, type: 2}
 --- !u!114 &-6110158522725373232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,15 +175,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6647529780591145598, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[1].m_Value
-      value: 0.7
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6647529780591145598, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[4].m_Value
-      value: 1.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6647529780591145598, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[4].m_Overridden
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647529780591145598, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[1].m_Value.x
+      value: 191.74902
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647529780591145598, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[1].m_Value.y
+      value: 31.826845
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647529780591145598, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
+      propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[1].m_Value.z
+      value: 16.062742
       objectReference: {fileID: 0}
     - target: {fileID: 9168460078428635787, guid: 11d80dba0324cf64ba2e3ff9fc3e1899, type: 3}
       propertyPath: m_Name

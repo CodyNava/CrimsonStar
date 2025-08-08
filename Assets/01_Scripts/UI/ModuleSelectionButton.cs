@@ -210,7 +210,7 @@ public class ModuleSelectionButton : MonoBehaviour
                 toolTip.statThree = data.TurretData.Cooldown.ToString(CultureInfo.InvariantCulture);
 
                 //PROJECTILE TYPE
-                toolTip.statFour = ".";
+                toolTip.statFour = data.TurretData.Projectile.baseProjectileObject.Pierce.ToString(CultureInfo.InvariantCulture);
                 toolTip.statFourImage = database.GetSpriteById("kinetic");
                 break;
             case NetModuleID.ShredderGun:
@@ -223,8 +223,21 @@ public class ModuleSelectionButton : MonoBehaviour
                 toolTip.statThree = data.TurretData.Cooldown.ToString(CultureInfo.InvariantCulture);
 
                 //PROJECTILE TYPE
-                toolTip.statFour = ".";
+                toolTip.statFour = data.TurretData.Projectile.baseProjectileObject.Pierce.ToString(CultureInfo.InvariantCulture);
                 toolTip.statFourImage = database.GetSpriteById("kinetic");
+                break;
+            case NetModuleID.RailGun:
+                //DMG
+                toolTip.statTwo =
+                    data.TurretData.Projectile.baseProjectileObject.ProjectileDamage.ToString(CultureInfo
+                        .InvariantCulture);
+
+                //COOLDOWN
+                toolTip.statThree = data.TurretData.Cooldown.ToString(CultureInfo.InvariantCulture);
+
+                //PROJECTILE TYPE
+                toolTip.statFour = data.TurretData.Projectile.baseProjectileObject.Pierce.ToString(CultureInfo.InvariantCulture);
+                toolTip.statFourImage = database.GetSpriteById("piercing");
                 break;
         }
     }
