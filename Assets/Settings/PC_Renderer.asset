@@ -42,6 +42,26 @@ MonoBehaviour:
       restoreCamera: 1
       offset: {x: 0, y: 0, z: 0, w: 0}
       cameraFieldOfView: 60
+--- !u!114 &-7645894659240463221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
+  m_Name: FSSGBridgeHealth
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  injectionPoint: 600
+  fetchColorBuffer: 1
+  requirements: 0
+  passMaterial: {fileID: 2100000, guid: 0296b357d3fea8e418a7c71d3bd2ff7e, type: 2}
+  passIndex: 0
+  bindDepthStencilAttachment: 0
+  m_Version: 1
 --- !u!114 &-7549658537046363174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,7 +219,8 @@ MonoBehaviour:
   - {fileID: -7984253223947869987}
   - {fileID: -7549658537046363174}
   - {fileID: -7079376931189446862}
-  m_RendererFeatureMap: ad6b866f10d7b46cee3bf74b487e43c7013ccfc833b28974dde0d1c5fe3b3291da33db738f393a9732a75b713000c19d
+  - {fileID: -7645894659240463221}
+  m_RendererFeatureMap: ad6b866f10d7b46cee3bf74b487e43c7013ccfc833b28974dde0d1c5fe3b3291da33db738f393a9732a75b713000c19d8b74ea2d5153e495
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}

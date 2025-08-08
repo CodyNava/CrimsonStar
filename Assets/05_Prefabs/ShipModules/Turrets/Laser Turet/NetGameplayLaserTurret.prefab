@@ -85,7 +85,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 8117090760363641474}
   _networkObjectCache: {fileID: 8117090760363641474}
-  <ModuleID>k__BackingField: 5
+  <ModuleID>k__BackingField: 9
   <VisualTransform>k__BackingField: {fileID: 5016803788315297660}
   <WeaponGroup>k__BackingField: 0
   deathVFX: {fileID: 3855630418371909128, guid: a48c47118e70ca4408d122c10549bf2e, type: 3}
@@ -105,6 +105,13 @@ MonoBehaviour:
       Data3: 36086663
       Data4: 611758014
     Path: event:/SFX/GetDamage_SFX
+  bridgeGotHitFeedbackSFX:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   lowHealthAlarmSFX:
     Guid:
       Data1: 0
@@ -315,12 +322,11 @@ MonoBehaviour:
   _componentIndexCache: 3
   _addedNetworkObject: {fileID: 8117090760363641474}
   _networkObjectCache: {fileID: 8117090760363641474}
-  netLaserTurretData: {fileID: 11400000, guid: c400ea635c2075c46bd3966515240007, type: 2}
+  netLaserTurretData: {fileID: 11400000, guid: c7c446fc6a16462499ae1065c1c318f6, type: 2}
   turretModule: {fileID: 138746299594672162}
   spawnTransform: {fileID: 8287526850846769230}
   muzzleCharge: {fileID: 5501383848182057994}
   shotSound: {fileID: -4272048423135944895}
-  originalMuzzleChargeColor: []
 --- !u!114 &-4272048423135944895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -420,6 +426,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7554994347613166308, guid: cd472f836cf9ad24797adc0236489d26, type: 3}
+      propertyPath: m_Asset
+      value: 
+      objectReference: {fileID: 8926484042661614526, guid: 438093eb630f16a43b6623a73e6aa8db, type: 3}
     - target: {fileID: 8628158328526237547, guid: cd472f836cf9ad24797adc0236489d26, type: 3}
       propertyPath: m_Name
       value: VFX_Laser_Muzzle
@@ -465,7 +475,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f563adc8a269db443a51f832277a99f5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.628
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f563adc8a269db443a51f832277a99f5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -522,7 +532,7 @@ PrefabInstance:
     - target: {fileID: -5754084199372789682, guid: f563adc8a269db443a51f832277a99f5, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -1971152078173723434, guid: 34d616584129dac4f8590c088f4fab76, type: 3}
+      objectReference: {fileID: 3453052670453648845, guid: b87913be65daf3a4a9e0975c38f8aae4, type: 3}
     - target: {fileID: 919132149155446097, guid: f563adc8a269db443a51f832277a99f5, type: 3}
       propertyPath: m_Name
       value: SM_Module_TurretHead_BO
@@ -654,6 +664,80 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f563adc8a269db443a51f832277a99f5, type: 3}
   m_PrefabInstance: {fileID: 3156257486412003263}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3797277927471595637
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5016803788315297660}
+    m_Modifications:
+    - target: {fileID: 475578445036314614, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_Name
+      value: PowerSocket_Hex1
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.89015484
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.89015484
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.89015484
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 33.553
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -20.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 199.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+--- !u!4 &4340993363795800785 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 616124882672956068, guid: 913025b50c692a140872d523f6d51c61, type: 3}
+  m_PrefabInstance: {fileID: 3797277927471595637}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4761990402031181975
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -721,7 +805,7 @@ PrefabInstance:
     - target: {fileID: -5754084199372789682, guid: c7a6346d9c463254692731dcafbdb24c, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -5945311504543012476, guid: 9f9cbb7cd834cc941971ac9856bff9f9, type: 3}
+      objectReference: {fileID: 6099769242819553509, guid: 3ce3fdf661feb60449072c2de572af57, type: 3}
     - target: {fileID: 919132149155446097, guid: c7a6346d9c463254692731dcafbdb24c, type: 3}
       propertyPath: m_Name
       value: SM_Module_TurretBase_BO
@@ -733,6 +817,9 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: c7a6346d9c463254692731dcafbdb24c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4340993363795800785}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: c7a6346d9c463254692731dcafbdb24c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3190798185957970004}
