@@ -28,8 +28,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1, y: 1, z: 5}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -51,7 +51,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 13
+      - m_Value: 25
         m_Name: Size
         m_Overridden: 1
       - m_Value: 11
@@ -60,26 +60,35 @@ VisualEffect:
       - m_Value: 8
         m_Name: Size_Fog_SecondLayer
         m_Overridden: 0
-      - m_Value: 5
+      - m_Value: 3
         m_Name: SpawnRate_Fog_TherdLayer
-        m_Overridden: 0
-      - m_Value: 2
+        m_Overridden: 1
+      - m_Value: 4
         m_Name: SpawnRate_Fog_ScondLayer
-        m_Overridden: 0
+        m_Overridden: 1
+      - m_Value: 4
+        m_Name: SpawnRate_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 8
+        m_Name: Size_Fog_FirstLayer
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 0.6816353, y: 0.70698106, z: 0.8509804, w: 0}
+      - m_Value: {x: 0.40784314, y: 0.36078432, z: 0.6, w: 0}
         m_Name: Color_Fog_FirstLayer
         m_Overridden: 1
       - m_Value: {x: 0.32156864, y: 0.35325477, z: 0.3764706, w: 0}
         m_Name: Color_Fog_TherdLayer
         m_Overridden: 1
-      - m_Value: {x: 0.5676549, y: 0.61081743, z: 0.6509804, w: 0}
+      - m_Value: {x: 0.21568628, y: 0.34509805, z: 0.50980395, w: 0}
         m_Name: Color_Fog_SecondLayer
+        m_Overridden: 1
+      - m_Value: {x: 1.4980391, y: 0.67450976, z: 0.8543862, w: 0}
+        m_Name: Color_Particle 1
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -98,7 +107,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggelSubgraph_Fog_FirstLayer
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0
         m_Name: ToggelSubgraph_Fog_TherdLayer
         m_Overridden: 1
       - m_Value: 1
