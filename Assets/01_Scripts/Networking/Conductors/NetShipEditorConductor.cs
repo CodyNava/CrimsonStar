@@ -17,6 +17,9 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     [SerializeField] private float shipEditorTimerDuration;
     [SerializeField] private FMODUnity.StudioEventEmitter intro;
     [SerializeField] private bool inEditorPhase = true;
+    public bool InEditorPhase => inEditorPhase;
+    
+    
 
     public override string ConductedSceneName => "NetShipEditor";
 
@@ -88,6 +91,14 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
         {
             StartCoroutine(AdvanceToGameplayScene());
         }
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    [Server]
+    public void S_SignalUnready(Channel channel = Channel.Reliable, NetworkConnection conn = null)
+    {
+        _playersReady[conn!] = false;
+        
     }
 
     [ObserversRpc]

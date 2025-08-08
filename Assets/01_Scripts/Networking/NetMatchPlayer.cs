@@ -112,4 +112,16 @@ public class NetMatchPlayer : NetworkBehaviour
 
         return false;
     }
+    
+    [Client]
+    public bool C_SignalUnready()
+    {
+        if (IsOwner)
+        {
+            InstanceFinder.GetInstance<NetShipEditorConductor>().S_SignalUnready();
+            return true;
+        }
+
+        return false;
+    }
 }
