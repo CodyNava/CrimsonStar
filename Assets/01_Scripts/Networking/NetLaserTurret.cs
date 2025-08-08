@@ -15,6 +15,9 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private VisualEffect muzzleCharge;
     [SerializeField] private StudioEventEmitter shotSound;
+    
+    [SerializeField] private NetModuleData moduleData;
+    [SerializeField] private List<HexCoordinate> localCoordinates;
 
 
     private const float MaxPassedTime = 0.3f;
@@ -29,9 +32,25 @@ public class NetLaserTurret : NetworkBehaviour
 
     private bool CanFire()
     {
-        return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
+        if (!this.turretModule.ModuleID.GetModuleData().CanBePowered) return true;
+        return turretModule.Bridge.PositionHasEnergy(CalculateRealCoordinates());
     }
 
+    private List<HexCoordinate> CalculateRealCoordinates()
+    {
+        foreach (Vector3Int localCoordinate in moduleData.LocalModuleCoordinates)
+        {
+            localCoordinates.Add(new HexCoordinate(localCoordinate.x, localCoordinate.y, localCoordinate.z));
+        }
+        
+        var totalCoord = new List<HexCoordinate>();
+        foreach (var coord in  localCoordinates)
+        {
+            totalCoord.Add(coord + turretModule.RootCoordinate);
+        }
+        return totalCoord;
+    }
+    
     private void Start()
     {
         muzzleCharge.SetFloat("Get_ChargeTime", netLaserTurretData.ChargeTime);

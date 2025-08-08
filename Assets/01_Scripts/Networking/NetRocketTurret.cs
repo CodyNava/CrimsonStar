@@ -1,4 +1,5 @@
-﻿using FishNet.Object;
+﻿using System.Collections.Generic;
+using FishNet.Object;
 using FMODUnity;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -10,6 +11,9 @@ public class NetRocketTurret : NetworkBehaviour
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransformA, spawnTransformB;
     [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
+    [SerializeField] private NetModuleData moduleData;
+    [SerializeField] private List<HexCoordinate> localCoordinates;
+    
     private VisualEffect _nextMuzzleFlash;
     [SerializeField] private StudioEventEmitter shotSound;
     private const float MaxPassedTime = 0.3f;
@@ -28,9 +32,30 @@ public class NetRocketTurret : NetworkBehaviour
         _nextMuzzleFlash = muzzleFlashA;
     }
 
+    private bool CanFire()
+    {
+        if (!this.turretModule.ModuleID.GetModuleData().CanBePowered) return true;
+        return turretModule.Bridge.PositionHasEnergy(CalculateRealCoordinates());
+    }
+
+    private List<HexCoordinate> CalculateRealCoordinates()
+    {
+        foreach (Vector3Int localCoordinate in moduleData.LocalModuleCoordinates)
+        {
+            localCoordinates.Add(new HexCoordinate(localCoordinate.x, localCoordinate.y, localCoordinate.z));
+        }
+        
+        var totalCoord = new List<HexCoordinate>();
+        foreach (var coord in  localCoordinates)
+        {
+            totalCoord.Add(coord + turretModule.RootCoordinate);
+        }
+        return totalCoord;
+    }
     private void Update()
     {
         if (!IsOwner) return;
+        if (!CanFire()) return;
         _accumulatedTime += Time.deltaTime;
         _cooldownTime = Mathf.Min(_accumulatedTime, netRocketTurretData.Cooldown);
 
