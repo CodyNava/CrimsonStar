@@ -106,8 +106,8 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             _lobbyConductor.PlayersByConnection[connection].BridgeObject.Value = bridge;
             bridge.S_SetDisplayName(matchPlayer.DisplayName.Value);
             bridge.S_SetPlayerID(matchPlayer.PlayerID.Value);
-            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, matchPlayer.Team.Value, HexCoordinate.Zero);
-            S_ConstructPlayerShip(connection, matchPlayer.Team.Value, bridge, matchPlayer.ModuleStorage, scene);
+            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, matchPlayer.Team.Value, HexCoordinate.Zero, matchPlayer.SelectedPreset.Value);
+            S_ConstructPlayerShip(connection, matchPlayer.Team.Value, bridge, matchPlayer.ModuleStorage, scene, matchPlayer.SelectedPreset.Value);
             this.transform.localScale = new Vector3(4 + PlayerCount / 2, 4 + PlayerCount / 2, 0);
             var spawnPoint = S_GetSpawnTransform();
             bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
@@ -352,7 +352,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
     [Server]
     private void S_ConstructPlayerShip(NetworkConnection conn, NetTeamID id, NetBridge bridge,
-        NetModuleStorage editorData, Scene scene)
+        NetModuleStorage editorData, Scene scene, string colorPreset)
     {
         foreach (var placementData in editorData.GetUniqueModules())
         {
@@ -363,7 +363,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             module.transform.SetLocalPositionAndRotation(bridge.transform.InverseTransformPoint(modulePos),
                 moduleRotation);
             ServerManager.Spawn(module.gameObject, conn);
-            module.S_ServerInit(bridge, id, placementData.RootCoordinate);
+            module.S_ServerInit(bridge, id, placementData.RootCoordinate, colorPreset);
         }
     }
 
