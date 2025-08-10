@@ -63,7 +63,7 @@ public class NetGameplayModule : NetworkBehaviour
     public HexCoordinate RootCoordinate => _rootCoordinate.Value;
 
     [Server]
-    public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, HexCoordinate rootCoordinate)
+    public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, HexCoordinate rootCoordinate, string presetName)
     {
         var moduleData = ModuleID.GetModuleData();
 
@@ -73,6 +73,7 @@ public class NetGameplayModule : NetworkBehaviour
         _maxHealth = _health.Value;
         _playerID.Value = netTeamID;
         _bridge.S_AttachModule(this, rootCoordinate);
+        C_SetColorsBasedOnPreset(presetName);
     }
 
     public void C_ClientInit()
@@ -121,21 +122,19 @@ public class NetGameplayModule : NetworkBehaviour
         PresetMatHead2 = PresetObjectHead.GetComponent<MeshRenderer>().materials[1];
         PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
     }
-
-    [Server]
-    private void SetHealth(float value) => _health.Value -= value;
-
-    public void SetColorsBasedOnPreset()
+    
+    [ObserversRpc]
+    public void C_SetColorsBasedOnPreset(string presetName)
     {
-        //PresetColor1 = player.ColorList.Value[0];
-        //PresetColor2 = player.ColorList.Value[1];
-        //PresetColor3 = player.ColorList.Value[2];
-        // todo set colors here
+        var currenPreset = DataProvider.GetColorPresetByName(presetName);
+        PresetColor1 = currenPreset.color1;
+        PresetColor2 = currenPreset.color2;
+        PresetColor3 = currenPreset.color3;
+        UpdateMaterialPresets();
     }
 
     private void UpdateMaterialPresets()
     {
-        SetColorsBasedOnPreset();
         PresetMat1.SetVector(Shift, PresetColor1);
         PresetMat2.SetVector(Shift, PresetColor2);
         PresetMat3.SetVector(Shift, PresetColor3);
@@ -146,7 +145,12 @@ public class NetGameplayModule : NetworkBehaviour
             PresetMatHead3.SetVector(Shift, PresetColor3);
         }
     }
+    
 
+    
+    [Server]
+    private void SetHealth(float value) => _health.Value -= value;
+    
     // Occurs when a module gets destroyed
     [Server]
     private void S_DestroyModule()

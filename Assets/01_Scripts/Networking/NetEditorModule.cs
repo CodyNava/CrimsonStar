@@ -124,9 +124,13 @@ public class NetEditorModule : MonoBehaviour
 
     public void SetMaterialsBasedOnPreset()
     {
-        PresetColor1 = shipEditor.colorList[0];
-        PresetColor2 = shipEditor.colorList[1];
-        PresetColor3 = shipEditor.colorList[2];
+        var presetName = shipEditor.PlayerData.SelectedPreset.Value;
+        if (presetName == null) return;
+        var currenPreset = DataProvider.GetColorPresetByName(presetName);
+        PresetColor1 = currenPreset.color1;
+        PresetColor2 = currenPreset.color2;
+        PresetColor3 = currenPreset.color3;
+       
     }
 
     private void UpdateMaterialPresets()

@@ -79,8 +79,8 @@ public class ShipEditor : MonoBehaviour
     [Header("ColorPresets")] [SerializeField]
     public ColorPresetData presetData;
 
-    //[SerializeField] public List<ColorPreset> presetList = new List<ColorPreset>();
-    [SerializeField] public List<Color> colorList = new List<Color>();
+  
+   
     public NetMatchPlayer PlayerData { get; private set; }
 
     private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
@@ -145,9 +145,8 @@ public class ShipEditor : MonoBehaviour
         editCamera ??= Camera.main;
         ModuleSelectionButton.ModuleSelected -= SpawnPart;
         ModuleSelectionButton.ModuleSelected += SpawnPart;
-        ColorPresetButton.ColorSelected -= ChangeColors;
-        ColorPresetButton.ColorSelected += ChangeColors;
-        colorList = presetData.presets[0].colors;
+        ColorPresetButton.ColorSelected -= SetPresetName;
+        ColorPresetButton.ColorSelected += SetPresetName;
         _editorModuleList = new List<NetEditorModule> // collection initialization syntax uwu
         {
             netEditorBridgeRef
@@ -176,6 +175,7 @@ public class ShipEditor : MonoBehaviour
                 {
                     PlayerData = matchPlayer;
                     ReconstructShip(PlayerData.ModuleStorage.GetUniqueModules());
+                    if (string.IsNullOrEmpty(PlayerData.SelectedPreset.Value)) PlayerData.C_SetPresetName("Default");
                     yield break;
                 }
             }
@@ -187,7 +187,7 @@ public class ShipEditor : MonoBehaviour
     private void OnDestroy()
     {
         ModuleSelectionButton.ModuleSelected -= SpawnPart;
-        ColorPresetButton.ColorSelected -= ChangeColors;
+        ColorPresetButton.ColorSelected -= SetPresetName;
     }
 
     public void SpawnPart(NetModuleID moduleID)
@@ -199,9 +199,9 @@ public class ShipEditor : MonoBehaviour
         }
     }
 
-    public void ChangeColors(List<Color> colors)
+    public void SetPresetName(string presetName)
     {
-        colorList = colors;
+        PlayerData.C_SetPresetName(presetName);
     }
 
     private IEnumerator NotEnoughMoneyPopUp()
@@ -250,24 +250,24 @@ public class ShipEditor : MonoBehaviour
         {
             moduleSpawnedInGP = true;
             Vector3 spawnVec = new Vector3(0f, 0f, 0f);
-            _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, spawnVec, transform.rotation);
+            _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, spawnVec, Quaternion.identity);
         }
         else
         {
             _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab,
-                editCamera.ScreenToWorldPoint(Input.mousePosition).xy(),
-                transform.rotation);
+                editCamera.ScreenToWorldPoint(Input.mousePosition).xy(), Quaternion.identity);
             _heldNetEditorModule.TotalHealthChangeOverLayColour();
-            for (int i = 0; i < tempRotation; i++)
-            {
-                if (_heldNetEditorModule.ModuleData.CanRotate) _heldNetEditorModule.C_RotateClockwise();
-            }
+            
         }
 
         FMODUnity.RuntimeManager.PlayOneShot(moduleBuyEvent, _heldNetEditorModule.transform.position);
         _heldNetEditorModule.Initialize();
         PlayerData.C_PayForModule(moduleID);
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
+        for (int i = 0; i < tempRotation; i++)
+        {
+            if (_heldNetEditorModule.ModuleData.CanRotate) _heldNetEditorModule.C_RotateClockwise();
+        }
         return true;
     }
 
