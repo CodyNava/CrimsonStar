@@ -108,7 +108,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &6107309012093280526
+--- !u!1 &4506504246644133266
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,77 +116,51 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5607217600802395003}
-  - component: {fileID: 6787476661400173115}
-  - component: {fileID: 3029505593014606762}
-  - component: {fileID: 3504510951168486797}
+  - component: {fileID: 4531378844740688594}
+  - component: {fileID: 7176113480506999565}
+  - component: {fileID: 3621637275056506105}
+  - component: {fileID: 263262962506902615}
   m_Layer: 3
-  m_Name: EditorDefaultTurretT2
+  m_Name: Navigator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5607217600802395003
+--- !u!4 &4531378844740688594
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6107309012093280526}
+  m_GameObject: {fileID: 4506504246644133266}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.24}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5016803788315297660}
-  - {fileID: 4664552567274495076}
-  - {fileID: 5130280937724909561}
-  m_Father: {fileID: 0}
+  m_Children: []
+  m_Father: {fileID: 5607217600802395003}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6787476661400173115
+--- !u!114 &7176113480506999565
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6107309012093280526}
+  m_GameObject: {fileID: 4506504246644133266}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 315aec8c00304930ba244e6699629d50, type: 3}
+  m_Script: {fileID: 11500000, guid: 938059eb422836b4d962873ee33724f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <ModuleID>k__BackingField: 5
-  <VisualTransform>k__BackingField: {fileID: 5016803788315297660}
-  <PlacedLocation>k__BackingField:
-    <Q>k__BackingField: 0
-    <R>k__BackingField: 0
-    <S>k__BackingField: 0
-  <PlacedRotation>k__BackingField: 0
-  <CurrentTransform>k__BackingField: {fileID: 0}
-  healthOverLayData: {fileID: 11400000, guid: 33600992c09abf445bc880d26cf214c4, type: 2}
-  <LocalCoordinates>k__BackingField: []
-  _insideCurrentGroup: 0
-  healthOverLayObject: {fileID: 7203200780415020979}
-  _healthOverLayObjectColour: {r: 0, g: 0, b: 0, a: 0}
-  <PowerMaterialGameObject>k__BackingField: {fileID: 2813675166243752686}
-  <PowerMaterial>k__BackingField: {fileID: 0}
-  <MaterialsToColor>k__BackingField: []
-  powerSocketMaterials: []
-  powerMaterialSocketsGameObject: []
-  <PresetObject>k__BackingField: {fileID: 5680328700570000838}
-  <PresetObjectHead>k__BackingField: {fileID: 2813675166243752686}
-  poweredColor: {r: 0, g: 0.96862745, b: 1, a: 1}
-  notPoweredColor: {r: 1, g: 0, b: 0, a: 1}
-  <ModuleScriptableObject>k__BackingField: {fileID: 11400000, guid: 3d1f59bb546f947408d586cacc229d1c, type: 2}
---- !u!114 &3029505593014606762
+--- !u!114 &3621637275056506105
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6107309012093280526}
+  m_GameObject: {fileID: 4506504246644133266}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
@@ -265,13 +239,13 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
---- !u!114 &3504510951168486797
+--- !u!114 &263262962506902615
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6107309012093280526}
+  m_GameObject: {fileID: 4506504246644133266}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
@@ -321,6 +295,77 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &6107309012093280526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5607217600802395003}
+  - component: {fileID: 6787476661400173115}
+  m_Layer: 3
+  m_Name: EditorDefaultTurretT2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5607217600802395003
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6107309012093280526}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.24}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5016803788315297660}
+  - {fileID: 4664552567274495076}
+  - {fileID: 5130280937724909561}
+  - {fileID: 4531378844740688594}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6787476661400173115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6107309012093280526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 315aec8c00304930ba244e6699629d50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ModuleID>k__BackingField: 5
+  <VisualTransform>k__BackingField: {fileID: 5016803788315297660}
+  <PlacedLocation>k__BackingField:
+    <Q>k__BackingField: 0
+    <R>k__BackingField: 0
+    <S>k__BackingField: 0
+  <PlacedRotation>k__BackingField: 0
+  <CurrentTransform>k__BackingField: {fileID: 0}
+  healthOverLayData: {fileID: 11400000, guid: 33600992c09abf445bc880d26cf214c4, type: 2}
+  <LocalCoordinates>k__BackingField: []
+  _insideCurrentGroup: 0
+  healthOverLayObject: {fileID: 7203200780415020979}
+  _healthOverLayObjectColour: {r: 0, g: 0, b: 0, a: 0}
+  <PowerMaterialGameObject>k__BackingField: {fileID: 2813675166243752686}
+  <PowerMaterial>k__BackingField: {fileID: 0}
+  <MaterialsToColor>k__BackingField: []
+  powerSocketMaterials: []
+  powerMaterialSocketsGameObject: []
+  <PresetObject>k__BackingField: {fileID: 5680328700570000838}
+  <PresetObjectHead>k__BackingField: {fileID: 2813675166243752686}
+  poweredColor: {r: 0, g: 0.96862745, b: 1, a: 1}
+  notPoweredColor: {r: 1, g: 0, b: 0, a: 1}
+  <ModuleScriptableObject>k__BackingField: {fileID: 11400000, guid: 3d1f59bb546f947408d586cacc229d1c, type: 2}
 --- !u!1 &7203200780415020979
 GameObject:
   m_ObjectHideFlags: 0

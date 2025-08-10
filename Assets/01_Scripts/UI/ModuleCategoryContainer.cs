@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ModuleCategoryContainer : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class ModuleCategoryContainer : MonoBehaviour
     public void SetModuleCategory(NetModuleCategory category)
     {
         ClearButtons();
-        
+
         if (category == NetModuleCategory.ColorPresets)
         {
             foreach (var data in presetData.presets)
@@ -25,6 +26,7 @@ public class ModuleCategoryContainer : MonoBehaviour
                 colorPresetButton.SetName(data.presetName);
                 Instantiate(colorPresetContainer, container.transform);
             }
+
             return;
         }
 
@@ -42,10 +44,12 @@ public class ModuleCategoryContainer : MonoBehaviour
             {
                 continue;
             }
-
             ModuleSelectionButton selectedButton = Instantiate(selectionButton, container.transform);
             selectedButton.Configure(moduleData);
+            
         }
+
+        if (!InputManager.Instance.IsGamepadUsed) return;
     }
 
     public void ClearButtons()
