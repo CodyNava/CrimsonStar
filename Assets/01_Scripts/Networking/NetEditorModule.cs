@@ -33,10 +33,9 @@ public class NetEditorModule : MonoBehaviour
     private Material PresetMatHead2 { get; set; }
     private Material PresetMatHead3 { get; set; }
     [field: SerializeField] private GameObject PowerMaterialGameObject { get; set; }
-    [field: SerializeField] private Material PowerMaterial { get; set; }
     [field: SerializeField] private List<Material> MaterialsToColor { get; set; }
-    [field: SerializeField] private List<Material> powerSocketMaterials = new();
-    [field: SerializeField] private List<GameObject> powerMaterialSocketsGameObject = new();
+    [field: SerializeField] private List<Material> powerSocketMaterials;
+    [field: SerializeField] private GameObject powerMaterialSocketsGameObject;
     [field: SerializeField] private GameObject PresetObject { get; set; }
     [field: SerializeField] private GameObject PresetObjectHead { get; set; }
 
@@ -77,34 +76,43 @@ public class NetEditorModule : MonoBehaviour
     public void GetPowerMaterial()
     {
         if (!ModuleData.CanBePowered) return;
-        PowerMaterial = PowerMaterialGameObject.GetComponent<MeshRenderer>().materials[3];
 
-        _originalColor = PowerMaterial.GetColor(ColourShift);
+        _originalColor = Color.white;
         _originalColorIntensity = Mathf.Max(_originalColor.r, _originalColor.g, _originalColor.b);
+        _originalColorIntensity *= 5f;
 
         switch (ModuleID)
         {
-            case (NetModuleID.TurretLaser):
-                foreach (var mesh in powerMaterialSocketsGameObject)
-                {
-                    var socketMat = mesh.GetComponent<MeshRenderer>().materials[1];
-                    powerSocketMaterials.Add(socketMat);
-                }
-
+            case NetModuleID.TurretLaser:
+                var socketMatLaser = powerMaterialSocketsGameObject.GetComponentInChildren<MeshRenderer>();
+                powerSocketMaterials.Add(socketMatLaser.materials[1]);
+                var headMatLaser = PresetObjectHead.GetComponent<MeshRenderer>().materials[3];
+                powerSocketMaterials.Add(headMatLaser);
                 break;
-            case (NetModuleID.DeepPenLaser):
-                foreach (var mesh in powerMaterialSocketsGameObject)
-                {
-                    var socketMat = mesh.GetComponent<MeshRenderer>().materials[1];
-                    powerSocketMaterials.Add(socketMat);
-                }
-
+            
+            case NetModuleID.DeepPenLaser:
+                var socketMatDeep = powerMaterialSocketsGameObject.GetComponentInChildren<MeshRenderer>();
+                powerSocketMaterials.Add(socketMatDeep.materials[1]);
+                var headMatDeep = PresetObjectHead.GetComponent<MeshRenderer>().materials[3];
+                powerSocketMaterials.Add(headMatDeep);
                 break;
+            
             case NetModuleID.ShredderGun:
-                powerSocketMaterials.Add(PresetObject.GetComponent<MeshRenderer>().materials[3]);
+                var socketMatShredder = powerMaterialSocketsGameObject.GetComponentInChildren<MeshRenderer>();
+                powerSocketMaterials.Add(socketMatShredder.materials[1]);
+                var baseMatShredder = PresetObject.GetComponent<MeshRenderer>().materials[3];
+                powerSocketMaterials.Add(baseMatShredder);
+                var headMatShredder = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
+                powerSocketMaterials.Add(headMatShredder);
                 break;
+            
             case (NetModuleID.TurretRocketT2):
-                powerSocketMaterials.Add(PresetObject.GetComponent<MeshRenderer>().materials[3]);
+                var socketMatBattery = powerMaterialSocketsGameObject.GetComponentInChildren<MeshRenderer>();
+                powerSocketMaterials.Add(socketMatBattery.materials[1]);
+                var baseMatBattery = PresetObject.GetComponent<MeshRenderer>().materials[3];
+                powerSocketMaterials.Add(baseMatBattery);
+                var headMatBattery = PresetObjectHead.GetComponent<MeshRenderer>().materials[3];
+                powerSocketMaterials.Add(headMatBattery);
                 break;
         }
     }
@@ -130,7 +138,6 @@ public class NetEditorModule : MonoBehaviour
         PresetColor1 = currenPreset.color1;
         PresetColor2 = currenPreset.color2;
         PresetColor3 = currenPreset.color3;
-       
     }
 
     private void UpdateMaterialPresets()
@@ -242,9 +249,9 @@ public class NetEditorModule : MonoBehaviour
         {
             if (ModuleData.CanBePowered)
             {
-                PowerMaterial.SetColor(ColourShift, IsPowered
-                    ? poweredColor * _originalColorIntensity
-                    : notPoweredColor * _originalColorIntensity);
+                //PowerMaterial.SetColor(ColourShift, IsPowered
+                   // ? poweredColor * _originalColorIntensity
+                   // : notPoweredColor * _originalColorIntensity);
 
                 foreach (var mat in powerSocketMaterials)
                 {
@@ -255,9 +262,9 @@ public class NetEditorModule : MonoBehaviour
                 }
             }
         }
-        else if (PowerMaterial.GetColor(ColourShift) != _originalColor)
+        else
         {
-            PowerMaterial.SetColor(ColourShift, _originalColor);
+            if (powerSocketMaterials.Count <= 0) return;
             foreach (var mat in powerSocketMaterials)
             {
                 mat.SetColor(ColourShift, _originalColor);
@@ -323,14 +330,14 @@ public class NetEditorModule : MonoBehaviour
     private bool Powered()
     {
         var totalCoord = new List<HexCoordinate>();
-        foreach (var coord in  LocalCoordinates)
+        foreach (var coord in LocalCoordinates)
         {
             //if (coord == LocalCoordinates[0]) continue;
             totalCoord.Add(coord + PlacedLocation);
         }
+
         Debug.Log(totalCoord);
 
         return shipEditor.CheckIfPowered(totalCoord);
-        
     }
 }

@@ -247,7 +247,7 @@ MonoBehaviour:
   - name: General
     collapsed: 0
   - name: Color
-    collapsed: 1
+    collapsed: 0
   - name: SpawnRate
     collapsed: 1
   - name: Size
@@ -315,6 +315,7 @@ MonoBehaviour:
   - {fileID: 8926484042661617140}
   - {fileID: 8926484042661617142}
   - {fileID: 8926484042661617146}
+  - {fileID: 8926484042661617156}
   m_UIPosition: {x: 0, y: 0}
   m_UICollapsed: 1
   m_UISuperCollapsed: 0
@@ -457,6 +458,22 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: 
       m_SerializableObject: 
+    min: -Infinity
+    max: Infinity
+    enumValues: []
+    descendantCount: 0
+  - name: Color_Trail
+    path: Color_Trail
+    tooltip: 
+    space: -1
+    spaceable: 0
+    sheetType: m_Vector4f
+    realType: Color
+    defaultValue:
+      m_Type:
+        m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      m_SerializableObject: '{"r":48.0,"g":14.257425308227539,"b":3.8019790649414064,"a":0.0}'
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -1175,7 +1192,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616082}
   m_ExposedName: Size_BulletBloom
   m_Exposed: 0
-  m_Order: 7
+  m_Order: 8
   m_Category: BulletBloom
   m_Min:
     m_Type:
@@ -1247,7 +1264,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616107}
   m_ExposedName: RangeInput
   m_Exposed: 0
-  m_Order: 1
+  m_Order: 2
   m_Category: ScriptControlled
   m_Min:
     m_Type:
@@ -1319,7 +1336,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616114}
   m_ExposedName: 2DScale_BulletBloom
   m_Exposed: 0
-  m_Order: 8
+  m_Order: 9
   m_Category: BulletBloom
   m_Min:
     m_Type:
@@ -1459,7 +1476,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616175}
   m_ExposedName: Color_BulletBloom
   m_Exposed: 0
-  m_Order: 9
+  m_Order: 10
   m_Category: BulletBloom
   m_Min:
     m_Type:
@@ -1667,7 +1684,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616199}
   m_ExposedName: Intensity_BulletBloom
   m_Exposed: 0
-  m_Order: 10
+  m_Order: 11
   m_Category: BulletBloom
   m_Min:
     m_Type:
@@ -1739,7 +1756,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616236}
   m_ExposedName: Color_Bullet
   m_Exposed: 1
-  m_Order: 11
+  m_Order: 12
   m_Category: Color
   m_Min:
     m_Type:
@@ -1754,14 +1771,6 @@ MonoBehaviour:
   m_ValueFilter: 0
   m_Tooltip: 
   m_Nodes:
-  - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661616236}
-      inputSlot: {fileID: 8926484042661616935}
-    position: {x: -1319, y: 1915}
-    expandedSlots: []
-    expanded: 1
-    supecollapsed: 0
   - m_Id: 1
     linkedSlots:
     - outputSlot: {fileID: 8926484042661616236}
@@ -1808,7 +1817,6 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
   m_Direction: 1
   m_LinkedSlots:
-  - {fileID: 8926484042661616935}
   - {fileID: 8926484042661617096}
 --- !u!114 &8926484042661616237
 MonoBehaviour:
@@ -1965,7 +1973,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616290}
   m_ExposedName: ToggleLoop
   m_Exposed: 1
-  m_Order: 12
+  m_Order: 13
   m_Category: General
   m_Min:
     m_Type:
@@ -2055,7 +2063,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616297}
   m_ExposedName: SpawnRate_Bullet
   m_Exposed: 1
-  m_Order: 13
+  m_Order: 14
   m_Category: SpawnRate
   m_Min:
     m_Type:
@@ -2347,7 +2355,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616514}
   m_ExposedName: DirectionVector
   m_Exposed: 1
-  m_Order: 14
+  m_Order: 15
   m_Category: ScriptControlled
   m_Min:
     m_Type:
@@ -3312,7 +3320,7 @@ MonoBehaviour:
   - {fileID: 8926484042661616885}
   m_ExposedName: Pivot_BulletBloom
   m_Exposed: 0
-  m_Order: 15
+  m_Order: 16
   m_Category: BulletBloom
   m_Min:
     m_Type:
@@ -4077,7 +4085,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661616236}
+  - {fileID: 8926484042661617157}
 --- !u!114 &8926484042661616936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6470,7 +6478,7 @@ MonoBehaviour:
   - {fileID: 8926484042661617062}
   m_ExposedName: Size2D_Bullet
   m_Exposed: 1
-  m_Order: 5
+  m_Order: 6
   m_Category: Size
   m_Min:
     m_Type:
@@ -8074,7 +8082,7 @@ MonoBehaviour:
   - {fileID: 8926484042661617111}
   m_ExposedName: Toggle_Trail
   m_Exposed: 1
-  m_Order: 16
+  m_Order: 17
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -8155,7 +8163,7 @@ MonoBehaviour:
   - {fileID: 8926484042661617113}
   m_ExposedName: Toggle_Projectile
   m_Exposed: 1
-  m_Order: 6
+  m_Order: 7
   m_Category: ToggleSubgraphs
   m_Min:
     m_Type:
@@ -8236,7 +8244,7 @@ MonoBehaviour:
   - {fileID: 8926484042661617120}
   m_ExposedName: Pivot_Bullet
   m_Exposed: 1
-  m_Order: 17
+  m_Order: 18
   m_Category: Special
   m_Min:
     m_Type:
@@ -8721,7 +8729,7 @@ MonoBehaviour:
   - {fileID: 8926484042661617139}
   m_ExposedName: Lifetime
   m_Exposed: 1
-  m_Order: 18
+  m_Order: 19
   m_Category: Lifetime
   m_Min:
     m_Type:
@@ -8811,7 +8819,7 @@ MonoBehaviour:
   - {fileID: 8926484042661617141}
   m_ExposedName: SizeOverLife
   m_Exposed: 1
-  m_Order: 3
+  m_Order: 4
   m_Category: General
   m_Min:
     m_Type:
@@ -8901,7 +8909,7 @@ MonoBehaviour:
   - {fileID: 8926484042661617143}
   m_ExposedName: Size2D_Trail
   m_Exposed: 1
-  m_Order: 4
+  m_Order: 5
   m_Category: Size
   m_Min:
     m_Type:
@@ -9053,7 +9061,7 @@ MonoBehaviour:
   - {fileID: 8926484042661617147}
   m_ExposedName: Pivot_Trail
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 3
   m_Category: Special
   m_Min:
     m_Type:
@@ -9377,4 +9385,221 @@ MonoBehaviour:
       m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
+  m_LinkedSlots: []
+--- !u!114 &8926484042661617156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 330e0fca1717dde4aaa144f48232aa64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 114350483966674976}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 0
+  m_UISuperCollapsed: 0
+  m_InputSlots: []
+  m_OutputSlots:
+  - {fileID: 8926484042661617157}
+  m_ExposedName: Color_Trail
+  m_Exposed: 1
+  m_Order: 1
+  m_Category: Color
+  m_Min:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_Max:
+    m_Type:
+      m_SerializableType: 
+    m_SerializableObject: 
+  m_IsOutput: 0
+  m_EnumValues: []
+  m_ValueFilter: 0
+  m_Tooltip: 
+  m_Nodes:
+  - m_Id: 0
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661617157}
+      inputSlot: {fileID: 8926484042661616935}
+    position: {x: -1359.8501, y: 1922.3501}
+    expandedSlots: []
+    expanded: 1
+    supecollapsed: 0
+--- !u!114 &8926484042661617157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c82227d5759e296488798b1554a72a15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 0}
+  m_Children:
+  - {fileID: 8926484042661617158}
+  - {fileID: 8926484042661617159}
+  - {fileID: 8926484042661617160}
+  - {fileID: 8926484042661617161}
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661617157}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661617156}
+    m_Value:
+      m_Type:
+        m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      m_SerializableObject: '{"r":48.0,"g":14.257425308227539,"b":3.8019790649414064,"a":0.0}'
+    m_Space: -1
+  m_Property:
+    name: o
+    m_serializedType:
+      m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  m_Direction: 1
+  m_LinkedSlots:
+  - {fileID: 8926484042661616935}
+--- !u!114 &8926484042661617158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 8926484042661617157}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661617157}
+  m_MasterData:
+    m_Owner: {fileID: 0}
+    m_Value:
+      m_Type:
+        m_SerializableType: 
+      m_SerializableObject: 
+    m_Space: -1
+  m_Property:
+    name: r
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
+  m_LinkedSlots: []
+--- !u!114 &8926484042661617159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 8926484042661617157}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661617157}
+  m_MasterData:
+    m_Owner: {fileID: 0}
+    m_Value:
+      m_Type:
+        m_SerializableType: 
+      m_SerializableObject: 
+    m_Space: -1
+  m_Property:
+    name: g
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
+  m_LinkedSlots: []
+--- !u!114 &8926484042661617160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 8926484042661617157}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661617157}
+  m_MasterData:
+    m_Owner: {fileID: 0}
+    m_Value:
+      m_Type:
+        m_SerializableType: 
+      m_SerializableObject: 
+    m_Space: -1
+  m_Property:
+    name: b
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
+  m_LinkedSlots: []
+--- !u!114 &8926484042661617161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIIgnoredErrors: []
+  m_Parent: {fileID: 8926484042661617157}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661617157}
+  m_MasterData:
+    m_Owner: {fileID: 0}
+    m_Value:
+      m_Type:
+        m_SerializableType: 
+      m_SerializableObject: 
+    m_Space: -1
+  m_Property:
+    name: a
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+  m_Direction: 1
   m_LinkedSlots: []
