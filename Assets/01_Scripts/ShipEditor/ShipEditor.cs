@@ -269,7 +269,7 @@ public class ShipEditor : MonoBehaviour
         if (InputManager.Instance.IsGamepadUsed)
         {
             moduleSpawnedInGp = true;
-            Vector3 spawnVec = new Vector3(0f, 0f, 0f);
+            Vector3 spawnVec = editCamera.transform.position.xy();
             _heldNetEditorModule =
                 Instantiate(moduleID.GetModuleData().ShipEditorPrefab, spawnVec, Quaternion.identity);
         }
@@ -365,6 +365,7 @@ public class ShipEditor : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(null);
             _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
             _heldNetEditorModule.transform.Translate(moveInput.x * v * t, moveInput.y * v * t, 0f, Space.World);
+            Debug.Log("Y " + moveInput.y + "X " + moveInput.x + v);
             if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasPerformedThisFrame())
             {
                 if (moduleFirstSelectedGp)
@@ -401,7 +402,7 @@ public class ShipEditor : MonoBehaviour
                 PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
                 _heldNetEditorModule = null;
-                EventSystem.current.SetSelectedGameObject(lastSelected);
+                EventSystem.current.SetSelectedGameObject(!lastSelected ? forceSelected: lastSelected);
                 return;
             }
 
