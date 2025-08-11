@@ -67,8 +67,11 @@ public class CameraFollow : MonoBehaviour
 
     public void OnDisable()
     {
-        InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerSpactate>(OnSpectatorBroadcast);
-        InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerDeath>(OnPlayerDeath);
+        if (InstanceFinder.ClientManager != null)
+        {
+            InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerSpactate>(OnSpectatorBroadcast);
+            InstanceFinder.ClientManager.UnregisterBroadcast<NetGameplayBroadcasts.PlayerDeath>(OnPlayerDeath);
+        }
     }
 
     void LateUpdate()

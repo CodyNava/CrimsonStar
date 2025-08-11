@@ -36,6 +36,8 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [SerializeField, SerializedDictionary]
     private AYellowpaper.SerializedCollections.SerializedDictionary<int, Transform[]> spawnTransforms;
 
+    private List<Transform> _spawnTransforms = new List<Transform>();
+
     private NetLobbyConductor _lobbyConductor;
     private NetShipEditorConductor _editorConductor;
     private List<NetworkConnection> _eliminatedPlayers = new();
@@ -371,10 +373,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [Server]
     public void S_ReportDamageInstance(ulong attacker, ulong defender, float damageTaken)
     {
-        /*
-        Debug.Log("Damage inflicted: " + damageTaken);
-        NetworkConnection conn = _lobbyConductor.ConnectionsByPlayerID[attacker];
-        if (conn != null) TriggerEnemyHitFeedback(conn, Channel.Reliable);*/
+
         _damageInstancesRound.Add(new DamageInstance
         {
             AttackerID = attacker,
@@ -382,12 +381,6 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             DamageTaken = damageTaken
         });
     }
-/*
-    [TargetRpc]
-    private void TriggerEnemyHitFeedback(NetworkConnection conn, Channel channel)
-    {
-        SceneAudioManager.instance.EnemyHitFeedback();
-    }*/
 
     [Server]
     public void S_ReportKillInstance(ulong attackerID, ulong defenderID)
@@ -424,16 +417,26 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
         {
             var attacker = _lobbyConductor.PlayersByID[damageInstance.AttackerID];
             var defender = _lobbyConductor.PlayersByID[damageInstance.DefenderID];
-            attacker.DamageDealtRound.Value += damageInstance.DamageTaken;
-            attacker.DamageDealtMatch.Value += damageInstance.DamageTaken;
-            defender.DamageReceivedRound.Value += damageInstance.DamageTaken;
-            defender.DamageReceivedMatch.Value += damageInstance.DamageTaken;
+
+            if (damageInstance.AttackerID != 0)
+            {
+                attacker.DamageDealtRound.Value += damageInstance.DamageTaken;
+                attacker.DamageDealtMatch.Value += damageInstance.DamageTaken;   
+            }
+
+            if (damageInstance.DefenderID != 0)
+            {
+                defender.DamageReceivedRound.Value += damageInstance.DamageTaken;
+                defender.DamageReceivedMatch.Value += damageInstance.DamageTaken;   
+            }
         }
 
         foreach (var killInstance in _killInstancesRound)
         {
+            if(killInstance.AttackerID == 0) continue;
+            
             var attacker = _lobbyConductor.PlayersByID[killInstance.AttackerID];
-            var defender = _lobbyConductor.PlayersByID[killInstance.DefenderID];
+            // var defender = _lobbyConductor.PlayersByID[killInstance.DefenderID];
             attacker.KillsRound.Value += 1;
             attacker.KillsMatch.Value += 1;
         }
@@ -454,19 +457,20 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     [Server]
     private Transform S_GetSpawnTransform()
     {
-        if (!spawnTransforms.TryGetValue(PlayerCount, out Transform[] spawnPoints))
+        // SpawnPoints are taken as GameObject.Transforms of GO with Tag "SpawnPoint"
+        
+        if (_spawnTransforms.Count < _lobbyConductor.PlayersByConnection.Count)
         {
-            return transform;
+            _spawnTransforms.Clear();
+            foreach (var go in GameObject.FindGameObjectsWithTag("SpawnPoint"))
+            {
+                _spawnTransforms.Add(go.transform);
+            }
         }
 
-        if (_spawnedPlayers == 0)
-        {
-            _spawnSet.AddRange(spawnPoints);
-        }
-
-        int rng = Random.Range(0, _spawnSet.Count);
-        var spawn = _spawnSet.ElementAt(rng);
-        _spawnSet.Remove(spawn);
+        int spawnPointId = Random.Range(0, _spawnTransforms.Count);
+        var spawn = _spawnTransforms.ElementAt(spawnPointId);
+        _spawnTransforms.RemoveAt(spawnPointId);
         _spawnedPlayers++;
         return spawn;
     }
