@@ -73,13 +73,14 @@ public class NetLaserTurret : NetworkBehaviour
             if (!_isCharging && _accumulatedTimeVFX > 0.3f)
             {
                 _isCharging = true;
-                muzzleCharge.SendEvent("ChargeUp") ;
+                S_ServerVFXString("ChargeUp");
+
             }
             _chargeTime += Time.deltaTime;
             if (!shotSound.IsPlaying()) shotSound.Play();
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
-                muzzleCharge.SetBool("Set_ChargeCompleted", true);
+                S_ServerVFXBool(true);
                 _accumulatedTimeVFX = 0f;
             }
         }
@@ -93,14 +94,15 @@ public class NetLaserTurret : NetworkBehaviour
                 _cooldownTime = 0;
                 _accumulatedTimeVFX = 0f;
                 C_ClientFire();
-                muzzleCharge.SetBool("Set_ChargeCompleted", false);
-                muzzleCharge.SendEvent("StartDissolve");
+                S_ServerVFXBool(false);
+                S_ServerVFXString("StartDissolve");
                 return;
             }
 
             if (_isCharging)
             {
-                muzzleCharge.SendEvent("ChargeDown");
+                S_ServerVFXString("ChargeDown");
+
             }
             _isCharging = false;
             _chargeTime = Mathf.Lerp(_chargeTime, 0, Time.deltaTime * 2);
@@ -155,6 +157,9 @@ public class NetLaserTurret : NetworkBehaviour
         C_ObserversFire(position, direction, tick, senderID);
     }
 
+
+    
+
     [ObserversRpc(ExcludeOwner = true)]
     private void C_ObserversFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
     {
@@ -162,5 +167,42 @@ public class NetLaserTurret : NetworkBehaviour
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
         shotSound.Play();
+    }
+
+    [ServerRpc]
+    private void S_ServerVFXBool(bool vfxBool)
+    {
+        C_ObserverVFXBool(vfxBool);
+    }
+    
+    [ServerRpc]
+    private void S_ServerVFXString(string vfxString)
+    {
+        C_ObserverVFXString(vfxString);
+    }
+    
+    [ObserversRpc]
+    private void C_ObserverVFXBool(bool vfxBool)
+    {
+        muzzleCharge.SetBool("Set_ChargeCompleted", vfxBool);
+    }
+    
+    [ObserversRpc]
+    private void C_ObserverVFXString(string vfxString)
+    {
+        switch (vfxString)
+        {
+            case "ChargeUp":
+                muzzleCharge.SendEvent(vfxString);
+                break;
+            case "StartDissolve" :
+                muzzleCharge.SendEvent(vfxString);
+                break;
+            case "ChargeDown":
+                muzzleCharge.SendEvent(vfxString);
+                break;
+        }
+       
+        
     }
 }
