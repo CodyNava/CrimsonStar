@@ -115,7 +115,7 @@ public class ShipEditor : MonoBehaviour
                 _gamePadSwitchSelectToggle = true;
                 EventSystem.current.SetSelectedGameObject(lastSelected ? lastSelected : forceSelected);
             }
-
+            
             ModueHoldingGamePad();
         }
         else
@@ -219,6 +219,7 @@ public class ShipEditor : MonoBehaviour
 
     public void SpawnPart(NetModuleID moduleID)
     {
+        if (InputManager.Instance.IsGamepadUsed && !gamepadEnabled) return;
         bool success = TrySpawnPart(moduleID);
         if (!success)
         {
@@ -821,6 +822,7 @@ public class ShipEditor : MonoBehaviour
     {
         if (InputManager.Instance.IsGamepadUsed)
         {
+            if (!gamepadEnabled) return;
             _heldNetEditorModule = moduleToRemove;
         }
         Instantiate(sellEffect);
