@@ -6,28 +6,34 @@ using System.Collections.Generic;
 
 public class ColorPresetButton : MonoBehaviour
 {
-    [SerializeField] private Image colorOne;
-    [SerializeField] private Image colorTwo;
-    [SerializeField] private Image colorThree;
+    [SerializeField] private Image color1;
+    [SerializeField] private Image color2;
+    [SerializeField] private Image color3;
     [SerializeField] private TMP_Text presetName;
 
-    [SerializeField] private List<Color> currentPreset = new List<Color>();
+    [SerializeField] private Image buttonImage;
+    [SerializeField] private Sprite painterBut1, painterBut2, painterBut3;
 
-    public IReadOnlyList<Color> ChangeColor() => currentPreset;
-    public static event Action<List<Color>> ColorSelected;
+
+    public static event Action<string> ColorSelected;
 
     public void InvokePreset()
     {
-        ColorSelected?.Invoke(currentPreset);
+        ColorSelected?.Invoke(presetName.text);
     }
-    public void SetColor(List<Color> data)
+
+    public void SetColor(ColorPreset data) => (color1.color, color2.color, color3.color) = data;
+
+
+    public void SetButtonSprite()
     {
-            colorOne.color = data[0];
-            colorTwo.color = data[1];
-            colorThree.color = data[2];
-            currentPreset = data;
-            
+        buttonImage.sprite = painterBut1;
     }
+
+    public void ChangeButtonSpriteBasedOnState() => buttonImage.sprite = buttonImage.sprite == painterBut2
+        ? painterBut1
+        : painterBut2;
+
     public void SetName(string name)
     {
         presetName.text = name;

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ModulePlacementData
 {
-    public HexCoordinate RootCoordinate;
+    public HexCoordinate RootCoordinate = HexCoordinate.Zero;
     public int Rotation;
     public NetModuleID ModuleID;
 }
@@ -58,12 +58,6 @@ public class NetModuleStorage : NetworkBehaviour
 
     public bool SC_IsNeighboringModule(HexCoordinate coord)
     {
-        // The return line is the equivalent of the following code
-        // foreach (HexCoordinate neighbor in coord.Neighbors()) 
-        // {
-        //      if (IsCoordinateOccupied(neighbor)) return true;
-        // }
-        // return false;
         return coord.Neighbors().Any(SC_IsCoordinateOccupied);
     }
     
@@ -109,18 +103,21 @@ public class NetModuleStorage : NetworkBehaviour
         foreach (var rotatedLocalCoord in GetRotatedCoordinates(localHexCoordinates, placementData.Rotation))
         {
             S_RemoveModuleReference(placementData.RootCoordinate + rotatedLocalCoord);
+        
         }
+        
     }
 
-    private IEnumerable<HexCoordinate> GetRotatedCoordinates(IEnumerable<HexCoordinate> coords, int rotationCount)
+    public static IEnumerable<HexCoordinate> GetRotatedCoordinates(IEnumerable<HexCoordinate> coords, int rotationCount)
     {
         foreach (HexCoordinate coord in coords)
         {
             HexCoordinate rotatedCoord = coord;
             for (int i = 0; i < rotationCount; i++)
             {
-                rotatedCoord = coord.RotateClockwise();
+                rotatedCoord = rotatedCoord.RotateClockwise();
             }
+            
             yield return rotatedCoord;
         }
     }

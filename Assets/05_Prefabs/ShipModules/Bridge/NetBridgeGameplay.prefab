@@ -477,6 +477,7 @@ MonoBehaviour:
   <BridgeConfig>k__BackingField: {fileID: 11400000, guid: d413d4eaab4edd241bc74c9b7faf5bf7, type: 2}
   <HexTransform>k__BackingField: {fileID: 7126793065188569584}
   <VisualRootTransform>k__BackingField: {fileID: 2613784735972627428}
+  <StarDust>k__BackingField: {fileID: 6056945799926226021}
   deathVFX: {fileID: 1316573703697364532, guid: 56b1a894af1f2cb4dbddebc890ceb6ac, type: 3}
   fmodListener: {fileID: -4323517859218442446}
 --- !u!114 &8401872920864926394
@@ -528,6 +529,7 @@ MonoBehaviour:
       Data3: -1040877385
       Data4: -47264938
     Path: event:/SFX/LowHealthAlarm_2
+  glassCrackedMaterial: {fileID: 0}
   <PresetColor1>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
   <PresetColor2>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
   <PresetColor3>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
@@ -1490,6 +1492,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_StarDust
       objectReference: {fileID: 0}
+    - target: {fileID: 2443177718069182415, guid: 6cbbf3f9a8c15074c93028b3535a550d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6756033510591765773, guid: 6cbbf3f9a8c15074c93028b3535a550d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1538,6 +1544,11 @@ PrefabInstance:
 --- !u!4 &2894461625664356007 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6756033510591765773, guid: 6cbbf3f9a8c15074c93028b3535a550d, type: 3}
+  m_PrefabInstance: {fileID: 8496446612326589354}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6056945799926226021 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2443177718069182415, guid: 6cbbf3f9a8c15074c93028b3535a550d, type: 3}
   m_PrefabInstance: {fileID: 8496446612326589354}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &9100036141346433782

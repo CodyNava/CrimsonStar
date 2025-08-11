@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8369777901262305125}
   - component: {fileID: 5276255751954010499}
   - component: {fileID: 1055944948900674879}
+  - component: {fileID: -8147554556146676450}
   m_Layer: 3
   m_Name: NetGameplayAsteroid_02
   m_TagString: Untagged
@@ -83,7 +84,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 3
+  <PrefabId>k__BackingField: 0
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 783492202040959650
   <SceneId>k__BackingField: 0
@@ -302,6 +303,20 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: -0.03, y: 0.12}
   m_Radius: 3.03
+--- !u!114 &-8147554556146676450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6107309012093280526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e543f641cab038498fec2f9fbbe1d49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minimumMagnitude: 30
+  maximumMagnitude: 46
 --- !u!1001 &8215215608823581444
 PrefabInstance:
   m_ObjectHideFlags: 0

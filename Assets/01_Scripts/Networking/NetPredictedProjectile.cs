@@ -10,16 +10,18 @@ public class NetPredictedProjectile : MonoBehaviour
     [SerializeField] private VisualEffect bulletVFX;
     [SerializeField] private GameObject hitFeedbackVFX;
     [SerializeField] public BaseProjectileObject baseProjectileObject;
-    
+
     private ulong _attackerID;
     private NetTeamID _netTeamID;
     private Vector3 _direction;
     private float _passedTime = 0f;
     private NetBridge _bridgeOrigin;
+    private int _pierceCount;
 
     private NetLobbyConductor _lobbyConductor;
-    
-    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID, NetBridge bridgeOrigin)
+
+    public void Initialize(Vector3 direction, float passedTime, NetTeamID netTeamID, ulong attackerID,
+        NetBridge bridgeOrigin)
     {
         _direction = direction;
         _passedTime = passedTime;
@@ -35,6 +37,7 @@ public class NetPredictedProjectile : MonoBehaviour
         InstanceFinder.TryGetInstance(out _lobbyConductor);
     }
 
+    //todo waffenstreung bei shredder 
     private void Update()
     {
         float dt = Time.deltaTime;
@@ -75,11 +78,18 @@ public class NetPredictedProjectile : MonoBehaviour
         {
             float friendlyFireDamageMult = 1f;
             if (module.NetTeamID == _netTeamID) friendlyFireDamageMult = _lobbyConductor.FriendlyFireDamageMult;
-            
+
             module.S_InflictDamage(baseProjectileObject.ProjectileDamage * friendlyFireDamageMult, _attackerID);
             Debug.Log("damage inflicted 2 : ");
         }
-        
+
+        if (baseProjectileObject.Pierce > 0f)
+        {
+            _pierceCount++;
+            if (_pierceCount <= baseProjectileObject.Pierce) return;
+            
+        }
+
         Destroy(gameObject);
     }
 }

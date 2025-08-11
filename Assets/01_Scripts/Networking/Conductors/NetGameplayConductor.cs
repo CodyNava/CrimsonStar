@@ -53,6 +53,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     // public bool IsLocalPlayerAlive => _lobbyConductor.PlayersByConnection[InstanceFinder.ClientManager.Connection].Survived.Value;
 
     private int _roundsPlayed;
+    public int RoundsPlayed => _roundsPlayed;
 
     private float _elapsedTime;
     private int _kills = 1;
@@ -99,18 +100,18 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         NetMatchPlayer matchPlayer = _lobbyConductor.PlayersByConnection[connection];
 
-        matchPlayer.S_ResetRoundStats();
         if (!matchPlayer.IsSpectating.Value)
         {
+            matchPlayer.S_ResetRoundStats();
             var bridge = Instantiate(bridgePrefab);
             ServerManager.Spawn(bridge.gameObject, connection);
             _bridges.Add(connection, bridge);
             _lobbyConductor.PlayersByConnection[connection].BridgeObject.Value = bridge;
             bridge.S_SetDisplayName(matchPlayer.DisplayName.Value);
             bridge.S_SetPlayerID(matchPlayer.PlayerID.Value);
-            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, matchPlayer.Team.Value, HexCoordinate.Zero);
-            S_ConstructPlayerShip(connection, matchPlayer.Team.Value, bridge, matchPlayer.ModuleStorage, scene);
-            // this.transform.localScale = new Vector3(4 + PlayerCount / 2, 4 + PlayerCount / 2, 0);
+            bridge.GetComponent<NetGameplayModule>().S_ServerInit(bridge, matchPlayer.Team.Value, new ModulePlacementData(), matchPlayer.SelectedPreset.Value);
+            S_ConstructPlayerShip(connection, matchPlayer.Team.Value, bridge, matchPlayer.ModuleStorage, scene, matchPlayer.SelectedPreset.Value);
+            this.transform.localScale = new Vector3(4 + PlayerCount / 2, 4 + PlayerCount / 2, 0);
             var spawnPoint = S_GetSpawnTransform();
             bridge.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
         }
@@ -220,19 +221,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
         if (_roundsPlayed >= _lobbyConductor.S_GetRoundCount())
         {
-            if (IsTieBreakerNeeded(out List<NetworkConnection> tiedConnections))
-            {
-                foreach ((NetworkConnection conn, NetMatchPlayer player) in _lobbyConductor.PlayersByConnection)
-                {
-                    if (!tiedConnections.Contains(conn)) player.IsSpectating.Value = true;
-                }
-                _isMatchConcluded.Value = true;
-                StartCoroutine(TieBreakerRoutine());
-            }
-            else
-            {
                 StartCoroutine(EndOfMatchRoutine());   
-            }
         }
         else
         {
@@ -366,7 +355,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
     [Server]
     private void S_ConstructPlayerShip(NetworkConnection conn, NetTeamID id, NetBridge bridge,
-        NetModuleStorage editorData, Scene scene)
+        NetModuleStorage editorData, Scene scene, string colorPreset)
     {
         foreach (var placementData in editorData.GetUniqueModules())
         {
@@ -377,7 +366,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             module.transform.SetLocalPositionAndRotation(bridge.transform.InverseTransformPoint(modulePos),
                 moduleRotation);
             ServerManager.Spawn(module.gameObject, conn);
-            module.S_ServerInit(bridge, id, placementData.RootCoordinate);
+            module.S_ServerInit(bridge, id, placementData, colorPreset);
         }
     }
 
@@ -426,16 +415,17 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         foreach (var damageInstance in _damageInstancesRound)
         {
+            var attacker = _lobbyConductor.PlayersByID[damageInstance.AttackerID];
+            var defender = _lobbyConductor.PlayersByID[damageInstance.DefenderID];
+
             if (damageInstance.AttackerID != 0)
             {
-                var attacker = _lobbyConductor.PlayersByID[damageInstance.AttackerID];
                 attacker.DamageDealtRound.Value += damageInstance.DamageTaken;
                 attacker.DamageDealtMatch.Value += damageInstance.DamageTaken;   
             }
 
             if (damageInstance.DefenderID != 0)
             {
-                var defender = _lobbyConductor.PlayersByID[damageInstance.DefenderID];
                 defender.DamageReceivedRound.Value += damageInstance.DamageTaken;
                 defender.DamageReceivedMatch.Value += damageInstance.DamageTaken;   
             }
@@ -469,7 +459,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         // SpawnPoints are taken as GameObject.Transforms of GO with Tag "SpawnPoint"
         
-        if (_spawnTransforms.Count < _lobbyConductor.PlayersByConnection.Count - _spawnedPlayers)
+        if (_spawnTransforms.Count < _lobbyConductor.PlayersByConnection.Count)
         {
             _spawnTransforms.Clear();
             foreach (var go in GameObject.FindGameObjectsWithTag("SpawnPoint"))
@@ -478,7 +468,8 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             }
         }
 
-        int spawnPointId = Random.Range(0, _spawnTransforms.Count - 1);
+        // TODO: Separate SpawnPoints for each Team
+        int spawnPointId = Random.Range(0, _spawnTransforms.Count);
         var spawn = _spawnTransforms.ElementAt(spawnPointId);
         _spawnTransforms.RemoveAt(spawnPointId);
         _spawnedPlayers++;

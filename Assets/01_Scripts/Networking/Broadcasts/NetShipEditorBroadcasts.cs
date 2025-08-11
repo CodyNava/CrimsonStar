@@ -2,5 +2,12 @@
 
 public static class NetShipEditorBroadcasts
 {
-    public struct BeginEditing : IBroadcast { }
+    public struct ShipEditorUpdate : IBroadcast
+    {
+        public int currentRound;
+        public int maxRounds;
+        public string[] names;
+        public bool[] readyState;
+    }
+    
 }

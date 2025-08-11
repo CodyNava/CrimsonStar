@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AYellowpaper.SerializedCollections;
+using FishNet;
+using FishNet.Transporting;
 using Steamworks;
 using TMPro;
 using UnityEngine;
@@ -10,96 +12,101 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.VFX;
 using Button = UnityEngine.UI.Button;
 
 public class ShipEditor : MonoBehaviour
 {
+    [Header("Shader Properties")] 
     private static readonly int OutlineColor = Shader.PropertyToID("_OutlineColor");
     private static readonly int _OutlineThickness = Shader.PropertyToID("_OutLineThickNess");
     private static readonly int Thickness = Shader.PropertyToID("_OutlineThickness");
+
+    [Header("References")] 
     [SerializeField] private Camera editCamera;
-    [SerializeField] private GameObject noMoneyPopUp;
-    [SerializeField] private GameObject cantBePlacedPopUp;
-    [SerializeField] private TextMeshProUGUI cantBePlacedText;
     [SerializeField] private HexTransform hexTransform;
     [SerializeField] private ShipEditorStats shipEditorStats;
     [SerializeField] private NetEditorModule netEditorBridgeRef;
     [SerializeField] private ShipEditorWeaponGroups weaponGroupManager;
     [SerializeField] private Material outlineShader;
-    [SerializeField] private Vector2 moveInput;
-    [SerializeField] private GameObject lastSelected;
-    [SerializeField] private GameObject forceSelected;
-    [SerializeField] private float moduleMoveSpeedGP;
-    [SerializeField] List<GameObject> gamePadSwitches = new List<GameObject>();
-    [SerializeField] private TextMeshProUGUI wg1Header, wg2Header, wg3Header;
-    [SerializeField] private bool isReady;
-    public bool IsReady => isReady;
 
-    private bool _gamePadSwitchSelectToggle;
+    [Header("UI - General")]
+    [SerializeField] private GameObject noMoneyPopUp;
+    [SerializeField] private GameObject cantBePlacedPopUp;
+    [SerializeField] private GameObject sellEffect;
+    [SerializeField] private Transform noMoneyPopUpSpawnPos;
+    [SerializeField] private TextMeshProUGUI cantBePlacedText;
+    [SerializeField] private List<GameObject> gamePadSwitches = new();
+    [SerializeField] private TextMeshProUGUI wg1Header;
+    [SerializeField] private TextMeshProUGUI wg2Header;
+    [SerializeField] private TextMeshProUGUI wg3Header;
 
-    [Header("ReadyBlockadge")] [SerializeField]
+    [Header("UI - Top Bar")]
+    [SerializeField] private List<GameObject> playerWidget;
+    [SerializeField] private TMP_Text topBarRounds;
+    [SerializeField] private GameObject topBarContainer;
+    [SerializeField] private int maxNameChars;
+    
+    [Header("UI - Ready Blockade")]
     public GameObject blockingPlane;
 
-    [SerializeField] private bool gamepadEnabled;
-
-    private Dictionary<HexCoordinate, NetEditorModule> _blockedCoordinates =
-        new Dictionary<HexCoordinate, NetEditorModule>();
-
-    [Header("HealthView")] [SerializeField]
-    public TextMeshProUGUI healthViewModeText;
-
+    [Header("UI - Health View")]
+    [SerializeField] private TextMeshProUGUI healthViewModeText;
     [SerializeField] private Button healthViewToggleButton;
     [SerializeField] private Sprite healthViewImageToggled;
     [SerializeField] private Sprite healthViewImageNormal;
     [HideInInspector] public bool inHealthView;
     [HideInInspector] public bool inPercentageHealthView;
 
-    [Header("EnergyView")] [SerializeField]
-    private Button energyViewToggleButton;
-
+    [Header("UI - Energy View")]
+    [SerializeField] private Button energyViewToggleButton;
     [SerializeField] private Sprite energyViewButtonImageToggled;
     [SerializeField] private Sprite energyViewButtonImageNormal;
     [HideInInspector] public bool inEnergyView;
     [HideInInspector] public bool inEnergyViewParentToggle;
-    [HideInInspector] public bool joiningEditor;
 
+    [Header("Input")]
+    [SerializeField] private Vector2 moveInput;
+    [SerializeField] private GameObject lastSelected;
+    [SerializeField] private GameObject forceSelected;
+    [SerializeField] private float moduleMoveSpeedGp;
+    [SerializeField] private bool gamepadEnabled;
+    [HideInInspector] public bool moduleSpawnedInGp;
+    [HideInInspector] public bool moduleFirstSelectedGp;
+
+    [Header("State")]
+    [SerializeField] private bool isReady;
+    public bool IsReady => isReady;
+    private bool _gamePadSwitchSelectToggle;
+    [HideInInspector] public bool joiningEditor;
     [HideInInspector] public int tempRotation;
 
+    [Header("Color Presets")]
+    [SerializeField] private ColorPresetData presetData;
 
-    [HideInInspector] public bool moduleSpawnedInGP;
-    [HideInInspector] public bool moduleFirstSelectedGP;
-
-    private Color originalOutlineShaderColor;
-    private float originalOutlineShaderStrenght;
-
+    [Header("Audio")]
     [SerializeField] private FMODUnity.EventReference modulePlacedEvent;
     [SerializeField] private FMODUnity.EventReference moduleRefundEvent;
     [SerializeField] private FMODUnity.EventReference moduleBuyEvent;
 
-    [Header("ColorPresets")] [SerializeField]
-    public ColorPresetData presetData;
-
-    //[SerializeField] public List<ColorPreset> presetList = new List<ColorPreset>();
-    [SerializeField] public List<Color> colorList = new List<Color>();
+    [Header("Runtime Data")] 
     public NetMatchPlayer PlayerData { get; private set; }
-
-    private Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
-
+    private readonly Dictionary<HexCoordinate, NetEditorModule> _blockedCoordinates = new();
+    private readonly Dictionary<HexCoordinate, NetEditorModule> _editorModulesMap = new();
     [SerializedDictionary("EnergyMap")] public SerializedDictionary<HexCoordinate, int> energyMap = new();
-
     private NetEditorModule _heldNetEditorModule;
-
     private List<NetEditorModule> _editorModuleList;
     public IReadOnlyList<NetEditorModule> EditorModuleList => _editorModuleList;
-
-
+    private Color _originalOutlineShaderColor;
+    private float _originalOutlineShaderStrenght;
+    
     private void Update()
     {
         if (InputManager.Instance.IsGamepadUsed)
         {
-            if (moduleSpawnedInGP)
+            if (moduleSpawnedInGp)
             {
-                moduleSpawnedInGP = false;
+                moduleSpawnedInGp = false;
                 return;
             }
 
@@ -145,9 +152,11 @@ public class ShipEditor : MonoBehaviour
         editCamera ??= Camera.main;
         ModuleSelectionButton.ModuleSelected -= SpawnPart;
         ModuleSelectionButton.ModuleSelected += SpawnPart;
-        ColorPresetButton.ColorSelected -= ChangeColors;
-        ColorPresetButton.ColorSelected += ChangeColors;
-        colorList = presetData.presets[0].colors;
+        ColorPresetButton.ColorSelected -= SetPresetName;
+        ColorPresetButton.ColorSelected += SetPresetName;
+
+        InstanceFinder.ClientManager.RegisterBroadcast<NetShipEditorBroadcasts.ShipEditorUpdate>(OnServerUpdate);
+
         _editorModuleList = new List<NetEditorModule> // collection initialization syntax uwu
         {
             netEditorBridgeRef
@@ -157,12 +166,28 @@ public class ShipEditor : MonoBehaviour
         StartCoroutine(LinkPlayerRoutine());
         shipEditorStats.GetTotalStats(_editorModuleList, weaponGroupManager);
         // energyViewToggleButton.onClick.AddListener(ToggleEnergyView);
-        originalOutlineShaderColor = outlineShader.GetColor(OutlineColor);
-        originalOutlineShaderStrenght = outlineShader.GetFloat("_OutlineThickness");
+        _originalOutlineShaderColor = outlineShader.GetColor(OutlineColor);
+        _originalOutlineShaderStrenght = outlineShader.GetFloat("_OutlineThickness");
         inHealthView = false;
         inPercentageHealthView = false;
         blockingPlane.gameObject.SetActive(false);
         SetOverLayModulesColourViaHealthMap();
+    }
+
+    private void OnServerUpdate(NetShipEditorBroadcasts.ShipEditorUpdate data, Channel channel = Channel.Reliable)
+    {
+        int count = data.names.Length;
+
+        for (int i = 0; i < count; i++)
+        {
+            playerWidget[i].SetActive(true);
+            if (data.names[i] == null) continue;
+            var playerLabel = playerWidget[i].GetComponentInChildren<TextMeshProUGUI>();
+            playerLabel.text = data.names[i];
+            playerLabel.color = data.readyState[i] ? Color.green : Color.white;
+        }
+
+        topBarRounds.text = $"Rounds: {data.currentRound}/{data.maxRounds}";
     }
 
     private IEnumerator LinkPlayerRoutine()
@@ -176,6 +201,7 @@ public class ShipEditor : MonoBehaviour
                 {
                     PlayerData = matchPlayer;
                     ReconstructShip(PlayerData.ModuleStorage.GetUniqueModules());
+                    if (string.IsNullOrEmpty(PlayerData.SelectedPreset.Value)) PlayerData.C_SetPresetName("Default");
                     yield break;
                 }
             }
@@ -187,7 +213,8 @@ public class ShipEditor : MonoBehaviour
     private void OnDestroy()
     {
         ModuleSelectionButton.ModuleSelected -= SpawnPart;
-        ColorPresetButton.ColorSelected -= ChangeColors;
+        ColorPresetButton.ColorSelected -= SetPresetName;
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetShipEditorBroadcasts.ShipEditorUpdate>(OnServerUpdate);
     }
 
     public void SpawnPart(NetModuleID moduleID)
@@ -195,20 +222,13 @@ public class ShipEditor : MonoBehaviour
         bool success = TrySpawnPart(moduleID);
         if (!success)
         {
-            StartCoroutine(NotEnoughMoneyPopUp());
+            Instantiate(noMoneyPopUp, noMoneyPopUpSpawnPos);
         }
     }
 
-    public void ChangeColors(List<Color> colors)
+    public void SetPresetName(string presetName)
     {
-        colorList = colors;
-    }
-
-    private IEnumerator NotEnoughMoneyPopUp()
-    {
-        noMoneyPopUp.SetActive(true);
-        yield return new WaitForSeconds(1f);
-        noMoneyPopUp.SetActive(false);
+        PlayerData.C_SetPresetName(presetName);
     }
 
     private IEnumerator CantBePlacedPopUp(bool cantPlaceReactor)
@@ -227,10 +247,10 @@ public class ShipEditor : MonoBehaviour
     private IEnumerator OutlineShaderChanger()
     {
         outlineShader.SetColor(OutlineColor, Color.red);
-        outlineShader.SetFloat("_OutlineThickness", originalOutlineShaderStrenght * 2.5f);
+        outlineShader.SetFloat("_OutlineThickness", _originalOutlineShaderStrenght * 2.5f);
         yield return new WaitForSeconds(0.4f);
-        outlineShader.SetColor(OutlineColor, originalOutlineShaderColor);
-        outlineShader.SetFloat("_OutlineThickness", originalOutlineShaderStrenght);
+        outlineShader.SetColor(OutlineColor, _originalOutlineShaderColor);
+        outlineShader.SetFloat("_OutlineThickness", _originalOutlineShaderStrenght);
     }
 
     public bool TrySpawnPart(NetModuleID moduleID)
@@ -248,26 +268,27 @@ public class ShipEditor : MonoBehaviour
         lastSelected = EventSystem.current.currentSelectedGameObject;
         if (InputManager.Instance.IsGamepadUsed)
         {
-            moduleSpawnedInGP = true;
+            moduleSpawnedInGp = true;
             Vector3 spawnVec = new Vector3(0f, 0f, 0f);
-            _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab, spawnVec, transform.rotation);
+            _heldNetEditorModule =
+                Instantiate(moduleID.GetModuleData().ShipEditorPrefab, spawnVec, Quaternion.identity);
         }
         else
         {
             _heldNetEditorModule = Instantiate(moduleID.GetModuleData().ShipEditorPrefab,
-                editCamera.ScreenToWorldPoint(Input.mousePosition).xy(),
-                transform.rotation);
+                editCamera.ScreenToWorldPoint(Input.mousePosition).xy(), Quaternion.identity);
             _heldNetEditorModule.TotalHealthChangeOverLayColour();
-            for (int i = 0; i < tempRotation; i++)
-            {
-                if (_heldNetEditorModule.ModuleData.CanRotate) _heldNetEditorModule.C_RotateClockwise();
-            }
         }
 
         FMODUnity.RuntimeManager.PlayOneShot(moduleBuyEvent, _heldNetEditorModule.transform.position);
         _heldNetEditorModule.Initialize();
         PlayerData.C_PayForModule(moduleID);
         _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
+        for (int i = 0; i < tempRotation; i++)
+        {
+            if (_heldNetEditorModule.ModuleData.CanRotate) _heldNetEditorModule.C_RotateClockwise();
+        }
+
         return true;
     }
 
@@ -332,7 +353,7 @@ public class ShipEditor : MonoBehaviour
     {
         if (!gamepadEnabled) return;
         var t = Time.deltaTime;
-        var v = moduleMoveSpeedGP;
+        var v = moduleMoveSpeedGp;
         moveInput = Keybinds.Actions.ShipEditor.MoveModule.ReadValue<Vector2>();
         moveInput.Normalize();
 
@@ -346,9 +367,9 @@ public class ShipEditor : MonoBehaviour
             _heldNetEditorModule.transform.Translate(moveInput.x * v * t, moveInput.y * v * t, 0f, Space.World);
             if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasPerformedThisFrame())
             {
-                if (moduleFirstSelectedGP)
+                if (moduleFirstSelectedGp)
                 {
-                    moduleFirstSelectedGP = false;
+                    moduleFirstSelectedGp = false;
                     return;
                 }
 
@@ -439,6 +460,7 @@ public class ShipEditor : MonoBehaviour
                 FMODUnity.RuntimeManager.PlayOneShot(moduleRefundEvent, _heldNetEditorModule.transform.position);
                 PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
+                Instantiate(sellEffect, mousePosWorld.xy(), Quaternion.identity);
                 _heldNetEditorModule = null;
                 return;
             }
@@ -498,7 +520,7 @@ public class ShipEditor : MonoBehaviour
 
     private Func<HexCoordinate, bool> GetPlacementConditionForModule(NetModuleID moduleID)
     {
-        if (moduleID == NetModuleID.Thruster)
+        if (moduleID.GetModuleData().ModuleCategory == NetModuleCategory.Engines)
         {
             return IsSomethingBelowThruster;
         }
@@ -508,13 +530,13 @@ public class ShipEditor : MonoBehaviour
 
     private bool IsThrusterAbove(HexCoordinate coord)
     {
-        const int maxDistance = 3;
+        const int maxDistance = 14;
         for (var i = 0; i < maxDistance; i++)
         {
             coord = HexCoordinate.Neighbor(coord, HexDirection.North);
             if (_editorModulesMap.TryGetValue(coord, out var module))
             {
-                if (module.ModuleID == NetModuleID.Thruster)
+                if (module.ModuleData.ModuleCategory == NetModuleCategory.Engines)
                 {
                     return true;
                 }
@@ -564,11 +586,16 @@ public class ShipEditor : MonoBehaviour
 
     private bool IsSomethingBelowThruster(HexCoordinate coord)
     {
-        const int maxDistance = 3;
+        const int maxDistance = 14;
         for (var i = 0; i < maxDistance; i++)
         {
             coord = HexCoordinate.Neighbor(coord, HexDirection.South);
             if (_editorModulesMap.TryGetValue(coord, out var value))
+            {
+                return true;
+            }
+
+            if (_blockedCoordinates.ContainsKey(coord))
             {
                 return true;
             }
@@ -588,7 +615,18 @@ public class ShipEditor : MonoBehaviour
         }
     }
 
-    public bool CheckIfPowered(HexCoordinate coord) => energyMap.GetValueOrDefault(coord) >= 1;
+    public bool CheckIfPowered(List<HexCoordinate> coordinates)
+    {
+        foreach (var coord in coordinates)
+        {
+            if (energyMap.GetValueOrDefault(coord) >= 1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private bool IsReactorInRangeOfReactor(HexCoordinate coord)
     {
@@ -784,7 +822,7 @@ public class ShipEditor : MonoBehaviour
         {
             _heldNetEditorModule = moduleToRemove;
         }
-
+        Instantiate(sellEffect);
         if (_heldNetEditorModule.ModuleID == NetModuleID.Reactor)
             AddPowerToEnergyMap(moduleToRemove.PlacedLocation, false, _heldNetEditorModule.ModuleData.EffectRange);
         foreach (HexCoordinate localCoord in moduleToRemove.LocalCoordinates)
@@ -803,6 +841,17 @@ public class ShipEditor : MonoBehaviour
 
     public void SignalReady()
     {
+        if (isReady)
+        {
+            if (PlayerData.C_SignalUnready())
+            {
+                gamepadEnabled = true;
+                isReady = false;
+            }
+
+            return;
+        }
+
         if (PlayerData.C_SignalReady())
         {
             gamepadEnabled = false;
@@ -828,6 +877,7 @@ public class ShipEditor : MonoBehaviour
 
             PlaceModule(uniqueModule.RootCoordinate);
         }
+
         isReady = false;
         StartCoroutine(WaitForReconstructShip());
     }
