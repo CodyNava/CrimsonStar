@@ -12,4 +12,5 @@ public class AsteroidObject : ScriptableObject
     [field: SerializeField] public float AsteroidSpawnerHeight { get; private set; }
     [field: SerializeField] public float AsteroidMinSpeed { get; private set; }
     [field: SerializeField] public float AsteroidMaxSpeed { get; private set; }
+    [field: SerializeField] public int AsteroidPenetrationHits { get; private set; }
 }

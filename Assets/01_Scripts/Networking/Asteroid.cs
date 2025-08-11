@@ -8,6 +8,7 @@ public class Asteroid : MonoBehaviour
 {
     [SerializeField] private AsteroidObject _asteroidObject;
     [SerializeField] private GameObject hitFeedbackVFX;
+    [SerializeField] private GameObject despawnFeedbackVFX;
 
 
     private ulong _attackerID = 0;
@@ -19,6 +20,7 @@ public class Asteroid : MonoBehaviour
     private float _boundX;
     private float _boundY;
     private Vector3 _center;
+    private float _damageLeft;
 
     private NetBridge _bridgeOrigin;
     private NetLobbyConductor _lobbyConductor;
@@ -36,6 +38,7 @@ public class Asteroid : MonoBehaviour
         _boundX = boxWidth / 2f;
         _boundY = boxHeight / 2f;
         _center = centerPosition;
+        _damageLeft = _asteroidObject.AsteroidDamage;
         
         InstanceFinder.TryGetInstance(out _lobbyConductor);
     }
@@ -91,11 +94,17 @@ public class Asteroid : MonoBehaviour
         {
             float friendlyFireDamageMult = 1f;
             if (module.NetTeamID == _netTeamID) friendlyFireDamageMult = _lobbyConductor.FriendlyFireDamageMult;
+
+            _damageLeft -= module.Health;
             
             module.S_InflictDamage(_asteroidObject.AsteroidDamage * friendlyFireDamageMult, _attackerID);
+            Instantiate(hitFeedbackVFX, other.ClosestPoint(transform.position), Quaternion.identity);
         }
-        Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
-        if (InstanceFinder.IsServerStarted)
+
+        if (InstanceFinder.IsServerStarted && _damageLeft <= 0)
+        {
+            Instantiate(despawnFeedbackVFX, transform.position, Quaternion.identity);
             GetComponent<NetworkObject>().Despawn();
+        } 
     }
 }
