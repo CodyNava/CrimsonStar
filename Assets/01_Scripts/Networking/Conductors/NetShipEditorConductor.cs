@@ -74,7 +74,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
         if (_accumulator > broadcastFrequency)
         {
             SendUpdateBroadcast();
-            _accumulator -= broadcastFrequency;
+            _accumulator = 0;
         }
 
         _editorTimer.Update(Time.deltaTime);
