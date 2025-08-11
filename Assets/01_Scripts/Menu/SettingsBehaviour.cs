@@ -11,10 +11,11 @@ using UnityEngine.UI;
 
 public class SettingsBehaviour : MonoBehaviour
 {
-    [SerializeField] private List <GameObject> controllerPrompts;
-    
+    [SerializeField] private List<GameObject> controllerPrompts;
+
     [Header("Graphics")]
     [SerializeField] private TMP_Text resolutionText;
+    [SerializeField] private TMP_Text resolutionTotal;
     private List<string> _resolutionOptions;
     private List<Resolution> _uniqueResolution;
     private Resolution[] _resolutions;
@@ -23,14 +24,17 @@ public class SettingsBehaviour : MonoBehaviour
     private int _uniqueResolutionIndex;
 
     [SerializeField] private TMP_Text frameCounter;
+    [SerializeField] private TMP_Text frameTotal;
     private readonly int[] _frameCap = { 30, 60, 90, 120, 144, 180, -1 };
     private int _frameCapIndex;
 
     [SerializeField] private TMP_Text vSyncMode;
+    [SerializeField] private TMP_Text vSyncTotal;
     private readonly string[] _vSync = { "Off", "On" };
     private int _vSyncIndex;
 
     [SerializeField] private TMP_Text qualityPrefab;
+    [SerializeField] private TMP_Text qualityPrefabTotal;
     [SerializeField] List<RenderPipelineAsset> qualityPrefabs;
     private int _qualityPrefIndex;
     [SerializeField] private Volume volume;
@@ -92,6 +96,7 @@ public class SettingsBehaviour : MonoBehaviour
         SceneAudioManager.instance.ResetMusicProgress();
         SceneManager.LoadScene("MainMenu");
     }
+
     private void Start()
     {
         _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
@@ -135,6 +140,7 @@ public class SettingsBehaviour : MonoBehaviour
         _resolution = Screen.currentResolution;
 
         Load();
+        SetCounter();
     }
 
     private void Update()
@@ -143,6 +149,7 @@ public class SettingsBehaviour : MonoBehaviour
         {
             prompt.SetActive(InputManager.Instance.IsGamepadUsed);
         }
+
         applyPrompt.SetActive(InputManager.Instance.IsGamepadUsed && apply.activeSelf);
         if (warningPopUp.activeSelf)
         {
@@ -151,8 +158,16 @@ public class SettingsBehaviour : MonoBehaviour
             apply.SetActive(false);
         }
     }
-    
+
     #region Graphics
+    
+    private void SetCounter()
+    {
+        resolutionTotal.text = $"{_currentResolutionIndex + 1} / {_uniqueResolution.Count}";
+        vSyncTotal.text = $"{_vSyncIndex + 1} / {_vSync.Length}";
+        frameTotal.text = $"{_frameCapIndex + 1} / {_frameCap.Length}";
+        qualityPrefabTotal.text = $"{_qualityPrefIndex + 1} / {qualityPrefabs.Count}";
+    }
 
     public void IncreaseResolution()
     {
@@ -163,6 +178,7 @@ public class SettingsBehaviour : MonoBehaviour
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
         apply.SetActive(true);
         unsavedChanges = true;
+        SetCounter();
     }
 
     public void DecreaseResolution()
@@ -180,7 +196,9 @@ public class SettingsBehaviour : MonoBehaviour
         resolutionText.text = _resolutionOptions[_currentResolutionIndex];
         apply.SetActive(true);
         unsavedChanges = true;
+        SetCounter();
     }
+    
 
     public void IncreaseFrameCap()
     {
@@ -190,6 +208,7 @@ public class SettingsBehaviour : MonoBehaviour
         frameCounter.text = _frameCap[_frameCapIndex].Equals(-1) ? "Unlimited" : _frameCap[_frameCapIndex].ToString();
         apply.SetActive(true);
         unsavedChanges = true;
+        SetCounter();
     }
 
     public void DecreaseFrameCap()
@@ -204,8 +223,10 @@ public class SettingsBehaviour : MonoBehaviour
             _frameCapIndex--;
             frameCounter.text = _frameCap[_frameCapIndex].ToString();
         }
+
         apply.SetActive(true);
         unsavedChanges = true;
+        SetCounter();
     }
 
     public void IncreaseVsync()
@@ -218,9 +239,11 @@ public class SettingsBehaviour : MonoBehaviour
         {
             _vSyncIndex++;
         }
+
         vSyncMode.text = _vSync[_vSyncIndex];
         apply.SetActive(true);
         unsavedChanges = true;
+        SetCounter();
     }
 
     public void DecreaseVsync()
@@ -233,14 +256,16 @@ public class SettingsBehaviour : MonoBehaviour
         {
             _vSyncIndex--;
         }
+
         vSyncMode.text = _vSync[_vSyncIndex];
         apply.SetActive(true);
         unsavedChanges = true;
+        SetCounter();
     }
 
     public void IncreaseQualityPref()
     {
-        if (_qualityPrefIndex == qualityPrefabs.Count -1)
+        if (_qualityPrefIndex == qualityPrefabs.Count - 1)
         {
             _qualityPrefIndex = 0;
         }
@@ -248,9 +273,11 @@ public class SettingsBehaviour : MonoBehaviour
         {
             _qualityPrefIndex++;
         }
+
         qualityPrefab.text = qualityPrefabs[_qualityPrefIndex].name;
         apply.SetActive(true);
         unsavedChanges = true;
+        SetCounter();
     }
 
     public void DecreaseQualityPref()
@@ -263,9 +290,11 @@ public class SettingsBehaviour : MonoBehaviour
         {
             _qualityPrefIndex--;
         }
+
         qualityPrefab.text = qualityPrefabs[_qualityPrefIndex].name;
         apply.SetActive(true);
         unsavedChanges = true;
+        SetCounter();
     }
 
     public void AdjustBrightness()
@@ -317,7 +346,7 @@ public class SettingsBehaviour : MonoBehaviour
         unsavedChanges = false;
         Save();
     }
-    
+
     private void ApplyGraphicsSlider()
     {
         PlayerPrefs.SetFloat(GammaValuePref, gammaSlider.value);
