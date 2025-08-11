@@ -50,7 +50,8 @@ public class PlayerNameDisplay : MonoBehaviour
         }
         //nameDisplay.color = inTeamOne ? Color.green : Color.red;
         string name = bridge.DisplayName;
-        nameDisplay.text = $"{name}";
+        var nametext = $"{name}";
+        nameDisplay.text = nametext[..12];
         // todo trim chars at [9]
     }
 }

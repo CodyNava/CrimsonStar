@@ -14,6 +14,10 @@ public class NetTurret : NetworkBehaviour
     [SerializeField] private Transform spawnTransformA, spawnTransformB;
     [SerializeField] private VisualEffect muzzleFlashA, muzzleFlashB;
     [SerializeField] private StudioEventEmitter shotEvent;
+
+    [SerializeField] private NetModuleData moduleData;
+    [SerializeField] private List<HexCoordinate> localCoordinates;
+
     private const float MaxPassedTime = 0.3f;
     private Transform _nextSpawnTransform;
     private VisualEffect _nextMuzzleFlash;
@@ -29,9 +33,32 @@ public class NetTurret : NetworkBehaviour
         _nextMuzzleFlash = muzzleFlashA;
     }
 
+    private bool CanFire()
+    {
+        if (!this.turretModule.ModuleID.GetModuleData().CanBePowered) return true;
+        return turretModule.Bridge.PositionHasEnergy(CalculateRealCoordinates());
+    }
+
+    private List<HexCoordinate> CalculateRealCoordinates()
+    {
+        foreach (Vector3Int localCoordinate in moduleData.LocalModuleCoordinates)
+        {
+            localCoordinates.Add(new HexCoordinate(localCoordinate.x, localCoordinate.y, localCoordinate.z));
+        }
+
+        var totalCoord = new List<HexCoordinate>();
+        foreach (var coord in localCoordinates)
+        {
+            totalCoord.Add(coord + turretModule.RootCoordinate);
+        }
+
+        return totalCoord;
+    }
+
     private void LateUpdate()
     {
         if (!IsOwner) return;
+        if (!CanFire()) return;
         _accumulatedTime += Time.deltaTime;
         _accumulatedTime = Mathf.Min(_accumulatedTime, netTurretData.Cooldown);
 

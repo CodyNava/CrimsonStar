@@ -83,10 +83,10 @@ VisualEffect:
       - m_Value: 4
         m_Name: Set_Length_BoudningBox
         m_Overridden: 1
-      - m_Value: 4.5
+      - m_Value: 8
         m_Name: Width_Lightning
         m_Overridden: 1
-      - m_Value: 0.26
+      - m_Value: 0.25
         m_Name: Width_Laser
         m_Overridden: 1
       - m_Value: 1.2
@@ -98,14 +98,14 @@ VisualEffect:
       - m_Value: 0.025
         m_Name: Laser_Length
         m_Overridden: 1
-      - m_Value: 3
+      - m_Value: 4
         m_Name: SpawnRate_Lightning
         m_Overridden: 1
     m_Vector2f:
       m_Array:
-      - m_Value: {x: -5, y: 0}
+      - m_Value: {x: -20, y: 0}
         m_Name: TexSpeed_Lightning
-        m_Overridden: 0
+        m_Overridden: 1
       - m_Value: {x: -7, y: 0}
         m_Name: TexSpeed_Laser
         m_Overridden: 0
@@ -122,13 +122,13 @@ VisualEffect:
         m_Overridden: 1
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 1.7746989, y: 16.94838, z: 15.940777, w: 0}
+      - m_Value: {x: 3.3061275, y: 1.2549015, z: 11.984314, w: 0}
         m_Name: Color_Laser
         m_Overridden: 1
-      - m_Value: {x: 0.060875736, y: 0.17394894, z: 0.67924523, w: 0}
+      - m_Value: {x: 0.1254902, y: 0.15101658, z: 1.3568628, w: 0}
         m_Name: Color_BackgroundLaser
         m_Overridden: 1
-      - m_Value: {x: 3.1342442, y: 1.2549016, z: 11.984314, w: 0}
+      - m_Value: {x: 16.94838, y: 1.242289, z: 6.2955837, w: 0}
         m_Name: Color_Lightning
         m_Overridden: 1
     m_Uint:
@@ -253,6 +253,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2421482549427040580}
+  - component: {fileID: 6851292515607315171}
   m_Layer: 0
   m_Name: VFX_Laser_Tier2
   m_TagString: Untagged
@@ -276,3 +277,34 @@ Transform:
   - {fileID: 8600490781345396402}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6851292515607315171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3411162853780674095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 234095121
+      Data2: 1122088382
+      Data3: 344742803
+      Data4: -230015868
+    Path: event:/SFX/LaserBeam_SFX
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 1
+  OverrideMinDistance: 100
+  OverrideMaxDistance: 200

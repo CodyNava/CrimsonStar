@@ -111,6 +111,7 @@ public class NetBridge : NetworkBehaviour
             _powerGrid[coordinate] = power + 1;
         }
     }
+
     [Server]
     private void S_RemoveModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
     {
@@ -348,8 +349,14 @@ public class NetBridge : NetworkBehaviour
         gameplayModule.S_InflictDamage(damage, _playerId.Value);
     }
 
-    public bool PositionHasEnergy(HexCoordinate coord)
+    public bool PositionHasEnergy(List<HexCoordinate> coordinate)
     {
-        return _powerGrid.GetValueOrDefault(coord) > 0;
+        foreach (var coord in coordinate)
+        {
+            if (_powerGrid.GetValueOrDefault(coord) > 0)
+                return true;
+        }
+
+        return false;
     }
 }

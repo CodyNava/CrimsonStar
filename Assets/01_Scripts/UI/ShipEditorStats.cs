@@ -108,7 +108,7 @@ public class ShipEditorStats : MonoBehaviour
             _mass += modules.ModuleData.BaseStats.mass;
             _thrust += modules.ModuleData.BaseStats.thrust;
             _angularThrust += modules.ModuleData.BaseStats.angularThrust;
-            _maxSpeed = netBridge.MaxMovementSpeed / (1 + _mass * -1 / 100);
+            _maxSpeed = netBridge.MaxMovementSpeed * (1 + _mass / 100);
             _acceleration = netBridge.BaseMovementSpeed + _thrust;
             _currentAngularThrust = netBridge.BaseAngularSpeed + _angularThrust;
         }
@@ -147,8 +147,9 @@ public class ShipEditorStats : MonoBehaviour
                                    laserTurretModule.ModuleScriptableObject.ChargeTime;
                 float maxHits = laserProjectile.MaxTargetsPerHit;
                 float maxRangeLaser = laserProjectile.MaxLength;
-
-                _damagePerSecondWg1 += (projDmg * maxHits) / shootingCd;
+                var lifeTime = laserProjectile.LifetimeAfterFullGrown;
+                var tickRate = laserProjectile.LaserTickRate;
+                _damagePerSecondWg1 += projDmg * (lifeTime / tickRate) * maxHits / shootingCd ;
                 _laserRangeWg1 = maxRangeLaser;
             }
 
@@ -318,16 +319,16 @@ public class ShipEditorStats : MonoBehaviour
         acceleration.text = $"CurrentSpeed: {_acceleration:0.0}";
         maneuverability.text = $"Maneuverability: {_currentAngularThrust:0.0}";
         //Wg1
-        damagePerSecondWg1.text = $"DmgPerSecond: {_damagePerSecondWg1:0}";
-        maxRangeWg1.text = $"MaxRange: {_maxRangeWg1:0}";
-        minRangeWg1.text = $"MinRange: {_minRangeWg1:0}";
+        damagePerSecondWg1.text = $"DmgPerSecond: {_damagePerSecondWg1:0.0}";
+        maxRangeWg1.text = $"MaxRange: {_maxRangeWg1:0.0}";
+        minRangeWg1.text = $"MinRange: {_minRangeWg1:0.0}";
         //Wg2
-        damagePerSecondWg2.text = $"DmgPerSecond: {_damagePerSecondWg2:0}";
-        maxRangeWg2.text = $"MaxRange: {_maxRangeWg2:0}";
-        minRangeWg2.text = $"MinRange: {_minRangeWg2:0}";
+        damagePerSecondWg2.text = $"DmgPerSecond: {_damagePerSecondWg2:0.0}";
+        maxRangeWg2.text = $"MaxRange: {_maxRangeWg2:0.0}";
+        minRangeWg2.text = $"MinRange: {_minRangeWg2:0.0}";
         //Wg3
-        damagePerSecondWg3.text = $"DmgPerSecond: {_damagePerSecondWg3:0}";
-        maxRangeWg3.text = $"MaxRange: {_maxRangeWg3:0}";
-        minRangeWg3.text = $"MinRange: {_minRangeWg3:0}";
+        damagePerSecondWg3.text = $"DmgPerSecond: {_damagePerSecondWg3:0.0}";
+        maxRangeWg3.text = $"MaxRange: {_maxRangeWg3:0.0}";
+        minRangeWg3.text = $"MinRange: {_minRangeWg3:0.0}";
     }
 }

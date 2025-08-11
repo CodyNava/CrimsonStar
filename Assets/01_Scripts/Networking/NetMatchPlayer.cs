@@ -16,6 +16,7 @@ public class NetMatchPlayer : NetworkBehaviour
     public readonly SyncVar<int> KillsMatch = new();
     public readonly SyncVar<int> MatchScore = new();
     public readonly SyncVar<bool> Survived = new();
+    public readonly SyncVar<string> SelectedPreset = new();
     public readonly SyncVar<NetBridge> BridgeObject = new();
     public readonly SyncVar<bool> RoundWon = new();
     public readonly SyncVar<bool> MatchWon = new();
@@ -112,4 +113,31 @@ public class NetMatchPlayer : NetworkBehaviour
 
         return false;
     }
+    
+    [Client]
+    public bool C_SignalUnready()
+    {
+        if (IsOwner)
+        {
+            InstanceFinder.GetInstance<NetShipEditorConductor>().S_SignalUnready();
+            return true;
+        }
+
+        return false;
+    }
+
+    [ServerRpc][Server]
+    public void S_SetPresetName(string presetName)
+    {
+        SelectedPreset.Value = presetName;
+    }
+
+    [Client]
+    public void C_SetPresetName(string presetName)
+    {
+        if (!IsOwner) return;
+        S_SetPresetName(presetName);
+    }
+    
+    
 }

@@ -78,14 +78,34 @@ public class NetEditorModule : MonoBehaviour
     {
         if (!ModuleData.CanBePowered) return;
         PowerMaterial = PowerMaterialGameObject.GetComponent<MeshRenderer>().materials[3];
+
         _originalColor = PowerMaterial.GetColor(ColourShift);
         _originalColorIntensity = Mathf.Max(_originalColor.r, _originalColor.g, _originalColor.b);
 
-        if (ModuleID != NetModuleID.TurretLaser) return;
-        foreach (var mesh in powerMaterialSocketsGameObject)
+        switch (ModuleID)
         {
-            var socketMat = mesh.GetComponent<MeshRenderer>().materials[1];
-            powerSocketMaterials.Add(socketMat);
+            case (NetModuleID.TurretLaser):
+                foreach (var mesh in powerMaterialSocketsGameObject)
+                {
+                    var socketMat = mesh.GetComponent<MeshRenderer>().materials[1];
+                    powerSocketMaterials.Add(socketMat);
+                }
+
+                break;
+            case (NetModuleID.DeepPenLaser):
+                foreach (var mesh in powerMaterialSocketsGameObject)
+                {
+                    var socketMat = mesh.GetComponent<MeshRenderer>().materials[1];
+                    powerSocketMaterials.Add(socketMat);
+                }
+
+                break;
+            case NetModuleID.ShredderGun:
+                powerSocketMaterials.Add(PresetObject.GetComponent<MeshRenderer>().materials[3]);
+                break;
+            case (NetModuleID.TurretRocketT2):
+                powerSocketMaterials.Add(PresetObject.GetComponent<MeshRenderer>().materials[3]);
+                break;
         }
     }
 
@@ -104,9 +124,13 @@ public class NetEditorModule : MonoBehaviour
 
     public void SetMaterialsBasedOnPreset()
     {
-        PresetColor1 = shipEditor.colorList[0];
-        PresetColor2 = shipEditor.colorList[1];
-        PresetColor3 = shipEditor.colorList[2];
+        var presetName = shipEditor.PlayerData.SelectedPreset.Value;
+        if (presetName == null) return;
+        var currenPreset = DataProvider.GetColorPresetByName(presetName);
+        PresetColor1 = currenPreset.color1;
+        PresetColor2 = currenPreset.color2;
+        PresetColor3 = currenPreset.color3;
+       
     }
 
     private void UpdateMaterialPresets()
@@ -130,7 +154,7 @@ public class NetEditorModule : MonoBehaviour
 
     public void ModuleSelected()
     {
-        shipEditor.moduleFirstSelectedGP = true;
+        shipEditor.moduleFirstSelectedGp = true;
         VisualTransform.gameObject.layer =
             IsSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
     }
@@ -295,5 +319,18 @@ public class NetEditorModule : MonoBehaviour
 
     public Transform GetRotation() => CurrentTransform;
     public bool EnergyViewEnable() => shipEditor.inEnergyView;
-    public bool Powered() => shipEditor.CheckIfPowered(PlacedLocation);
+
+    private bool Powered()
+    {
+        var totalCoord = new List<HexCoordinate>();
+        foreach (var coord in  LocalCoordinates)
+        {
+            //if (coord == LocalCoordinates[0]) continue;
+            totalCoord.Add(coord + PlacedLocation);
+        }
+        Debug.Log(totalCoord);
+
+        return shipEditor.CheckIfPowered(totalCoord);
+        
+    }
 }
