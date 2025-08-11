@@ -14,6 +14,7 @@ public class EndResultsUI : MonoBehaviour
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private GameObject container;
     [SerializeField] private Button backToMainButton;
+    private NetTeamModeID _currentTeamMode;
     
     private void OnEnable()
     {
@@ -27,15 +28,23 @@ public class EndResultsUI : MonoBehaviour
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
         container.SetActive(true);
-
+        
         List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
-        /*List<NetMatchPlayer> players =
-            InstanceFinder.GetInstance<NetLobbyConductor>().PlayersByConnection.Values.ToList();*/
-        //players.Sort((a, b) => b.MatchScore.Value.CompareTo(a.MatchScore.Value));
-        players = players.OrderByDescending(p => p.MatchScore.Value).
-            ThenBy(p =>p.Team.Value).
-            ThenByDescending(p => p.KillsMatch.Value).
-            ThenByDescending(p => p.DamageDealtMatch.Value).ToList();
+        
+        if (_currentTeamMode == NetTeamModeID.TeamMode)
+        {
+            players = players.OrderByDescending(p => p.MatchScore.Value).
+                ThenBy(p =>p.Team.Value).
+                ThenByDescending(p => p.KillsMatch.Value).
+                ThenByDescending(p => p.DamageDealtMatch.Value).ToList(); 
+        }
+        else
+        {
+            players = players.OrderByDescending(p => p.MatchScore.Value).
+                ThenByDescending(p => p.KillsMatch.Value).
+                ThenByDescending(p => p.DamageDealtMatch.Value).ToList();
+        }
+        
         var rankCounter = 1;
         for (int i = 0; i < players.Count; i++)
         {
@@ -50,6 +59,7 @@ public class EndResultsUI : MonoBehaviour
         {
             statsDisplays[i].TurnOffStats();
         }
+        
         backToMainButton.gameObject.SetActive(true);
     }
 
@@ -61,13 +71,21 @@ public class EndResultsUI : MonoBehaviour
         container.SetActive(true);
         
         List<NetMatchPlayer> players = FindObjectsByType<NetMatchPlayer>(FindObjectsSortMode.None).ToList();
-        /*List<NetMatchPlayer> players =
-            InstanceFinder.GetInstance<NetLobbyConductor>().PlayersByConnection.Values.ToList();*/
-        //players.Sort((a, b) => b.MatchScore.Value.CompareTo(a.MatchScore.Value));
-        players = players.OrderByDescending(p => p.MatchScore.Value).
-            ThenBy(p =>p.Team.Value).
-            ThenByDescending(p => p.KillsRound.Value).
-            ThenByDescending(p => p.DamageDealtRound.Value).ToList();
+
+        if (_currentTeamMode == NetTeamModeID.TeamMode)
+        {
+            players = players.OrderByDescending(p => p.MatchScore.Value).
+                ThenBy(p =>p.Team.Value).
+                ThenByDescending(p => p.KillsRound.Value).
+                ThenByDescending(p => p.DamageDealtRound.Value).ToList();
+        }
+        else
+        {
+            players = players.OrderByDescending(p => p.MatchScore.Value).
+                ThenByDescending(p => p.KillsRound.Value).
+                ThenByDescending(p => p.DamageDealtRound.Value).ToList();
+        }
+        
         var rankCounter = 1;
         for (int i = 0; i < players.Count; i++)
         {
