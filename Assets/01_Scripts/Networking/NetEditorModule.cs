@@ -154,7 +154,7 @@ public class NetEditorModule : MonoBehaviour
 
     public void ModuleSelected()
     {
-        shipEditor.moduleFirstSelectedGP = true;
+        shipEditor.moduleFirstSelectedGp = true;
         VisualTransform.gameObject.layer =
             IsSelected ? LayerMask.NameToLayer("Outline") : LayerMask.NameToLayer("Modules");
     }

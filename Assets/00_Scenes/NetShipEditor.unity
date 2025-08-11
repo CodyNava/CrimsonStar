@@ -12285,18 +12285,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   editCamera: {fileID: 167079969}
-  noMoneyPopUp: {fileID: 4416571774363546086, guid: f18af1a74bbe3af4f87262f48853f58f, type: 3}
-  cantBePlacedPopUp: {fileID: 1203236370}
-  cantBePlacedText: {fileID: 1203236372}
   hexTransform: {fileID: 7362360416407474516}
   shipEditorStats: {fileID: 112837999}
   netEditorBridgeRef: {fileID: 7362360416407474517}
   weaponGroupManager: {fileID: 272880439}
   outlineShader: {fileID: 2100000, guid: 187fdedad7db6f447b205136355097f0, type: 2}
-  moveInput: {x: 0, y: 0}
-  lastSelected: {fileID: 1088968091}
-  forceSelected: {fileID: 1088968091}
-  moduleMoveSpeedGP: 15
+  noMoneyPopUp: {fileID: 4416571774363546086, guid: f18af1a74bbe3af4f87262f48853f58f, type: 3}
+  cantBePlacedPopUp: {fileID: 1203236370}
+  sellEffect: {fileID: 8462704293142748866, guid: aced10e902a814848a2a4a626bc2d4f3, type: 3}
+  noMoneyPopUpSpawnPos: {fileID: 594074472}
+  cantBePlacedText: {fileID: 1203236372}
   gamePadSwitches:
   - {fileID: 1992913162}
   - {fileID: 53057865}
@@ -12307,8 +12305,6 @@ MonoBehaviour:
   wg1Header: {fileID: 1142048391}
   wg2Header: {fileID: 906050353}
   wg3Header: {fileID: 228028826}
-  noMoneyPopUpSpawnPos: {fileID: 594074472}
-  isReady: 0
   playerWidget:
   - {fileID: 4887141426230779615}
   - {fileID: 1382019423}
@@ -12322,7 +12318,6 @@ MonoBehaviour:
   topBarContainer: {fileID: 1757291906}
   maxNameChars: 12
   blockingPlane: {fileID: 97072551}
-  gamepadEnabled: 1
   healthViewModeText: {fileID: 232671717}
   healthViewToggleButton: {fileID: 1578808182}
   healthViewImageToggled: {fileID: 73346528, guid: a5f04249b4a58fa4288dfcc3ae15ef25, type: 3}
@@ -12334,10 +12329,17 @@ MonoBehaviour:
   energyViewButtonImageNormal: {fileID: 396191072, guid: a23c150fd081bd54bb99caad39c33835, type: 3}
   inEnergyView: 0
   inEnergyViewParentToggle: 0
+  moveInput: {x: 0, y: 0}
+  lastSelected: {fileID: 1088968091}
+  forceSelected: {fileID: 1088968091}
+  moduleMoveSpeedGp: 0
+  gamepadEnabled: 1
+  moduleSpawnedInGp: 0
+  moduleFirstSelectedGp: 0
+  isReady: 0
   joiningEditor: 0
   tempRotation: 0
-  moduleSpawnedInGP: 0
-  moduleFirstSelectedGP: 0
+  presetData: {fileID: 11400000, guid: 5f5245f9b2aaaa24092e732e446a428d, type: 2}
   modulePlacedEvent:
     Guid:
       Data1: -1218797653
@@ -12359,7 +12361,6 @@ MonoBehaviour:
       Data3: 1329374080
       Data4: 1732535679
     Path: event:/SFX/ModuleGrab_SFX
-  presetData: {fileID: 11400000, guid: 5f5245f9b2aaaa24092e732e446a428d, type: 2}
   energyMap:
     _serializedList: []
 --- !u!4 &1213812593
