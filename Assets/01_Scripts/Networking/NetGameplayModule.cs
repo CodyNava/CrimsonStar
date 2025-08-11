@@ -228,10 +228,10 @@ public class NetGameplayModule : NetworkBehaviour
     [Server]
     [ServerRpc(RequireOwnership = false)]
     public void S_InflictDamage(float damage, ulong attackerID = 0)
-    {
+    {       
         if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor) && attackerID != 0)
         {
-            gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
+            gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, Mathf.Min(_health.Value, damage));
         }
 
         SetHealth(damage);
@@ -252,8 +252,7 @@ public class NetGameplayModule : NetworkBehaviour
 
             S_DestroyModule();
         }
-
-        Debug.Log("damage inflicted: " + damage);
+        
         float newPct = Mathf.Clamp01(_health.Value / Mathf.Max(_maxHealth, Mathf.Epsilon)); // direkt die healthpct übergeben weil die syncticks zu langsam sind 
         C_DisplayDamageObserver(newPct);
     }
