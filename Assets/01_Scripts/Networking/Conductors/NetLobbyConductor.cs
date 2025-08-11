@@ -184,6 +184,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         }
 
         _selectedTeamMode = msg.TeamMode;
+        InstanceFinder.GetInstance<NetGameplayConductor>().SetGameplayScene(TeamModeMapName);
     }
 
     [Server]
