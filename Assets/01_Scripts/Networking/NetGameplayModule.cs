@@ -106,7 +106,8 @@ public class NetGameplayModule : NetworkBehaviour
         if (IsOwner)
         {
             //UpdateMaterialPresets();
-            int weaponGroupValue = NetModuleWeaponGroupData.WeaponGroupMap.GetValueOrDefault(coord);
+            int weaponGroupValue = NetModuleWeaponGroupData.ReadWeaponGroup(coord);
+            if (weaponGroupValue == 0) weaponGroupValue = NetModuleWeaponGroupData.ReadWeaponGroup(this._rootCoordinate.Value);
             WeaponGroup = weaponGroupValue;
         }
     }
