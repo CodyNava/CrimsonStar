@@ -63,16 +63,17 @@ public class NetGameplayModule : NetworkBehaviour
     public HexCoordinate RootCoordinate => _rootCoordinate.Value;
 
     [Server]
-    public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, HexCoordinate rootCoordinate)
+    public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, ModulePlacementData placementData, string presetName)
     {
         var moduleData = ModuleID.GetModuleData();
 
         _bridge = bridge;
-        _rootCoordinate.Value = rootCoordinate;
+        _rootCoordinate.Value = placementData.RootCoordinate;
         _health.Value = moduleData.BaseStats.health;
         _maxHealth = _health.Value;
         _playerID.Value = netTeamID;
-        _bridge.S_AttachModule(this, rootCoordinate);
+        _bridge.S_AttachModule(this, placementData);
+        C_SetColorsBasedOnPreset(presetName);
     }
 
     public void C_ClientInit()
@@ -84,7 +85,6 @@ public class NetGameplayModule : NetworkBehaviour
         if (ModuleID != NetModuleID.Bridge) return;
         _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
         _lowHealthAlarmInstance.release();
-        glassCrackedMaterial.SetFloat(BridgeHealthInput, 0f);
     }
 
     public override void OnStartClient()
@@ -121,21 +121,19 @@ public class NetGameplayModule : NetworkBehaviour
         PresetMatHead2 = PresetObjectHead.GetComponent<MeshRenderer>().materials[1];
         PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
     }
-
-    [Server]
-    private void SetHealth(float value) => _health.Value -= value;
-
-    public void SetColorsBasedOnPreset()
+    
+    [ObserversRpc]
+    public void C_SetColorsBasedOnPreset(string presetName)
     {
-        //PresetColor1 = player.ColorList.Value[0];
-        //PresetColor2 = player.ColorList.Value[1];
-        //PresetColor3 = player.ColorList.Value[2];
-        // todo set colors here
+        var currenPreset = DataProvider.GetColorPresetByName(presetName);
+        PresetColor1 = currenPreset.color1;
+        PresetColor2 = currenPreset.color2;
+        PresetColor3 = currenPreset.color3;
+        UpdateMaterialPresets();
     }
 
     private void UpdateMaterialPresets()
     {
-        SetColorsBasedOnPreset();
         PresetMat1.SetVector(Shift, PresetColor1);
         PresetMat2.SetVector(Shift, PresetColor2);
         PresetMat3.SetVector(Shift, PresetColor3);
@@ -146,7 +144,12 @@ public class NetGameplayModule : NetworkBehaviour
             PresetMatHead3.SetVector(Shift, PresetColor3);
         }
     }
+    
 
+    
+    [Server]
+    private void SetHealth(float value) => _health.Value -= value;
+    
     // Occurs when a module gets destroyed
     [Server]
     private void S_DestroyModule()
@@ -203,7 +206,7 @@ public class NetGameplayModule : NetworkBehaviour
         {
             if (ModuleID == NetModuleID.Bridge)
             {
-                glassCrackedMaterial.SetFloat(BridgeHealthInput, 1 - health);
+               // glassCrackedMaterial.SetFloat(BridgeHealthInput, 1 - health);
                 RuntimeManager.PlayOneShot(bridgeGotHitFeedbackSFX, transform.position);
                 if (lowHealthAlarmSFX.IsNull == false)
                 {
@@ -225,10 +228,10 @@ public class NetGameplayModule : NetworkBehaviour
     [Server]
     [ServerRpc(RequireOwnership = false)]
     public void S_InflictDamage(float damage, ulong attackerID = 0)
-    {
+    {       
         if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor) && attackerID != 0)
         {
-            gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
+            gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, Mathf.Min(_health.Value, damage));
         }
 
         SetHealth(damage);
@@ -240,7 +243,6 @@ public class NetGameplayModule : NetworkBehaviour
                 _lowHealthAlarmInstance.release();
 
                 if (this.ModuleID != NetModuleID.Bridge) return;
-                glassCrackedMaterial.SetFloat(BridgeHealthInput, 0f);
             }
 
             if (ModuleID == NetModuleID.Bridge && gameplayConductor && attackerID != 0)
@@ -250,8 +252,7 @@ public class NetGameplayModule : NetworkBehaviour
 
             S_DestroyModule();
         }
-
-        Debug.Log("damage inflicted: " + damage);
+        
         float newPct = Mathf.Clamp01(_health.Value / Mathf.Max(_maxHealth, Mathf.Epsilon)); // direkt die healthpct übergeben weil die syncticks zu langsam sind 
         C_DisplayDamageObserver(newPct);
     }

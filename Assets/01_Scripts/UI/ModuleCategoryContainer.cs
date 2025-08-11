@@ -8,7 +8,6 @@ public class ModuleCategoryContainer : MonoBehaviour
     [SerializeField] private GameObject container;
     [SerializeField] private ModuleSelectionButton selectionButton;
     [SerializeField] private ColorPresetButton colorPresetButton;
-    [SerializeField] private ColorPresetData presetData;
     [SerializeField] private GameObject colorPresetContainer;
     private string _currentName;
 
@@ -19,11 +18,11 @@ public class ModuleCategoryContainer : MonoBehaviour
 
         if (category == NetModuleCategory.ColorPresets)
         {
-            foreach (var data in presetData.presets)
+            foreach (var (presetName, presetColors) in DataProvider.Instance.ColorPresetData.presets)
             {
                 colorPresetButton.SetButtonSprite();
-                colorPresetButton.SetColor(data.colors);
-                colorPresetButton.SetName(data.presetName);
+                colorPresetButton.SetName(presetName);
+                colorPresetButton.SetColor(presetColors);
                 Instantiate(colorPresetContainer, container.transform);
             }
 

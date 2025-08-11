@@ -16,10 +16,11 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     [SerializeField] private int minimumResourceCount;
     [SerializeField] private float shipEditorTimerDuration;
     [SerializeField] private FMODUnity.StudioEventEmitter intro;
-    [SerializeField] private bool inEditorPhase = true;
+    [SerializeField] private bool inEditorPhase = false;
+    [SerializeField] private float broadcastFrequency = 0.5f;
+    private float _accumulator;
     public bool InEditorPhase => inEditorPhase;
-    
-    
+
 
     public override string ConductedSceneName => "NetShipEditor";
 
@@ -31,6 +32,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     public float TimeRemaining => _editorTimer.Remaining;
 
     private bool _skipAnnouncer = false;
+
     public bool SkipAnnouncer
     {
         get => _skipAnnouncer;
@@ -68,9 +70,40 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     private void Update()
     {
         if (!inEditorPhase) return;
+        _accumulator += Time.deltaTime;
+        if (_accumulator > broadcastFrequency)
+        {
+            SendUpdateBroadcast();
+            _accumulator = 0;
+        }
+
         _editorTimer.Update(Time.deltaTime);
     }
-    
+
+    [Server]
+    private void SendUpdateBroadcast()
+    {
+        int playerCount = _lobbyConductor.PlayersByID.Count(pair => pair.Value.Team.Value != NetTeamID.Observer);
+        var broadcast = new NetShipEditorBroadcasts.ShipEditorUpdate
+        {
+            names = new string[playerCount],
+            readyState = new bool[playerCount],
+            maxRounds = _lobbyConductor.RoundCount,
+            currentRound = InstanceFinder.GetInstance<NetGameplayConductor>().RoundsPlayed + 1
+        };
+        int index = 0;
+        foreach (var (id, player) in _lobbyConductor.PlayersByID)
+        {
+            if (!_lobbyConductor.ConnectionsByPlayerID.TryGetValue(id, out var conn)) continue;
+            if (!_playersReady.TryGetValue(conn, out var ready)) continue;
+            if (player.Team.Value == NetTeamID.Observer) continue;
+            broadcast.names[index] = player.DisplayName.Value;
+            broadcast.readyState[index] = _playersReady[_lobbyConductor.ConnectionsByPlayerID[id]];
+            index++;
+        }
+        ServerManager.Broadcast(broadcast);
+    }
+
 
     private void OnTimerChange(SyncTimerOperation op, float prev, float next, bool asServer)
     {
@@ -92,13 +125,12 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
             StartCoroutine(AdvanceToGameplayScene());
         }
     }
-    
+
     [ServerRpc(RequireOwnership = false)]
     [Server]
     public void S_SignalUnready(Channel channel = Channel.Reliable, NetworkConnection conn = null)
     {
         _playersReady[conn!] = false;
-        
     }
 
     [ObserversRpc]
@@ -120,15 +152,23 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
     private void C_TriggerIntroSound()
     {
         TriggerIntroSound();
-        inEditorPhase = false;
+        StartCoroutine(WaitForReadyFeedBack());
     }
 
     private void TriggerIntroSound()
     {
         if (!intro.IsPlaying()) intro.Play();
-        inEditorPhase = false;
+        StartCoroutine(WaitForReadyFeedBack());
+        
     }
 
+    private IEnumerator WaitForReadyFeedBack() //to update the last one who presses ready 
+    {
+        yield return new WaitForSeconds(0.05f);
+        inEditorPhase = false;
+    }
+    
+    
     [ObserversRpc]
     [Client]
     private void C_ToggleInEditorBool()
@@ -142,8 +182,9 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
         {
             C_TriggerIntroSound();
             TriggerIntroSound();
-            yield return new WaitForSecondsRealtime(6.5f);   
+            yield return new WaitForSecondsRealtime(6.5f);
         }
+
         _editorTimer.StartTimer(_lobbyConductor.EditorTimerDuration);
         InstanceFinder.GetInstance<NetGameplayConductor>().MoveToScene(this, _lobbyConductor.Players);
         _playersReady.Clear();
