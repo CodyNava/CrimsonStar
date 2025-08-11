@@ -468,6 +468,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
             }
         }
 
+        // TODO: Separate SpawnPoints for each Team
         int spawnPointId = Random.Range(0, _spawnTransforms.Count);
         var spawn = _spawnTransforms.ElementAt(spawnPointId);
         _spawnTransforms.RemoveAt(spawnPointId);

@@ -186,6 +186,7 @@ public class NetShipEditorConductor : BaseConductor<NetShipEditorConductor>
         }
 
         _editorTimer.StartTimer(_lobbyConductor.EditorTimerDuration);
+        InstanceFinder.GetInstance<NetGameplayConductor>().SetGameplayScene(_lobbyConductor.TeamModeMapName);
         InstanceFinder.GetInstance<NetGameplayConductor>().MoveToScene(this, _lobbyConductor.Players);
         _playersReady.Clear();
     }
