@@ -34,6 +34,7 @@ public class ShipEditorTimerDisplay : MonoBehaviour
         if (InstanceFinder.HasInstance<NetShipEditorConductor>())
         {
             float remainingTime = NetShipEditorConductor.Instance.TimeRemaining;
+            bool isStarting = NetShipEditorConductor.Instance.InEditorPhase;
             timerDisplay.text = $"{remainingTime:0}";
             //if (remainingTime == 0f) return;
             ChangeHourGlassAndTextColor(remainingTime);
@@ -41,7 +42,7 @@ public class ShipEditorTimerDisplay : MonoBehaviour
             ChangeTimerHeaderText(remainingTime);
             ButtonBlinkIfThreshold(remainingTime);
             LerpButtonColorBackIfNoTime(remainingTime);
-            DisableInteractions(remainingTime);
+            DisableInteractions(remainingTime, isStarting);
         }
     }
 
@@ -75,16 +76,16 @@ public class ShipEditorTimerDisplay : MonoBehaviour
     private void ButtonBlinkIfThreshold(float timer)
     {
         if (timer > noTimeColorThreshold) return;
-        var timerBasedValue = 7f + timer;
+        var timerBasedValue = 15f + timer;
         var sinT = Mathf.Sin(Time.time * (20f / timerBasedValue)) * 0.5f + 0.5f;
         timerButtonImage.color = Color.Lerp(Color.white, blinkColor, sinT);
     }
 
-    private void DisableInteractions(float timer) //
+    private void DisableInteractions(float timer, bool isStarting) //
     {
         bool disableCheck = timer <= 0f || shipEditor.IsReady;
         if (!_thisButton) _thisButton = GetComponent<Button>();
-        _thisButton.interactable = !disableCheck;
+        _thisButton.interactable = isStarting;
         shipEditor.blockingPlane.gameObject.SetActive(disableCheck);
     }
 

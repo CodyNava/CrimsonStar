@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ModuleCategoryContainer : MonoBehaviour
 {
     [SerializeField] private GameObject container;
     [SerializeField] private ModuleSelectionButton selectionButton;
     [SerializeField] private ColorPresetButton colorPresetButton;
-    [SerializeField] private ColorPresetData presetData;
     [SerializeField] private GameObject colorPresetContainer;
     private string _currentName;
 
@@ -15,15 +15,17 @@ public class ModuleCategoryContainer : MonoBehaviour
     public void SetModuleCategory(NetModuleCategory category)
     {
         ClearButtons();
-        
+
         if (category == NetModuleCategory.ColorPresets)
         {
-            foreach (var data in presetData.presets)
+            foreach (var (presetName, presetColors) in DataProvider.Instance.ColorPresetData.presets)
             {
-                colorPresetButton.SetColor(data.colors);
-                colorPresetButton.SetName(data.presetName);
+                colorPresetButton.SetButtonSprite();
+                colorPresetButton.SetName(presetName);
+                colorPresetButton.SetColor(presetColors);
                 Instantiate(colorPresetContainer, container.transform);
             }
+
             return;
         }
 
@@ -41,10 +43,12 @@ public class ModuleCategoryContainer : MonoBehaviour
             {
                 continue;
             }
-
             ModuleSelectionButton selectedButton = Instantiate(selectionButton, container.transform);
             selectedButton.Configure(moduleData);
+            
         }
+
+        if (!InputManager.Instance.IsGamepadUsed) return;
     }
 
     public void ClearButtons()

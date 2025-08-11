@@ -14,7 +14,11 @@ public class NetLaserTurret : NetworkBehaviour
     [SerializeField] private NetGameplayModule turretModule;
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private VisualEffect muzzleCharge;
-    [SerializeField] private StudioEventEmitter chargeSound;
+    [SerializeField] private StudioEventEmitter shotSound;
+    
+    [SerializeField] private NetModuleData moduleData;
+    [SerializeField] private List<HexCoordinate> localCoordinates;
+
 
     private const float MaxPassedTime = 0.3f;
 
@@ -23,20 +27,33 @@ public class NetLaserTurret : NetworkBehaviour
     private float _accumulatedTimeVFX;
     private float _cooldownTime;
     private float _chargeTime;
-    private float _chargingValue;
     private bool _justShot;
 
 
     private bool CanFire()
     {
-        return turretModule.Bridge.PositionHasEnergy(turretModule.RootCoordinate);
+        if (!this.turretModule.ModuleID.GetModuleData().CanBePowered) return true;
+        return turretModule.Bridge.PositionHasEnergy(CalculateRealCoordinates());
     }
 
+    private List<HexCoordinate> CalculateRealCoordinates()
+    {
+        foreach (Vector3Int localCoordinate in moduleData.LocalModuleCoordinates)
+        {
+            localCoordinates.Add(new HexCoordinate(localCoordinate.x, localCoordinate.y, localCoordinate.z));
+        }
+        
+        var totalCoord = new List<HexCoordinate>();
+        foreach (var coord in  localCoordinates)
+        {
+            totalCoord.Add(coord + turretModule.RootCoordinate);
+        }
+        return totalCoord;
+    }
+    
     private void Start()
     {
         muzzleCharge.SetFloat("Get_ChargeTime", netLaserTurretData.ChargeTime);
-        chargeSound.EventInstance.getParameterByName("laser-charging", out _chargingValue);
-        if (!chargeSound.IsPlaying()) chargeSound.Play();
         //muzzleImpact.SetFloat("Delay", netLaserTurretData.ChargeTime);
     }
 
@@ -52,29 +69,18 @@ public class NetLaserTurret : NetworkBehaviour
 
         if (C_IsAttacking())
         {
-            chargeSound.EventInstance.getParameterByName("laser-charging", out _chargingValue);
-
             _accumulatedTimeVFX += Time.deltaTime;
             if (!_isCharging && _accumulatedTimeVFX > 0.3f)
             {
                 _isCharging = true;
-                muzzleCharge.SendEvent("ChargeUp");
-            }
+                S_ServerVFXString("ChargeUp");
 
-            if (_chargingValue == 1)
-            {
-                return;
             }
-            else
-            {
-                chargeSound.EventInstance.setParameterByName("laser-charging", 1);
-                chargeSound.EventInstance.setParameterByName("laser-hold", 1);
-            }
-
             _chargeTime += Time.deltaTime;
+            if (!shotSound.IsPlaying()) shotSound.Play();
             if (_chargeTime >= netLaserTurretData.ChargeTime)
             {
-                muzzleCharge.SetBool("Set_ChargeCompleted", true);
+                S_ServerVFXBool(true);
                 _accumulatedTimeVFX = 0f;
             }
         }
@@ -88,26 +94,23 @@ public class NetLaserTurret : NetworkBehaviour
                 _cooldownTime = 0;
                 _accumulatedTimeVFX = 0f;
                 C_ClientFire();
-                muzzleCharge.SetBool("Set_ChargeCompleted", false);
-                muzzleCharge.SendEvent("StartDissolve");
-                chargeSound.EventInstance.setParameterByName("laser-charging", 0);
-                chargeSound.EventInstance.setParameterByName("laser-hold", 0);
+                S_ServerVFXBool(false);
+                S_ServerVFXString("StartDissolve");
                 return;
             }
 
             if (_isCharging)
             {
-                muzzleCharge.SendEvent("ChargeDown");
-            }
+                S_ServerVFXString("ChargeDown");
 
+            }
             _isCharging = false;
             _chargeTime = Mathf.Lerp(_chargeTime, 0, Time.deltaTime * 2);
             _accumulatedTimeVFX = _chargeTime;
-            chargeSound.EventInstance.setParameterByName("laser-charging", 2);
-            chargeSound.EventInstance.setParameterByName("laser-hold", 0);
+            if (shotSound.IsPlaying()) shotSound.Stop();
         }
     }
-
+    
 
     private bool C_IsAttacking()
     {
@@ -136,9 +139,8 @@ public class NetLaserTurret : NetworkBehaviour
     private void C_SpawnProjectile(Vector3 position, Vector3 direction, float passedTime, ulong senderID)
     {
         NetPredictedProjectileLaser pp = Instantiate(netLaserTurretData.Projectile, position, Quaternion.identity);
-        pp.transform.SetParent(this.transform);
-        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge,
-            spawnTransform.transform);
+        pp.transform.SetParent(this.transform); 
+        pp.Initialize(direction, passedTime, turretModule.NetTeamID, senderID, turretModule.Bridge, spawnTransform.transform);
     }
 
     [ServerRpc]
@@ -155,11 +157,52 @@ public class NetLaserTurret : NetworkBehaviour
         C_ObserversFire(position, direction, tick, senderID);
     }
 
+
+    
+
     [ObserversRpc(ExcludeOwner = true)]
     private void C_ObserversFire(Vector3 position, Vector3 direction, uint tick, ulong senderID)
     {
         float passedTime = (float)TimeManager.TimePassed(tick, false);
         passedTime = Mathf.Min(MaxPassedTime, passedTime);
         C_SpawnProjectile(position, direction, passedTime, senderID);
+        shotSound.Play();
+    }
+
+    [ServerRpc]
+    private void S_ServerVFXBool(bool vfxBool)
+    {
+        C_ObserverVFXBool(vfxBool);
+    }
+    
+    [ServerRpc]
+    private void S_ServerVFXString(string vfxString)
+    {
+        C_ObserverVFXString(vfxString);
+    }
+    
+    [ObserversRpc]
+    private void C_ObserverVFXBool(bool vfxBool)
+    {
+        muzzleCharge.SetBool("Set_ChargeCompleted", vfxBool);
+    }
+    
+    [ObserversRpc]
+    private void C_ObserverVFXString(string vfxString)
+    {
+        switch (vfxString)
+        {
+            case "ChargeUp":
+                muzzleCharge.SendEvent(vfxString);
+                break;
+            case "StartDissolve" :
+                muzzleCharge.SendEvent(vfxString);
+                break;
+            case "ChargeDown":
+                muzzleCharge.SendEvent(vfxString);
+                break;
+        }
+       
+        
     }
 }

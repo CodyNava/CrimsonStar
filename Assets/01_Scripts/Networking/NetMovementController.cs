@@ -1,11 +1,12 @@
 ﻿using FishNet.Object;
 using FishNet.Object.Prediction;
 using FishNet.Object.Synchronizing;
-using FishNet.Transporting;
+using FMOD;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
+using Channel = FishNet.Transporting.Channel;
 
 public struct MoveReplicateData : IReplicateData
 {
@@ -79,6 +80,8 @@ public class NetMovementController : NetworkBehaviour
         {
             _inputAsset.Enable();
         }
+        else startDustVFX.gameObject.SetActive(false);
+        
     }
 
     public override void OnStopClient()
@@ -204,8 +207,6 @@ public class NetMovementController : NetworkBehaviour
             PredictionRB.Velocity(linearVelocity);
             PredictionRB.Simulate();
         }
-
-        // CalculateStarDust(linearVelocity);
     }
 
     private void CalculateStarDust(Vector2 linearVelocity)
@@ -239,6 +240,7 @@ public class NetMovementController : NetworkBehaviour
         PredictionRB = new PredictionRigidbody2D();
         PredictionRB.Initialize(GetComponent<Rigidbody2D>());
         _inputAsset = new Turet();
+        
     }
 
     private void Update()
@@ -250,6 +252,7 @@ public class NetMovementController : NetworkBehaviour
             {
                 _input *= new Vector2(1f, 0.5f);
             }
+            //CalculateStarDust(PredictionRB.Rigidbody2D.linearVelocity);
         }
     }
 
