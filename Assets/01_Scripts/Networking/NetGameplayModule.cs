@@ -201,12 +201,12 @@ public class NetGameplayModule : NetworkBehaviour
         float health = HealthPct;
         Debug.Log("AAAAAA " + _health + "BBBBB" + HealthPct);
         damagedVFX.SetFloat("DamageInput", 1 - health);
-        //damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
+        damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         if (IsOwner)
         {
             if (ModuleID == NetModuleID.Bridge)
             {
-                glassCrackedMaterial.SetFloat(BridgeHealthInput, 1 - health);
+               // glassCrackedMaterial.SetFloat(BridgeHealthInput, 1 - health);
                 RuntimeManager.PlayOneShot(bridgeGotHitFeedbackSFX, transform.position);
                 if (lowHealthAlarmSFX.IsNull == false)
                 {

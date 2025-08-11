@@ -520,7 +520,7 @@ public class ShipEditor : MonoBehaviour
 
     private Func<HexCoordinate, bool> GetPlacementConditionForModule(NetModuleID moduleID)
     {
-        if (moduleID == NetModuleID.Thruster)
+        if (moduleID.GetModuleData().ModuleCategory == NetModuleCategory.Engines)
         {
             return IsSomethingBelowThruster;
         }
@@ -530,13 +530,13 @@ public class ShipEditor : MonoBehaviour
 
     private bool IsThrusterAbove(HexCoordinate coord)
     {
-        const int maxDistance = 3;
+        const int maxDistance = 14;
         for (var i = 0; i < maxDistance; i++)
         {
             coord = HexCoordinate.Neighbor(coord, HexDirection.North);
             if (_editorModulesMap.TryGetValue(coord, out var module))
             {
-                if (module.ModuleID == NetModuleID.Thruster)
+                if (module.ModuleData.ModuleCategory == NetModuleCategory.Engines)
                 {
                     return true;
                 }
@@ -586,7 +586,7 @@ public class ShipEditor : MonoBehaviour
 
     private bool IsSomethingBelowThruster(HexCoordinate coord)
     {
-        const int maxDistance = 10;
+        const int maxDistance = 14;
         for (var i = 0; i < maxDistance; i++)
         {
             coord = HexCoordinate.Neighbor(coord, HexDirection.South);
