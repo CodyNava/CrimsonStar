@@ -17,6 +17,7 @@ public class NetBridge : NetworkBehaviour
     [field: SerializeField] public NetBridgeConfig BridgeConfig { get; private set; }
     [field: SerializeField] public HexTransform HexTransform { get; private set; }
     [field: SerializeField] public Transform VisualRootTransform { get; private set; }
+    [field: SerializeField] public GameObject StarDust { get; private set; }
 
     [SerializeField] private GameObject deathVFX;
     private readonly SyncVar<NetModuleBaseStats> _baseStats = new();
@@ -219,6 +220,7 @@ public class NetBridge : NetworkBehaviour
             CameraFollow = FindFirstObjectByType<CameraFollow>();
             CameraFollow.SetTarget(this);
             fmodListener.enabled = true;
+            StarDust.SetActive(true);
         }
         else
         {
