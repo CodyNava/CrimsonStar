@@ -20,21 +20,21 @@ public class Nebula : MonoBehaviour
 
     public void LateUpdate()
     {
-        if (InstanceFinder.IsClientStarted) return;
-        
-        dt += Time.deltaTime;
-        
-        if (dt > _nebulaObject.NebulaDamageInterval)
-        {
-
-            foreach (NetGameplayModule module in hitModules)
-            {
-                //TODO: Visuals and Audio
-                // attacker ID is 0 for neutral damage detection
-                module.S_InflictDamage(_nebulaObject.NebulaDamage, 0);
-            }
-            dt = 0;
-        }
+        // if (InstanceFinder.IsClientStarted) return;
+        //
+        // dt += Time.deltaTime;
+        //
+        // if (dt > _nebulaObject.NebulaDamageInterval)
+        // {
+        //
+        //     foreach (NetGameplayModule module in hitModules)
+        //     {
+        //         //TODO: Visuals and Audio
+        //         // attacker ID is 0 for neutral damage detection
+        //         module.S_InflictDamage(_nebulaObject.NebulaDamage, 0);
+        //     }
+        //     dt = 0;
+        // }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
