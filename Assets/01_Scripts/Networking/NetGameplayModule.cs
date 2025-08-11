@@ -63,16 +63,16 @@ public class NetGameplayModule : NetworkBehaviour
     public HexCoordinate RootCoordinate => _rootCoordinate.Value;
 
     [Server]
-    public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, HexCoordinate rootCoordinate, string presetName)
+    public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, ModulePlacementData placementData, string presetName)
     {
         var moduleData = ModuleID.GetModuleData();
 
         _bridge = bridge;
-        _rootCoordinate.Value = rootCoordinate;
+        _rootCoordinate.Value = placementData.RootCoordinate;
         _health.Value = moduleData.BaseStats.health;
         _maxHealth = _health.Value;
         _playerID.Value = netTeamID;
-        _bridge.S_AttachModule(this, rootCoordinate);
+        _bridge.S_AttachModule(this, placementData);
         C_SetColorsBasedOnPreset(presetName);
     }
 
@@ -201,7 +201,7 @@ public class NetGameplayModule : NetworkBehaviour
         float health = HealthPct;
         Debug.Log("AAAAAA " + _health + "BBBBB" + HealthPct);
         damagedVFX.SetFloat("DamageInput", 1 - health);
-        damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
+        //damagedMaterial.material.SetFloat("_InputHealth", 1 - health);
         if (IsOwner)
         {
             if (ModuleID == NetModuleID.Bridge)

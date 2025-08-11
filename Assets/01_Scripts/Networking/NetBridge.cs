@@ -39,10 +39,10 @@ public class NetBridge : NetworkBehaviour
     [SerializeField] private StudioListener fmodListener;
 
     [Server]
-    public void S_AttachModule(NetGameplayModule module, HexCoordinate rootCoordinate)
+    public void S_AttachModule(NetGameplayModule module, ModulePlacementData placementData)
     {
         _baseStats.Value = _baseStats.Value.Combine(module.ModuleID.GetModuleData().BaseStats);
-        S_AddModuleCoordinates(module, rootCoordinate);
+        S_AddModuleCoordinates(module, placementData);
     }
 
     [Server]
@@ -76,13 +76,16 @@ public class NetBridge : NetworkBehaviour
     }
 
     [Server]
-    private void S_AddModuleCoordinates(NetGameplayModule module, HexCoordinate rootCoordinate)
+    private void S_AddModuleCoordinates(NetGameplayModule module, ModulePlacementData data)
     {
         var moduleData = module.ModuleID.GetModuleData();
         var localHexCoordinates = moduleData.GetLocalHexCoordinates();
+        
+        localHexCoordinates = NetModuleStorage.GetRotatedCoordinates(localHexCoordinates, data.Rotation);
         foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
         {
-            HexCoordinate coordinate = localHexCoordinate + rootCoordinate;
+            HexCoordinate coordinate = localHexCoordinate + data.RootCoordinate;
+            
             Assert.IsFalse(_modules.ContainsKey(coordinate),
                 "Placement check failed! Tried to add Module that overlaps already occupied HexCoordinate!");
             // We add each localHexCoordinate that the module occupies to the list
@@ -92,13 +95,13 @@ public class NetBridge : NetworkBehaviour
 
         if (module.ModuleID == NetModuleID.Reactor)
         {
-            foreach (var coordinate in rootCoordinate.CoordinatesInRange(moduleData.EffectRange))
+            foreach (var coordinate in data.RootCoordinate.CoordinatesInRange(moduleData.EffectRange))
             {
                 int power = _powerGrid.GetValueOrDefault(coordinate);
                 _powerGrid[coordinate] = power + 1;
             }
 
-            C_AddToPowerGrid(rootCoordinate, moduleData.EffectRange);
+            C_AddToPowerGrid(data.RootCoordinate, moduleData.EffectRange);
         }
     }
 

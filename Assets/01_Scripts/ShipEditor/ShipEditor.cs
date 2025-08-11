@@ -183,7 +183,7 @@ public class ShipEditor : MonoBehaviour
             playerWidget[i].SetActive(true);
             if (data.names[i] == null) continue;
             var playerLabel = playerWidget[i].GetComponentInChildren<TextMeshProUGUI>();
-            playerLabel.text = data.names[i][..maxNameChars];
+            playerLabel.text = data.names[i];
             playerLabel.color = data.readyState[i] ? Color.green : Color.white;
         }
 
