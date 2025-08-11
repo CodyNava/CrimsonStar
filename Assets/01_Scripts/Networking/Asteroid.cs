@@ -2,10 +2,11 @@ using UnityEngine;
 using FishNet;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using FishNet.Object;
 
 public class Asteroid : MonoBehaviour
 {
-    private AsteroidObject _asteroidObject;
+    [SerializeField] private AsteroidObject _asteroidObject;
     [SerializeField] private GameObject hitFeedbackVFX;
 
 
@@ -28,7 +29,7 @@ public class Asteroid : MonoBehaviour
     {
         _netTeamID = netTeamID;
         _attackerID = attackerID;
-        _asteroidObject = asteroidObject;
+        _asteroidObject = asteroidObject ?? _asteroidObject;
         _bridgeOrigin = bridgeOrigin;
         _moveDirection = direction.normalized;
         _speed = moveSpeed;
@@ -41,19 +42,28 @@ public class Asteroid : MonoBehaviour
     
     void Update()
     {
+        if (!InstanceFinder.IsServerStarted) return;
+        
         transform.position += _moveDirection * (_speed * Time.deltaTime);
 
         Vector3 localPos = transform.position - _center;
 
         if (Mathf.Abs(localPos.x) > _boundX + 1f || Mathf.Abs(localPos.y) > _boundY + 1f)
         {
-            Destroy(gameObject);
+            GetComponent<NetworkObject>().Despawn();
         }
     }
 
     public void Start()
     {
         print("Spawned Asteroid");
+        if (_asteroidObject == null)
+        {
+            // Safety: avoid NRE on late-joiners if something went wrong.
+            Debug.LogWarning("AsteroidObject is null on client; using default scale 1.");
+            gameObject.transform.localScale = Vector3.one;
+            return;
+        }
         float size = Random.Range(_asteroidObject.AsteroidMinSize, _asteroidObject.AsteroidMaxSize+1);
         gameObject.transform.localScale = Vector3.one * size;
     }
@@ -85,6 +95,7 @@ public class Asteroid : MonoBehaviour
             module.S_InflictDamage(_asteroidObject.AsteroidDamage * friendlyFireDamageMult, _attackerID);
         }
         Instantiate(hitFeedbackVFX, transform.position, Quaternion.identity);
-        Destroy(gameObject);
+        if (InstanceFinder.IsServerStarted)
+            GetComponent<NetworkObject>().Despawn();
     }
 }
