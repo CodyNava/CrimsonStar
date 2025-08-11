@@ -126,7 +126,7 @@ public class NetMatchPlayer : NetworkBehaviour
         return false;
     }
 
-    [Server]
+    [ServerRpc][Server]
     public void S_SetPresetName(string presetName)
     {
         SelectedPreset.Value = presetName;

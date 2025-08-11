@@ -51,6 +51,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     // public bool IsLocalPlayerAlive => _lobbyConductor.PlayersByConnection[InstanceFinder.ClientManager.Connection].Survived.Value;
 
     private int _roundsPlayed;
+    public int RoundsPlayed => _roundsPlayed;
 
     private float _elapsedTime;
     private int _kills = 1;

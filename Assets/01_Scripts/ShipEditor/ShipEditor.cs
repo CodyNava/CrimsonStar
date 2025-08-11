@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AYellowpaper.SerializedCollections;
+using FishNet;
+using FishNet.Transporting;
 using Steamworks;
 using TMPro;
 using UnityEngine;
@@ -32,10 +34,17 @@ public class ShipEditor : MonoBehaviour
     [SerializeField] private float moduleMoveSpeedGP;
     [SerializeField] List<GameObject> gamePadSwitches = new List<GameObject>();
     [SerializeField] private TextMeshProUGUI wg1Header, wg2Header, wg3Header;
+    [SerializeField] private Transform noMoneyPopUpSpawnPos;
     [SerializeField] private bool isReady;
     public bool IsReady => isReady;
 
     private bool _gamePadSwitchSelectToggle;
+    [Header("TopBar")] 
+    [SerializeField] private List<GameObject> playerWidget;
+
+    [SerializeField] private TMP_Text topBarRounds;
+    [SerializeField] private GameObject topBarContainer;
+    [SerializeField] private int maxNameChars;
 
     [Header("ReadyBlockadge")] [SerializeField]
     public GameObject blockingPlane;
@@ -147,6 +156,9 @@ public class ShipEditor : MonoBehaviour
         ModuleSelectionButton.ModuleSelected += SpawnPart;
         ColorPresetButton.ColorSelected -= SetPresetName;
         ColorPresetButton.ColorSelected += SetPresetName;
+
+        InstanceFinder.ClientManager.RegisterBroadcast<NetShipEditorBroadcasts.ShipEditorUpdate>(OnServerUpdate);
+        
         _editorModuleList = new List<NetEditorModule> // collection initialization syntax uwu
         {
             netEditorBridgeRef
@@ -164,6 +176,23 @@ public class ShipEditor : MonoBehaviour
         SetOverLayModulesColourViaHealthMap();
     }
 
+    private void OnServerUpdate(NetShipEditorBroadcasts.ShipEditorUpdate data, Channel channel = Channel.Reliable)
+    {
+        int count = data.names.Length;
+        
+        for (int i = 0; i < count; i++)
+        {
+            playerWidget[i].SetActive(true);
+            if (data.names[i] == null) continue;
+            var playerLabel = playerWidget[i].GetComponentInChildren<TextMeshProUGUI>();
+            playerLabel.text = data.names[i][..maxNameChars];
+            playerLabel.color = data.readyState[i] ?  Color.green : Color.white;
+            
+        }
+        
+        topBarRounds.text = $"Rounds: {data.currentRound}/{data.maxRounds}";
+    }
+
     private IEnumerator LinkPlayerRoutine()
     {
         while (PlayerData == null)
@@ -179,7 +208,7 @@ public class ShipEditor : MonoBehaviour
                     yield break;
                 }
             }
-
+            
             yield return null;
         }
     }
@@ -188,6 +217,7 @@ public class ShipEditor : MonoBehaviour
     {
         ModuleSelectionButton.ModuleSelected -= SpawnPart;
         ColorPresetButton.ColorSelected -= SetPresetName;
+        InstanceFinder.ClientManager.UnregisterBroadcast<NetShipEditorBroadcasts.ShipEditorUpdate>(OnServerUpdate);
     }
 
     public void SpawnPart(NetModuleID moduleID)
@@ -195,7 +225,7 @@ public class ShipEditor : MonoBehaviour
         bool success = TrySpawnPart(moduleID);
         if (!success)
         {
-            StartCoroutine(NotEnoughMoneyPopUp());
+            Instantiate(noMoneyPopUp, noMoneyPopUpSpawnPos);
         }
     }
 
@@ -203,14 +233,7 @@ public class ShipEditor : MonoBehaviour
     {
         PlayerData.C_SetPresetName(presetName);
     }
-
-    private IEnumerator NotEnoughMoneyPopUp()
-    {
-        noMoneyPopUp.SetActive(true);
-        yield return new WaitForSeconds(1f);
-        noMoneyPopUp.SetActive(false);
-    }
-
+    
     private IEnumerator CantBePlacedPopUp(bool cantPlaceReactor)
     {
         StartCoroutine(OutlineShaderChanger());

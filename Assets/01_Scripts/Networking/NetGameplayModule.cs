@@ -85,7 +85,6 @@ public class NetGameplayModule : NetworkBehaviour
         if (ModuleID != NetModuleID.Bridge) return;
         _lowHealthAlarmInstance.stop(STOP_MODE.IMMEDIATE);
         _lowHealthAlarmInstance.release();
-        glassCrackedMaterial.SetFloat(BridgeHealthInput, 0f);
     }
 
     public override void OnStartClient()
@@ -207,7 +206,7 @@ public class NetGameplayModule : NetworkBehaviour
         {
             if (ModuleID == NetModuleID.Bridge)
             {
-                glassCrackedMaterial.SetFloat(BridgeHealthInput, 1 - health);
+               // glassCrackedMaterial.SetFloat(BridgeHealthInput, 1 - health);
                 RuntimeManager.PlayOneShot(bridgeGotHitFeedbackSFX, transform.position);
                 if (lowHealthAlarmSFX.IsNull == false)
                 {
@@ -244,7 +243,7 @@ public class NetGameplayModule : NetworkBehaviour
                 _lowHealthAlarmInstance.release();
 
                 if (this.ModuleID != NetModuleID.Bridge) return;
-                glassCrackedMaterial.SetFloat(BridgeHealthInput, 0f);
+              //  glassCrackedMaterial.SetFloat(BridgeHealthInput, 0f);
             }
 
             if (ModuleID == NetModuleID.Bridge && gameplayConductor && attackerID != 0)
