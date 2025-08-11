@@ -9,4 +9,5 @@
     Team6 = 6,
     Team7 = 7,
     Team8 = 8,
+    Environment = 9,
 }
