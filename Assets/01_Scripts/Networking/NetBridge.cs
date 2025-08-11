@@ -327,7 +327,7 @@ public class NetBridge : NetworkBehaviour
         if (relVel.magnitude < velocityThreshold) return;
 
 
-        float massA = BaseStats.mass;
+        float massA = BaseStats.weight;
         Vector2 impactNormal = contactPoint.normal;
 
         Rigidbody2D localBody2D = contactPoint.rigidbody;
@@ -339,7 +339,7 @@ public class NetBridge : NetworkBehaviour
 
         NetGameplayModule otherGameplayModule = remoteBody2D.gameObject.GetComponent<NetGameplayModule>();
         if (otherGameplayModule == null || otherGameplayModule.Bridge == this) return;
-        float massB = otherGameplayModule.Bridge.BaseStats.mass;
+        float massB = otherGameplayModule.Bridge.BaseStats.weight;
 
         // Energy calculations
         float impactEnergy = impactEnergyModifier * kineticEnergyConstant * (massA * massB / (massA + massB)) *
