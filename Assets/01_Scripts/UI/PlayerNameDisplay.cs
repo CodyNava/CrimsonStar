@@ -82,6 +82,7 @@ public class PlayerNameDisplay : MonoBehaviour
             var player = playerNameDisplay[i];
             var textElement = nameTextSizeText[i];
 
+            if (!player) continue;
             textElement.fontSize = (2.5f - playerNameDisplay.Count / 8f) * (bridge.CameraZoom.ZoomDistance / 100);
             
             Vector3 playerWorldPos = player.transform.position + Vector3.up * 10f;
