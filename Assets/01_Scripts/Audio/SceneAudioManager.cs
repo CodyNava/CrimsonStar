@@ -11,12 +11,12 @@ public class SceneAudioManager : MonoBehaviour
     [SerializeField] private EventReference inGameMusic;
     [SerializeField] private EventReference killAnnouncer;
     [SerializeField] private EventReference enemyHitFeedback;
-    [SerializeField] private EventReference endJingle;
+    // [SerializeField] private EventReference endJingle;
     private EventInstance _mainMenuInstance;
     private EventInstance _inGameMusicInstance;
     private EventInstance _killAnnouncerInstance;
     private EventInstance _enemyHitFeedback;
-    private EventInstance _endJingleInstance;
+    // private EventInstance _endJingleInstance;
 
     public static SceneAudioManager instance;
 
@@ -35,7 +35,7 @@ public class SceneAudioManager : MonoBehaviour
         _inGameMusicInstance = RuntimeManager.CreateInstance(inGameMusic);
         _killAnnouncerInstance = RuntimeManager.CreateInstance(killAnnouncer);
         _enemyHitFeedback = RuntimeManager.CreateInstance(enemyHitFeedback);
-        _endJingleInstance = RuntimeManager.CreateInstance(endJingle);
+        // _endJingleInstance = RuntimeManager.CreateInstance(endJingle);
     }
 
     public void StartInGameMusic()
@@ -96,16 +96,16 @@ public class SceneAudioManager : MonoBehaviour
     
     public void PlayEndJingle()
     {
-        _endJingleInstance.start();
+        // _endJingleInstance.start();
     }
     public void StopEndJingle()
     {
-        _endJingleInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        // _endJingleInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
     }
 
     public void SetEndJingle(float value)
     {
-        _endJingleInstance.setParameterByName("battle_result", value);
+        // _endJingleInstance.setParameterByName("battle_result", value);
     }
 
     public void EnemyHitFeedback()
