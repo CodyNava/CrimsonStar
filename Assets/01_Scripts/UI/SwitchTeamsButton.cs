@@ -1,5 +1,7 @@
+using System.Collections;
 using FishNet;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SwitchTeamsButton : MonoBehaviour
 {
@@ -14,8 +16,19 @@ public class SwitchTeamsButton : MonoBehaviour
         {
             NewTeamID = netTeamID, PlayerID = _playerID
         });
+        Debug.Log(netTeamID);
+        StartCoroutine(DisableButton());
     }
 
+
+    private IEnumerator DisableButton()
+    {
+        var switchTeamsButton = gameObject.GetComponentInChildren<Button>();
+        switchTeamsButton.interactable = false;
+        yield return new WaitForSeconds(2f);
+        switchTeamsButton.interactable = true;
+        yield return null;
+    }
     public void UpdateTeamID(NetTeamID teamID)
     {
         _teamID = teamID;
