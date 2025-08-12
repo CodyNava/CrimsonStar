@@ -283,4 +283,9 @@ public class NetLaserTurret : NetworkBehaviour
             chargeSound.EventInstance.setParameterByName("laser-hold", 0);
         }
     }
+
+    private void OnDestroy()
+    {
+        chargeSound.Stop();
+    }
 }
