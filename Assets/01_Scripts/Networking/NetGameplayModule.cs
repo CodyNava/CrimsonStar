@@ -54,6 +54,7 @@ public class NetGameplayModule : NetworkBehaviour
     private readonly SyncVar<string> _presetName = new(new SyncTypeSettings(0f, Channel.Reliable));
     private readonly SyncVar<float> _health = new();
     private readonly SyncVar<NetTeamID> _playerID = new();
+    private readonly SyncList<HexCoordinate> _moduleCoord = new();
 
     // HexCoordinate relative to attached bridge coordinate
     private readonly SyncVar<HexCoordinate> _rootCoordinate = new();
@@ -63,6 +64,8 @@ public class NetGameplayModule : NetworkBehaviour
     public float HealthPct => Mathf.Clamp01(Health / Mathf.Max(_maxHealth, Mathf.Epsilon));
     public NetTeamID NetTeamID => _playerID.Value;
     public HexCoordinate RootCoordinate => _rootCoordinate.Value;
+    public List<HexCoordinate> ModuleCoordinates => _moduleCoord.Collection;
+    
 
     [Server]
     public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, ModulePlacementData placementData, string presetName)
@@ -71,11 +74,21 @@ public class NetGameplayModule : NetworkBehaviour
 
         _bridge = bridge;
         _rootCoordinate.Value = placementData.RootCoordinate;
+        
         _health.Value = moduleData.BaseStats.health;
         _maxHealth = _health.Value;
         _playerID.Value = netTeamID;
         _bridge.S_AttachModule(this, placementData);
         _presetName.Value = presetName;
+        
+        var localHexCoordinates = moduleData.GetLocalHexCoordinates();
+        
+        localHexCoordinates = NetModuleStorage.GetRotatedCoordinates(localHexCoordinates, placementData.Rotation);
+        foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
+        {
+            HexCoordinate coordinate = localHexCoordinate + placementData.RootCoordinate;
+            _moduleCoord.Add(coordinate);
+        }
     }
 
     public void C_ClientInit()

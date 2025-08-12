@@ -34,25 +34,9 @@ public class NetLaserTurret : NetworkBehaviour
     private bool CanFire()
     {
         if (!this.turretModule.ModuleID.GetModuleData().CanBePowered) return true;
-        return turretModule.Bridge.PositionHasEnergy(CalculateRealCoordinates());
+        return turretModule.Bridge.PositionHasEnergy(turretModule.ModuleCoordinates);
     }
-
-    private List<HexCoordinate> CalculateRealCoordinates()
-    {
-        foreach (Vector3Int localCoordinate in moduleData.LocalModuleCoordinates)
-        {
-            localCoordinates.Add(new HexCoordinate(localCoordinate.x, localCoordinate.y, localCoordinate.z));
-        }
-
-        var totalCoord = new List<HexCoordinate>();
-        foreach (var coord in localCoordinates)
-        {
-            totalCoord.Add(coord + turretModule.RootCoordinate);
-        }
-
-        return totalCoord;
-    }
-
+    
     private void Start()
     {
         muzzleCharge.SetFloat("Get_ChargeTime", netLaserTurretData.ChargeTime);
@@ -71,11 +55,12 @@ public class NetLaserTurret : NetworkBehaviour
         _cooldownTime = Mathf.Min(_accumulatedTime, netLaserTurretData.Cooldown);
 
         if (_cooldownTime < netLaserTurretData.Cooldown) return;
-        if (!CanFire()) return;
+        
 
 
         if (C_IsAttacking())
         {
+            if (!CanFire()) return;
             chargeSound.EventInstance.getParameterByName("laser-charging", out _chargingValue);
 
             S_ServerSFXChargeUp();
