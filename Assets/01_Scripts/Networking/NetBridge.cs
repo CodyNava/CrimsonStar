@@ -360,6 +360,7 @@ public class NetBridge : NetworkBehaviour
     {
         foreach (var coord in coordinate)
         {
+            Debug.Log("PositionHasEnergy" + coord.Q + " " + coord.R + " "+ coord.S);
             if (_powerGrid.GetValueOrDefault(coord) > 0)
                 return true;
         }
