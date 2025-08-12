@@ -168,6 +168,8 @@ public class NetLaserTurret : NetworkBehaviour
         if (IsOwner)
         {
             C_SpawnProjectile(position, direction, passedTime, senderID);
+            chargeSound.EventInstance.setParameterByName("laser-charging", 0);
+            chargeSound.EventInstance.setParameterByName("laser-hold", 0);
         }
 
         C_ObserversFire(position, direction, tick, senderID);
