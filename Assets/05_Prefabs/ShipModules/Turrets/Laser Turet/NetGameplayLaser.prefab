@@ -182,7 +182,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 1
+  <PrefabId>k__BackingField: 40
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 18405356151333877291
   <SceneId>k__BackingField: 0
@@ -327,7 +327,7 @@ MonoBehaviour:
   turretModule: {fileID: 138746299594672162}
   spawnTransform: {fileID: 8287526850846769230}
   muzzleCharge: {fileID: 5501383848182057994}
-  shotSound: {fileID: -4272048423135944895}
+  chargeSound: {fileID: -4272048423135944895}
   moduleData: {fileID: 11400000, guid: a6ec00fbf08584242892f5e45f9112d9, type: 2}
   localCoordinates: []
 --- !u!114 &-4272048423135944895
@@ -345,11 +345,11 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: -62886827
-      Data2: 1237665461
-      Data3: -314270827
-      Data4: -983112584
-    Path: event:/SFX/LaserBeamCharge_SFX
+      Data1: 1217136887
+      Data2: 1205391891
+      Data3: -588086083
+      Data4: 363736394
+    Path: event:/SFX/LaserBeamCharge_SFX-old
   Event: 
   EventPlayTrigger: 0
   EventStopTrigger: 0
@@ -359,8 +359,8 @@ MonoBehaviour:
   NonRigidbodyVelocity: 0
   Params: []
   OverrideAttenuation: 1
-  OverrideMinDistance: 50
-  OverrideMaxDistance: 250
+  OverrideMinDistance: 40
+  OverrideMaxDistance: 100
 --- !u!1001 &2630221078259537646
 PrefabInstance:
   m_ObjectHideFlags: 0
