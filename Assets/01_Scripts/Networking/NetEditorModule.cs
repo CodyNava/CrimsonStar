@@ -79,7 +79,7 @@ public class NetEditorModule : MonoBehaviour
 
         _originalColor = Color.white;
         _originalColorIntensity = Mathf.Max(_originalColor.r, _originalColor.g, _originalColor.b);
-        _originalColorIntensity *= 5f;
+        _originalColorIntensity *= 10f;
 
         switch (ModuleID)
         {
