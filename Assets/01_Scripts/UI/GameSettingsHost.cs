@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
 using FishNet;
 using TMPro;
 using Unity.VisualScripting;
@@ -111,6 +112,11 @@ public class GameSettingsHost : MonoBehaviour
     [SerializeField] private Button increaseModuleRefund;
     [SerializeField] private Button decreaseModuleRefund;
     private int _currentModuleRefund;*/
+
+    [Header("Map Preview")] 
+    [SerializeField] private SerializedDictionary<NetTeamModeID, Texture2D> _mapPreviewTexture;
+    [SerializeField] private RawImage _mapPreviewImage;
+    
 
     private bool _isInitialized;
 
@@ -385,6 +391,7 @@ public class GameSettingsHost : MonoBehaviour
         timerPreview.text = preview.Timer.ToString();
         roundsPreview.text = preview.RoundCount.ToString();
         friendlyFirePreview.text = preview.FriendlyFireMode.ToString();
+        _mapPreviewImage.texture = _mapPreviewTexture[preview.GameMode];
     }
 
     public void UpdateGameSettingsDisplay(NetLobbyBroadcasts.SetGameMode settings)
