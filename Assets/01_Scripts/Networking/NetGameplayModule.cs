@@ -126,6 +126,7 @@ public class NetGameplayModule : NetworkBehaviour
     [ObserversRpc]
     public void C_SetColorsBasedOnPreset(string presetName)
     {
+        Debug.Log("PresetName "+ _playerID.Value + " " +presetName);
         var currenPreset = DataProvider.GetColorPresetByName(presetName);
         PresetColor1 = currenPreset.color1;
         PresetColor2 = currenPreset.color2;
