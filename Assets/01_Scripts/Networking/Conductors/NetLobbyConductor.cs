@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AYellowpaper.SerializedCollections;
 using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
@@ -26,6 +27,10 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     [SerializeField] private NetMatchPlayer matchPrefab;
     [SerializeField] private NetShipEditorConductor netShipEditorConductor;
     [SerializeField] private NetGameplayConductor netGameplayConductor;
+    [SerializeField]
+    private SerializedDictionary<NetTeamModeID, string> _teamModeMaps = new();
+
+    public string TeamModeMapName => _teamModeMaps[_selectedTeamMode];
 
     public NetworkObject[] Players { get; private set; }
     public Dictionary<ulong, NetMatchPlayer> PlayersByID { get; private set; }
@@ -38,6 +43,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
     private NetworkConnection _hostConnection;
     private NetGameModeID _selectedGameMode = NetGameModeID.DefaultMode;
     private NetTeamModeID _selectedTeamMode;
+    public NetTeamModeID SelectedTeamMode => _selectedTeamMode;
 
     private float _updateAccumulator;
 
@@ -178,6 +184,7 @@ public class NetLobbyConductor : BaseConductor<NetLobbyConductor>
         }
 
         _selectedTeamMode = msg.TeamMode;
+        InstanceFinder.GetInstance<NetGameplayConductor>().SetGameplayScene(TeamModeMapName);
     }
 
     [Server]

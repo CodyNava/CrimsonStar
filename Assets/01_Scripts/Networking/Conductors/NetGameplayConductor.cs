@@ -123,6 +123,7 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
 
         if (_spawnedPlayers == PlayerCount)
         {
+            _spawnTransforms.Clear();
             S_StartMatch();
         }
     }
@@ -459,15 +460,15 @@ public class NetGameplayConductor : BaseConductor<NetGameplayConductor>
     {
         // SpawnPoints are taken as GameObject.Transforms of GO with Tag "SpawnPoint"
         
-        if (_spawnTransforms.Count < _lobbyConductor.PlayersByConnection.Count)
+        if (_spawnTransforms.Count <= 0)
         {
-            _spawnTransforms.Clear();
             foreach (var go in GameObject.FindGameObjectsWithTag("SpawnPoint"))
             {
                 _spawnTransforms.Add(go.transform);
             }
         }
 
+        // TODO: Separate SpawnPoints for each Team
         int spawnPointId = Random.Range(0, _spawnTransforms.Count);
         var spawn = _spawnTransforms.ElementAt(spawnPointId);
         _spawnTransforms.RemoveAt(spawnPointId);
