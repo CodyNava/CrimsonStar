@@ -219,14 +219,16 @@ public class NetBridge : NetworkBehaviour
     {
         if (IsOwner)
         {
-            CameraZoom = FindFirstObjectByType<CameraZoom>();
             CameraFollow = FindFirstObjectByType<CameraFollow>();
+            CameraZoom = FindFirstObjectByType<CameraZoom>();
             CameraFollow.SetTarget(this);
             fmodListener.enabled = true;
             StarDust.SetActive(true);
         }
         else
         {
+            CameraFollow = FindFirstObjectByType<CameraFollow>();
+            CameraZoom = FindFirstObjectByType<CameraZoom>();
             fmodListener.enabled = false;
         }
     }
