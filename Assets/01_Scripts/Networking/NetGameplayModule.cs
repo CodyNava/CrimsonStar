@@ -130,7 +130,7 @@ public class NetGameplayModule : NetworkBehaviour
     public void SetColor()
     {
         
-        Debug.Log("PresetName "+ _playerID.Value + " " +_presetName);
+        Debug.Log("PresetName "+ _playerID.Value + " " +_presetName.Value);
         var currenPreset = DataProvider.GetColorPresetByName(_presetName.Value);
         PresetColor1 = currenPreset.color1;
         PresetColor2 = currenPreset.color2;
