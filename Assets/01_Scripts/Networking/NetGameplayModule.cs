@@ -50,7 +50,7 @@ public class NetGameplayModule : NetworkBehaviour
 
     private NetBridge _bridge;
     private float _maxHealth;
-    private string _presetName;
+    private readonly SyncVar<string> _presetName = new();
     private readonly SyncVar<float> _health = new();
     private readonly SyncVar<NetTeamID> _playerID = new();
 
@@ -74,7 +74,7 @@ public class NetGameplayModule : NetworkBehaviour
         _maxHealth = _health.Value;
         _playerID.Value = netTeamID;
         _bridge.S_AttachModule(this, placementData);
-        C_SetColorsBasedOnPreset(presetName);
+        _presetName.Value = presetName;
     }
 
     public void C_ClientInit()
@@ -125,17 +125,12 @@ public class NetGameplayModule : NetworkBehaviour
         PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
     }
     
-    [ObserversRpc]
-    public void C_SetColorsBasedOnPreset(string presetName)
-    {
-        _presetName = presetName;
-    }
-
+   
     public void SetColor()
     {
         
         Debug.Log("PresetName "+ _playerID.Value + " " +_presetName);
-        var currenPreset = DataProvider.GetColorPresetByName(_presetName);
+        var currenPreset = DataProvider.GetColorPresetByName(_presetName.Value);
         PresetColor1 = currenPreset.color1;
         PresetColor2 = currenPreset.color2;
         PresetColor3 = currenPreset.color3;
