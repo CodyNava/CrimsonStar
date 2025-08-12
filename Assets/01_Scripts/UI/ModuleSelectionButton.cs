@@ -127,7 +127,7 @@ public class ModuleSelectionButton : MonoBehaviour
         //Energy
         toolTip.statFiveImage =
             data.CanBePowered ? database.GetSpriteById("energy") : database.GetSpriteById("noenergy");
-        toolTip.statFive = ".";
+        toolTip.statFive =  data.CanBePowered ? "Y" : "N";
         //Mass
         var betterMassNumbers = data.BaseStats.mass;
         toolTip.statSix = betterMassNumbers.ToString(CultureInfo.InvariantCulture) + "%";
