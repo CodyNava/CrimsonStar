@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 2254385}
   - component: {fileID: 2254384}
   - component: {fileID: 2254388}
+  - component: {fileID: 2254389}
   m_Layer: 0
   m_Name: ColorPresetSelectionButton
   m_TagString: Untagged
@@ -307,6 +308,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 2254389}
+          m_TargetAssemblyTypeName: FMODButtonAudio, Assembly-CSharp
+          m_MethodName: OnPress
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - eventID: 0
     callback:
       m_PersistentCalls:
@@ -371,6 +384,42 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &2254389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2254382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978aa1857338cde40905da6b30bdd302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover:
+    Guid:
+      Data1: 265274650
+      Data2: 1240629567
+      Data3: -506756468
+      Data4: -1138132051
+    Path: event:/UI/ButtonHover_SFX
+  buttonPress:
+    Guid:
+      Data1: -1885937484
+      Data2: 1331556496
+      Data3: 728720285
+      Data4: 1971537989
+    Path: event:/UI/ButtonPress_SFX
+  buttonDisabled:
+    Guid:
+      Data1: 812230861
+      Data2: 1167431445
+      Data3: 598331267
+      Data4: -2069145463
+    Path: event:/UI/ButtonPressDenied_SFX
+  parameterName: 
+  value: 0
+  button: {fileID: 2254385}
 --- !u!1 &9922608
 GameObject:
   m_ObjectHideFlags: 0
@@ -1403,6 +1452,7 @@ GameObject:
   - component: {fileID: 77189283}
   - component: {fileID: 77189285}
   - component: {fileID: 77189286}
+  - component: {fileID: 77189287}
   m_Layer: 0
   m_Name: ReadyButton
   m_TagString: Untagged
@@ -1527,6 +1577,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 77189287}
+        m_TargetAssemblyTypeName: FMODButtonAudio, Assembly-CSharp
+        m_MethodName: OnPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &77189286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1550,6 +1612,42 @@ MonoBehaviour:
   startColor: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 1}
   endColor: {r: 1, g: 1, b: 1, a: 1}
   blinkColor: {r: 0.8207547, g: 0.43747774, b: 0.43747774, a: 1}
+--- !u!114 &77189287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77189281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978aa1857338cde40905da6b30bdd302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover:
+    Guid:
+      Data1: 265274650
+      Data2: 1240629567
+      Data3: -506756468
+      Data4: -1138132051
+    Path: event:/UI/ButtonHover_SFX
+  buttonPress:
+    Guid:
+      Data1: -1885937484
+      Data2: 1331556496
+      Data3: 728720285
+      Data4: 1971537989
+    Path: event:/UI/ButtonPress_SFX
+  buttonDisabled:
+    Guid:
+      Data1: 812230861
+      Data2: 1167431445
+      Data3: 598331267
+      Data4: -2069145463
+    Path: event:/UI/ButtonPressDenied_SFX
+  parameterName: 
+  value: 0
+  button: {fileID: 77189285}
 --- !u!1 &81031675
 GameObject:
   m_ObjectHideFlags: 0
@@ -2415,6 +2513,7 @@ GameObject:
   - component: {fileID: 143569319}
   - component: {fileID: 143569321}
   - component: {fileID: 143569318}
+  - component: {fileID: 143569322}
   m_Layer: 0
   m_Name: WeaponGroup_3_Button
   m_TagString: Untagged
@@ -2498,6 +2597,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 143569322}
+        m_TargetAssemblyTypeName: FMODButtonAudio, Assembly-CSharp
+        m_MethodName: OnPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &143569319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2553,6 +2664,42 @@ MonoBehaviour:
   buttonID: 3
   rectVector: {x: 0, y: 0}
   rectTransform: {fileID: 0}
+--- !u!114 &143569322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143569316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978aa1857338cde40905da6b30bdd302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover:
+    Guid:
+      Data1: 265274650
+      Data2: 1240629567
+      Data3: -506756468
+      Data4: -1138132051
+    Path: event:/UI/ButtonHover_SFX
+  buttonPress:
+    Guid:
+      Data1: -1885937484
+      Data2: 1331556496
+      Data3: 728720285
+      Data4: 1971537989
+    Path: event:/UI/ButtonPress_SFX
+  buttonDisabled:
+    Guid:
+      Data1: 812230861
+      Data2: 1167431445
+      Data3: 598331267
+      Data4: -2069145463
+    Path: event:/UI/ButtonPressDenied_SFX
+  parameterName: 
+  value: 0
+  button: {fileID: 143569318}
 --- !u!1001 &144842636
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2866,6 +3013,7 @@ GameObject:
   - component: {fileID: 174922833}
   - component: {fileID: 174922832}
   - component: {fileID: 174922836}
+  - component: {fileID: 174922837}
   m_Layer: 0
   m_Name: EnergyCategorySelectionButton
   m_TagString: Untagged
@@ -3040,6 +3188,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 174922837}
+          m_TargetAssemblyTypeName: FMODButtonAudio, Assembly-CSharp
+          m_MethodName: OnPress
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - eventID: 0
     callback:
       m_PersistentCalls:
@@ -3104,6 +3264,42 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &174922837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 174922830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978aa1857338cde40905da6b30bdd302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover:
+    Guid:
+      Data1: 265274650
+      Data2: 1240629567
+      Data3: -506756468
+      Data4: -1138132051
+    Path: event:/UI/ButtonHover_SFX
+  buttonPress:
+    Guid:
+      Data1: -1885937484
+      Data2: 1331556496
+      Data3: 728720285
+      Data4: 1971537989
+    Path: event:/UI/ButtonPress_SFX
+  buttonDisabled:
+    Guid:
+      Data1: 812230861
+      Data2: 1167431445
+      Data3: 598331267
+      Data4: -2069145463
+    Path: event:/UI/ButtonPressDenied_SFX
+  parameterName: 
+  value: 0
+  button: {fileID: 174922833}
 --- !u!1 &179580305
 GameObject:
   m_ObjectHideFlags: 0
@@ -6047,6 +6243,7 @@ GameObject:
   - component: {fileID: 496387278}
   - component: {fileID: 496387280}
   - component: {fileID: 496387277}
+  - component: {fileID: 496387281}
   m_Layer: 0
   m_Name: WeaponGroup_1_Button
   m_TagString: Untagged
@@ -6130,6 +6327,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 496387281}
+        m_TargetAssemblyTypeName: FMODButtonAudio, Assembly-CSharp
+        m_MethodName: OnPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &496387278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6185,6 +6394,42 @@ MonoBehaviour:
   buttonID: 1
   rectVector: {x: 0, y: 0}
   rectTransform: {fileID: 0}
+--- !u!114 &496387281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496387274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978aa1857338cde40905da6b30bdd302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover:
+    Guid:
+      Data1: 265274650
+      Data2: 1240629567
+      Data3: -506756468
+      Data4: -1138132051
+    Path: event:/UI/ButtonHover_SFX
+  buttonPress:
+    Guid:
+      Data1: -1885937484
+      Data2: 1331556496
+      Data3: 728720285
+      Data4: 1971537989
+    Path: event:/UI/ButtonPress_SFX
+  buttonDisabled:
+    Guid:
+      Data1: 812230861
+      Data2: 1167431445
+      Data3: 598331267
+      Data4: -2069145463
+    Path: event:/UI/ButtonPressDenied_SFX
+  parameterName: 
+  value: 0
+  button: {fileID: 496387277}
 --- !u!1 &506038077
 GameObject:
   m_ObjectHideFlags: 0
@@ -9844,6 +10089,7 @@ GameObject:
   - component: {fileID: 998740612}
   - component: {fileID: 998740615}
   - component: {fileID: 998740616}
+  - component: {fileID: 998740617}
   m_Layer: 0
   m_Name: EngineCategorySelectionButton
   m_TagString: Untagged
@@ -10018,6 +10264,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 998740617}
+          m_TargetAssemblyTypeName: FMODButtonAudio, Assembly-CSharp
+          m_MethodName: OnPress
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - eventID: 0
     callback:
       m_PersistentCalls:
@@ -10082,6 +10340,42 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &998740617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998740609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978aa1857338cde40905da6b30bdd302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover:
+    Guid:
+      Data1: 265274650
+      Data2: 1240629567
+      Data3: -506756468
+      Data4: -1138132051
+    Path: event:/UI/ButtonHover_SFX
+  buttonPress:
+    Guid:
+      Data1: -1885937484
+      Data2: 1331556496
+      Data3: 728720285
+      Data4: 1971537989
+    Path: event:/UI/ButtonPress_SFX
+  buttonDisabled:
+    Guid:
+      Data1: 812230861
+      Data2: 1167431445
+      Data3: 598331267
+      Data4: -2069145463
+    Path: event:/UI/ButtonPressDenied_SFX
+  parameterName: 
+  value: 0
+  button: {fileID: 998740612}
 --- !u!1 &1007784765
 GameObject:
   m_ObjectHideFlags: 0
@@ -10094,6 +10388,7 @@ GameObject:
   - component: {fileID: 1007784769}
   - component: {fileID: 1007784768}
   - component: {fileID: 1007784767}
+  - component: {fileID: 1007784770}
   m_Layer: 0
   m_Name: EnergyViewButton
   m_TagString: Untagged
@@ -10179,6 +10474,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1007784770}
+        m_TargetAssemblyTypeName: FMODButtonAudio, Assembly-CSharp
+        m_MethodName: OnPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1007784768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10217,6 +10524,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1007784765}
   m_CullTransparentMesh: 1
+--- !u!114 &1007784770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007784765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978aa1857338cde40905da6b30bdd302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover:
+    Guid:
+      Data1: 265274650
+      Data2: 1240629567
+      Data3: -506756468
+      Data4: -1138132051
+    Path: event:/UI/ButtonHover_SFX
+  buttonPress:
+    Guid:
+      Data1: -1885937484
+      Data2: 1331556496
+      Data3: 728720285
+      Data4: 1971537989
+    Path: event:/UI/ButtonPress_SFX
+  buttonDisabled:
+    Guid:
+      Data1: 812230861
+      Data2: 1167431445
+      Data3: 598331267
+      Data4: -2069145463
+    Path: event:/UI/ButtonPressDenied_SFX
+  parameterName: 
+  value: 0
+  button: {fileID: 1007784767}
 --- !u!1 &1007804152
 GameObject:
   m_ObjectHideFlags: 0
@@ -10839,6 +11182,7 @@ GameObject:
   - component: {fileID: 1088968093}
   - component: {fileID: 1088968096}
   - component: {fileID: 1088968097}
+  - component: {fileID: 1088968098}
   m_Layer: 0
   m_Name: ArmoreCategorySelectionButton
   m_TagString: Untagged
@@ -11013,6 +11357,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 1088968098}
+          m_TargetAssemblyTypeName: FMODButtonAudio, Assembly-CSharp
+          m_MethodName: OnPress
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - eventID: 0
     callback:
       m_PersistentCalls:
@@ -11077,6 +11433,42 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1088968098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088968091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978aa1857338cde40905da6b30bdd302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover:
+    Guid:
+      Data1: 265274650
+      Data2: 1240629567
+      Data3: -506756468
+      Data4: -1138132051
+    Path: event:/UI/ButtonHover_SFX
+  buttonPress:
+    Guid:
+      Data1: -1885937484
+      Data2: 1331556496
+      Data3: 728720285
+      Data4: 1971537989
+    Path: event:/UI/ButtonPress_SFX
+  buttonDisabled:
+    Guid:
+      Data1: 812230861
+      Data2: 1167431445
+      Data3: 598331267
+      Data4: -2069145463
+    Path: event:/UI/ButtonPressDenied_SFX
+  parameterName: 
+  value: 0
+  button: {fileID: 1088968093}
 --- !u!1 &1098847846
 GameObject:
   m_ObjectHideFlags: 0
@@ -16526,6 +16918,7 @@ GameObject:
   - component: {fileID: 1578808184}
   - component: {fileID: 1578808183}
   - component: {fileID: 1578808182}
+  - component: {fileID: 1578808185}
   m_Layer: 0
   m_Name: HealthViewButton
   m_TagString: Untagged
@@ -16611,6 +17004,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1578808185}
+        m_TargetAssemblyTypeName: FMODButtonAudio, Assembly-CSharp
+        m_MethodName: OnPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1578808183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16649,6 +17054,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1578808180}
   m_CullTransparentMesh: 1
+--- !u!114 &1578808185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578808180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978aa1857338cde40905da6b30bdd302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover:
+    Guid:
+      Data1: 265274650
+      Data2: 1240629567
+      Data3: -506756468
+      Data4: -1138132051
+    Path: event:/UI/ButtonHover_SFX
+  buttonPress:
+    Guid:
+      Data1: -1885937484
+      Data2: 1331556496
+      Data3: 728720285
+      Data4: 1971537989
+    Path: event:/UI/ButtonPress_SFX
+  buttonDisabled:
+    Guid:
+      Data1: 812230861
+      Data2: 1167431445
+      Data3: 598331267
+      Data4: -2069145463
+    Path: event:/UI/ButtonPressDenied_SFX
+  parameterName: 
+  value: 0
+  button: {fileID: 1578808182}
 --- !u!1001 &1578902896
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16801,6 +17242,7 @@ GameObject:
   - component: {fileID: 1615646181}
   - component: {fileID: 1615646183}
   - component: {fileID: 1615646180}
+  - component: {fileID: 1615646184}
   m_Layer: 0
   m_Name: WeaponGroup_2_Button
   m_TagString: Untagged
@@ -16884,6 +17326,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1615646184}
+        m_TargetAssemblyTypeName: FMODButtonAudio, Assembly-CSharp
+        m_MethodName: OnPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1615646181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16939,6 +17393,42 @@ MonoBehaviour:
   buttonID: 2
   rectVector: {x: 0, y: 0}
   rectTransform: {fileID: 0}
+--- !u!114 &1615646184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615646178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978aa1857338cde40905da6b30bdd302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover:
+    Guid:
+      Data1: 265274650
+      Data2: 1240629567
+      Data3: -506756468
+      Data4: -1138132051
+    Path: event:/UI/ButtonHover_SFX
+  buttonPress:
+    Guid:
+      Data1: -1885937484
+      Data2: 1331556496
+      Data3: 728720285
+      Data4: 1971537989
+    Path: event:/UI/ButtonPress_SFX
+  buttonDisabled:
+    Guid:
+      Data1: 812230861
+      Data2: 1167431445
+      Data3: 598331267
+      Data4: -2069145463
+    Path: event:/UI/ButtonPressDenied_SFX
+  parameterName: 
+  value: 0
+  button: {fileID: 1615646180}
 --- !u!1 &1616998512
 GameObject:
   m_ObjectHideFlags: 0
@@ -17505,6 +17995,7 @@ GameObject:
   - component: {fileID: 1646612839}
   - component: {fileID: 1646612842}
   - component: {fileID: 1646612843}
+  - component: {fileID: 1646612844}
   m_Layer: 0
   m_Name: WeaponsCategorySelectionButton
   m_TagString: Untagged
@@ -17679,6 +18170,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 1646612844}
+          m_TargetAssemblyTypeName: FMODButtonAudio, Assembly-CSharp
+          m_MethodName: OnPress
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - eventID: 9
     callback:
       m_PersistentCalls:
@@ -17743,6 +18246,42 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1646612844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646612836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978aa1857338cde40905da6b30bdd302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHover:
+    Guid:
+      Data1: 265274650
+      Data2: 1240629567
+      Data3: -506756468
+      Data4: -1138132051
+    Path: event:/UI/ButtonHover_SFX
+  buttonPress:
+    Guid:
+      Data1: -1885937484
+      Data2: 1331556496
+      Data3: 728720285
+      Data4: 1971537989
+    Path: event:/UI/ButtonPress_SFX
+  buttonDisabled:
+    Guid:
+      Data1: 812230861
+      Data2: 1167431445
+      Data3: 598331267
+      Data4: -2069145463
+    Path: event:/UI/ButtonPressDenied_SFX
+  parameterName: 
+  value: 0
+  button: {fileID: 1646612839}
 --- !u!1 &1651952885
 GameObject:
   m_ObjectHideFlags: 0
