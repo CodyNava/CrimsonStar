@@ -64,6 +64,8 @@ public class NetLaserTurret : NetworkBehaviour
 
     private void Update()
     {
+        if (!chargeSound.IsPlaying()) chargeSound.Play();
+
         if (!IsOwner) return;
         _accumulatedTime += Time.deltaTime;
         _cooldownTime = Mathf.Min(_accumulatedTime, netLaserTurretData.Cooldown);
@@ -105,6 +107,8 @@ public class NetLaserTurret : NetworkBehaviour
                 _cooldownTime = 0;
                 _accumulatedTimeVFX = 0f;
                 C_ClientFire();
+                chargeSound.Stop();
+                if (!chargeSound.IsPlaying()) chargeSound.Play();
                 //S_ServerSFXLaserShoot();
                 S_ServerVFXBool(false);
                 S_ServerVFXString("StartDissolve");
@@ -282,5 +286,10 @@ public class NetLaserTurret : NetworkBehaviour
             chargeSound.EventInstance.setParameterByName("laser-charging", 2);
             chargeSound.EventInstance.setParameterByName("laser-hold", 0);
         }
+    }
+
+    private void OnDestroy()
+    {
+        chargeSound.Stop();
     }
 }
