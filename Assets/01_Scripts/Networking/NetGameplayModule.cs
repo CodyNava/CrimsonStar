@@ -5,6 +5,7 @@ using _01_Scripts.Ship;
 using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using FishNet.Transporting;
 using FMOD.Studio;
 using FMODUnity;
 using Steamworks;
@@ -50,7 +51,7 @@ public class NetGameplayModule : NetworkBehaviour
 
     private NetBridge _bridge;
     private float _maxHealth;
-    private readonly SyncVar<string> _presetName = new();
+    private readonly SyncVar<string> _presetName = new(new SyncTypeSettings(0f, Channel.Reliable));
     private readonly SyncVar<float> _health = new();
     private readonly SyncVar<NetTeamID> _playerID = new();
 
@@ -102,7 +103,7 @@ public class NetGameplayModule : NetworkBehaviour
         }
 
         GetPresetMaterials();
-        SetColor();
+        StartCoroutine(SetColorWaiter());
         // UpdateMaterialPresets();
 
         if (IsOwner)
@@ -135,6 +136,12 @@ public class NetGameplayModule : NetworkBehaviour
         PresetColor2 = currenPreset.color2;
         PresetColor3 = currenPreset.color3;
         UpdateMaterialPresets();
+    }
+
+    private IEnumerator SetColorWaiter()
+    {
+        yield return new WaitForSeconds(0.5f);
+        SetColor();
     }
 
     private void UpdateMaterialPresets()
