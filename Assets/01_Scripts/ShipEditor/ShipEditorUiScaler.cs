@@ -14,16 +14,29 @@ public class ShipEditorUiScaler : MonoBehaviour
         float referenceHeight = 2160f;
         float screenRatioX = Screen.width;
         float screenRatioY = Screen.height;
-        bool isGreaterThanTwoTimes = screenRatioX > screenRatioY * 2;
-        bool isGreaterThanThreeTimes = screenRatioX > screenRatioY * 3;
+
+        bool isGreaterThanTwoTimes = screenRatioX > screenRatioY * 2f;
+        bool isGreaterThanThreeTimes = screenRatioX > screenRatioY * 3f;
+        
+        bool isSixteenTen = Mathf.Abs((screenRatioX / screenRatioY) - (16f / 10f)) < 0.05f;
+
         RectTransform rt = canvas.GetComponent<RectTransform>();
-        if (!isGreaterThanThreeTimes)
-            rt.sizeDelta = isGreaterThanTwoTimes
-            ? new Vector2(5120, referenceHeight)
-            : new Vector2(referenceWidth, referenceHeight);
+
+        if (isGreaterThanThreeTimes)
+        {
+            rt.sizeDelta = new Vector2(referenceWidth * 2f, referenceHeight);
+        }
+        else if (isGreaterThanTwoTimes)
+        {
+            rt.sizeDelta = new Vector2(5120f, referenceHeight);
+        }
+        else if (isSixteenTen)
+        {
+            rt.sizeDelta = new Vector2(referenceWidth * (16f / 10f) / (16f / 9f), referenceHeight);
+        }
         else
         {
-            rt.sizeDelta = new Vector2(referenceWidth * 2, referenceHeight);
+            rt.sizeDelta = new Vector2(referenceWidth, referenceHeight);
         }
     }
 }
