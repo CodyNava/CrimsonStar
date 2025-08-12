@@ -3419,7 +3419,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8930147631676686480}
@@ -3442,7 +3442,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 1
+      - m_Value: 40
         m_Name: Size
         m_Overridden: 1
       - m_Value: 11
@@ -3451,26 +3451,41 @@ VisualEffect:
       - m_Value: 8
         m_Name: Size_Fog_SecondLayer
         m_Overridden: 0
-      - m_Value: 5
+      - m_Value: 3
         m_Name: SpawnRate_Fog_TherdLayer
-        m_Overridden: 0
-      - m_Value: 2
+        m_Overridden: 1
+      - m_Value: 4
         m_Name: SpawnRate_Fog_ScondLayer
-        m_Overridden: 0
+        m_Overridden: 1
+      - m_Value: 12
+        m_Name: Size_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 0.2
+        m_Name: Size_Particle
+        m_Overridden: 1
+      - m_Value: 5
+        m_Name: SpawnRate_Particle
+        m_Overridden: 1
+      - m_Value: 6
+        m_Name: SpawnRate_Fog_FirstLayer
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 0.6816353, y: 0.70698106, z: 0.8509804, w: 0}
+      - m_Value: {x: 0.45882353, y: 0.42745098, z: 0.6431373, w: 0}
         m_Name: Color_Fog_FirstLayer
         m_Overridden: 1
       - m_Value: {x: 0.32156864, y: 0.35325477, z: 0.3764706, w: 0}
         m_Name: Color_Fog_TherdLayer
         m_Overridden: 1
-      - m_Value: {x: 0.5676549, y: 0.61081743, z: 0.6509804, w: 0}
+      - m_Value: {x: 5.5849056, y: 1.7477372, z: 1.7123532, w: 0}
         m_Name: Color_Fog_SecondLayer
+        m_Overridden: 1
+      - m_Value: {x: 0.6781787, y: 0.7648387, z: 1.2952602, w: 0}
+        m_Name: Color_Particle 1
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -3489,7 +3504,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggelSubgraph_Fog_FirstLayer
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0
         m_Name: ToggelSubgraph_Fog_TherdLayer
         m_Overridden: 1
       - m_Value: 1
@@ -4521,8 +4536,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -165.39018, y: 161.55151, z: 0}
-  m_LocalScale: {x: 145, y: 100, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8070582868458691797}
   m_Father: {fileID: 6456683852324896324}
@@ -4800,7 +4815,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.23, y: 2.3}
+  m_Size: {x: 160, y: 120}
   m_EdgeRadius: 0
 --- !u!1 &1922274690211124899
 GameObject:
@@ -9494,7 +9509,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8043705267760159131}
@@ -9517,35 +9532,50 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 1
+      - m_Value: 40
         m_Name: Size
         m_Overridden: 1
       - m_Value: 11
         m_Name: Size_Fog_TherdLayer
         m_Overridden: 0
-      - m_Value: 8
+      - m_Value: 12
         m_Name: Size_Fog_SecondLayer
-        m_Overridden: 0
-      - m_Value: 5
+        m_Overridden: 1
+      - m_Value: 3
         m_Name: SpawnRate_Fog_TherdLayer
-        m_Overridden: 0
-      - m_Value: 2
+        m_Overridden: 1
+      - m_Value: 4
         m_Name: SpawnRate_Fog_ScondLayer
-        m_Overridden: 0
+        m_Overridden: 1
+      - m_Value: 12
+        m_Name: Size_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 0.2
+        m_Name: Size_Particle
+        m_Overridden: 1
+      - m_Value: 5
+        m_Name: SpawnRate_Particle
+        m_Overridden: 1
+      - m_Value: 6
+        m_Name: SpawnRate_Fog_FirstLayer
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 0.6816353, y: 0.70698106, z: 0.8509804, w: 0}
+      - m_Value: {x: 0.45882353, y: 0.42745098, z: 0.6431373, w: 0}
         m_Name: Color_Fog_FirstLayer
         m_Overridden: 1
       - m_Value: {x: 0.32156864, y: 0.35325477, z: 0.3764706, w: 0}
         m_Name: Color_Fog_TherdLayer
         m_Overridden: 1
-      - m_Value: {x: 0.5676549, y: 0.61081743, z: 0.6509804, w: 0}
+      - m_Value: {x: 5.5849056, y: 1.7477372, z: 1.7123532, w: 0}
         m_Name: Color_Fog_SecondLayer
+        m_Overridden: 1
+      - m_Value: {x: 0.6781787, y: 0.7648387, z: 1.2952602, w: 0}
+        m_Name: Color_Particle 1
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -9564,7 +9594,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggelSubgraph_Fog_FirstLayer
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0
         m_Name: ToggelSubgraph_Fog_TherdLayer
         m_Overridden: 1
       - m_Value: 1
@@ -10832,7 +10862,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -399.59998, y: -140.44861, z: 0}
-  m_LocalScale: {x: 120, y: 80, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6359390691939522139}
@@ -11111,7 +11141,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.23, y: 2.3}
+  m_Size: {x: 100, y: 90}
   m_EdgeRadius: 0
 --- !u!1 &4438265780835235136
 GameObject:
@@ -12117,8 +12147,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -398.59998, y: 152.55151, z: 0}
-  m_LocalScale: {x: 120, y: 80, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7062353769575957322}
   m_Father: {fileID: 6456683852324896324}
@@ -12396,7 +12426,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.23, y: 2.3}
+  m_Size: {x: 100, y: 90}
   m_EdgeRadius: 0
 --- !u!1 &4567420678809438295
 GameObject:
@@ -13582,8 +13612,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -148.39015, y: -132.44763, z: 0}
-  m_LocalScale: {x: 165, y: 100, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1986451435358811221}
   m_Father: {fileID: 6456683852324896324}
@@ -13861,7 +13891,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.23, y: 2.3}
+  m_Size: {x: 160, y: 120}
   m_EdgeRadius: 0
 --- !u!1 &4974084126289727642
 GameObject:
@@ -14071,7 +14101,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3899936053176976602}
@@ -14094,7 +14124,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 1
+      - m_Value: 65
         m_Name: Size
         m_Overridden: 1
       - m_Value: 11
@@ -14103,26 +14133,41 @@ VisualEffect:
       - m_Value: 8
         m_Name: Size_Fog_SecondLayer
         m_Overridden: 0
-      - m_Value: 5
+      - m_Value: 3
         m_Name: SpawnRate_Fog_TherdLayer
-        m_Overridden: 0
-      - m_Value: 2
+        m_Overridden: 1
+      - m_Value: 4
         m_Name: SpawnRate_Fog_ScondLayer
-        m_Overridden: 0
+        m_Overridden: 1
+      - m_Value: 6
+        m_Name: SpawnRate_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 5
+        m_Name: SpawnRate_Particle
+        m_Overridden: 1
+      - m_Value: 0.2
+        m_Name: Size_Particle
+        m_Overridden: 1
+      - m_Value: 12
+        m_Name: Size_Fog_FirstLayer
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 0.6816353, y: 0.70698106, z: 0.8509804, w: 0}
+      - m_Value: {x: 0.45882353, y: 0.42745098, z: 0.6431373, w: 0}
         m_Name: Color_Fog_FirstLayer
         m_Overridden: 1
       - m_Value: {x: 0.32156864, y: 0.35325477, z: 0.3764706, w: 0}
         m_Name: Color_Fog_TherdLayer
         m_Overridden: 1
-      - m_Value: {x: 0.5676549, y: 0.61081743, z: 0.6509804, w: 0}
+      - m_Value: {x: 5.5849056, y: 1.7477372, z: 1.7123532, w: 0}
         m_Name: Color_Fog_SecondLayer
+        m_Overridden: 1
+      - m_Value: {x: 0.6781787, y: 0.7648387, z: 1.2952602, w: 0}
+        m_Name: Color_Particle 1
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -14141,7 +14186,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggelSubgraph_Fog_FirstLayer
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0
         m_Name: ToggelSubgraph_Fog_TherdLayer
         m_Overridden: 1
       - m_Value: 1
@@ -14753,7 +14798,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5298145052470739697}
@@ -14776,7 +14821,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 1
+      - m_Value: 40
         m_Name: Size
         m_Overridden: 1
       - m_Value: 11
@@ -14785,26 +14830,41 @@ VisualEffect:
       - m_Value: 8
         m_Name: Size_Fog_SecondLayer
         m_Overridden: 0
-      - m_Value: 5
+      - m_Value: 3
         m_Name: SpawnRate_Fog_TherdLayer
-        m_Overridden: 0
-      - m_Value: 2
+        m_Overridden: 1
+      - m_Value: 4
         m_Name: SpawnRate_Fog_ScondLayer
-        m_Overridden: 0
+        m_Overridden: 1
+      - m_Value: 12
+        m_Name: Size_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 0.2
+        m_Name: Size_Particle
+        m_Overridden: 1
+      - m_Value: 6
+        m_Name: SpawnRate_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 5
+        m_Name: SpawnRate_Particle
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 0.6816353, y: 0.70698106, z: 0.8509804, w: 0}
+      - m_Value: {x: 0.45882353, y: 0.42745098, z: 0.6431373, w: 0}
         m_Name: Color_Fog_FirstLayer
         m_Overridden: 1
       - m_Value: {x: 0.32156864, y: 0.35325477, z: 0.3764706, w: 0}
         m_Name: Color_Fog_TherdLayer
         m_Overridden: 1
-      - m_Value: {x: 0.5676549, y: 0.61081743, z: 0.6509804, w: 0}
+      - m_Value: {x: 5.5849056, y: 1.7477372, z: 1.7123532, w: 0}
         m_Name: Color_Fog_SecondLayer
+        m_Overridden: 1
+      - m_Value: {x: 0.6781787, y: 0.7648387, z: 1.2952602, w: 0}
+        m_Name: Color_Particle 1
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -14823,7 +14883,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggelSubgraph_Fog_FirstLayer
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0
         m_Name: ToggelSubgraph_Fog_TherdLayer
         m_Overridden: 1
       - m_Value: 1
@@ -14900,7 +14960,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5240047386108105620}
@@ -14923,7 +14983,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 1
+      - m_Value: 40
         m_Name: Size
         m_Overridden: 1
       - m_Value: 11
@@ -14932,26 +14992,41 @@ VisualEffect:
       - m_Value: 8
         m_Name: Size_Fog_SecondLayer
         m_Overridden: 0
-      - m_Value: 5
+      - m_Value: 3
         m_Name: SpawnRate_Fog_TherdLayer
-        m_Overridden: 0
-      - m_Value: 2
+        m_Overridden: 1
+      - m_Value: 4
         m_Name: SpawnRate_Fog_ScondLayer
-        m_Overridden: 0
+        m_Overridden: 1
+      - m_Value: 5
+        m_Name: SpawnRate_Particle
+        m_Overridden: 1
+      - m_Value: 6
+        m_Name: SpawnRate_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 0.2
+        m_Name: Size_Particle
+        m_Overridden: 1
+      - m_Value: 12
+        m_Name: Size_Fog_FirstLayer
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 0.6816353, y: 0.70698106, z: 0.8509804, w: 0}
+      - m_Value: {x: 0.45882353, y: 0.42745098, z: 0.6431373, w: 0}
         m_Name: Color_Fog_FirstLayer
         m_Overridden: 1
       - m_Value: {x: 0.32156864, y: 0.35325477, z: 0.3764706, w: 0}
         m_Name: Color_Fog_TherdLayer
         m_Overridden: 1
-      - m_Value: {x: 0.5676549, y: 0.61081743, z: 0.6509804, w: 0}
+      - m_Value: {x: 5.5849056, y: 1.7477372, z: 1.7123532, w: 0}
         m_Name: Color_Fog_SecondLayer
+        m_Overridden: 1
+      - m_Value: {x: 0.6781787, y: 0.7648387, z: 1.2952602, w: 0}
+        m_Name: Color_Particle 1
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -14970,7 +15045,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggelSubgraph_Fog_FirstLayer
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0
         m_Name: ToggelSubgraph_Fog_TherdLayer
         m_Overridden: 1
       - m_Value: 1
@@ -16720,7 +16795,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 9145734105091014722}
@@ -16743,35 +16818,50 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 1
+      - m_Value: 65
         m_Name: Size
         m_Overridden: 1
       - m_Value: 11
         m_Name: Size_Fog_TherdLayer
         m_Overridden: 0
-      - m_Value: 8
+      - m_Value: 13
         m_Name: Size_Fog_SecondLayer
-        m_Overridden: 0
-      - m_Value: 5
+        m_Overridden: 1
+      - m_Value: 3
         m_Name: SpawnRate_Fog_TherdLayer
-        m_Overridden: 0
-      - m_Value: 2
+        m_Overridden: 1
+      - m_Value: 4
         m_Name: SpawnRate_Fog_ScondLayer
-        m_Overridden: 0
+        m_Overridden: 1
+      - m_Value: 12
+        m_Name: Size_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 0.2
+        m_Name: Size_Particle
+        m_Overridden: 1
+      - m_Value: 6
+        m_Name: SpawnRate_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 5
+        m_Name: SpawnRate_Particle
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 0.6816353, y: 0.70698106, z: 0.8509804, w: 0}
+      - m_Value: {x: 0.45882353, y: 0.42745098, z: 0.6431373, w: 0}
         m_Name: Color_Fog_FirstLayer
         m_Overridden: 1
       - m_Value: {x: 0.32156864, y: 0.35325477, z: 0.3764706, w: 0}
         m_Name: Color_Fog_TherdLayer
         m_Overridden: 1
-      - m_Value: {x: 0.5676549, y: 0.61081743, z: 0.6509804, w: 0}
+      - m_Value: {x: 5.5849056, y: 1.7477372, z: 1.7123532, w: 0}
         m_Name: Color_Fog_SecondLayer
+        m_Overridden: 1
+      - m_Value: {x: 0.6781787, y: 0.7648387, z: 1.2952602, w: 0}
+        m_Name: Color_Particle 1
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -16790,7 +16880,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggelSubgraph_Fog_FirstLayer
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0
         m_Name: ToggelSubgraph_Fog_TherdLayer
         m_Overridden: 1
       - m_Value: 1
@@ -19014,7 +19104,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 402.40002, y: -137.44861, z: 0}
-  m_LocalScale: {x: 120, y: 80, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5554173358448393027}
@@ -19293,7 +19383,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.23, y: 2.3}
+  m_Size: {x: 100, y: 90}
   m_EdgeRadius: 0
 --- !u!1 &6378768119502254610
 GameObject:
@@ -21275,7 +21365,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 660778527693433165}
@@ -21298,7 +21388,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 1
+      - m_Value: 65
         m_Name: Size
         m_Overridden: 1
       - m_Value: 11
@@ -21307,26 +21397,41 @@ VisualEffect:
       - m_Value: 8
         m_Name: Size_Fog_SecondLayer
         m_Overridden: 0
-      - m_Value: 5
+      - m_Value: 3
         m_Name: SpawnRate_Fog_TherdLayer
-        m_Overridden: 0
-      - m_Value: 2
+        m_Overridden: 1
+      - m_Value: 4
         m_Name: SpawnRate_Fog_ScondLayer
-        m_Overridden: 0
+        m_Overridden: 1
+      - m_Value: 12
+        m_Name: Size_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 0.2
+        m_Name: Size_Particle
+        m_Overridden: 1
+      - m_Value: 6
+        m_Name: SpawnRate_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 5
+        m_Name: SpawnRate_Particle
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 0.6816353, y: 0.70698106, z: 0.8509804, w: 0}
+      - m_Value: {x: 0.45882353, y: 0.42745098, z: 0.6431373, w: 0}
         m_Name: Color_Fog_FirstLayer
         m_Overridden: 1
       - m_Value: {x: 0.32156864, y: 0.35325477, z: 0.3764706, w: 0}
         m_Name: Color_Fog_TherdLayer
         m_Overridden: 1
-      - m_Value: {x: 0.5676549, y: 0.61081743, z: 0.6509804, w: 0}
+      - m_Value: {x: 5.5849056, y: 1.7477372, z: 1.7123532, w: 0}
         m_Name: Color_Fog_SecondLayer
+        m_Overridden: 1
+      - m_Value: {x: 0.6781787, y: 0.7648387, z: 1.2952602, w: 0}
+        m_Name: Color_Particle 1
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -21345,7 +21450,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggelSubgraph_Fog_FirstLayer
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0
         m_Name: ToggelSubgraph_Fog_TherdLayer
         m_Overridden: 1
       - m_Value: 1
@@ -22398,8 +22503,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 212.60985, y: -131.44763, z: 0}
-  m_LocalScale: {x: 145, y: 100, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1779363460999720647}
   m_Father: {fileID: 6456683852324896324}
@@ -22677,7 +22782,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.23, y: 2.3}
+  m_Size: {x: 160, y: 120}
   m_EdgeRadius: 0
 --- !u!1 &7019288505635334856
 GameObject:
@@ -27279,8 +27384,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 212.60985, y: 161.55249, z: 0}
-  m_LocalScale: {x: 145, y: 100, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8889328646024325504}
   m_Father: {fileID: 6456683852324896324}
@@ -27558,7 +27663,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.23, y: 2.3}
+  m_Size: {x: 160, y: 120}
   m_EdgeRadius: 0
 --- !u!1 &8275529081832261809
 GameObject:
@@ -29602,7 +29707,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1023789922541847902}
@@ -29625,7 +29730,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 1
+      - m_Value: 65
         m_Name: Size
         m_Overridden: 1
       - m_Value: 11
@@ -29634,26 +29739,41 @@ VisualEffect:
       - m_Value: 8
         m_Name: Size_Fog_SecondLayer
         m_Overridden: 0
-      - m_Value: 5
+      - m_Value: 3
         m_Name: SpawnRate_Fog_TherdLayer
-        m_Overridden: 0
-      - m_Value: 2
+        m_Overridden: 1
+      - m_Value: 4
         m_Name: SpawnRate_Fog_ScondLayer
-        m_Overridden: 0
+        m_Overridden: 1
+      - m_Value: 12
+        m_Name: Size_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 0.2
+        m_Name: Size_Particle
+        m_Overridden: 1
+      - m_Value: 6
+        m_Name: SpawnRate_Fog_FirstLayer
+        m_Overridden: 1
+      - m_Value: 5
+        m_Name: SpawnRate_Particle
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 0.6816353, y: 0.70698106, z: 0.8509804, w: 0}
+      - m_Value: {x: 0.45882353, y: 0.42745098, z: 0.6431373, w: 0}
         m_Name: Color_Fog_FirstLayer
         m_Overridden: 1
       - m_Value: {x: 0.32156864, y: 0.35325477, z: 0.3764706, w: 0}
         m_Name: Color_Fog_TherdLayer
         m_Overridden: 1
-      - m_Value: {x: 0.5676549, y: 0.61081743, z: 0.6509804, w: 0}
+      - m_Value: {x: 5.5849056, y: 1.7477372, z: 1.7123532, w: 0}
         m_Name: Color_Fog_SecondLayer
+        m_Overridden: 1
+      - m_Value: {x: 0.6781787, y: 0.7648387, z: 1.2952602, w: 0}
+        m_Name: Color_Particle 1
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -29672,7 +29792,7 @@ VisualEffect:
       - m_Value: 1
         m_Name: ToggelSubgraph_Fog_FirstLayer
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0
         m_Name: ToggelSubgraph_Fog_TherdLayer
         m_Overridden: 1
       - m_Value: 1
@@ -33406,7 +33526,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 399.40002, y: 152.55151, z: 0}
-  m_LocalScale: {x: 120, y: 80, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3333086549174772393}
@@ -33685,7 +33805,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.23, y: 2.3}
+  m_Size: {x: 100, y: 90}
   m_EdgeRadius: 0
 --- !u!1 &9035874425482992307
 GameObject:

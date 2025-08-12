@@ -349,8 +349,7 @@ public class NetBridge : NetworkBehaviour
         float damage = impactEnergy * (massB / (massA + massB));
 
         NetGameplayModule gameplayModule = localCollider.gameObject.GetComponent<NetGameplayModule>();
-
-        // TODO: Probably causes issues on damageDealt, which causes Dealt and Received not to align
+        
         gameplayModule.S_InflictDamage(damage, _playerId.Value);
     }
 
