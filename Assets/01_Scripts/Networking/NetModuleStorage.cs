@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ModulePlacementData
 {
-    public HexCoordinate RootCoordinate;
+    public HexCoordinate RootCoordinate = HexCoordinate.Zero;
     public int Rotation;
     public NetModuleID ModuleID;
 }
@@ -108,7 +108,7 @@ public class NetModuleStorage : NetworkBehaviour
         
     }
 
-    private IEnumerable<HexCoordinate> GetRotatedCoordinates(IEnumerable<HexCoordinate> coords, int rotationCount)
+    public static IEnumerable<HexCoordinate> GetRotatedCoordinates(IEnumerable<HexCoordinate> coords, int rotationCount)
     {
         foreach (HexCoordinate coord in coords)
         {

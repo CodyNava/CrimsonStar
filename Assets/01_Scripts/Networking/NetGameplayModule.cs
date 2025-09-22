@@ -5,6 +5,7 @@ using _01_Scripts.Ship;
 using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using FishNet.Transporting;
 using FMOD.Studio;
 using FMODUnity;
 using Steamworks;
@@ -50,8 +51,10 @@ public class NetGameplayModule : NetworkBehaviour
 
     private NetBridge _bridge;
     private float _maxHealth;
+    private readonly SyncVar<string> _presetName = new(new SyncTypeSettings(0f, Channel.Reliable));
     private readonly SyncVar<float> _health = new();
     private readonly SyncVar<NetTeamID> _playerID = new();
+    private readonly SyncList<HexCoordinate> _moduleCoord = new();
 
     // HexCoordinate relative to attached bridge coordinate
     private readonly SyncVar<HexCoordinate> _rootCoordinate = new();
@@ -61,19 +64,31 @@ public class NetGameplayModule : NetworkBehaviour
     public float HealthPct => Mathf.Clamp01(Health / Mathf.Max(_maxHealth, Mathf.Epsilon));
     public NetTeamID NetTeamID => _playerID.Value;
     public HexCoordinate RootCoordinate => _rootCoordinate.Value;
+    public List<HexCoordinate> ModuleCoordinates => _moduleCoord.Collection;
+    
 
     [Server]
-    public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, HexCoordinate rootCoordinate, string presetName)
+    public void S_ServerInit(NetBridge bridge, NetTeamID netTeamID, ModulePlacementData placementData, string presetName)
     {
         var moduleData = ModuleID.GetModuleData();
 
         _bridge = bridge;
-        _rootCoordinate.Value = rootCoordinate;
+        _rootCoordinate.Value = placementData.RootCoordinate;
+        
         _health.Value = moduleData.BaseStats.health;
         _maxHealth = _health.Value;
         _playerID.Value = netTeamID;
-        _bridge.S_AttachModule(this, rootCoordinate);
-        C_SetColorsBasedOnPreset(presetName);
+        _bridge.S_AttachModule(this, placementData);
+        _presetName.Value = presetName;
+        
+        var localHexCoordinates = moduleData.GetLocalHexCoordinates();
+        
+        localHexCoordinates = NetModuleStorage.GetRotatedCoordinates(localHexCoordinates, placementData.Rotation);
+        foreach (HexCoordinate localHexCoordinate in localHexCoordinates)
+        {
+            HexCoordinate coordinate = localHexCoordinate + placementData.RootCoordinate;
+            _moduleCoord.Add(coordinate);
+        }
     }
 
     public void C_ClientInit()
@@ -101,12 +116,14 @@ public class NetGameplayModule : NetworkBehaviour
         }
 
         GetPresetMaterials();
+        StartCoroutine(SetColorWaiter());
         // UpdateMaterialPresets();
 
         if (IsOwner)
         {
             //UpdateMaterialPresets();
-            int weaponGroupValue = NetModuleWeaponGroupData.WeaponGroupMap.GetValueOrDefault(coord);
+            int weaponGroupValue = NetModuleWeaponGroupData.ReadWeaponGroup(coord);
+            if (weaponGroupValue == 0) weaponGroupValue = NetModuleWeaponGroupData.ReadWeaponGroup(this._rootCoordinate.Value);
             WeaponGroup = weaponGroupValue;
         }
     }
@@ -122,14 +139,22 @@ public class NetGameplayModule : NetworkBehaviour
         PresetMatHead3 = PresetObjectHead.GetComponent<MeshRenderer>().materials[2];
     }
     
-    [ObserversRpc]
-    public void C_SetColorsBasedOnPreset(string presetName)
+   
+    public void SetColor()
     {
-        var currenPreset = DataProvider.GetColorPresetByName(presetName);
+        
+        Debug.Log("PresetName "+ _playerID.Value + " " +_presetName.Value);
+        var currenPreset = DataProvider.GetColorPresetByName(_presetName.Value);
         PresetColor1 = currenPreset.color1;
         PresetColor2 = currenPreset.color2;
         PresetColor3 = currenPreset.color3;
         UpdateMaterialPresets();
+    }
+
+    private IEnumerator SetColorWaiter()
+    {
+        yield return new WaitForSeconds(0.5f);
+        SetColor();
     }
 
     private void UpdateMaterialPresets()
@@ -228,10 +253,10 @@ public class NetGameplayModule : NetworkBehaviour
     [Server]
     [ServerRpc(RequireOwnership = false)]
     public void S_InflictDamage(float damage, ulong attackerID = 0)
-    {
-        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor))
+    {       
+        if (InstanceFinder.TryGetInstance(out NetGameplayConductor gameplayConductor) && attackerID != 0)
         {
-            gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, damage);
+            gameplayConductor.S_ReportDamageInstance(attackerID, _bridge.PlayerID, Mathf.Min(_health.Value, damage));
         }
 
         SetHealth(damage);
@@ -243,7 +268,6 @@ public class NetGameplayModule : NetworkBehaviour
                 _lowHealthAlarmInstance.release();
 
                 if (this.ModuleID != NetModuleID.Bridge) return;
-              //  glassCrackedMaterial.SetFloat(BridgeHealthInput, 0f);
             }
 
             if (ModuleID == NetModuleID.Bridge && gameplayConductor && attackerID != 0)
@@ -253,8 +277,7 @@ public class NetGameplayModule : NetworkBehaviour
 
             S_DestroyModule();
         }
-
-        Debug.Log("damage inflicted: " + damage);
+        
         float newPct = Mathf.Clamp01(_health.Value / Mathf.Max(_maxHealth, Mathf.Epsilon)); // direkt die healthpct übergeben weil die syncticks zu langsam sind 
         C_DisplayDamageObserver(newPct);
     }

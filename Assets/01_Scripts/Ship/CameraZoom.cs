@@ -15,6 +15,7 @@ namespace _01_Scripts.Ship
         private Rigidbody2D _targetRB;
 
         private float _zoomDistance;
+        public float ZoomDistance => _zoomDistance;
 
         public void Awake()
         {

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8369777901262305125}
   - component: {fileID: 5276255751954010499}
   - component: {fileID: 1055944948900674879}
+  - component: {fileID: -2825631121398609832}
   m_Layer: 3
   m_Name: NetGameplayAsteroid_03
   m_TagString: Untagged
@@ -265,7 +266,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba89a40f02ee54bb0610638099a859, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitFeedbackVFX: {fileID: 0}
+  _asteroidObject: {fileID: 11400000, guid: 771d4e1cce383254f885ca293e7ef318, type: 2}
+  hitFeedbackVFX: {fileID: 5671986103320250904, guid: e2d233654d75a7b4c81db863eb5572d4, type: 3}
+  despawnFeedbackVFX: {fileID: 6750847382748261619, guid: bf4c3946f2f689e4693929c802debfc4, type: 3}
 --- !u!58 &1055944948900674879
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -296,12 +299,26 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0.05, y: -0.3}
   m_Radius: 2.59
+--- !u!114 &-2825631121398609832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6107309012093280526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e543f641cab038498fec2f9fbbe1d49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minimumMagnitude: 30
+  maximumMagnitude: 46
 --- !u!1001 &5013949237232099701
 PrefabInstance:
   m_ObjectHideFlags: 0

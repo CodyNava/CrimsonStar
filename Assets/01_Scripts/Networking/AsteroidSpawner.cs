@@ -8,7 +8,7 @@ public class AsteroidSpawner : NetworkBehaviour
     [SerializeField] private AsteroidObject _asteroidObject;
     private readonly SyncVar<NetTeamID> _netTeamID = new SyncVar<NetTeamID>();
     private ulong _attackerID = 0;
-    
+
     private Vector3 spawnPos = Vector3.zero;
     private Vector3 baseDir = Vector3.zero;
     private float timer;
@@ -23,6 +23,8 @@ public class AsteroidSpawner : NetworkBehaviour
 
     void Update()
     {
+        if (!IsServer) return;
+
         timer += Time.deltaTime;
         if (timer >= _asteroidObject.AsteroidSpawnInterval)
         {
@@ -30,33 +32,49 @@ public class AsteroidSpawner : NetworkBehaviour
             SpawnAsteroid();
         }
     }
-    
+
     public void Initialize(float passedTime, NetTeamID netTeamID, ulong attackerID = 0)
     {
         _netTeamID.Value = netTeamID;
         _attackerID = attackerID;
     }
-    
-    void SpawnAsteroid()
+
+    [Server]
+    private void SpawnAsteroid()
     {
         int edge = Random.Range(0, 4);
 
         switch (edge)
         {
             case 0: // Top (Y+)
-                spawnPos = new Vector3(Random.Range(-_asteroidObject.AsteroidSpawnerWidth / 2, _asteroidObject.AsteroidSpawnerWidth / 2), _asteroidObject.AsteroidSpawnerHeight / 2, 0);
+                spawnPos = new Vector3(
+                    Random.Range(-_asteroidObject.AsteroidSpawnerWidth / 2, _asteroidObject.AsteroidSpawnerWidth / 2),
+                    _asteroidObject.AsteroidSpawnerHeight / 2,
+                    0);
                 baseDir = Vector3.down;
                 break;
+
             case 1: // Bottom (Y-)
-                spawnPos = new Vector3(Random.Range(-_asteroidObject.AsteroidSpawnerWidth / 2, _asteroidObject.AsteroidSpawnerWidth / 2), -_asteroidObject.AsteroidSpawnerHeight / 2, 0);
+                spawnPos = new Vector3(
+                    Random.Range(-_asteroidObject.AsteroidSpawnerWidth / 2, _asteroidObject.AsteroidSpawnerWidth / 2),
+                    -_asteroidObject.AsteroidSpawnerHeight / 2,
+                    0);
                 baseDir = Vector3.up;
                 break;
+
             case 2: // Left (X-)
-                spawnPos = new Vector3(-_asteroidObject.AsteroidSpawnerWidth / 2, Random.Range(-_asteroidObject.AsteroidSpawnerHeight / 2, _asteroidObject.AsteroidSpawnerHeight / 2), 0);
+                spawnPos = new Vector3(
+                    -_asteroidObject.AsteroidSpawnerWidth / 2,
+                    Random.Range(-_asteroidObject.AsteroidSpawnerHeight / 2, _asteroidObject.AsteroidSpawnerHeight / 2),
+                    0);
                 baseDir = Vector3.right;
                 break;
+
             case 3: // Right (X+)
-                spawnPos = new Vector3(_asteroidObject.AsteroidSpawnerWidth / 2, Random.Range(-_asteroidObject.AsteroidSpawnerHeight / 2, _asteroidObject.AsteroidSpawnerHeight / 2), 0);
+                spawnPos = new Vector3(
+                    _asteroidObject.AsteroidSpawnerWidth / 2,
+                    Random.Range(-_asteroidObject.AsteroidSpawnerHeight / 2, _asteroidObject.AsteroidSpawnerHeight / 2),
+                    0);
                 baseDir = Vector3.left;
                 break;
         }
@@ -67,13 +85,25 @@ public class AsteroidSpawner : NetworkBehaviour
         speed = Random.Range(_asteroidObject.AsteroidMinSpeed, _asteroidObject.AsteroidMaxSpeed);
 
         Asteroid asteroid = Instantiate(_asteroidObject.AsteroidPrefab, transform.position + spawnPos, Quaternion.identity);
-        asteroid.Initialize(_netTeamID.Value, _asteroidObject, finalDirection, speed, _asteroidObject.AsteroidSpawnerWidth, _asteroidObject.AsteroidSpawnerHeight, transform.position);
-        ServerManager.Spawn(asteroid.gameObject, null);
+        asteroid.Initialize(
+            _netTeamID.Value,
+            _asteroidObject,
+            finalDirection,
+            speed,
+            _asteroidObject.AsteroidSpawnerWidth,
+            _asteroidObject.AsteroidSpawnerHeight,
+            transform.position,
+            _attackerID);
+
+        ServerManager.Spawn(asteroid.gameObject);
     }
-    
-    void OnDrawGizmos()
+
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireCube(transform.position, new Vector3(_asteroidObject.AsteroidSpawnerWidth, _asteroidObject.AsteroidSpawnerHeight, 0.1f));
+        Gizmos.DrawWireCube(
+            transform.position,
+            new Vector3(_asteroidObject.AsteroidSpawnerWidth, _asteroidObject.AsteroidSpawnerHeight, 0.1f)
+        );
     }
 }

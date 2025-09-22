@@ -115,7 +115,7 @@ public class ShipEditor : MonoBehaviour
                 _gamePadSwitchSelectToggle = true;
                 EventSystem.current.SetSelectedGameObject(lastSelected ? lastSelected : forceSelected);
             }
-
+            
             ModueHoldingGamePad();
         }
         else
@@ -183,7 +183,7 @@ public class ShipEditor : MonoBehaviour
             playerWidget[i].SetActive(true);
             if (data.names[i] == null) continue;
             var playerLabel = playerWidget[i].GetComponentInChildren<TextMeshProUGUI>();
-            playerLabel.text = data.names[i][..maxNameChars];
+            playerLabel.text = data.names[i];
             playerLabel.color = data.readyState[i] ? Color.green : Color.white;
         }
 
@@ -219,6 +219,7 @@ public class ShipEditor : MonoBehaviour
 
     public void SpawnPart(NetModuleID moduleID)
     {
+        if (InputManager.Instance.IsGamepadUsed && !gamepadEnabled) return;
         bool success = TrySpawnPart(moduleID);
         if (!success)
         {
@@ -269,7 +270,7 @@ public class ShipEditor : MonoBehaviour
         if (InputManager.Instance.IsGamepadUsed)
         {
             moduleSpawnedInGp = true;
-            Vector3 spawnVec = new Vector3(0f, 0f, 0f);
+            Vector3 spawnVec = editCamera.transform.position.xy();
             _heldNetEditorModule =
                 Instantiate(moduleID.GetModuleData().ShipEditorPrefab, spawnVec, Quaternion.identity);
         }
@@ -365,6 +366,7 @@ public class ShipEditor : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(null);
             _heldNetEditorModule.VisualTransform.gameObject.layer = LayerMask.NameToLayer("Outline");
             _heldNetEditorModule.transform.Translate(moveInput.x * v * t, moveInput.y * v * t, 0f, Space.World);
+            Debug.Log("Y " + moveInput.y + "X " + moveInput.x + v);
             if (Keybinds.Actions.ShipEditor.ModulePickOrDrop.WasPerformedThisFrame())
             {
                 if (moduleFirstSelectedGp)
@@ -401,7 +403,7 @@ public class ShipEditor : MonoBehaviour
                 PlayerData.C_RefundModule(_heldNetEditorModule.ModuleID);
                 Destroy(_heldNetEditorModule.gameObject);
                 _heldNetEditorModule = null;
-                EventSystem.current.SetSelectedGameObject(lastSelected);
+                EventSystem.current.SetSelectedGameObject(!lastSelected ? forceSelected: lastSelected);
                 return;
             }
 
@@ -520,7 +522,7 @@ public class ShipEditor : MonoBehaviour
 
     private Func<HexCoordinate, bool> GetPlacementConditionForModule(NetModuleID moduleID)
     {
-        if (moduleID == NetModuleID.Thruster)
+        if (moduleID.GetModuleData().ModuleCategory == NetModuleCategory.Engines)
         {
             return IsSomethingBelowThruster;
         }
@@ -530,13 +532,13 @@ public class ShipEditor : MonoBehaviour
 
     private bool IsThrusterAbove(HexCoordinate coord)
     {
-        const int maxDistance = 3;
+        const int maxDistance = 14;
         for (var i = 0; i < maxDistance; i++)
         {
             coord = HexCoordinate.Neighbor(coord, HexDirection.North);
             if (_editorModulesMap.TryGetValue(coord, out var module))
             {
-                if (module.ModuleID == NetModuleID.Thruster)
+                if (module.ModuleData.ModuleCategory == NetModuleCategory.Engines)
                 {
                     return true;
                 }
@@ -586,7 +588,7 @@ public class ShipEditor : MonoBehaviour
 
     private bool IsSomethingBelowThruster(HexCoordinate coord)
     {
-        const int maxDistance = 10;
+        const int maxDistance = 14;
         for (var i = 0; i < maxDistance; i++)
         {
             coord = HexCoordinate.Neighbor(coord, HexDirection.South);
@@ -820,6 +822,7 @@ public class ShipEditor : MonoBehaviour
     {
         if (InputManager.Instance.IsGamepadUsed)
         {
+            if (!gamepadEnabled) return;
             _heldNetEditorModule = moduleToRemove;
         }
         Instantiate(sellEffect);
